@@ -1,0 +1,101 @@
+.voice-recorder {
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.start-recording-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+  width: 100%;
+}
+
+.start-recording-btn:hover {
+  transform: translateY(-2px);
+}
+
+.recording-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #fee;
+  border-radius: 8px;
+}
+
+.recording-dot {
+  width: 12px;
+  height: 12px;
+  background: #c33;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.recording-time {
+  font-weight: 600;
+  color: #c33;
+  font-size: 1.1rem;
+}
+
+.recording-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.stop-recording-btn,
+.cancel-recording-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.stop-recording-btn {
+  background: #2e7d32;
+  color: white;
+}
+
+.stop-recording-btn:hover {
+  background: #1b5e20;
+  transform: translateY(-2px);
+}
+
+.cancel-recording-btn {
+  background: #c33;
+  color: white;
+}
+
+.cancel-recording-btn:hover {
+  background: #a22;
+  transform: translateY(-2px);
+}
+
+
+
+
