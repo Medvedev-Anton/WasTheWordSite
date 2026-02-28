@@ -4,6 +4,7 @@ import { Organization } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import PostCard from '../components/PostCard';
 import CreatePost from '../components/CreatePost';
+import { getMediaUrl } from '../config';
 import './Organizations.css';
 
 export default function Organizations() {
@@ -157,7 +158,7 @@ export default function Organizations() {
           organizations.map(org => (
             <div key={org.id} className="organization-card" onClick={() => handleSelectOrg(org.id)}>
               {org.avatar && (
-                <img src={`http://localhost:3001${org.avatar}`} alt={org.name} className="org-avatar" />
+                <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
               )}
               <h3>{org.name}</h3>
               <p>{org.description || 'Нет описания'}</p>
@@ -257,7 +258,7 @@ function OrganizationDetail({
           <>
             <div className="org-edit-avatar">
               {organization.avatar && !orgAvatarFile && (
-                <img src={`http://localhost:3001${organization.avatar}`} alt={organization.name} className="org-header-avatar" />
+                <img src={getMediaUrl(organization.avatar)} alt={organization.name} className="org-header-avatar" />
               )}
               {orgAvatarFile && (
                 <img src={URL.createObjectURL(orgAvatarFile)} alt="Preview" className="org-header-avatar" />
@@ -300,7 +301,7 @@ function OrganizationDetail({
         ) : (
           <>
             {organization.avatar && (
-              <img src={`http://localhost:3001${organization.avatar}`} alt={organization.name} className="org-header-avatar" />
+              <img src={getMediaUrl(organization.avatar)} alt={organization.name} className="org-header-avatar" />
             )}
             <div>
               <h2>{organization.name}</h2>
@@ -365,7 +366,7 @@ function OrganizationDetail({
           {organization.members?.map(member => (
             <div key={member.id} className="member-item">
               <img
-                src={member.avatar ? `http://localhost:3001${member.avatar}` : undefined}
+                src={getMediaUrl(member.avatar)}
                 alt={member.username}
                 className="member-avatar"
               />

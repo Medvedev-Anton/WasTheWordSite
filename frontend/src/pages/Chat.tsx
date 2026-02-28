@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import VoiceRecorder from '../components/VoiceRecorder';
 import AudioPlayer from '../components/AudioPlayer';
 import ReactPlayer from 'react-player';
+import { getMediaUrl } from '../config';
 import './Chat.css';
 
 export default function ChatPage() {
@@ -291,7 +292,7 @@ export default function ChatPage() {
                   <div key={message.id} className={`message ${isOwn ? 'own' : ''}`}>
                     {!isOwn && (
                       <img
-                        src={message.avatar ? `http://localhost:3001${message.avatar}` : undefined}
+                        src={getMediaUrl(message.avatar)}
                         alt={message.username}
                         className="message-avatar"
                       />
@@ -309,15 +310,18 @@ export default function ChatPage() {
                         <div className="message-file">
                           {message.fileType?.startsWith('image/') || message.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
                             <img 
-                              src={`http://localhost:3001${message.fileUrl}`} 
+                              src={getMediaUrl(message.fileUrl)} 
                               alt={message.fileName || 'Image'}
                               className="message-file-image"
-                              onClick={() => window.open(`http://localhost:3001${message.fileUrl}`, '_blank')}
+                              onClick={() => {
+                                const url = getMediaUrl(message.fileUrl);
+                                if (url) window.open(url, '_blank');
+                              }}
                             />
                           ) : message.fileType?.startsWith('video/') || message.fileUrl.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) ? (
                             <div className="message-video">
                               <ReactPlayer
-                                url={`http://localhost:3001${message.fileUrl}`}
+                                url={getMediaUrl(message.fileUrl) || ''}
                                 controls
                                 width="100%"
                                 height="auto"
@@ -333,12 +337,12 @@ export default function ChatPage() {
                             </div>
                           ) : message.fileType?.startsWith('audio/') || message.fileUrl.match(/\.(webm|mp3|wav|ogg|m4a)$/i) ? (
                             <AudioPlayer 
-                              src={`http://localhost:3001${message.fileUrl}`}
+                              src={getMediaUrl(message.fileUrl) || ''}
                               fileName={message.fileName}
                             />
                           ) : (
                             <a 
-                              href={`http://localhost:3001${message.fileUrl}`} 
+                              href={getMediaUrl(message.fileUrl)} 
                               download={message.fileName}
                               className="message-file-link"
                             >
@@ -462,7 +466,7 @@ export default function ChatPage() {
                         onClick={() => handleCreatePersonalChat(userItem.id)}
                       >
                         {userItem.avatar && (
-                          <img src={`http://localhost:3001${userItem.avatar}`} alt={userItem.username} className="user-item-avatar" />
+                          <img src={getMediaUrl(userItem.avatar)} alt={userItem.username} className="user-item-avatar" />
                         )}
                         <div className="user-item-info">
                           <div className="user-item-name">
@@ -529,7 +533,7 @@ export default function ChatPage() {
                             onClick={(e) => e.stopPropagation()}
                           />
                           {userItem.avatar && (
-                            <img src={`http://localhost:3001${userItem.avatar}`} alt={userItem.username} className="user-item-avatar" />
+                            <img src={getMediaUrl(userItem.avatar)} alt={userItem.username} className="user-item-avatar" />
                           )}
                           <div className="user-item-info">
                             <div className="user-item-name">

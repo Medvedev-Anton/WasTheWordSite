@@ -4,6 +4,7 @@ import { Post, Comment } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import AudioPlayer from './AudioPlayer';
 import ReactPlayer from 'react-player';
+import { getMediaUrl } from '../config';
 import './PostCard.css';
 
 interface PostCardProps {
@@ -101,7 +102,7 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
       <div className="post-header">
         <div className="post-author">
           {displayAvatar && (
-            <img src={`http://localhost:3001${displayAvatar}`} alt={displayName} className="avatar" />
+            <img src={getMediaUrl(displayAvatar)} alt={displayName} className="avatar" />
           )}
           <div>
             <div className="author-name">{displayName}</div>
@@ -128,10 +129,10 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
               {post.repostedContent && <p>{post.repostedContent}</p>}
               {post.repostedImage && (
                 <img 
-                  src={`http://localhost:3001${post.repostedImage}`} 
+                  src={getMediaUrl(post.repostedImage)} 
                   alt="Reposted" 
                   className="post-image"
-                  onClick={() => openImageModal(`http://localhost:3001${post.repostedImage}`)}
+                  onClick={() => openImageModal(getMediaUrl(post.repostedImage) || '')}
                   style={{ cursor: 'pointer' }}
                 />
               )}
@@ -145,16 +146,16 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
               <div key={file.id} className="post-file">
                 {file.fileType?.startsWith('image/') || file.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
                   <img 
-                    src={`http://localhost:3001${file.fileUrl}`} 
+                    src={getMediaUrl(file.fileUrl)} 
                     alt={file.fileName || 'Post'} 
                     className="post-image"
-                    onClick={() => openImageModal(`http://localhost:3001${file.fileUrl}`)}
+                    onClick={() => openImageModal(getMediaUrl(file.fileUrl) || '')}
                     style={{ cursor: 'pointer' }}
                   />
                 ) : file.fileType?.startsWith('video/') || file.fileUrl.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) ? (
                   <div className="post-video">
                     <ReactPlayer
-                      url={`http://localhost:3001${file.fileUrl}`}
+                      url={getMediaUrl(file.fileUrl) || ''}
                       controls
                       width="100%"
                       height="auto"
@@ -170,12 +171,12 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
                   </div>
                 ) : file.fileType?.startsWith('audio/') || file.fileUrl.match(/\.(webm|mp3|wav|ogg|m4a)$/i) ? (
                   <AudioPlayer 
-                    src={`http://localhost:3001${file.fileUrl}`}
+                    src={getMediaUrl(file.fileUrl) || ''}
                     fileName={file.fileName || file.fileUrl.split('/').pop() || 'Audio'}
                   />
                 ) : (
                   <a 
-                    href={`http://localhost:3001${file.fileUrl}`} 
+                    href={getMediaUrl(file.fileUrl)} 
                     download={file.fileName || file.fileUrl.split('/').pop()}
                     className="post-file-link"
                   >
@@ -192,16 +193,16 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
           <div className="post-file">
             {post.image.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
               <img 
-                src={`http://localhost:3001${post.image}`} 
+                src={getMediaUrl(post.image)} 
                 alt="Post" 
                 className="post-image"
-                onClick={() => openImageModal(`http://localhost:3001${post.image}`)}
+                onClick={() => openImageModal(getMediaUrl(post.image) || '')}
                 style={{ cursor: 'pointer' }}
               />
             ) : post.image.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) ? (
               <div className="post-video">
                 <ReactPlayer
-                  url={`http://localhost:3001${post.image}`}
+                  url={getMediaUrl(post.image) || ''}
                   controls
                   width="100%"
                   height="auto"
@@ -217,12 +218,12 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
               </div>
             ) : post.image.match(/\.(webm|mp3|wav|ogg|m4a)$/i) ? (
               <AudioPlayer 
-                src={`http://localhost:3001${post.image}`}
+                src={getMediaUrl(post.image) || ''}
                 fileName={post.image.split('/').pop() || 'Audio'}
               />
             ) : (
               <a 
-                href={`http://localhost:3001${post.image}`} 
+                href={getMediaUrl(post.image)} 
                 download={post.image.split('/').pop()}
                 className="post-file-link"
               >
@@ -258,7 +259,7 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
             {comments.map(comment => (
               <div key={comment.id} className="comment">
                 <img
-                  src={comment.avatar ? `http://localhost:3001${comment.avatar}` : undefined}
+                  src={getMediaUrl(comment.avatar)}
                   alt={comment.username}
                   className="comment-avatar"
                 />

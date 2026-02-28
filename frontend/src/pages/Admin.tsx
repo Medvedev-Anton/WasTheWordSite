@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { User, Post } from '../types';
+import { getMediaUrl } from '../config';
 import './Admin.css';
 
 interface Stats {
@@ -230,7 +231,7 @@ export default function Admin() {
                 <div className="post-header">
                   <div className="post-author-info">
                     {post.authorAvatar && (
-                      <img src={`http://localhost:3001${post.authorAvatar}`} alt={post.authorUsername} className="post-avatar" />
+                      <img src={getMediaUrl(post.authorAvatar)} alt={post.authorUsername} className="post-avatar" />
                     )}
                     <div>
                       <div className="author-name">
@@ -254,7 +255,7 @@ export default function Admin() {
                 <div className="post-content">
                   <p>{post.content}</p>
                   {post.image && (
-                    <img src={`http://localhost:3001${post.image}`} alt="Post" className="post-image" />
+                    <img src={getMediaUrl(post.image)} alt="Post" className="post-image" />
                   )}
                 </div>
                 <div className="post-stats">
@@ -269,6 +270,8 @@ export default function Admin() {
     </div>
   );
 }
+
+
 
 
 

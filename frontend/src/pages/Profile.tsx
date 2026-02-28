@@ -3,6 +3,7 @@ import axios from 'axios';
 import { User } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import PostCard from '../components/PostCard';
+import { getMediaUrl } from '../config';
 import './Profile.css';
 
 export default function Profile() {
@@ -124,7 +125,7 @@ export default function Profile() {
       <div className="profile-header">
         <div className="profile-avatar-section">
           {user.avatar ? (
-            <img src={`http://localhost:3001${user.avatar}`} alt={fullName} className="profile-avatar" />
+            <img src={getMediaUrl(user.avatar)} alt={fullName} className="profile-avatar" />
           ) : (
             <div className="profile-avatar-placeholder">
               {fullName.charAt(0).toUpperCase()}
@@ -287,7 +288,7 @@ export default function Profile() {
             <div className="photos-grid">
               {user.photos.map(photo => (
                 <div key={photo.id} className="photo-item">
-                  <img src={`http://localhost:3001${photo.photoUrl}`} alt="Photo" />
+                  <img src={getMediaUrl(photo.photoUrl)} alt="Photo" />
                   {editing && (
                     <button
                       onClick={() => handleDeletePhoto(photo.id)}
