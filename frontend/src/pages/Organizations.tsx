@@ -8,12 +8,13 @@ import CreatePost from '../components/CreatePost';
 import { getMediaUrl } from '../config';
 import './Organizations.css';
 
-const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Свободная'];
+const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Свободная'];
 
 const ORG_TYPE_ICONS: Record<string, string> = {
   'Производственная': '🏭',
   'Коммерческая': '🏢',
   'Административная': '🏛️',
+  'Образовательная': '🎓',
   'Свободная': '🌐',
   'Цех': '⚙️',
   'Отдел': '📋',
@@ -21,6 +22,8 @@ const ORG_TYPE_ICONS: Record<string, string> = {
   'Магазин': '🛒',
   'Отряд': '👥',
   'Звено': '👤',
+  'Факультет': '📚',
+  'Кафедра': '🔬',
 };
 
 export default function Organizations() {
@@ -176,41 +179,25 @@ export default function Organizations() {
         </div>
       )}
 
-      <div className="organizations-list">
+      <div className="organizations-grid">
         {organizations.length === 0 ? (
           <div className="empty-state">Пока нет организаций</div>
         ) : (
           organizations.map(org => (
-            <div key={org.id} className="org-group">
-              <div className="organization-card" onClick={() => handleSelectOrg(org.id)}>
-                {org.avatar ? (
-                  <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
-                ) : (
-                  <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[org.orgType || ''] || '🏢'}</div>
-                )}
-                <div className="org-card-type-badge">{org.orgType || 'Организация'}</div>
-                <h3>{org.name}</h3>
-                <p>{org.description || 'Нет описания'}</p>
-                <div className="org-info">
-                  <span>👥 {org.membersCount} участников</span>
-                  <span>👤 Админ: {org.adminUsername}</span>
-                  {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
-                </div>
-              </div>
-              {org.subOrganizations && org.subOrganizations.length > 0 && (
-                <div className="org-sublist">
-                  {org.subOrganizations.map(sub => (
-                    <div key={sub.id} className="org-sub-card" onClick={() => handleSelectOrg(sub.id)}>
-                      <div className="org-sub-card-icon">{ORG_TYPE_ICONS[sub.orgType || ''] || '🏢'}</div>
-                      <div className="org-sub-card-info">
-                        <div className="org-sub-card-type">{sub.orgType}</div>
-                        <div className="org-sub-card-name">{sub.name}</div>
-                        <div className="org-sub-card-members">👥 {sub.membersCount}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <div key={org.id} className="organization-card" onClick={() => handleSelectOrg(org.id)}>
+              {org.avatar ? (
+                <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
+              ) : (
+                <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[org.orgType || ''] || '🏢'}</div>
               )}
+              <div className="org-card-type-badge">{org.orgType || 'Организация'}</div>
+              <h3>{org.name}</h3>
+              <p>{org.description || 'Нет описания'}</p>
+              <div className="org-info">
+                <span>👥 {org.membersCount} участников</span>
+                <span>👤 Админ: {org.adminUsername}</span>
+                {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
+              </div>
             </div>
           ))
         )}
@@ -258,9 +245,11 @@ function OrganizationDetail({
     'Производственная': 'Цех',
     'Коммерческая': 'Отдел',
     'Административная': 'Отдел',
+    'Образовательная': 'Факультет',
     'Свободная': 'Отряд',
     'Цех': 'Мастерская',
     'Отдел': 'Магазин',
+    'Факультет': 'Кафедра',
     'Отряд': 'Звено',
   };
 
@@ -272,6 +261,23 @@ function OrganizationDetail({
   const currentMember = organization.members?.find(m => m.userId === currentUserId);
   const canPost = isAdmin || (isMember && currentMember?.canPost === 1 && !currentMember?.isBlocked);
   const subOrgType = ORG_HIERARCHY[organization.orgType || ''] || null;
+
+  // Correct Russian forms for sub-org type names
+  const SUB_ORG_PLURAL: Record<string, string> = {
+    'Цех': 'Цехи', 'Отдел': 'Отделы', 'Факультет': 'Факультеты',
+    'Кафедра': 'Кафедры', 'Отряд': 'Отряды', 'Звено': 'Звенья',
+    'Мастерская': 'Мастерские', 'Магазин': 'Магазины',
+  };
+  const SUB_ORG_GENITIVE: Record<string, string> = {
+    'Цех': 'цехов', 'Отдел': 'отделов', 'Факультет': 'факультетов',
+    'Кафедра': 'кафедр', 'Отряд': 'отрядов', 'Звено': 'звеньев',
+    'Мастерская': 'мастерских', 'Магазин': 'магазинов',
+  };
+  const SUB_ORG_GENITIVE_SINGLE: Record<string, string> = {
+    'Цех': 'цех', 'Отдел': 'отдел', 'Факультет': 'факультет',
+    'Кафедра': 'кафедру', 'Отряд': 'отряд', 'Звено': 'звено',
+    'Мастерская': 'мастерскую', 'Магазин': 'магазин',
+  };
 
   const handleJoin = async () => {
     try {
@@ -493,11 +499,11 @@ function OrganizationDetail({
       {subOrgType && (
         <div className="org-suborgs-inline">
           <div className="org-suborgs-inline-header">
-            <h3>🏗️ {subOrgType}ы ({organization.subOrganizations?.length || 0})</h3>
+            <h3>🏗️ {subOrgType && SUB_ORG_PLURAL[subOrgType] || subOrgType} ({organization.subOrganizations?.length || 0})</h3>
             {(isAdmin || isModerator) && (
               showCreateSubOrg ? null : (
                 <button onClick={() => setShowCreateSubOrg(true)} className="create-btn create-btn-sm">
-                  + Создать {subOrgType}
+                  + Создать {subOrgType && SUB_ORG_GENITIVE_SINGLE[subOrgType] || subOrgType}
                 </button>
               )
             )}
@@ -506,7 +512,7 @@ function OrganizationDetail({
             <div className="suborg-create-form suborg-create-form-inline">
               <input
                 type="text"
-                placeholder={`Название ${subOrgType}a *`}
+                placeholder={`Название *`}
                 value={subOrgName}
                 onChange={(e) => setSubOrgName(e.target.value)}
                 className="org-edit-input"
@@ -544,7 +550,7 @@ function OrganizationDetail({
                 </div>
               ))
             ) : (
-              <div className="empty-state">Пока нет {subOrgType.toLowerCase()}в</div>
+              <div className="empty-state">Пока нет {subOrgType && SUB_ORG_GENITIVE[subOrgType] || subOrgType?.toLowerCase()}</div>
             )}
           </div>
         </div>
