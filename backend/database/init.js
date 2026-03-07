@@ -91,8 +91,11 @@ export async function initDatabase() {
       defaultCanPost INTEGER DEFAULT 1,
       defaultCanComment INTEGER DEFAULT 1,
       isPrivate INTEGER DEFAULT 0,
+      orgType TEXT DEFAULT 'Организация',
+      parentId INTEGER,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (adminId) REFERENCES users(id) ON DELETE CASCADE
+      FOREIGN KEY (adminId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (parentId) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
   
@@ -101,6 +104,8 @@ export async function initDatabase() {
   const hasDefaultCanPost = orgTableInfo.some(col => col.name === 'defaultCanPost');
   const hasDefaultCanComment = orgTableInfo.some(col => col.name === 'defaultCanComment');
   const hasIsPrivate = orgTableInfo.some(col => col.name === 'isPrivate');
+  const hasOrgType = orgTableInfo.some(col => col.name === 'orgType');
+  const hasParentId = orgTableInfo.some(col => col.name === 'parentId');
   
   if (!hasDefaultCanPost) {
     try {
@@ -123,12 +128,27 @@ export async function initDatabase() {
       console.error('Error adding isPrivate column:', e.message);
     }
   }
+  if (!hasOrgType) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN orgType TEXT DEFAULT 'Организация'`);
+    } catch (e) {
+      console.error('Error adding orgType column:', e.message);
+    }
+  }
+  if (!hasParentId) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN parentId INTEGER REFERENCES organizations(id) ON DELETE CASCADE`);
+    } catch (e) {
+      console.error('Error adding parentId column:', e.message);
+    }
+  }
   
   // Update existing organizations
   try {
     db.exec(`UPDATE organizations SET defaultCanPost = 1 WHERE defaultCanPost IS NULL`);
     db.exec(`UPDATE organizations SET defaultCanComment = 1 WHERE defaultCanComment IS NULL`);
     db.exec(`UPDATE organizations SET isPrivate = 0 WHERE isPrivate IS NULL`);
+    db.exec(`UPDATE organizations SET orgType = 'Организация' WHERE orgType IS NULL`);
   } catch (e) {
     console.error('Error updating organizations:', e.message);
   }

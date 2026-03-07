@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Post, Comment } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -15,6 +16,7 @@ interface PostCardProps {
 
 export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCardProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<Comment[]>(post.comments || []);
   const [commentText, setCommentText] = useState('');
@@ -105,9 +107,15 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
             <img src={getMediaUrl(displayAvatar)} alt={displayName} className="avatar" />
           )}
           <div>
-            <div className="author-name">{displayName}</div>
+            <div
+              className={post.organizationName ? 'author-name' : 'author-name author-name-link'}
+              onClick={() => !post.organizationName && post.authorId && navigate(`/users/${post.authorId}`)}
+            >{displayName}</div>
             {post.organizationName && (
-              <div className="author-username">от {authorName}</div>
+              <div
+                className="author-username author-name-link"
+                onClick={() => post.authorId && navigate(`/users/${post.authorId}`)}
+              >от {authorName}</div>
             )}
             <div className="post-date">{new Date(post.createdAt).toLocaleString('ru-RU')}</div>
           </div>
@@ -264,7 +272,10 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
                   className="comment-avatar"
                 />
                 <div className="comment-content">
-                  <div className="comment-author">
+                  <div
+                    className="comment-author author-name-link"
+                    onClick={() => navigate(`/users/${comment.userId}`)}
+                  >
                     {comment.firstName && comment.lastName
                       ? `${comment.firstName} ${comment.lastName}`
                       : comment.username}

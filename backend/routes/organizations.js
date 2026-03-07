@@ -27,18 +27,54 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Get all organizations
+// Org type hierarchy
+const ORG_HIERARCHY = {
+  'Производственная': 'Цех',
+  'Коммерческая': 'Отдел',
+  'Образовательная': 'Факультет',
+  'Административная': 'Отделение',
+  'Цех': 'Мастерская',
+  'Отдел': 'Группа',
+  'Факультет': 'Кафедра',
+  'Отделение': 'Сектор',
+};
+
+const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Образовательная', 'Административная', 'Свободная'];
+
+function getSubOrgType(parentType) {
+  return ORG_HIERARCHY[parentType] || null;
+}
+
+// Get all organizations (root-level by default, supports ?parentId=)
 router.get('/', authenticateToken, (req, res) => {
   try {
-    const organizations = db.prepare(`
-      SELECT 
-        o.*,
-        u.username as adminUsername,
-        (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
-      FROM organizations o
-      JOIN users u ON o.adminId = u.id
-      ORDER BY o.createdAt DESC
-    `).all();
+    const { parentId } = req.query;
+    let organizations;
+
+    if (parentId !== undefined && parentId !== '' && parentId !== 'null') {
+      const pid = parseInt(parentId);
+      organizations = db.prepare(`
+        SELECT 
+          o.*,
+          u.username as adminUsername,
+          (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
+        FROM organizations o
+        JOIN users u ON o.adminId = u.id
+        WHERE o.parentId = ?
+        ORDER BY o.createdAt DESC
+      `).all(pid);
+    } else {
+      organizations = db.prepare(`
+        SELECT 
+          o.*,
+          u.username as adminUsername,
+          (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
+        FROM organizations o
+        JOIN users u ON o.adminId = u.id
+        WHERE o.parentId IS NULL
+        ORDER BY o.createdAt DESC
+      `).all();
+    }
 
     res.json(organizations);
   } catch (error) {
@@ -79,6 +115,24 @@ router.get('/:id', authenticateToken, (req, res) => {
       ORDER BY om.role DESC, om.createdAt ASC
     `).all(orgId);
     
+    // Get sub-organizations
+    const subOrganizations = db.prepare(`
+      SELECT 
+        o.*,
+        u.username as adminUsername,
+        (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
+      FROM organizations o
+      JOIN users u ON o.adminId = u.id
+      WHERE o.parentId = ?
+      ORDER BY o.createdAt DESC
+    `).all(orgId);
+
+    // Get parent org info if exists
+    let parentOrg = null;
+    if (organization.parentId) {
+      parentOrg = db.prepare('SELECT id, name, orgType FROM organizations WHERE id = ?').get(organization.parentId);
+    }
+
     // Check if current user is admin or moderator
     const currentUserMember = db.prepare('SELECT role FROM organization_members WHERE organizationId = ? AND userId = ?').get(orgId, req.user.userId);
     const canManage = organization.adminId === req.user.userId || currentUserMember?.role === 'admin' || currentUserMember?.role === 'moderator';
@@ -129,7 +183,7 @@ router.get('/:id', authenticateToken, (req, res) => {
       });
     }
 
-    res.json({ ...organization, members, posts });
+    res.json({ ...organization, members, posts, subOrganizations, parentOrg });
   } catch (error) {
     console.error('Get organization error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -139,7 +193,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 // Create organization
 router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
   try {
-    const { name, description, defaultCanPost, defaultCanComment, isPrivate } = req.body;
+    const { name, description, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId } = req.body;
     const adminId = req.user.userId;
 
     if (!name) {
@@ -151,10 +205,32 @@ router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
     const canComment = defaultCanComment === 'true' || defaultCanComment === true || defaultCanComment === '1' ? 1 : 0;
     const isPrivateFlag = isPrivate === 'true' || isPrivate === true || isPrivate === '1' ? 1 : 0;
 
+    let resolvedType = 'Организация';
+    let resolvedParentId = null;
+
+    if (parentId) {
+      resolvedParentId = parseInt(parentId);
+      const parent = db.prepare('SELECT * FROM organizations WHERE id = ?').get(resolvedParentId);
+      if (!parent) {
+        return res.status(404).json({ error: 'Parent organization not found' });
+      }
+      const parentMember = db.prepare('SELECT role FROM organization_members WHERE organizationId = ? AND userId = ?').get(resolvedParentId, adminId);
+      if (parent.adminId !== adminId && parentMember?.role !== 'admin' && parentMember?.role !== 'moderator') {
+        return res.status(403).json({ error: 'Only admin or moderator can create sub-organizations' });
+      }
+      const childType = getSubOrgType(parent.orgType);
+      if (!childType) {
+        return res.status(400).json({ error: `Cannot create sub-organizations inside "${parent.orgType}"` });
+      }
+      resolvedType = childType;
+    } else {
+      resolvedType = ROOT_ORG_TYPES.includes(orgType) ? orgType : (orgType || ROOT_ORG_TYPES[0]);
+    }
+
     const result = db.prepare(`
-      INSERT INTO organizations (name, description, avatar, adminId, defaultCanPost, defaultCanComment, isPrivate)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(name, description || null, avatarUrl, adminId, canPost, canComment, isPrivateFlag);
+      INSERT INTO organizations (name, description, avatar, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, description || null, avatarUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId);
 
     // Add admin as member with 'admin' role
     db.prepare(`
@@ -194,14 +270,32 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
       return res.status(403).json({ error: 'Only admin can update organization' });
     }
 
-    const { name, description } = req.body;
+    const { name, description, defaultCanPost, defaultCanComment, isPrivate } = req.body;
     const avatarUrl = req.file ? `/uploads/${req.file.filename}` : organization.avatar;
+
+    const canPost = defaultCanPost !== undefined
+      ? (defaultCanPost === 'true' || defaultCanPost === true || defaultCanPost === '1' ? 1 : 0)
+      : organization.defaultCanPost;
+    const canComment = defaultCanComment !== undefined
+      ? (defaultCanComment === 'true' || defaultCanComment === true || defaultCanComment === '1' ? 1 : 0)
+      : organization.defaultCanComment;
+    const isPrivateFlag = isPrivate !== undefined
+      ? (isPrivate === 'true' || isPrivate === true || isPrivate === '1' ? 1 : 0)
+      : organization.isPrivate;
 
     db.prepare(`
       UPDATE organizations 
-      SET name = ?, description = ?, avatar = ?
+      SET name = ?, description = ?, avatar = ?, defaultCanPost = ?, defaultCanComment = ?, isPrivate = ?
       WHERE id = ?
-    `).run(name || organization.name, description !== undefined ? description : organization.description, avatarUrl, orgId);
+    `).run(
+      name || organization.name,
+      description !== undefined ? description : organization.description,
+      avatarUrl,
+      canPost,
+      canComment,
+      isPrivateFlag,
+      orgId
+    );
 
     const updated = db.prepare('SELECT * FROM organizations WHERE id = ?').get(orgId);
     res.json(updated);
@@ -232,18 +326,14 @@ router.post('/:id/join', authenticateToken, (req, res) => {
       return res.status(400).json({ error: 'Already a member' });
     }
 
-    // Use default permissions from organization
+    // Use default permissions from organization (use null-check, not ||, to preserve 0 values)
+    const memberCanPost = organization.defaultCanPost != null ? organization.defaultCanPost : 1;
+    const memberCanComment = organization.defaultCanComment != null ? organization.defaultCanComment : 1;
+
     db.prepare(`
       INSERT INTO organization_members (organizationId, userId, role, canPost, canComment, isBlocked)
       VALUES (?, ?, ?, ?, ?, ?)
-    `).run(
-      orgId, 
-      userId, 
-      'member', 
-      organization.defaultCanPost || 1, 
-      organization.defaultCanComment || 1, 
-      0
-    );
+    `).run(orgId, userId, 'member', memberCanPost, memberCanComment, 0);
 
     res.json({ message: 'Joined organization' });
   } catch (error) {
@@ -271,6 +361,86 @@ router.post('/:id/leave', authenticateToken, (req, res) => {
     res.json({ message: 'Left organization' });
   } catch (error) {
     console.error('Leave organization error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Invite user by username (admin/moderator only)
+router.post('/:id/invite', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const adminUserId = req.user.userId;
+    const { username } = req.body;
+
+    if (!username) {
+      return res.status(400).json({ error: 'Username is required' });
+    }
+
+    const organization = db.prepare('SELECT * FROM organizations WHERE id = ?').get(orgId);
+    if (!organization) {
+      return res.status(404).json({ error: 'Organization not found' });
+    }
+
+    const adminMember = db.prepare('SELECT role FROM organization_members WHERE organizationId = ? AND userId = ?').get(orgId, adminUserId);
+    if (organization.adminId !== adminUserId && adminMember?.role !== 'admin' && adminMember?.role !== 'moderator') {
+      return res.status(403).json({ error: 'Only admin or moderator can invite members' });
+    }
+
+    const targetUser = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
+    if (!targetUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const existing = db.prepare('SELECT * FROM organization_members WHERE organizationId = ? AND userId = ?').get(orgId, targetUser.id);
+    if (existing) {
+      return res.status(400).json({ error: 'User is already a member' });
+    }
+
+    const invCanPost = organization.defaultCanPost != null ? organization.defaultCanPost : 1;
+    const invCanComment = organization.defaultCanComment != null ? organization.defaultCanComment : 1;
+
+    db.prepare(`
+      INSERT INTO organization_members (organizationId, userId, role, canPost, canComment, isBlocked)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(orgId, targetUser.id, 'member', invCanPost, invCanComment, 0);
+
+    res.json({ message: 'User invited successfully' });
+  } catch (error) {
+    console.error('Invite member error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Kick member from organization (admin/moderator only)
+router.delete('/:id/members/:targetUserId', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const adminUserId = req.user.userId;
+    const targetUserId = parseInt(req.params.targetUserId);
+
+    const organization = db.prepare('SELECT * FROM organizations WHERE id = ?').get(orgId);
+    if (!organization) {
+      return res.status(404).json({ error: 'Organization not found' });
+    }
+
+    const callerMember = db.prepare('SELECT role FROM organization_members WHERE organizationId = ? AND userId = ?').get(orgId, adminUserId);
+    if (organization.adminId !== adminUserId && callerMember?.role !== 'admin' && callerMember?.role !== 'moderator') {
+      return res.status(403).json({ error: 'Only admin or moderator can kick members' });
+    }
+
+    const targetMember = db.prepare('SELECT * FROM organization_members WHERE organizationId = ? AND userId = ?').get(orgId, targetUserId);
+    if (!targetMember) {
+      return res.status(404).json({ error: 'Member not found' });
+    }
+
+    if (targetMember.role === 'admin') {
+      return res.status(400).json({ error: 'Cannot kick the admin' });
+    }
+
+    db.prepare('DELETE FROM organization_members WHERE organizationId = ? AND userId = ?').run(orgId, targetUserId);
+    res.json({ message: 'Member removed' });
+  } catch (error) {
+    console.error('Kick member error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

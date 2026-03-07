@@ -83,6 +83,34 @@
   color: white;
 }
 
+.start-chat-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #43a047 0%, #1b5e20 100%);
+  color: white;
+  transition: transform 0.2s, opacity 0.2s;
+  font-size: 1rem;
+}
+
+.start-chat-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.start-chat-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.no-messages-note {
+  padding: 0.6rem 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  color: #888;
+  font-size: 0.95rem;
+  display: inline-block;
+}
+
 .cancel-btn {
   background: #e0e0e0;
   color: #333;

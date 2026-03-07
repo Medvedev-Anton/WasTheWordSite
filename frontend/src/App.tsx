@@ -7,6 +7,7 @@ import Main from './pages/Main';
 import Organizations from './pages/Organizations';
 import Chat from './pages/Chat';
 import Profile from './pages/Profile';
+import UserProfile from './pages/UserProfile';
 import Admin from './pages/Admin';
 import Layout from './components/Layout';
 
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/organizations" element={<Organizations />} />
                     <Route path="/chat" element={<Chat />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/users/:id" element={<UserProfile />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>

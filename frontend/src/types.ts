@@ -73,6 +73,10 @@ export interface Organization {
   defaultCanPost?: number;
   defaultCanComment?: number;
   isPrivate?: number;
+  orgType?: string;
+  parentId?: number | null;
+  parentOrg?: { id: number; name: string; orgType?: string } | null;
+  subOrganizations?: Organization[];
   createdAt: string;
   members?: OrganizationMember[];
   posts?: Post[];

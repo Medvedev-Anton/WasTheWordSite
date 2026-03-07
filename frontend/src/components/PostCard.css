@@ -36,6 +36,16 @@
   margin-bottom: 0.25rem;
 }
 
+.author-name-link {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.author-name-link:hover {
+  color: #667eea;
+  text-decoration: underline;
+}
+
 .author-username {
   font-size: 0.9rem;
   color: #666;
