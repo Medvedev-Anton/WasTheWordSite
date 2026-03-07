@@ -31,15 +31,14 @@ const upload = multer({ storage });
 const ORG_HIERARCHY = {
   'Производственная': 'Цех',
   'Коммерческая': 'Отдел',
-  'Образовательная': 'Факультет',
-  'Административная': 'Отделение',
+  'Административная': 'Отдел',
+  'Свободная': 'Отряд',
   'Цех': 'Мастерская',
-  'Отдел': 'Группа',
-  'Факультет': 'Кафедра',
-  'Отделение': 'Сектор',
+  'Отдел': 'Магазин',
+  'Отряд': 'Звено',
 };
 
-const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Образовательная', 'Административная', 'Свободная'];
+const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Свободная'];
 
 function getSubOrgType(parentType) {
   return ORG_HIERARCHY[parentType] || null;
@@ -74,6 +73,22 @@ router.get('/', authenticateToken, (req, res) => {
         WHERE o.parentId IS NULL
         ORDER BY o.createdAt DESC
       `).all();
+
+      // Attach sub-organizations to each root org
+      const subOrgStmt = db.prepare(`
+        SELECT 
+          o.*,
+          u.username as adminUsername,
+          (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
+        FROM organizations o
+        JOIN users u ON o.adminId = u.id
+        WHERE o.parentId = ?
+        ORDER BY o.createdAt DESC
+      `);
+      organizations = organizations.map(org => ({
+        ...org,
+        subOrganizations: subOrgStmt.all(org.id),
+      }));
     }
 
     res.json(organizations);
@@ -496,6 +511,29 @@ router.delete('/:id/moderators/:targetUserId', authenticateToken, (req, res) => 
     res.json({ message: 'Moderator removed' });
   } catch (error) {
     console.error('Remove moderator error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Delete organization (admin only)
+router.delete('/:id', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const userId = req.user.userId;
+
+    const organization = db.prepare('SELECT * FROM organizations WHERE id = ?').get(orgId);
+    if (!organization) {
+      return res.status(404).json({ error: 'Organization not found' });
+    }
+
+    if (organization.adminId !== userId) {
+      return res.status(403).json({ error: 'Only admin can delete organization' });
+    }
+
+    db.prepare('DELETE FROM organizations WHERE id = ?').run(orgId);
+    res.json({ message: 'Organization deleted' });
+  } catch (error) {
+    console.error('Delete organization error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

@@ -150,6 +150,113 @@
   gap: 1.5rem;
 }
 
+.organizations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.org-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.org-group > .organization-card {
+  margin-bottom: 0;
+}
+
+.org-sublist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-left: 1.5rem;
+  border-left: 3px solid #e2e8f0;
+}
+
+.org-sub-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: white;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  min-width: 200px;
+  flex: 1;
+  max-width: 280px;
+}
+
+.org-sub-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.13);
+}
+
+.org-sub-card-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.org-sub-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow: hidden;
+}
+
+.org-sub-card-type {
+  font-size: 0.75rem;
+  color: #667eea;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.org-sub-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.org-sub-card-members {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.org-suborgs-inline {
+  background: #f8faff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.org-suborgs-inline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.org-suborgs-inline-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+.create-btn-sm {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+}
+
+.suborg-create-form-inline {
+  margin-bottom: 1rem;
+}
+
 .organization-card {
   background: white;
   border-radius: 12px;
@@ -479,6 +586,71 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 0.25rem;
+}
+
+.member-name-link {
+  cursor: pointer;
+}
+
+.member-name-link:hover {
+  color: #667eea;
+  text-decoration: underline;
+}
+
+.settings-card-danger {
+  border-left: 4px solid #e53e3e;
+}
+
+.danger-note {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.delete-org-btn {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.delete-org-btn:hover {
+  opacity: 0.85;
+}
+
+.delete-suborgs-warning {
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+}
+
+.delete-suborgs-warning p {
+  margin: 0 0 0.5rem;
+  color: #c53030;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.delete-suborgs-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.delete-suborgs-list li {
+  margin-bottom: 0.2rem;
+}
+
+.suborg-type-hint {
+  color: #999;
+  font-size: 0.8rem;
 }
 
 .member-role {

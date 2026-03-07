@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Organization } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -7,22 +8,19 @@ import CreatePost from '../components/CreatePost';
 import { getMediaUrl } from '../config';
 import './Organizations.css';
 
-const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Образовательная', 'Административная', 'Свободная'];
+const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Свободная'];
 
 const ORG_TYPE_ICONS: Record<string, string> = {
   'Производственная': '🏭',
   'Коммерческая': '🏢',
-  'Образовательная': '🎓',
   'Административная': '🏛️',
   'Свободная': '🌐',
   'Цех': '⚙️',
   'Отдел': '📋',
-  'Факультет': '📚',
-  'Отделение': '🗂️',
   'Мастерская': '🔧',
-  'Группа': '📁',
-  'Кафедра': '🔬',
-  'Сектор': '🔗',
+  'Магазин': '🛒',
+  'Отряд': '👥',
+  'Звено': '👤',
 };
 
 export default function Organizations() {
@@ -118,7 +116,7 @@ export default function Organizations() {
     return (
       <OrganizationDetail
         organization={selectedOrg}
-        onBack={() => setSelectedOrg(null)}
+        onBack={() => { setSelectedOrg(null); fetchOrganizations(); }}
         onUpdate={handleSelectOrg}
         currentUserId={user?.id || 0}
         onNavigateToOrg={handleSelectOrg}
@@ -178,25 +176,41 @@ export default function Organizations() {
         </div>
       )}
 
-      <div className="organizations-grid">
+      <div className="organizations-list">
         {organizations.length === 0 ? (
           <div className="empty-state">Пока нет организаций</div>
         ) : (
           organizations.map(org => (
-            <div key={org.id} className="organization-card" onClick={() => handleSelectOrg(org.id)}>
-              {org.avatar ? (
-                <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
-              ) : (
-                <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[org.orgType || ''] || '🏢'}</div>
-              )}
-              <div className="org-card-type-badge">{org.orgType || 'Организация'}</div>
-              <h3>{org.name}</h3>
-              <p>{org.description || 'Нет описания'}</p>
-              <div className="org-info">
-                <span>👥 {org.membersCount} участников</span>
-                <span>👤 Админ: {org.adminUsername}</span>
-                {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
+            <div key={org.id} className="org-group">
+              <div className="organization-card" onClick={() => handleSelectOrg(org.id)}>
+                {org.avatar ? (
+                  <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
+                ) : (
+                  <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[org.orgType || ''] || '🏢'}</div>
+                )}
+                <div className="org-card-type-badge">{org.orgType || 'Организация'}</div>
+                <h3>{org.name}</h3>
+                <p>{org.description || 'Нет описания'}</p>
+                <div className="org-info">
+                  <span>👥 {org.membersCount} участников</span>
+                  <span>👤 Админ: {org.adminUsername}</span>
+                  {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
+                </div>
               </div>
+              {org.subOrganizations && org.subOrganizations.length > 0 && (
+                <div className="org-sublist">
+                  {org.subOrganizations.map(sub => (
+                    <div key={sub.id} className="org-sub-card" onClick={() => handleSelectOrg(sub.id)}>
+                      <div className="org-sub-card-icon">{ORG_TYPE_ICONS[sub.orgType || ''] || '🏢'}</div>
+                      <div className="org-sub-card-info">
+                        <div className="org-sub-card-type">{sub.orgType}</div>
+                        <div className="org-sub-card-name">{sub.name}</div>
+                        <div className="org-sub-card-members">👥 {sub.membersCount}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))
         )}
@@ -219,7 +233,7 @@ function OrganizationDetail({
   onNavigateToOrg: (id: number) => void;
 }) {
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const [activeTab, setActiveTab] = useState<'posts' | 'members' | 'suborgs' | 'settings'>('posts');
+  const [activeTab, setActiveTab] = useState<'posts' | 'members' | 'settings'>('posts');
   const [editingOrg, setEditingOrg] = useState(false);
   const [orgFormData, setOrgFormData] = useState({
     name: organization.name,
@@ -236,16 +250,18 @@ function OrganizationDetail({
   const [subOrgName, setSubOrgName] = useState('');
   const [subOrgDesc, setSubOrgDesc] = useState('');
   const [subOrgCreating, setSubOrgCreating] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const navigate = useNavigate();
 
   const ORG_HIERARCHY: Record<string, string> = {
     'Производственная': 'Цех',
     'Коммерческая': 'Отдел',
-    'Образовательная': 'Факультет',
-    'Административная': 'Отделение',
+    'Административная': 'Отдел',
+    'Свободная': 'Отряд',
     'Цех': 'Мастерская',
-    'Отдел': 'Группа',
-    'Факультет': 'Кафедра',
-    'Отделение': 'Сектор',
+    'Отдел': 'Магазин',
+    'Отряд': 'Звено',
   };
 
   const isMember = organization.members?.some(m => m.userId === currentUserId);
@@ -272,6 +288,16 @@ function OrganizationDetail({
       onUpdate(organization.id);
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка');
+    }
+  };
+
+  const handleDeleteOrg = async () => {
+    try {
+      await axios.delete(`/api/organizations/${organization.id}`);
+      setShowDeleteModal(false);
+      onBack();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при удалении организации');
     }
   };
 
@@ -463,6 +489,67 @@ function OrganizationDetail({
         )}
       </div>
 
+      {/* Sub-organizations section (visible inline, no tab) */}
+      {subOrgType && (
+        <div className="org-suborgs-inline">
+          <div className="org-suborgs-inline-header">
+            <h3>🏗️ {subOrgType}ы ({organization.subOrganizations?.length || 0})</h3>
+            {(isAdmin || isModerator) && (
+              showCreateSubOrg ? null : (
+                <button onClick={() => setShowCreateSubOrg(true)} className="create-btn create-btn-sm">
+                  + Создать {subOrgType}
+                </button>
+              )
+            )}
+          </div>
+          {showCreateSubOrg && (
+            <div className="suborg-create-form suborg-create-form-inline">
+              <input
+                type="text"
+                placeholder={`Название ${subOrgType}a *`}
+                value={subOrgName}
+                onChange={(e) => setSubOrgName(e.target.value)}
+                className="org-edit-input"
+              />
+              <textarea
+                placeholder="Описание"
+                value={subOrgDesc}
+                onChange={(e) => setSubOrgDesc(e.target.value)}
+                rows={2}
+                className="org-edit-textarea"
+              />
+              <div className="org-edit-actions">
+                <button onClick={handleCreateSubOrg} className="save-org-btn" disabled={subOrgCreating}>
+                  {subOrgCreating ? 'Создание...' : 'Создать'}
+                </button>
+                <button onClick={() => setShowCreateSubOrg(false)} className="cancel-org-btn">Отмена</button>
+              </div>
+            </div>
+          )}
+          <div className="suborgs-grid">
+            {organization.subOrganizations && organization.subOrganizations.length > 0 ? (
+              organization.subOrganizations.map(sub => (
+                <div key={sub.id} className="organization-card suborg-card" onClick={() => onNavigateToOrg(sub.id)}>
+                  {sub.avatar ? (
+                    <img src={getMediaUrl(sub.avatar)} alt={sub.name} className="org-avatar" />
+                  ) : (
+                    <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[sub.orgType || ''] || '🏗️'}</div>
+                  )}
+                  <div className="org-card-type-badge">{sub.orgType}</div>
+                  <h3>{sub.name}</h3>
+                  <p>{sub.description || 'Нет описания'}</p>
+                  <div className="org-info">
+                    <span>👥 {sub.membersCount} участников</span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="empty-state">Пока нет {subOrgType.toLowerCase()}в</div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="org-tabs">
         <button
@@ -473,12 +560,6 @@ function OrganizationDetail({
           className={`org-tab ${activeTab === 'members' ? 'active' : ''}`}
           onClick={() => setActiveTab('members')}
         >👥 Участники ({organization.membersCount})</button>
-        {subOrgType && (
-          <button
-            className={`org-tab ${activeTab === 'suborgs' ? 'active' : ''}`}
-            onClick={() => setActiveTab('suborgs')}
-          >🏗️ {subOrgType}ы ({organization.subOrganizations?.length || 0})</button>
-        )}
         {isAdmin && (
           <button
             className={`org-tab ${activeTab === 'settings' ? 'active' : ''}`}
@@ -563,7 +644,10 @@ function OrganizationDetail({
                     className="member-avatar"
                   />
                   <div className="member-info">
-                    <div className="member-name">
+                    <div
+                      className="member-name member-name-link"
+                      onClick={() => navigate(`/users/${member.userId}`)}
+                    >
                       {member.firstName && member.lastName
                         ? `${member.firstName} ${member.lastName}`
                         : member.username}
@@ -644,67 +728,6 @@ function OrganizationDetail({
         </div>
       )}
 
-      {/* Sub-organizations tab */}
-      {activeTab === 'suborgs' && subOrgType && (
-        <div className="org-suborgs-section">
-          {(isAdmin || isModerator) && (
-            <div className="suborg-create-area">
-              {showCreateSubOrg ? (
-                <div className="suborg-create-form">
-                  <h4>Создать {subOrgType}</h4>
-                  <input
-                    type="text"
-                    placeholder={`Название ${subOrgType}а *`}
-                    value={subOrgName}
-                    onChange={(e) => setSubOrgName(e.target.value)}
-                    className="org-edit-input"
-                  />
-                  <textarea
-                    placeholder="Описание"
-                    value={subOrgDesc}
-                    onChange={(e) => setSubOrgDesc(e.target.value)}
-                    rows={2}
-                    className="org-edit-textarea"
-                  />
-                  <div className="org-edit-actions">
-                    <button onClick={handleCreateSubOrg} className="save-org-btn" disabled={subOrgCreating}>
-                      {subOrgCreating ? 'Создание...' : 'Создать'}
-                    </button>
-                    <button onClick={() => setShowCreateSubOrg(false)} className="cancel-org-btn">Отмена</button>
-                  </div>
-                </div>
-              ) : (
-                <button onClick={() => setShowCreateSubOrg(true)} className="create-btn">
-                  + Создать {subOrgType}
-                </button>
-              )}
-            </div>
-          )}
-
-          <div className="suborgs-grid">
-            {organization.subOrganizations && organization.subOrganizations.length > 0 ? (
-              organization.subOrganizations.map(sub => (
-                <div key={sub.id} className="organization-card suborg-card" onClick={() => onNavigateToOrg(sub.id)}>
-                  {sub.avatar ? (
-                    <img src={getMediaUrl(sub.avatar)} alt={sub.name} className="org-avatar" />
-                  ) : (
-                    <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[sub.orgType || ''] || '🏗️'}</div>
-                  )}
-                  <div className="org-card-type-badge">{sub.orgType}</div>
-                  <h3>{sub.name}</h3>
-                  <p>{sub.description || 'Нет описания'}</p>
-                  <div className="org-info">
-                    <span>👥 {sub.membersCount} участников</span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="empty-state">Пока нет {subOrgType.toLowerCase()}ов</div>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Settings tab (admin only) */}
       {activeTab === 'settings' && isAdmin && (
         <div className="org-settings-section">
@@ -749,6 +772,44 @@ function OrganizationDetail({
           >
             💾 Сохранить настройки
           </button>
+
+          <div className="settings-card settings-card-danger">
+            <h4>Опасная зона</h4>
+            <p className="danger-note">Удаление организации необратимо. Все посты и данные будут удалены.
+              {organization.subOrganizations && organization.subOrganizations.length > 0 && (
+                <> Вместе с ней будут удалены все дочерние подразделения.</>
+              )}
+            </p>
+            <button onClick={() => setShowDeleteModal(true)} className="delete-org-btn">
+              🗑️ Удалить организацию
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation modal */}
+      {showDeleteModal && (
+        <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>⚠️ Удалить организацию?</h3>
+            <p>Вы уверены, что хотите удалить <strong>«{organization.name}»</strong>? Это действие нельзя отменить.</p>
+            {organization.subOrganizations && organization.subOrganizations.length > 0 && (
+              <div className="delete-suborgs-warning">
+                <p>Вместе с ней будут удалены следующие дочерние подразделения:</p>
+                <ul className="delete-suborgs-list">
+                  {organization.subOrganizations.map(sub => (
+                    <li key={sub.id}>
+                      {ORG_TYPE_ICONS[sub.orgType || ''] || '🏗️'} {sub.name} <span className="suborg-type-hint">({sub.orgType})</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className="modal-actions">
+              <button onClick={() => setShowDeleteModal(false)}>Отмена</button>
+              <button onClick={handleDeleteOrg} className="delete-org-btn">🗑️ Да, удалить</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
