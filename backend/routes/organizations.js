@@ -30,12 +30,12 @@ const upload = multer({ storage });
 // Org type hierarchy
 const ORG_HIERARCHY = {
   'Производственная': 'Цех',
-  'Коммерческая': 'Отдел',
+  'Коммерческая': 'Магазин',
   'Административная': 'Отдел',
   'Образовательная': 'Факультет',
   'Свободная': 'Отряд',
   'Цех': 'Мастерская',
-  'Отдел': 'Магазин',
+  'Отдел': 'Сектор',
   'Факультет': 'Кафедра',
   'Отряд': 'Звено',
 };
@@ -232,8 +232,8 @@ router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
         return res.status(404).json({ error: 'Parent organization not found' });
       }
       const parentMember = db.prepare('SELECT role FROM organization_members WHERE organizationId = ? AND userId = ?').get(resolvedParentId, adminId);
-      if (parent.adminId !== adminId && parentMember?.role !== 'admin' && parentMember?.role !== 'moderator') {
-        return res.status(403).json({ error: 'Only admin or moderator can create sub-organizations' });
+      if (parent.adminId !== adminId && !parentMember) {
+        return res.status(403).json({ error: 'Only members can create sub-organizations' });
       }
       const childType = getSubOrgType(parent.orgType);
       if (!childType) {

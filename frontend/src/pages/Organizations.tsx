@@ -24,6 +24,7 @@ const ORG_TYPE_ICONS: Record<string, string> = {
   'Звено': '👤',
   'Факультет': '📚',
   'Кафедра': '🔬',
+  'Сектор': '🔗',
 };
 
 export default function Organizations() {
@@ -243,12 +244,12 @@ function OrganizationDetail({
 
   const ORG_HIERARCHY: Record<string, string> = {
     'Производственная': 'Цех',
-    'Коммерческая': 'Отдел',
+    'Коммерческая': 'Магазин',
     'Административная': 'Отдел',
     'Образовательная': 'Факультет',
     'Свободная': 'Отряд',
     'Цех': 'Мастерская',
-    'Отдел': 'Магазин',
+    'Отдел': 'Сектор',
     'Факультет': 'Кафедра',
     'Отряд': 'Звено',
   };
@@ -266,17 +267,17 @@ function OrganizationDetail({
   const SUB_ORG_PLURAL: Record<string, string> = {
     'Цех': 'Цехи', 'Отдел': 'Отделы', 'Факультет': 'Факультеты',
     'Кафедра': 'Кафедры', 'Отряд': 'Отряды', 'Звено': 'Звенья',
-    'Мастерская': 'Мастерские', 'Магазин': 'Магазины',
+    'Мастерская': 'Мастерские', 'Магазин': 'Магазины', 'Сектор': 'Сектора',
   };
   const SUB_ORG_GENITIVE: Record<string, string> = {
     'Цех': 'цехов', 'Отдел': 'отделов', 'Факультет': 'факультетов',
     'Кафедра': 'кафедр', 'Отряд': 'отрядов', 'Звено': 'звеньев',
-    'Мастерская': 'мастерских', 'Магазин': 'магазинов',
+    'Мастерская': 'мастерских', 'Магазин': 'магазинов', 'Сектор': 'секторов',
   };
   const SUB_ORG_GENITIVE_SINGLE: Record<string, string> = {
     'Цех': 'цех', 'Отдел': 'отдел', 'Факультет': 'факультет',
     'Кафедра': 'кафедру', 'Отряд': 'отряд', 'Звено': 'звено',
-    'Мастерская': 'мастерскую', 'Магазин': 'магазин',
+    'Мастерская': 'мастерскую', 'Магазин': 'магазин', 'Сектор': 'сектор',
   };
 
   const handleJoin = async () => {
@@ -500,7 +501,7 @@ function OrganizationDetail({
         <div className="org-suborgs-inline">
           <div className="org-suborgs-inline-header">
             <h3>🏗️ {subOrgType && SUB_ORG_PLURAL[subOrgType] || subOrgType} ({organization.subOrganizations?.length || 0})</h3>
-            {(isAdmin || isModerator) && (
+            {isMember && (
               showCreateSubOrg ? null : (
                 <button onClick={() => setShowCreateSubOrg(true)} className="create-btn create-btn-sm">
                   + Создать {subOrgType && SUB_ORG_GENITIVE_SINGLE[subOrgType] || subOrgType}
