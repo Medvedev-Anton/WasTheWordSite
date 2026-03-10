@@ -157,7 +157,7 @@ export default function Organizations() {
                 <input type="file" name="avatar" accept="image/*" />
               </label>
               <div className="org-settings">
-                <h4>Настройки по умолчанию для новых участников:</h4>
+                <h4>Настройки по умолчанию для новых сотрудников:</h4>
                 <label className="checkbox-label">
                   <input type="checkbox" name="defaultCanPost" defaultChecked />
                   <span>Все новые пользователи могут создавать посты</span>
@@ -195,8 +195,8 @@ export default function Organizations() {
               <h3>{org.name}</h3>
               <p>{org.description || 'Нет описания'}</p>
               <div className="org-info">
-                <span>👥 {org.membersCount} участников</span>
-                <span>👤 Админ: {org.adminUsername}</span>
+                <span>👥 {org.membersCount} сотрудников</span>
+                  <span>👤 Руководитель: {org.adminUsername}</span>
                 {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
               </div>
             </div>
@@ -239,6 +239,8 @@ function OrganizationDetail({
   const [subOrgDesc, setSubOrgDesc] = useState('');
   const [subOrgCreating, setSubOrgCreating] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any | null>(null);
 
   const navigate = useNavigate();
 
@@ -392,7 +394,7 @@ function OrganizationDetail({
     }
   };
 
-  const roleLabels: Record<string, string> = { admin: 'Администратор', moderator: 'Модератор', member: 'Участник' };
+  const roleLabels: Record<string, string> = { admin: 'Руководитель', moderator: 'Модератор', member: 'Сотрудник' };
 
   return (
     <div className="organization-detail">
@@ -476,8 +478,8 @@ function OrganizationDetail({
               <h2>{organization.name}</h2>
               <p>{organization.description || 'Нет описания'}</p>
               <div className="org-stats">
-                <span>👥 {organization.membersCount} участников</span>
-                <span>👤 Админ: {organization.adminUsername}</span>
+                <span>👥 {organization.membersCount} сотрудников</span>
+                <span>👤 Руководитель: {organization.adminUsername}</span>
                 {organization.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : <span className="org-public-badge">🌐 Открытая</span>}
               </div>
             </div>
@@ -546,7 +548,7 @@ function OrganizationDetail({
                   <h3>{sub.name}</h3>
                   <p>{sub.description || 'Нет описания'}</p>
                   <div className="org-info">
-                    <span>👥 {sub.membersCount} участников</span>
+                    <span>👥 {sub.membersCount} сотрудников</span>
                   </div>
                 </div>
               ))
@@ -563,10 +565,6 @@ function OrganizationDetail({
           className={`org-tab ${activeTab === 'posts' ? 'active' : ''}`}
           onClick={() => setActiveTab('posts')}
         >📝 Посты</button>
-        <button
-          className={`org-tab ${activeTab === 'members' ? 'active' : ''}`}
-          onClick={() => setActiveTab('members')}
-        >👥 Участники ({organization.membersCount})</button>
         {isAdmin && (
           <button
             className={`org-tab ${activeTab === 'settings' ? 'active' : ''}`}
@@ -574,6 +572,9 @@ function OrganizationDetail({
           >⚙️ Настройки</button>
         )}
       </div>
+
+      <div className="org-content-with-sidebar">
+        <div className="org-main-content">
 
       {/* Posts tab */}
       {activeTab === 'posts' && (
@@ -620,135 +621,20 @@ function OrganizationDetail({
         </div>
       )}
 
-      {/* Members tab */}
-      {activeTab === 'members' && (
-        <div className="org-members-section">
-          {(isAdmin || isModerator) && (
-            <div className="invite-section">
-              <h4>Пригласить участника</h4>
-              <div className="invite-row">
-                <input
-                  type="text"
-                  placeholder="Имя пользователя"
-                  value={inviteUsername}
-                  onChange={(e) => setInviteUsername(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
-                  className="invite-input"
-                />
-                <button onClick={handleInvite} className="invite-btn">Пригласить</button>
-              </div>
-              {inviteError && <div className="invite-error">{inviteError}</div>}
-            </div>
-          )}
-
-          <div className="org-members-list">
-            {organization.members && organization.members.length > 0 ? (
-              organization.members.map(member => (
-                <div key={member.id} className={`member-item ${member.isBlocked ? 'member-blocked' : ''}`}>
-                  <img
-                    src={getMediaUrl(member.avatar)}
-                    alt={member.username}
-                    className="member-avatar"
-                  />
-                  <div className="member-info">
-                    <div
-                      className="member-name member-name-link"
-                      onClick={() => navigate(`/users/${member.userId}`)}
-                    >
-                      {member.firstName && member.lastName
-                        ? `${member.firstName} ${member.lastName}`
-                        : member.username}
-                    </div>
-                    <div className="member-role">{roleLabels[member.role] || member.role}</div>
-                    {member.isBlocked ? <div className="member-blocked-label">Заблокирован</div> : null}
-                    {!member.canPost && !member.isBlocked ? <div className="member-noperm-label">Без права постить</div> : null}
-                  </div>
-                  {(isAdmin || isModerator) && member.userId !== currentUserId && member.role !== 'admin' && (
-                    <div className="member-actions">
-                      {isAdmin && member.role === 'member' && (
-                        <button
-                          onClick={async () => {
-                            try {
-                              await axios.post(`/api/organizations/${organization.id}/moderators`, { targetUserId: member.userId });
-                              onUpdate(organization.id);
-                            } catch { }
-                          }}
-                          className="moderator-btn"
-                        >👑 Модератор</button>
-                      )}
-                      {isAdmin && member.role === 'moderator' && (
-                        <button
-                          onClick={async () => {
-                            try {
-                              await axios.delete(`/api/organizations/${organization.id}/moderators/${member.userId}`);
-                              onUpdate(organization.id);
-                            } catch { }
-                          }}
-                          className="remove-moderator-btn"
-                        >↩ Снять</button>
-                      )}
-                      <button
-                        onClick={() => setEditingMember(editingMember === member.userId ? null : member.userId)}
-                        className="permissions-btn"
-                      >🛡 Права</button>
-                      <button
-                        onClick={() => handleKickMember(member.userId)}
-                        className="kick-btn"
-                      >🚫 Выгнать</button>
-                    </div>
-                  )}
-                  {editingMember === member.userId && (
-                    <div className="member-permissions-edit">
-                      <label>
-                        <input
-                          type="checkbox"
-                          defaultChecked={!!member.canPost}
-                          onChange={(e) => handleUpdateMemberPermissions(member.userId, { canPost: e.target.checked })}
-                        />
-                        Может создавать посты
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          defaultChecked={!!member.canComment}
-                          onChange={(e) => handleUpdateMemberPermissions(member.userId, { canComment: e.target.checked })}
-                        />
-                        Может комментировать
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          defaultChecked={!!member.isBlocked}
-                          onChange={(e) => handleUpdateMemberPermissions(member.userId, { isBlocked: e.target.checked })}
-                        />
-                        Заблокирован
-                      </label>
-                      <button onClick={() => setEditingMember(null)} className="close-permissions-btn">Закрыть</button>
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <div className="empty-state">Нет участников</div>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Settings tab (admin only) */}
       {activeTab === 'settings' && isAdmin && (
         <div className="org-settings-section">
           <h3>Настройки организации</h3>
 
           <div className="settings-card">
-            <h4>Права новых участников по умолчанию</h4>
+            <h4>Права новых сотрудников по умолчанию</h4>
             <label className="checkbox-label">
               <input
                 type="checkbox"
                 checked={orgFormData.defaultCanPost}
                 onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanPost: e.target.checked })}
               />
-              <span>Новые участники могут создавать посты</span>
+              <span>Новые сотрудники могут создавать посты</span>
             </label>
             <label className="checkbox-label">
               <input
@@ -756,7 +642,7 @@ function OrganizationDetail({
                 checked={orgFormData.defaultCanComment}
                 onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanComment: e.target.checked })}
               />
-              <span>Новые участники могут комментировать</span>
+              <span>Новые сотрудники могут комментировать</span>
             </label>
           </div>
 
@@ -793,6 +679,39 @@ function OrganizationDetail({
           </div>
         </div>
       )}
+        </div>{/* end org-main-content */}
+
+        {/* Members sidebar */}
+        <aside className="org-members-sidebar">
+          <div className="org-members-sidebar-header">
+            <span className="org-members-sidebar-title">Сотрудники</span>
+            <span className="org-members-sidebar-count">{organization.membersCount}</span>
+          </div>
+          <div className="org-members-sidebar-avatars">
+            {(organization.members || []).slice(0, 8).map(m => (
+              <div
+                key={m.userId}
+                className="sidebar-member"
+                onClick={() => { setSelectedMember(m); setShowMembersModal(true); }}
+                title={m.firstName && m.lastName ? `${m.firstName} ${m.lastName}` : m.username}
+              >
+                {m.avatar
+                  ? <img src={getMediaUrl(m.avatar)} alt={m.username} className="sidebar-member-avatar" />
+                  : <div className="sidebar-member-avatar-placeholder">{(m.firstName || m.username)[0].toUpperCase()}</div>
+                }
+                <span className="sidebar-member-name">
+                  {m.firstName ? m.firstName : m.username}
+                </span>
+              </div>
+            ))}
+          </div>
+          {(organization.members?.length || 0) > 0 && (
+            <button className="org-members-show-all-btn" onClick={() => { setSelectedMember(organization.members?.[0] || null); setShowMembersModal(true); }}>
+              Показать всех →
+            </button>
+          )}
+        </aside>
+      </div>{/* end org-content-with-sidebar */}
 
       {/* Delete confirmation modal */}
       {showDeleteModal && (
@@ -819,7 +738,100 @@ function OrganizationDetail({
           </div>
         </div>
       )}
+
+      {/* Members modal */}
+      {showMembersModal && (
+        <div className="modal-overlay" onClick={() => setShowMembersModal(false)}>
+          <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="members-modal-header">
+              <h3>👥 Сотрудники — {organization.name}</h3>
+              {(isAdmin || isModerator) && (
+                <div className="invite-row">
+                  <input
+                    type="text"
+                    placeholder="Пригласить по логину"
+                    value={inviteUsername}
+                    onChange={(e) => setInviteUsername(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
+                    className="invite-input"
+                  />
+                  <button onClick={handleInvite} className="invite-btn">Пригласить</button>
+                </div>
+              )}
+              {inviteError && <div className="invite-error">{inviteError}</div>}
+              <button className="modal-close-btn" onClick={() => setShowMembersModal(false)}>✕</button>
+            </div>
+            <div className="members-modal-body">
+              {/* Left: list */}
+              <div className="members-modal-list">
+                {(organization.members || []).map(m => (
+                  <div
+                    key={m.userId}
+                    className={`members-modal-list-item ${selectedMember?.userId === m.userId ? 'active' : ''} ${m.isBlocked ? 'member-blocked' : ''}`}
+                    onClick={() => setSelectedMember(m)}
+                  >
+                    {m.avatar
+                      ? <img src={getMediaUrl(m.avatar)} alt={m.username} className="members-modal-list-avatar" />
+                      : <div className="members-modal-list-avatar-ph">{(m.firstName || m.username)[0].toUpperCase()}</div>
+                    }
+                    <div>
+                      <div className="members-modal-list-name">
+                        {m.firstName && m.lastName ? `${m.firstName} ${m.lastName}` : m.username}
+                      </div>
+                      <div className="members-modal-list-role">{roleLabels[m.role] || m.role}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Right: detail */}
+              {selectedMember && (
+                <div className="members-modal-detail">
+                  {selectedMember.avatar
+                    ? <img src={getMediaUrl(selectedMember.avatar)} alt={selectedMember.username} className="members-modal-detail-avatar" />
+                    : <div className="members-modal-detail-avatar-ph">{(selectedMember.firstName || selectedMember.username)[0].toUpperCase()}</div>
+                  }
+                  <div className="members-modal-detail-name">
+                    {selectedMember.firstName && selectedMember.lastName
+                      ? `${selectedMember.firstName} ${selectedMember.lastName}`
+                      : selectedMember.username}
+                  </div>
+                  <div className="members-modal-detail-role">{roleLabels[selectedMember.role] || selectedMember.role}</div>
+                  {selectedMember.isBlocked && <div className="member-blocked-label">Заблокирован</div>}
+
+                  <button
+                    className="members-modal-profile-btn"
+                    onClick={() => { setShowMembersModal(false); navigate(`/users/${selectedMember.userId}`); }}
+                  >
+                    👤 Открыть профиль
+                  </button>
+
+                  {(isAdmin || isModerator) && selectedMember.userId !== currentUserId && selectedMember.role !== 'admin' && (
+                    <div className="members-modal-actions">
+                      {isAdmin && selectedMember.role === 'member' && (
+                        <button onClick={async () => {
+                          try { await axios.post(`/api/organizations/${organization.id}/moderators`, { targetUserId: selectedMember.userId }); onUpdate(organization.id); setSelectedMember({ ...selectedMember, role: 'moderator' }); } catch { }
+                        }} className="moderator-btn">👑 Назначить модератором</button>
+                      )}
+                      {isAdmin && selectedMember.role === 'moderator' && (
+                        <button onClick={async () => {
+                          try { await axios.delete(`/api/organizations/${organization.id}/moderators/${selectedMember.userId}`); onUpdate(organization.id); setSelectedMember({ ...selectedMember, role: 'member' }); } catch { }
+                        }} className="remove-moderator-btn">↩ Снять с модераторов</button>
+                      )}
+                      <button onClick={async () => {
+                        if (!confirm('Выгнать сотрудника?')) return;
+                        try { await axios.delete(`/api/organizations/${organization.id}/members/${selectedMember.userId}`); onUpdate(organization.id); setSelectedMember(null); } catch { }
+                      }} className="kick-btn">🚫 Выгнать</button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
 

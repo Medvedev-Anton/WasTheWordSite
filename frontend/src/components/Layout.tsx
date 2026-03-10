@@ -20,6 +20,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/organizations" className={location.pathname === '/organizations' ? 'active' : ''}>
               Организации
             </Link>
+            <Link to="/users" className={location.pathname === '/users' ? 'active' : ''}>
+              Сотрудники
+            </Link>
             <Link to="/chat" className={location.pathname === '/chat' ? 'active' : ''}>
               Чат
             </Link>
