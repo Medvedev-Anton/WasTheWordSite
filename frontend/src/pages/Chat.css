@@ -521,20 +521,81 @@
   font-style: italic;
 }
 
+.chat-back-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #555;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.chat-back-btn:hover {
+  background: #f0f0f0;
+}
+
 @media (max-width: 768px) {
   .chat-page {
-    flex-direction: column;
-    height: auto;
-    min-height: calc(100vh - 200px);
+    height: calc(100dvh - 130px);
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
   }
 
   .chat-sidebar {
     width: 100%;
-    max-height: 200px;
+    max-height: none;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    transition: transform 0.25s ease;
+  }
+
+  .chat-sidebar.mobile-hidden {
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .chat-main {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .chat-main.mobile-hidden {
+    display: none;
+  }
+
+  .chat-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
   .message {
-    max-width: 85%;
+    max-width: 88%;
+  }
+
+  .message-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .send-btn {
+    padding: 0.75rem 1rem;
   }
 }
+
 

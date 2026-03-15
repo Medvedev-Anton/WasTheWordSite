@@ -26,6 +26,8 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(true);
+  const lastMsgIdRef = useRef<number | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -47,10 +49,14 @@ export default function ChatPage() {
   }, [selectedChat]);
 
   useEffect(() => {
-    if (shouldAutoScroll && messagesEndRef.current) {
+    const lastMsg = messages[messages.length - 1];
+    const lastId = lastMsg?.id ?? null;
+    const isNewMsg = lastId !== null && lastId !== lastMsgIdRef.current;
+    lastMsgIdRef.current = lastId;
+    if (shouldAutoScroll && isNewMsg && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, shouldAutoScroll]);
+  }, [messages]);
 
   // Check if user is at bottom of messages container
   const handleScroll = () => {
@@ -83,7 +89,14 @@ export default function ChatPage() {
   const fetchMessages = async (chatId: number) => {
     try {
       const response = await axios.get(`/api/messages/chat/${chatId}`);
-      setMessages(response.data);
+      setMessages(prev => {
+        if (prev.length > 0) {
+          const prevLastId = prev[prev.length - 1]?.id;
+          const newLastId = response.data[response.data.length - 1]?.id;
+          if (prevLastId === newLastId) return prev; // no change – skip re-render
+        }
+        return response.data;
+      });
     } catch (error) {
       console.error('Failed to fetch messages:', error);
     }
@@ -234,7 +247,7 @@ export default function ChatPage() {
 
   return (
     <div className="chat-page">
-      <div className="chat-sidebar">
+      <div className={`chat-sidebar ${!showSidebarOnMobile ? 'mobile-hidden' : ''}`}>
         <div className="chat-sidebar-header">
           <h2>Чаты</h2>
           <button onClick={() => setShowNewChatModal(true)} className="new-chat-btn">
@@ -249,7 +262,7 @@ export default function ChatPage() {
               <div
                 key={chat.id}
                 className={`chat-item ${selectedChat?.id === chat.id ? 'active' : ''}`}
-                onClick={() => setSelectedChat(chat)}
+                onClick={() => { setSelectedChat(chat); setShowSidebarOnMobile(false); }}
               >
                 <div className="chat-item-info">
                   <div className="chat-item-header">
@@ -276,10 +289,11 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <div className="chat-main">
+      <div className={`chat-main ${showSidebarOnMobile ? 'mobile-hidden' : ''}`}>
         {selectedChat ? (
           <>
             <div className="chat-header">
+              <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
               <h3>{getChatName(selectedChat)}</h3>
               {selectedChat.type === 'group' && (
                 <span className="chat-type">Групповой чат</span>
@@ -395,13 +409,6 @@ export default function ChatPage() {
                     style={{ display: 'none' }}
                   />
                 </label>
-                <button 
-                  onClick={() => setShowVoiceRecorder(!showVoiceRecorder)} 
-                  className="voice-record-btn"
-                  title="Голосовое сообщение"
-                >
-                  🎤
-                </button>
                 <input
                   type="text"
                   placeholder="Написать сообщение..."
@@ -410,9 +417,19 @@ export default function ChatPage() {
                   onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
                   className="message-input"
                 />
-                <button onClick={handleSendMessage} className="send-btn" disabled={!messageText.trim() && !selectedFile && !showVoiceRecorder}>
-                  Отправить
-                </button>
+                {messageText.trim() || selectedFile ? (
+                  <button onClick={handleSendMessage} className="send-btn">
+                    ➤
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowVoiceRecorder(!showVoiceRecorder)}
+                    className={`voice-record-btn${showVoiceRecorder ? ' active' : ''}`}
+                    title="Голосовое сообщение"
+                  >
+                    🎤
+                  </button>
+                )}
               </div>
             </div>
           </>

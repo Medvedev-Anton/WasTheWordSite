@@ -311,7 +311,24 @@
 @media (max-width: 768px) {
   .profile-header {
     flex-direction: column;
+    align-items: center;
     text-align: center;
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .profile-info h1 {
+    font-size: 1.5rem;
+  }
+
+  .profile-avatar,
+  .profile-avatar-placeholder {
+    width: 110px;
+    height: 110px;
+  }
+
+  .profile-avatar-placeholder {
+    font-size: 3rem;
   }
 
   .form-row {
@@ -319,7 +336,15 @@
   }
 
   .photos-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .edit-actions {
+    flex-wrap: wrap;
+  }
+
+  .profile-section {
+    padding: 1.25rem;
   }
 }
 

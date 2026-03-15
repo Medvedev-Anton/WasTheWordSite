@@ -78,6 +78,27 @@
   color: #666;
 }
 
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .auth-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .auth-card h1 {
+    font-size: 1.6rem;
+  }
+
+  .auth-card h2 {
+    font-size: 1.2rem;
+  }
+}
+
 .auth-card p a {
   color: #667eea;
   font-weight: 600;

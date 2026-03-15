@@ -328,6 +328,26 @@
   transform: translateY(-2px);
 }
 
+@media (max-width: 600px) {
+  .post-card {
+    padding: 1rem;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .comment-input {
+    flex-direction: column;
+  }
+
+  .comment-input button {
+    align-self: flex-end;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .post-card {
     padding: 1rem;
