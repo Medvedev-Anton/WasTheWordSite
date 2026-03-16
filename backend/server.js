@@ -38,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads/messages', express.static(path.join(__dirname, 'uploads', 'messages')));
+app.use('/uploads/organizations', express.static(path.join(__dirname, 'uploads', 'organizations')));
 
 // Routes
 app.use('/api/auth', authRoutes);

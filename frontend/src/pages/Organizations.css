@@ -162,7 +162,7 @@
   gap: 0.75rem;
 }
 
-.org-group > .organization-card {
+.org-group>.organization-card {
   margin-bottom: 0;
 }
 
@@ -181,7 +181,7 @@
   background: white;
   border-radius: 10px;
   padding: 0.75rem 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
   min-width: 200px;
@@ -191,7 +191,7 @@
 
 .org-sub-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.13);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.13);
 }
 
 .org-sub-card-icon {
@@ -323,7 +323,7 @@
   background: white;
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .org-members-sidebar-header {
@@ -426,7 +426,7 @@
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   overflow: hidden;
 }
 
@@ -604,13 +604,16 @@
   .org-content-with-sidebar {
     flex-direction: column;
   }
+
   .org-members-sidebar {
     width: 100%;
     position: static;
   }
+
   .org-members-sidebar-avatars {
     grid-template-columns: repeat(6, 1fr);
   }
+
   .members-modal {
     width: 100%;
     max-width: 100%;
@@ -618,27 +621,33 @@
     border-radius: 0;
     height: 100dvh;
   }
+
   .members-modal-body {
     flex-direction: column;
   }
+
   .members-modal-list {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid #f0f0f0;
     max-height: 200px;
   }
+
   .organizations-header {
     flex-wrap: wrap;
     gap: 0.75rem;
   }
+
   .organizations-header h2 {
     font-size: 1.4rem;
   }
+
   .org-header {
     flex-direction: column;
     padding: 1.25rem;
     gap: 1rem;
   }
+
   .organizations-grid {
     grid-template-columns: 1fr;
   }
@@ -1367,4 +1376,91 @@
   color: #333;
   font-size: 1rem;
   margin-bottom: 0.25rem;
+}
+
+#button-delete-marker {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: transform 0.2s;
+  background: #e0e0e0;
+  color: #333;
+}
+
+#button-delete-marker.active {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: transform 0.2s;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+/* Icon organizations */
+.create-org-modal {
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.org-icon-selector {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.org-icon-selector h4 {
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+}
+
+.icon-option {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 8px;
+  transition: all 0.2s;
+  background: white;
+}
+
+.icon-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-option.selected {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.icon-option .icon-preview {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.icon-option .icon-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-icons-warning {
+  margin: 15px 0;
+  padding: 12px;
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 6px;
+  color: #856404;
+  font-size: 14px;
 }

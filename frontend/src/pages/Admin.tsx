@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, act } from 'react';
 import axios from 'axios';
 import { User, Post } from '../types';
 import { getMediaUrl } from '../config';
 import './Admin.css';
+import IconEditModal from '../components/IconEditModal';
 
 interface Stats {
   totalUsers: number;
@@ -13,12 +14,94 @@ interface Stats {
   adminUsers: number;
 }
 
+interface OrganizationIcon {
+  id: number;
+  orgType: string;
+  imageUrl: string;
+}
+
+const ORG_TYPES: string[] = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Свободная'];
+const ORG_TO_ICON: Record<string, string> = {
+  'Производственная': ' 🏭',
+  'Коммерческая': '🏢',
+  'Административная': '🏛️',
+  'Образовательная': '🎓',
+  'Свободная': '🌐',
+};
+
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats'>('stats');
+  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images'>('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
+  const [editingIcon, setEditingIcon] = useState<OrganizationIcon | null>(null);
+  const [newIconType, setNewIconType] = useState('');
+  const [newIconFile, setNewIconFile] = useState<File | null>(null);
+  const [newIconPreview, setNewIconPreview] = useState<string | null>(null);
+
+  const handleNewIconFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewIconFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewIconPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCreateIcon = async () => {
+    if (!newIconType || !newIconFile) return;
+
+    const formData = new FormData();
+    formData.append('orgType', newIconType);
+    formData.append('image', newIconFile);
+
+    try {
+      await axios.post('/api/admin/icons', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      handleClearNewIcon();
+      fetchData();
+      alert('Иконка успешно загружена');
+    } catch (error: any) {
+      console.error('Failed to create icon:', error);
+      alert(error.response?.data?.error || 'Ошибка при создании иконки');
+    }
+  };
+
+  const handleClearNewIcon = () => {
+    setNewIconType('');
+    setNewIconFile(null);
+    setNewIconPreview(null);
+    const fileInput = document.getElementById('create-image-file') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  };
+
+  const handleUpdateIcon = async (iconId: number, file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    await axios.put(`/api/admin/icons/${iconId}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    fetchData();
+  };
+
+  const handleDeleteIcon = async (iconId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить эту иконку?')) return;
+
+    try {
+      await axios.delete(`/api/admin/icons/${iconId}`);
+      fetchData();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при удалении');
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -33,7 +116,12 @@ export default function Admin() {
       } else if (activeTab === 'posts') {
         const response = await axios.get('/api/admin/posts');
         setPosts(response.data);
-      } else {
+      }
+      else if (activeTab === 'organization-images') {
+        const response = await axios.get('/api/admin/icons');
+        setOrganizationIcons(response.data.icons);
+      }
+      else {
         const response = await axios.get('/api/admin/stats');
         setStats(response.data);
       }
@@ -103,10 +191,19 @@ export default function Admin() {
     return <div className="loading">Загрузка...</div>;
   }
 
+  const defaultIcon = organizationIcons.find((organization) => { return organization.orgType == 'DEFAULT'; });
+  const iconsByType = organizationIcons.reduce((acc, icon) => {
+    if (!acc[icon.orgType]) {
+      acc[icon.orgType] = [];
+    }
+    acc[icon.orgType].push(icon);
+    return acc;
+  }, {} as Record<string, OrganizationIcon[]>);
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
-      
+
       <div className="admin-tabs">
         <button
           className={activeTab === 'stats' ? 'active' : ''}
@@ -125,6 +222,12 @@ export default function Admin() {
           onClick={() => setActiveTab('posts')}
         >
           Посты
+        </button>
+        <button
+          className={activeTab === 'organization-images' ? 'active' : ''}
+          onClick={() => setActiveTab('organization-images')}
+        >
+          Картинки
         </button>
       </div>
 
@@ -266,15 +369,143 @@ export default function Admin() {
             ))}
           </div>
         )}
+
+        {activeTab === 'organization-images' && (
+          <div>
+            <div className="admin-images-section">
+              <div className="section-header">
+                <h2>Изображения типов организаций</h2>
+              </div>
+
+              <div className="default-image-section">
+                <h3>⭐ Изображение по умолчанию</h3>
+                <div className="default-image-card">
+                  <div className="image-preview default">
+                    <img
+                      src={defaultIcon?.imageUrl ? getMediaUrl(defaultIcon.imageUrl) : "/image/organizations/default.jpg"}
+                      alt="По умолчанию"
+                    />
+                  </div>
+                  <div className="image-actions">
+                    <button className="btn-edit" onClick={() => setEditingIcon(defaultIcon ?? null)}>
+                      ✏️ Заменить
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="org-types-container">
+                {ORG_TYPES.map((type: string) => {
+                  const typeIcons = iconsByType[type] || [];
+
+                  return (
+                    <div className="org-type-group" key={type}>
+                      <div className="org-type-header">
+                        <h3>{ORG_TO_ICON[type]} {type}</h3>
+                      </div>
+                      <div className="images-grid">
+                        {typeIcons.map(icon => (
+                          <div key={icon.id} className="image-card">
+                            <div className="image-preview">
+                              <img src={getMediaUrl(icon.imageUrl)} alt={type} />
+                            </div>
+                            <div className="image-actions">
+                              <button className="btn-edit" onClick={() => setEditingIcon(icon)}>✏️</button>
+                              <button className="btn-delete" onClick={() => handleDeleteIcon(icon.id)}>🗑️</button>
+                            </div>
+                          </div>
+                        ))}
+                        {typeIcons.length === 0 && (
+                          <div className="empty-icons">Нет изображений</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="upload-section">
+                <h3>📤 Загрузить новое изображение</h3>
+
+                <div className="upload-form">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="create-org-type">Тип организации:</label>
+                      <select
+                        id="create-org-type"
+                        className="org-type-select"
+                        value={newIconType}
+                        onChange={(e) => setNewIconType(e.target.value)}
+                      >
+                        <option value="">Выберите тип</option>
+                        {ORG_TYPES.map(type => (
+                          <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {newIconPreview && (
+                    <div className="preview-section">
+                      <h4>Предпросмотр:</h4>
+                      <div className="icon-preview-container">
+                        <img src={newIconPreview} alt="Preview" className="icon-preview-img" />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="form-group">
+                    <label htmlFor="create-image-file">Изображение:</label>
+                    <div className="file-input-wrapper">
+                      <input
+                        type="file"
+                        id="create-image-file"
+                        accept="image/*"
+                        className="file-input-hidden"
+                        onChange={handleNewIconFileChange}
+                      />
+                      <button
+                        className="btn-upload"
+                        type="button"
+                        onClick={() => document.getElementById('create-image-file')?.click()}
+                      >
+                        📁 Выбрать файл
+                      </button>
+                      <span className="file-name">{newIconFile?.name || 'Файл не выбран'}</span>
+                    </div>
+                    <small className="input-hint">
+                      Рекомендуемый размер: 400x300px, формат: JPG, PNG, макс. 2MB
+                    </small>
+                  </div>
+
+                  <div className="upload-actions">
+                    <button
+                      className="btn-primary"
+                      onClick={handleCreateIcon}
+                      disabled={!newIconType || !newIconFile}
+                    >
+                      Загрузить
+                    </button>
+                    <button
+                      className="btn-secondary"
+                      onClick={handleClearNewIcon}
+                    >
+                      Очистить
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <IconEditModal
+              isOpen={!!editingIcon}
+              icon={editingIcon}
+              onClose={() => setEditingIcon(null)}
+              onSave={handleUpdateIcon}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-

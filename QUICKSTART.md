@@ -6,7 +6,7 @@
 npm run install:all
 ```
 
-## Шаг 2: Настройка backend
+## Шаг 2.1: Настройка backend
 
 ```bash
 cd backend
@@ -15,8 +15,16 @@ echo "JWT_SECRET=your-secret-key-change-in-production" >> .env
 echo "UPLOAD_DIR=./uploads" >> .env
 
 # Создайте папку для загрузок
-mkdir uploads
 mkdir uploads/messages
+cd ..
+```
+
+## Шаг 2.2: Настройка backend
+
+```bash
+cd frontend
+echo "VITE_API_URL=http://localhost:3001" > .env
+echo "REACT_APP_YMAP_KEY=<Сюда вставьте ключ API от яндекс>" >> .env
 cd ..
 ```
 

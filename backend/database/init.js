@@ -38,7 +38,7 @@ export async function initDatabase() {
   const hasRole = tableInfo.some(col => col.name === 'role');
   const hasIsBanned = tableInfo.some(col => col.name === 'isBanned');
   const hasAllowMessagesFrom = tableInfo.some(col => col.name === 'allowMessagesFrom');
-  
+
   if (!hasRole) {
     try {
       db.exec(`ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'`);
@@ -68,7 +68,7 @@ export async function initDatabase() {
   } catch (e) {
     console.error('Error updating users:', e.message);
   }
-  
+
   // Add repostOfId to posts if not exists
   const postsTableInfo = db.prepare("PRAGMA table_info(posts)").all();
   const hasRepostOfId = postsTableInfo.some(col => col.name === 'repostOfId');
@@ -94,11 +94,13 @@ export async function initDatabase() {
       orgType TEXT DEFAULT 'Организация',
       parentId INTEGER,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      longitude DECIMAL(9, 8) NULL,
+      latitude DECIMAL(9, 8) NULL,
       FOREIGN KEY (adminId) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (parentId) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
-  
+
   // Migrate existing organizations table
   const orgTableInfo = db.prepare("PRAGMA table_info(organizations)").all();
   const hasDefaultCanPost = orgTableInfo.some(col => col.name === 'defaultCanPost');
@@ -106,7 +108,9 @@ export async function initDatabase() {
   const hasIsPrivate = orgTableInfo.some(col => col.name === 'isPrivate');
   const hasOrgType = orgTableInfo.some(col => col.name === 'orgType');
   const hasParentId = orgTableInfo.some(col => col.name === 'parentId');
-  
+  const hasLongitude = orgTableInfo.some(col => col.name === 'longitude');
+  const hasLatitude = orgTableInfo.some(col => col.name === 'latitude');
+
   if (!hasDefaultCanPost) {
     try {
       db.exec(`ALTER TABLE organizations ADD COLUMN defaultCanPost INTEGER DEFAULT 1`);
@@ -142,7 +146,24 @@ export async function initDatabase() {
       console.error('Error adding parentId column:', e.message);
     }
   }
-  
+  if (!hasLongitude) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN longitude DECIMAL(9, 8) NULL`);
+    }
+    catch (e) {
+      console.error('Error adding longitude column:', e.message);
+    }
+  }
+  if (!hasLatitude) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN latitude DECIMAL(9, 8) NULL`);
+    }
+    catch (e) {
+      console.error('Error adding latitude column:', e.message);
+    }
+  }
+
+
   // Update existing organizations
   try {
     db.exec(`UPDATE organizations SET defaultCanPost = 1 WHERE defaultCanPost IS NULL`);
@@ -169,13 +190,13 @@ export async function initDatabase() {
       UNIQUE(organizationId, userId)
     )
   `);
-  
+
   // Migrate existing organization_members table
   const orgMembersTableInfo = db.prepare("PRAGMA table_info(organization_members)").all();
   const hasCanPost = orgMembersTableInfo.some(col => col.name === 'canPost');
   const hasCanComment = orgMembersTableInfo.some(col => col.name === 'canComment');
   const hasIsBlocked = orgMembersTableInfo.some(col => col.name === 'isBlocked');
-  
+
   if (!hasCanPost) {
     try {
       db.exec(`ALTER TABLE organization_members ADD COLUMN canPost INTEGER DEFAULT 1`);
@@ -197,7 +218,7 @@ export async function initDatabase() {
       console.error('Error adding isBlocked column:', e.message);
     }
   }
-  
+
   // Update existing members
   try {
     db.exec(`UPDATE organization_members SET canPost = 1 WHERE canPost IS NULL`);
@@ -222,19 +243,19 @@ export async function initDatabase() {
       FOREIGN KEY (repostOfId) REFERENCES posts(id) ON DELETE SET NULL
     )
   `);
-  
+
   // Migrate existing posts table - remove NOT NULL constraint from content if needed
   try {
     const postsTableInfo = db.prepare("PRAGMA table_info(posts)").all();
     const contentColumn = postsTableInfo.find(col => col.name === 'content');
     const hasRepostOfId = postsTableInfo.some(col => col.name === 'repostOfId');
-    
+
     // Check if we need to add repostOfId column
     if (!hasRepostOfId) {
       db.exec(`ALTER TABLE posts ADD COLUMN repostOfId INTEGER`);
       db.exec(`CREATE INDEX IF NOT EXISTS idx_posts_repostOfId ON posts(repostOfId)`);
     }
-    
+
     // Note: SQLite doesn't support ALTER TABLE to modify column constraints directly
     // The NOT NULL constraint will be ignored for new inserts if we use NULL explicitly
     // For existing tables, we'll handle it in the application code
@@ -319,13 +340,13 @@ export async function initDatabase() {
       FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
-  
+
   // Migrate existing messages table to add file columns if they don't exist
   const messagesTableInfo = db.prepare("PRAGMA table_info(messages)").all();
   const hasFileUrl = messagesTableInfo.some(col => col.name === 'fileUrl');
   const hasFileName = messagesTableInfo.some(col => col.name === 'fileName');
   const hasFileType = messagesTableInfo.some(col => col.name === 'fileType');
-  
+
   if (!hasFileUrl) {
     try {
       db.exec(`ALTER TABLE messages ADD COLUMN fileUrl TEXT`);
@@ -358,6 +379,41 @@ export async function initDatabase() {
       FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
+
+  // Create organization_icon table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS organization_icon (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgType TEXT NOT NULL,
+      imageUrl TEXT NOT NULL
+    )`);
+
+  const defaultImagesExist = db.prepare("SELECT COUNT(*) as count FROM organization_icon WHERE id = 1").get();
+  if (defaultImagesExist.count === 0) {
+    db.exec(`
+      INSERT INTO organization_icon (id, orgType, imageUrl) VALUES
+      (1, 'DEFAULT', '/uploads/organizations/default.jpg')
+    `);
+  }
+
+  const hasOrganizationIconId = orgTableInfo.some(col => col.name === 'organization_icon_id');
+  if (!hasOrganizationIconId) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN organization_icon_id INTEGER DEFAULT 1`);
+    } catch (e) {
+      console.error('Error adding organization_icon_id column:', e.message);
+    }
+  }
+
+  try {
+    db.exec(`
+      UPDATE organizations SET organization_icon_id = 1 WHERE organization_icon_id IS NULL
+      `
+    );
+  }
+  catch (e) {
+    console.error('Error UPDATE organizations SET organization_icon_id = 1 WHERE organization_icon_id IS NULL:', e.message);
+  }
 
   console.log('Database initialized successfully');
 }

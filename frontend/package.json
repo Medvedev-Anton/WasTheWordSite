@@ -13,12 +13,14 @@
     "react-audio-voice-recorder": "^2.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.16.1",
-    "react-router-dom": "^6.20.0"
+    "react-router-dom": "^6.20.0",
+    "ymap3-components": "^1.2.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
+    "@yandex/ymaps3-types": "^1.0.19017058",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   }

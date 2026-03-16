@@ -11,6 +11,7 @@ import UserProfile from './pages/UserProfile';
 import Users from './pages/Users';
 import Admin from './pages/Admin';
 import Layout from './components/Layout';
+import Map from './pages/Map';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
                 <Layout>
                   <Routes>
                     <Route path="/" element={<Main />} />
+                     <Route path="/map" element={<Map />} />
                     <Route path="/organizations" element={<Organizations />} />
                     <Route path="/chat" element={<Chat />} />
                     <Route path="/profile" element={<Profile />} />

@@ -20,6 +20,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
               Главное
             </Link>
+            <Link to="/map" className={location.pathname === '/map' ? 'active' : ''}>
+              Карта
+            </Link>
             <Link to="/organizations" className={location.pathname === '/organizations' ? 'active' : ''}>
               Организации
             </Link>
@@ -57,6 +60,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav className="mobile-sidebar-nav">
           <Link to="/" className={location.pathname === '/' ? 'active' : ''} onClick={closeSidebar}>
             🏠 Главное
+          </Link>
+          <Link to="/map" className={location.pathname === '/map' ? 'active' : ''} onClick={closeSidebar}>
+            🗺️ Карта
           </Link>
           <Link to="/organizations" className={location.pathname === '/organizations' ? 'active' : ''} onClick={closeSidebar}>
             🏢 Организации
