@@ -1,15 +1,15 @@
 .map-wrapper {
     position: relative;
     width: 100%;
-    height: 650px;
+    flex: 1;
 }
 
 .map-layer {
     position: absolute;
     inset: 0;
-    top: 20px;
-    height: 595px;
-    width: 98%;
+    top: 3.3%;
+    width: 97.8%;
+    height: 91%;
     left: 1%;
 }
 
@@ -21,10 +21,10 @@
 .map-edge-blur {
     position: absolute;
 
-    top: 20px;
+    top: 3.3%;
     left: 1%;
     width: 98%;
-    height: 595px;
+    height: 91%;
 
     pointer-events: none;
 
@@ -45,4 +45,11 @@
 
     pointer-events: none;
     border-radius: 15px;
+}
+
+@media (max-width:770px) {
+    .map-wrapper {
+        position: relative;
+        width: 100%;
+    }
 }

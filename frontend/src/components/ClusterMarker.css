@@ -24,7 +24,6 @@
     border: 1px solid #5a5a5a;
     transition: all 0.2s ease;
     z-index: 2;
-    backdrop-filter: blur(2px);
 }
 
 .cluster-marker.small .cluster-content {

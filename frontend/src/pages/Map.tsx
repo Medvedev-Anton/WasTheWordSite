@@ -6,8 +6,8 @@ import axios from 'axios';
 import Loader from '../components/Loader';
 import { useNavigate } from 'react-router-dom';
 import OrganizationModal from '../components/OrganizationModal';
-import './Map.css';
 import { getMediaUrl } from '../config';
+import './Map.css';
 
 interface OrganizationProps {
     id: number,
@@ -21,7 +21,7 @@ export default function Map() {
     const [isLoading, setIsLoading] = useState(true);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [currentOrganization, setCurrentOrganization] = useState<number | null>(null);
-    const [coordinatesMap, setCoordinatesMap] = useState<[number, number]>([44.5, 48.72]);
+    const [coordinatesMap, setCoordinatesMap] = useState<[number, number]>([37, 50]);
 
     const fetchOrganizations = async () => {
         const dataPromise = axios.get('/api/organizations');
@@ -89,26 +89,28 @@ export default function Map() {
         }));
     }, [organizations]);
 
-    if (isLoading) {
-        return (<Loader />);
-    }
-
     const selectOrganization = organizations.find(organization => { return organization.id === currentOrganization });
 
     return (
         <>
             <div className="map-wrapper">
-                <MapComponent
-                    className="map-layer"
-                    coordinates={coordinatesMap}
-                    zoom={3}
-                    markers={markers}
-                    onMapClick={() => { }}
-                    zoomRange={{ min: 2, max: 40 }}
-                    renderCluster={(_coordinates: any, features: any) => (<ClusterMarker count={features.length} onClick={() => { }} />)}
-                />
+                {isLoading ? <Loader style={{ zIndex: 0 }} /> :
+                    <>
+                        <MapComponent
+                            className="map-layer"
+                            coordinates={coordinatesMap}
+                            zoom={4}
+                            camera={{ tilt: 85, azimuth: 0 }}
+                            markers={markers}
+                            onMapClick={() => { }}
+                            zoomRange={{ min: 2, max: 40 }}
+                            renderCluster={(_coordinates: any, features: any) => (<ClusterMarker count={features.length} onClick={() => { }} />)}
+                        />
 
-                <div className="map-edge-blur" />
+                        <div className="map-edge-blur" />
+                    </>
+                }
+
 
                 <img
                     src='./../../image/border_map.png'

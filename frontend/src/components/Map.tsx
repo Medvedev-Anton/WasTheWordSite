@@ -26,7 +26,8 @@ interface MapProps extends React.HTMLAttributes<HTMLDivElement> {
     markers: MarkerProps[],
     onMapClick?: (event: any, coordinates: any) => void,
     renderCluster: (coordinates: any, features: any) => React.ReactNode,
-    gridSize?: number
+    gridSize?: number,
+    camera?: { tilt: number, azimuth: number }
 }
 
 export default function Map({
@@ -36,9 +37,10 @@ export default function Map({
     onMapClick,
     zoomRange,
     renderCluster,
+    camera,
     gridSize,
     ...props }: MapProps) {
-    const location = {
+    let location = {
         center: coordinates,
         zoom: zoom
     };
@@ -61,7 +63,7 @@ export default function Map({
         const marker = feature.properties.originalMarker;
         return (
             <YMapMarker
-                key={marker.id}
+                key={`marker-${marker.id}-${marker.coordinates[0]}-${marker.coordinates[1]}`}
                 coordinates={marker.coordinates}
                 draggable={marker.draggable}
                 onClick={() => marker.onClick?.(marker.id)}
@@ -83,7 +85,7 @@ export default function Map({
         );
     }, [renderCluster]);
 
-    const darkTheme = [
+    const darkTheme = useMemo(() => [
         {
             "tags": "geographic_line",
             "stylers": [
@@ -112,11 +114,11 @@ export default function Map({
                     "zoom": 2
                 },
                 {
-                    "opacity": 0.8,
+                    "opacity": 1,
                     "zoom": 3
                 },
                 {
-                    "opacity": 0.8,
+                    "opacity": 1,
                     "zoom": 4
                 },
                 {
@@ -7040,12 +7042,24 @@ export default function Map({
                 "visibility": "off"
             }
         }
-    ];
+    ], []);
 
     return (
         <div {...props}>
             <YMapComponentsProvider apiKey={import.meta.env.VITE_YMAP_KEY}>
-                <YMap location={location} zoomRange={zoomRange}>
+                <YMap
+                    location={location}
+                    zoomRange={zoomRange}
+                    camera={camera}
+                    behaviors={[
+                        'drag',
+                        'scrollZoom',
+                        'mouseRotate',
+                        'mouseTilt',
+                        'pinchZoom',
+                        'pinchRotate',
+                        'panTilt']}
+                >
                     <YMapDefaultSchemeLayer
                         customization={darkTheme}
                     />
@@ -7057,13 +7071,13 @@ export default function Map({
 
                     <YMapCustomClusterer
                         features={features}
-                        gridSize={gridSize || 8}
+                        gridSize={gridSize || 16}
                         marker={renderMarker}
                         cluster={renderClusterMarker}
                     />
 
                 </YMap>
             </YMapComponentsProvider>
-        </div>
+        </div >
     );
 }

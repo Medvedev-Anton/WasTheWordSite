@@ -121,9 +121,11 @@ router.get('/:id', authenticateToken, (req, res) => {
       SELECT 
         o.*,
         u.username as adminUsername,
+        ui.imageUrl as imageUrl,
         (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
       FROM organizations o
       JOIN users u ON o.adminId = u.id
+      JOIN organization_icon ui ON o.organization_icon_id = ui.id
       WHERE o.id = ?
     `).get(orgId);
 
@@ -313,8 +315,7 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
       return res.status(403).json({ error: 'Only admin can update organization' });
     }
 
-    const { name, description, defaultCanPost, defaultCanComment, isPrivate, longitude, latitude } = req.body;
-    console.log(req.body, longitude, latitude);
+    const { name, description, defaultCanPost, defaultCanComment, isPrivate, longitude, latitude, organizationIconId } = req.body;
 
     const avatarUrl = req.file ? `/uploads/${req.file.filename}` : organization.avatar;
 
@@ -327,10 +328,20 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
     const isPrivateFlag = isPrivate !== undefined
       ? (isPrivate === 'true' || isPrivate === true || isPrivate === '1' ? 1 : 0)
       : organization.isPrivate;
+    let organization_icon_id = organizationIconId ?? 1;
 
     db.prepare(`
       UPDATE organizations 
-      SET name = ?, description = ?, avatar = ?, defaultCanPost = ?, defaultCanComment = ?, isPrivate = ?, longitude = ?, latitude = ?
+      SET 
+        name = ?,
+        description = ?,
+        avatar = ?,
+        defaultCanPost = ?,
+        defaultCanComment = ?,
+        isPrivate = ?,
+        longitude = ?,
+        latitude = ?,
+        organization_icon_id = ?
       WHERE id = ?
     `).run(
       name || organization.name,
@@ -341,6 +352,7 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
       isPrivateFlag,
       longitude,
       latitude,
+      organization_icon_id,
       orgId,
     );
 
