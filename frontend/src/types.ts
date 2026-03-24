@@ -67,6 +67,7 @@ export interface Organization {
   name: string;
   description?: string;
   avatar?: string;
+  coverImage?: string;
   adminId: number;
   adminUsername?: string;
   membersCount: number;
@@ -77,6 +78,8 @@ export interface Organization {
   parentId?: number | null;
   parentOrg?: { id: number; name: string; orgType?: string } | null;
   subOrganizations?: Organization[];
+  organization_icon_id?: number;
+  imageUrl?: string;
   createdAt: string;
   members?: OrganizationMember[];
   posts?: Post[],

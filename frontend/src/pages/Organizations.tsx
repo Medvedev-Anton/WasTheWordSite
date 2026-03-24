@@ -82,6 +82,7 @@ export default function Organizations() {
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
     const avatar = formData.get('avatar') as File;
+    const coverImage = formData.get('coverImage') as File;
     const orgType = formData.get('orgType') as string;
     const defaultCanPost = (e.currentTarget.querySelector('[name="defaultCanPost"]') as HTMLInputElement)?.checked;
     const defaultCanComment = (e.currentTarget.querySelector('[name="defaultCanComment"]') as HTMLInputElement)?.checked;
@@ -101,6 +102,9 @@ export default function Organizations() {
 
     if (avatar && avatar.size > 0) {
       data.append('avatar', avatar);
+    }
+    if (coverImage && coverImage.size > 0) {
+      data.append('coverImage', coverImage);
     }
 
     try {
@@ -312,6 +316,10 @@ export default function Organizations() {
                 Аватар:
                 <input type="file" name="avatar" accept="image/*" />
               </label>
+              <label>
+                Обложка:
+                <input type="file" name="coverImage" accept="image/*" />
+              </label>
               <div className="org-settings">
                 <h4>Настройки по умолчанию для новых сотрудников:</h4>
                 <label className="checkbox-label">
@@ -342,6 +350,12 @@ export default function Organizations() {
         ) : (
           organizations.map(org => (
             <div key={org.id} className="organization-card" onClick={() => handleSelectOrg(org.id)}>
+              <div
+                className={`org-card-cover ${org.coverImage ? 'has-cover' : ''}`}
+                style={org.coverImage ? { backgroundImage: `url(${getMediaUrl(org.coverImage)})` } : undefined}
+              >
+                {!org.coverImage && <span>Обложка организации</span>}
+              </div>
               {org.avatar ? (
                 <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
               ) : (
@@ -376,6 +390,7 @@ function OrganizationDetail({
   currentUserId: number;
   onNavigateToOrg: (id: number) => void;
 }) {
+  const { user } = useAuth();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'members' | 'settings'>('posts');
   const [editingOrg, setEditingOrg] = useState(false);
@@ -389,12 +404,14 @@ function OrganizationDetail({
     latitude: organization.latitude
   });
   const [orgAvatarFile, setOrgAvatarFile] = useState<File | null>(null);
+  const [orgCoverFile, setOrgCoverFile] = useState<File | null>(null);
   const [editingMember, setEditingMember] = useState<number | null>(null);
   const [inviteUsername, setInviteUsername] = useState('');
   const [inviteError, setInviteError] = useState('');
   const [showCreateSubOrg, setShowCreateSubOrg] = useState(false);
   const [subOrgName, setSubOrgName] = useState('');
   const [subOrgDesc, setSubOrgDesc] = useState('');
+  const [subOrgCoverFile, setSubOrgCoverFile] = useState<File | null>(null);
   const [subOrgCreating, setSubOrgCreating] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
@@ -416,6 +433,9 @@ function OrganizationDetail({
 
   const isMember = organization.members?.some(m => m.userId === currentUserId);
   const isAdmin = organization.adminId === currentUserId;
+  const isGlobalAdmin = user?.role === 'admin';
+  const canDeleteOrganization = isAdmin || isGlobalAdmin;
+  const canAccessSettings = isAdmin || isGlobalAdmin;
   const isModerator = organization.members?.some(
     m => m.userId === currentUserId && (m.role === 'moderator' || m.role === 'admin')
   );
@@ -476,11 +496,14 @@ function OrganizationDetail({
       formData.append('defaultCanPost', orgFormData.defaultCanPost.toString());
       formData.append('defaultCanComment', orgFormData.defaultCanComment.toString());
       formData.append('isPrivate', orgFormData.isPrivate.toString());
-      formData.append('longitude', longitude ?? 0);
-      formData.append('latitude', latitude ?? 0);
-      formData.append('organizationIconId', selectedIconId);
+      formData.append('longitude', (longitude ?? 0).toString());
+      formData.append('latitude', (latitude ?? 0).toString());
+      formData.append('organizationIconId', (selectedIconId ?? 1).toString());
       if (orgAvatarFile) {
         formData.append('avatar', orgAvatarFile);
+      }
+      if (orgCoverFile) {
+        formData.append('coverImage', orgCoverFile);
       }
 
       await axios.put(`/api/organizations/${organization.id}`, formData, {
@@ -540,6 +563,9 @@ function OrganizationDetail({
       data.append('defaultCanPost', 'true');
       data.append('defaultCanComment', 'true');
       data.append('isPrivate', 'false');
+      if (subOrgCoverFile) {
+        data.append('coverImage', subOrgCoverFile);
+      }
 
       await axios.post('/api/organizations', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -547,6 +573,7 @@ function OrganizationDetail({
       setShowCreateSubOrg(false);
       setSubOrgName('');
       setSubOrgDesc('');
+      setSubOrgCoverFile(null);
       onUpdate(organization.id);
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка при создании подорганизации');
@@ -588,6 +615,9 @@ function OrganizationDetail({
   };
 
   const roleLabels: Record<string, string> = { admin: 'Руководитель', moderator: 'Модератор', member: 'Сотрудник' };
+  const orgCoverPreview = orgCoverFile
+    ? URL.createObjectURL(orgCoverFile)
+    : (organization.coverImage ? getMediaUrl(organization.coverImage) : '');
 
   return (
     <div className="organization-detail">
@@ -606,6 +636,13 @@ function OrganizationDetail({
           <span>{organization.name}</span>
         </div>
       )}
+
+      <div
+        className={`org-cover-hero ${organization.coverImage ? 'has-cover' : ''}`}
+        style={organization.coverImage ? { backgroundImage: `url(${getMediaUrl(organization.coverImage)})` } : undefined}
+      >
+        {!organization.coverImage && <span>Добавьте обложку, чтобы выделить организацию</span>}
+      </div>
 
       <div className="org-header">
         {editingOrg ? (
@@ -643,6 +680,24 @@ function OrganizationDetail({
                 rows={3}
                 className="org-edit-textarea"
               />
+
+              <div className="org-cover-editor">
+                <div
+                  className={`org-card-cover ${orgCoverPreview ? 'has-cover' : ''}`}
+                  style={orgCoverPreview ? { backgroundImage: `url(${orgCoverPreview})` } : undefined}
+                >
+                  {!orgCoverPreview && <span>Обложка организации</span>}
+                </div>
+                <label className="avatar-upload-label">
+                  🖼️ Изменить обложку
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setOrgCoverFile(e.target.files?.[0] || null)}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
 
               <div className="org-locations">
                 <div className="input-mode-toggle">
@@ -773,6 +828,7 @@ function OrganizationDetail({
                   });
                   setSelectedIconId(organization.organization_icon_id || null);
                   setOrgAvatarFile(null);
+                  setOrgCoverFile(null);
                   setLongitude(organization.longitude);
                   setLatitude(organization.latitude);
                 }} className="cancel-org-btn">Отмена</button>
@@ -840,11 +896,22 @@ function OrganizationDetail({
                 rows={2}
                 className="org-edit-textarea"
               />
+              <label>
+                Обложка:
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setSubOrgCoverFile(e.target.files?.[0] || null)}
+                />
+              </label>
               <div className="org-edit-actions">
                 <button onClick={handleCreateSubOrg} className="save-org-btn" disabled={subOrgCreating}>
                   {subOrgCreating ? 'Создание...' : 'Создать'}
                 </button>
-                <button onClick={() => setShowCreateSubOrg(false)} className="cancel-org-btn">Отмена</button>
+                <button onClick={() => {
+                  setShowCreateSubOrg(false);
+                  setSubOrgCoverFile(null);
+                }} className="cancel-org-btn">Отмена</button>
               </div>
             </div>
           )}
@@ -852,6 +919,12 @@ function OrganizationDetail({
             {organization.subOrganizations && organization.subOrganizations.length > 0 ? (
               organization.subOrganizations.map(sub => (
                 <div key={sub.id} className="organization-card suborg-card" onClick={() => onNavigateToOrg(sub.id)}>
+                  <div
+                    className={`org-card-cover ${sub.coverImage ? 'has-cover' : ''}`}
+                    style={sub.coverImage ? { backgroundImage: `url(${getMediaUrl(sub.coverImage)})` } : undefined}
+                  >
+                    {!sub.coverImage && <span>Обложка подразделения</span>}
+                  </div>
                   {sub.avatar ? (
                     <img src={getMediaUrl(sub.avatar)} alt={sub.name} className="org-avatar" />
                   ) : (
@@ -878,7 +951,7 @@ function OrganizationDetail({
           className={`org-tab ${activeTab === 'posts' ? 'active' : ''}`}
           onClick={() => setActiveTab('posts')}
         >📝 Посты</button>
-        {isAdmin && (
+        {canAccessSettings && (
           <button
             className={`org-tab ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
@@ -934,62 +1007,74 @@ function OrganizationDetail({
             </div>
           )}
 
-          {/* Settings tab (admin only) */}
-          {activeTab === 'settings' && isAdmin && (
+          {/* Settings tab (organization admin or global admin) */}
+          {activeTab === 'settings' && canAccessSettings && (
             <div className="org-settings-section">
               <h3>Настройки организации</h3>
 
-              <div className="settings-card">
-                <h4>Права новых сотрудников по умолчанию</h4>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={orgFormData.defaultCanPost}
-                    onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanPost: e.target.checked })}
-                  />
-                  <span>Новые сотрудники могут создавать посты</span>
-                </label>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={orgFormData.defaultCanComment}
-                    onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanComment: e.target.checked })}
-                  />
-                  <span>Новые сотрудники могут комментировать</span>
-                </label>
-              </div>
+              {isAdmin && (
+                <>
+                  <div className="settings-card">
+                    <h4>Права новых сотрудников по умолчанию</h4>
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={orgFormData.defaultCanPost}
+                        onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanPost: e.target.checked })}
+                      />
+                      <span>Новые сотрудники могут создавать посты</span>
+                    </label>
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={orgFormData.defaultCanComment}
+                        onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanComment: e.target.checked })}
+                      />
+                      <span>Новые сотрудники могут комментировать</span>
+                    </label>
+                  </div>
 
-              <div className="settings-card">
-                <h4>Видимость</h4>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={orgFormData.isPrivate}
-                    onChange={(e) => setOrgFormData({ ...orgFormData, isPrivate: e.target.checked })}
-                  />
-                  <span>🔒 Закрытая организация (только по приглашениям)</span>
-                </label>
-              </div>
+                  <div className="settings-card">
+                    <h4>Видимость</h4>
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={orgFormData.isPrivate}
+                        onChange={(e) => setOrgFormData({ ...orgFormData, isPrivate: e.target.checked })}
+                      />
+                      <span>🔒 Закрытая организация (только по приглашениям)</span>
+                    </label>
+                  </div>
 
-              <button
-                onClick={handleSaveOrg}
-                className="save-org-btn"
-                style={{ marginTop: '1rem' }}
-              >
-                💾 Сохранить настройки
-              </button>
+                  <button
+                    onClick={handleSaveOrg}
+                    className="save-org-btn"
+                    style={{ marginTop: '1rem' }}
+                  >
+                    💾 Сохранить настройки
+                  </button>
+                </>
+              )}
 
-              <div className="settings-card settings-card-danger">
-                <h4>Опасная зона</h4>
-                <p className="danger-note">Удаление организации необратимо. Все посты и данные будут удалены.
-                  {organization.subOrganizations && organization.subOrganizations.length > 0 && (
-                    <> Вместе с ней будут удалены все дочерние подразделения.</>
-                  )}
-                </p>
-                <button onClick={() => setShowDeleteModal(true)} className="delete-org-btn">
-                  🗑️ Удалить организацию
-                </button>
-              </div>
+              {!isAdmin && isGlobalAdmin && (
+                <div className="settings-card">
+                  <p className="danger-note">У вас есть права глобального админа. Для этой организации доступно удаление.</p>
+                </div>
+              )}
+
+              {canDeleteOrganization && (
+                <div className="settings-card settings-card-danger">
+                  <h4>Опасная зона</h4>
+                  <p className="danger-note">Удаление организации необратимо. Все посты и данные будут удалены.
+                    {organization.subOrganizations && organization.subOrganizations.length > 0 && (
+                      <> Вместе с ней будут удалены все дочерние подразделения.</>
+                    )}
+                  </p>
+                  <button onClick={() => setShowDeleteModal(true)} className="delete-org-btn">
+                    🗑️ Удалить организацию
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>{/* end org-main-content */}

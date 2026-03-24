@@ -1,7 +1,7 @@
 {
-  "name": "wastheword",
+  "name": "nasledie",
   "version": "1.0.0",
-  "description": "WasTheWord Social Network",
+  "description": "Наследие Social Network",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",

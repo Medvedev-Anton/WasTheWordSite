@@ -28,7 +28,7 @@ export default function Register() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>WasTheWord</h1>
+        <h1>Наследие</h1>
         <h2>Регистрация</h2>
         <form onSubmit={handleSubmit}>
           {error && <div className="error">{error}</div>}

@@ -26,6 +26,20 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+const orgMediaUpload = upload.fields([
+  { name: 'avatar', maxCount: 1 },
+  { name: 'coverImage', maxCount: 1 },
+]);
+
+function getUploadedFileUrl(req, fieldName) {
+  const files = req.files;
+  if (!files || typeof files !== 'object') {
+    return null;
+  }
+
+  const uploaded = files[fieldName]?.[0];
+  return uploaded ? `/uploads/${uploaded.filename}` : null;
+}
 
 // Org type hierarchy
 const ORG_HIERARCHY = {
@@ -223,7 +237,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 });
 
 // Create organization
-router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
+router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
   try {
     const {
       name,
@@ -245,7 +259,8 @@ router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
       return res.status(400).json({ error: 'Name is required' });
     }
 
-    const avatarUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const avatarUrl = getUploadedFileUrl(req, 'avatar');
+    const coverImageUrl = getUploadedFileUrl(req, 'coverImage');
     const canPost = defaultCanPost === 'true' || defaultCanPost === true || defaultCanPost === '1' ? 1 : 0;
     const canComment = defaultCanComment === 'true' || defaultCanComment === true || defaultCanComment === '1' ? 1 : 0;
     const isPrivateFlag = isPrivate === 'true' || isPrivate === true || isPrivate === '1' ? 1 : 0;
@@ -273,9 +288,9 @@ router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
     }
 
     const result = db.prepare(`
-      INSERT INTO organizations (name, description, avatar, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, description || null, avatarUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId);
+      INSERT INTO organizations (name, description, avatar, coverImage, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, description || null, avatarUrl, coverImageUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId);
 
     // Add admin as member with 'admin' role
     db.prepare(`
@@ -301,7 +316,7 @@ router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
 });
 
 // Update organization
-router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
+router.put('/:id', authenticateToken, orgMediaUpload, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
     const userId = req.user.userId;
@@ -317,7 +332,8 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
 
     const { name, description, defaultCanPost, defaultCanComment, isPrivate, longitude, latitude, organizationIconId } = req.body;
 
-    const avatarUrl = req.file ? `/uploads/${req.file.filename}` : organization.avatar;
+    const avatarUrl = getUploadedFileUrl(req, 'avatar') || organization.avatar;
+    const coverImageUrl = getUploadedFileUrl(req, 'coverImage') || organization.coverImage;
 
     const canPost = defaultCanPost !== undefined
       ? (defaultCanPost === 'true' || defaultCanPost === true || defaultCanPost === '1' ? 1 : 0)
@@ -336,6 +352,7 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
         name = ?,
         description = ?,
         avatar = ?,
+        coverImage = ?,
         defaultCanPost = ?,
         defaultCanComment = ?,
         isPrivate = ?,
@@ -347,6 +364,7 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
       name || organization.name,
       description !== undefined ? description : organization.description,
       avatarUrl,
+      coverImageUrl,
       canPost,
       canComment,
       isPrivateFlag,
@@ -559,7 +577,7 @@ router.delete('/:id/moderators/:targetUserId', authenticateToken, (req, res) => 
   }
 });
 
-// Delete organization (admin only)
+// Delete organization (organization admin or global admin)
 router.delete('/:id', authenticateToken, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
@@ -570,8 +588,11 @@ router.delete('/:id', authenticateToken, (req, res) => {
       return res.status(404).json({ error: 'Organization not found' });
     }
 
-    if (organization.adminId !== userId) {
-      return res.status(403).json({ error: 'Only admin can delete organization' });
+    const currentUser = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
+    const isGlobalAdmin = currentUser?.role === 'admin';
+
+    if (organization.adminId !== userId && !isGlobalAdmin) {
+      return res.status(403).json({ error: 'Only organization admin or global admin can delete organization' });
     }
 
     db.prepare('DELETE FROM organizations WHERE id = ?').run(orgId);

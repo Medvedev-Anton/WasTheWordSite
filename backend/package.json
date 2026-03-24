@@ -1,7 +1,7 @@
 {
-  "name": "wastheword-backend",
+  "name": "nasledie-backend",
   "version": "1.0.0",
-  "description": "WasTheWord Backend API",
+  "description": "Наследие Backend API",
   "main": "server.js",
   "type": "module",
   "scripts": {

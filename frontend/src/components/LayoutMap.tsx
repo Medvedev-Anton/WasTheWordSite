@@ -15,7 +15,7 @@ export default function LayoutMap({ children }: { children: React.ReactNode }) {
       <header className="header">
         <div className="header-content">
           <Link to="/" className="logo" onClick={closeSidebar}>
-            <h1>WasTheWord</h1>
+            <h1>Наследие</h1>
           </Link>
           <nav className="nav">
             <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
@@ -55,7 +55,7 @@ export default function LayoutMap({ children }: { children: React.ReactNode }) {
       {/* Mobile slide-in sidebar (outside header to avoid stacking context issues) */}
       <aside className={`mobile-sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="mobile-sidebar-top">
-          <span className="mobile-sidebar-title">WasTheWord</span>
+          <span className="mobile-sidebar-title">Наследие</span>
           <button className="mobile-sidebar-close" onClick={closeSidebar}>✕</button>
         </div>
         <nav className="mobile-sidebar-nav">

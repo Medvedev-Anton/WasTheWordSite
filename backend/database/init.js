@@ -87,6 +87,7 @@ export async function initDatabase() {
       name TEXT NOT NULL,
       description TEXT,
       avatar TEXT,
+      coverImage TEXT,
       adminId INTEGER NOT NULL,
       defaultCanPost INTEGER DEFAULT 1,
       defaultCanComment INTEGER DEFAULT 1,
@@ -110,6 +111,7 @@ export async function initDatabase() {
   const hasParentId = orgTableInfo.some(col => col.name === 'parentId');
   const hasLongitude = orgTableInfo.some(col => col.name === 'longitude');
   const hasLatitude = orgTableInfo.some(col => col.name === 'latitude');
+  const hasCoverImage = orgTableInfo.some(col => col.name === 'coverImage');
 
   if (!hasDefaultCanPost) {
     try {
@@ -160,6 +162,13 @@ export async function initDatabase() {
     }
     catch (e) {
       console.error('Error adding latitude column:', e.message);
+    }
+  }
+  if (!hasCoverImage) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN coverImage TEXT`);
+    } catch (e) {
+      console.error('Error adding coverImage column:', e.message);
     }
   }
 

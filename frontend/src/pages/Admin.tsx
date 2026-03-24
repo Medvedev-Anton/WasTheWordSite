@@ -1,6 +1,6 @@
-import { useState, useEffect, act } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { User, Post } from '../types';
+import { User, Post, Organization } from '../types';
 import { getMediaUrl } from '../config';
 import './Admin.css';
 import IconEditModal from '../components/IconEditModal';
@@ -30,9 +30,10 @@ const ORG_TO_ICON: Record<string, string> = {
 };
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images'>('stats');
+  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations'>('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
@@ -117,6 +118,10 @@ export default function Admin() {
         const response = await axios.get('/api/admin/posts');
         setPosts(response.data);
       }
+      else if (activeTab === 'organizations') {
+        const response = await axios.get('/api/organizations');
+        setOrganizations(response.data);
+      }
       else if (activeTab === 'organization-images') {
         const response = await axios.get('/api/admin/icons');
         setOrganizationIcons(response.data.icons);
@@ -158,6 +163,19 @@ export default function Admin() {
       setPosts(posts.filter(p => p.id !== postId));
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка при удалении поста');
+    }
+  };
+
+  const handleDeleteOrganization = async (orgId: number, orgName: string) => {
+    if (!confirm(`Вы уверены, что хотите удалить организацию "${orgName}"?`)) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/organizations/${orgId}`);
+      fetchData();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при удалении организации');
     }
   };
 
@@ -222,6 +240,12 @@ export default function Admin() {
           onClick={() => setActiveTab('posts')}
         >
           Посты
+        </button>
+        <button
+          className={activeTab === 'organizations' ? 'active' : ''}
+          onClick={() => setActiveTab('organizations')}
+        >
+          Организации
         </button>
         <button
           className={activeTab === 'organization-images' ? 'active' : ''}
@@ -367,6 +391,56 @@ export default function Admin() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {activeTab === 'organizations' && (
+          <div className="users-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Название</th>
+                  <th>Тип</th>
+                  <th>Уровень</th>
+                  <th>Руководитель</th>
+                  <th>Сотрудников</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                {organizations.flatMap(org => ([
+                  { ...org, _isSubOrg: false, _indent: 0 },
+                  ...(org.subOrganizations || []).map(sub => ({
+                    ...sub,
+                    _isSubOrg: true,
+                    _indent: 1,
+                    adminUsername: sub.adminUsername || org.adminUsername,
+                  }))
+                ])).map((org: any) => (
+                  <tr key={`${org.id}-${org._isSubOrg ? 'sub' : 'root'}`}>
+                    <td>{org.id}</td>
+                    <td>
+                      <span style={{ paddingLeft: `${org._indent * 16}px` }}>
+                        {org._isSubOrg ? '└ ' : ''}{org.name}
+                      </span>
+                    </td>
+                    <td>{org.orgType || 'Организация'}</td>
+                    <td>{org._isSubOrg ? 'Подорганизация' : 'Организация'}</td>
+                    <td>{org.adminUsername || '-'}</td>
+                    <td>{org.membersCount || 0}</td>
+                    <td className="actions">
+                      <button
+                        onClick={() => handleDeleteOrganization(org.id, org.name)}
+                        className="btn-delete"
+                      >
+                        Удалить
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 

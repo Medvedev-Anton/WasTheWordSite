@@ -1,4 +1,4 @@
-# WasTheWord - Social Network
+# Наследие - Social Network
 
 Современная социальная сеть с функциями публикации постов, организаций, чатов и профилей пользователей.
 
@@ -158,7 +158,7 @@ npm run preview
 ## Структура проекта
 
 ```
-wastheword/
+nasledie/
 ├── backend/
 │   ├── database/
 │   │   ├── init.js          # Инициализация БД
