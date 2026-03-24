@@ -19,11 +19,11 @@ export default function OrganizationModal({
     description
 }: ModalProps) {
     const typeImages: Record<string, string> = {
-        'Производственная': 'image/organizations/production.jpg',
-        'Коммерческая': 'image/organizations/commercial.jpg',
-        'Административная': 'image/organizations/administrative.jpg',
-        'Образовательная': 'image/organizations/educational.jpg',
-        'Свободная': 'image/organizations/free_appointment.jpg'
+        'Производственная': '/image/organizations/production.jpg',
+        'Коммерческая': '/image/organizations/commercial.jpg',
+        'Административная': '/image/organizations/administrative.jpg',
+        'Образовательная': '/image/organizations/educational.jpg',
+        'Свободная': '/image/organizations/free_appointment.jpg'
     };
 
     useEffect(() => {
