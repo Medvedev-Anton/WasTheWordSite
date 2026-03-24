@@ -1,0 +1,19 @@
+.main-content-map {
+    width: 100%;
+    margin-top: 30px;
+    flex: 1;
+    display: flex;
+}
+
+.layout-map {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+@media (max-width: 770px) {
+    .main-content-map {
+        margin-top: 0;
+    }
+}

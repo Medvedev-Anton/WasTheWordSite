@@ -12,7 +12,6 @@ backend/.env
 frontend/.env
 
 backend/database/database.db
-backend/uploads/
 
 *.sqlite
 *.db
@@ -21,13 +20,10 @@ node_modules/
 backend/node_modules/
 frontend/node_modules/
 backend/database/database.db
-backend/uploads/
+backend/uploads/messages
+backend/uploads/organizations/*
+!backend/uploads/organizations/default.jpg
+backend/*
 .env
 .DS_Store
 *.log
-
-
-
-
-
-

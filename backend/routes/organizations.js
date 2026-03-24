@@ -68,10 +68,12 @@ router.get('/', authenticateToken, (req, res) => {
       organizations = db.prepare(`
         SELECT 
           o.*,
+          ui.imageUrl as imageUrl,
           u.username as adminUsername,
           (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
         FROM organizations o
         JOIN users u ON o.adminId = u.id
+        JOIN organization_icon ui ON o.organization_icon_id = ui.id
         WHERE o.parentId IS NULL
         ORDER BY o.createdAt DESC
       `).all();
@@ -100,6 +102,17 @@ router.get('/', authenticateToken, (req, res) => {
   }
 });
 
+router.get('/icons', authenticateToken, (req, res) => {
+  try {
+    const icons = db.prepare('SELECT * FROM organization_icon').all();
+    res.status(200).json({ icons: icons });
+  }
+  catch (error) {
+    console.error('get organization-images:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Get organization by ID
 router.get('/:id', authenticateToken, (req, res) => {
   try {
@@ -108,9 +121,11 @@ router.get('/:id', authenticateToken, (req, res) => {
       SELECT 
         o.*,
         u.username as adminUsername,
+        ui.imageUrl as imageUrl,
         (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
       FROM organizations o
       JOIN users u ON o.adminId = u.id
+      JOIN organization_icon ui ON o.organization_icon_id = ui.id
       WHERE o.id = ?
     `).get(orgId);
 
@@ -131,7 +146,7 @@ router.get('/:id', authenticateToken, (req, res) => {
       WHERE om.organizationId = ?
       ORDER BY om.role DESC, om.createdAt ASC
     `).all(orgId);
-    
+
     // Get sub-organizations
     const subOrganizations = db.prepare(`
       SELECT 
@@ -181,7 +196,7 @@ router.get('/:id', authenticateToken, (req, res) => {
         WHERE postId IN (${placeholders})
         ORDER BY postId, id ASC
       `).all(...postIds);
-      
+
       const filesByPostId = {};
       files.forEach(file => {
         if (!filesByPostId[file.postId]) {
@@ -194,7 +209,7 @@ router.get('/:id', authenticateToken, (req, res) => {
           fileType: file.fileType
         });
       });
-      
+
       posts.forEach(post => {
         post.files = filesByPostId[post.id] || [];
       });
@@ -210,8 +225,21 @@ router.get('/:id', authenticateToken, (req, res) => {
 // Create organization
 router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
   try {
-    const { name, description, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId } = req.body;
+    const {
+      name,
+      description,
+      defaultCanPost,
+      defaultCanComment,
+      isPrivate,
+      orgType,
+      parentId,
+      longitude,
+      latitude,
+      organizationIconId
+    } = req.body;
     const adminId = req.user.userId;
+
+    const iconId = organizationIconId === null || organizationIconId === undefined || organizationIconId === "" ? 1 : organizationIconId;
 
     if (!name) {
       return res.status(400).json({ error: 'Name is required' });
@@ -245,9 +273,9 @@ router.post('/', authenticateToken, upload.single('avatar'), (req, res) => {
     }
 
     const result = db.prepare(`
-      INSERT INTO organizations (name, description, avatar, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, description || null, avatarUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId);
+      INSERT INTO organizations (name, description, avatar, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, description || null, avatarUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId);
 
     // Add admin as member with 'admin' role
     db.prepare(`
@@ -287,7 +315,8 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
       return res.status(403).json({ error: 'Only admin can update organization' });
     }
 
-    const { name, description, defaultCanPost, defaultCanComment, isPrivate } = req.body;
+    const { name, description, defaultCanPost, defaultCanComment, isPrivate, longitude, latitude, organizationIconId } = req.body;
+
     const avatarUrl = req.file ? `/uploads/${req.file.filename}` : organization.avatar;
 
     const canPost = defaultCanPost !== undefined
@@ -299,10 +328,20 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
     const isPrivateFlag = isPrivate !== undefined
       ? (isPrivate === 'true' || isPrivate === true || isPrivate === '1' ? 1 : 0)
       : organization.isPrivate;
+    let organization_icon_id = organizationIconId ?? 1;
 
     db.prepare(`
       UPDATE organizations 
-      SET name = ?, description = ?, avatar = ?, defaultCanPost = ?, defaultCanComment = ?, isPrivate = ?
+      SET 
+        name = ?,
+        description = ?,
+        avatar = ?,
+        defaultCanPost = ?,
+        defaultCanComment = ?,
+        isPrivate = ?,
+        longitude = ?,
+        latitude = ?,
+        organization_icon_id = ?
       WHERE id = ?
     `).run(
       name || organization.name,
@@ -311,7 +350,10 @@ router.put('/:id', authenticateToken, upload.single('avatar'), (req, res) => {
       canPost,
       canComment,
       isPrivateFlag,
-      orgId
+      longitude,
+      latitude,
+      organization_icon_id,
+      orgId,
     );
 
     const updated = db.prepare('SELECT * FROM organizations WHERE id = ?').get(orgId);

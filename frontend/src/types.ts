@@ -79,7 +79,9 @@ export interface Organization {
   subOrganizations?: Organization[];
   createdAt: string;
   members?: OrganizationMember[];
-  posts?: Post[];
+  posts?: Post[],
+  longitude: string,
+  latitude: string
 }
 
 export interface OrganizationMember {

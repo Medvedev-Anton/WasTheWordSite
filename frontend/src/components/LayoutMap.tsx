@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Layout.css';
+import './LayoutMap.css';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function LayoutMap({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="layout">
+    <div className="layout-map">
       <header className="header">
         <div className="header-content">
           <Link to="/" className="logo" onClick={closeSidebar}>
@@ -91,7 +92,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </aside>
       <div className={`nav-overlay${sidebarOpen ? ' open' : ''}`} onClick={closeSidebar} />
 
-      <main className="main-content">
+      <main className="main-content-map">
         {children}
       </main>
     </div>

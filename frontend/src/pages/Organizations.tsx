@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Organization } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import PostCard from '../components/PostCard';
 import CreatePost from '../components/CreatePost';
 import { getMediaUrl } from '../config';
+
 import './Organizations.css';
+import AddressInput from '../components/AddressInput';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Свободная'];
 
@@ -27,16 +29,41 @@ const ORG_TYPE_ICONS: Record<string, string> = {
   'Сектор': '🔗',
 };
 
+interface OrganizationIcon {
+  id: number;
+  orgType: string;
+  imageUrl: string;
+}
+
 export default function Organizations() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const [inputMode, setInputMode] = useState("address");
+  const [address, setAddress] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState("");
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.selectOrganizationFromMap) {
+      const orgFromMap = location.state.selectOrganizationFromMap;
+      handleSelectOrg(orgFromMap.id);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     fetchOrganizations();
   }, []);
+
+  const onSelectAddress = (address: string, coordinate: [number, number]) => {
+    setAddress(address);
+    setLatitude(coordinate[0].toString());
+    setLongitude(coordinate[1].toString());
+  };
 
   const fetchOrganizations = async () => {
     try {
@@ -59,6 +86,7 @@ export default function Organizations() {
     const defaultCanPost = (e.currentTarget.querySelector('[name="defaultCanPost"]') as HTMLInputElement)?.checked;
     const defaultCanComment = (e.currentTarget.querySelector('[name="defaultCanComment"]') as HTMLInputElement)?.checked;
     const isPrivate = (e.currentTarget.querySelector('[name="isPrivate"]') as HTMLInputElement)?.checked;
+    const organizationIconId = selectedIconId?.toString();
 
     const data = new FormData();
     data.append('name', name);
@@ -67,6 +95,10 @@ export default function Organizations() {
     data.append('defaultCanPost', defaultCanPost.toString());
     data.append('defaultCanComment', defaultCanComment.toString());
     data.append('isPrivate', isPrivate.toString());
+    data.append('longitude', longitude);
+    data.append('latitude', latitude);
+    data.append('organizationIconId', organizationIconId ?? "");
+
     if (avatar && avatar.size > 0) {
       data.append('avatar', avatar);
     }
@@ -112,6 +144,29 @@ export default function Organizations() {
     }
   };
 
+  const [selectedType, setSelectedType] = useState('Производственная');
+  const [selectedIconId, setSelectedIconId] = useState<number | null>(null);
+  const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
+  useEffect(() => {
+    fetchIcons();
+  }, []);
+
+  const fetchIcons = async () => {
+    try {
+      const response = await axios.get('/api/organizations/icons');
+      setOrganizationIcons(response.data.icons);
+    } catch (error) {
+      console.error('Failed to fetch icons:', error);
+    }
+  };
+  const iconsByType = organizationIcons.reduce((acc, icon) => {
+    if (!acc[icon.orgType]) {
+      acc[icon.orgType] = [];
+    }
+    acc[icon.orgType].push(icon);
+    return acc;
+  }, {} as Record<string, OrganizationIcon[]>);
+
   if (loading) {
     return <div className="loading">Загрузка...</div>;
   }
@@ -138,20 +193,121 @@ export default function Organizations() {
       </div>
 
       {showCreateModal && (
-        <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
+        <div className="modal-overlay" onClick={() => { setShowCreateModal(false); setAddress(""); setLatitude(""); setLongitude(""); }}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h3>Создать организацию</h3>
             <form onSubmit={handleCreateOrg}>
               <input type="text" name="name" placeholder="Название *" required />
               <textarea name="description" placeholder="Описание" rows={4} />
+
+              <div className="org-locations">
+                <div className="input-mode-toggle">
+                  <button
+                    type="button"
+                    className={`mode-btn ${inputMode === 'address' ? 'active' : ''}`}
+                    onClick={() => setInputMode('address')}
+                  >
+                    <span className="mode-icon">📍</span>
+                    Поиск по адресу
+                  </button>
+                  <button
+                    type="button"
+                    className={`mode-btn ${inputMode === 'manual' ? 'active' : ''}`}
+                    onClick={() => setInputMode('manual')}
+                  >
+                    <span className="mode-icon">✏️</span>
+                    Ввести координаты
+                  </button>
+                </div>
+
+                {inputMode === 'address' && (
+                  <div className="address-mode">
+                    <AddressInput
+                      onSelectAddress={onSelectAddress}
+                      placeholder="Введите адрес"
+                      onTextChange={(text: string) => { setAddress(text); }}
+                    />
+                  </div>
+                )}
+
+                {inputMode === 'manual' && (
+                  <div className="manual-mode">
+                    <div className="coordinate-group">
+                      <label className="coordinate-label">
+                        <span>Долгота</span>
+                        <input
+                          type="number"
+                          name="longitude"
+                          required
+                          min={-180}
+                          max={180}
+                          step={"any"}
+                          placeholder="Пример: 37.617635"
+                          value={longitude ?? ""}
+                          onChange={(e) => setLongitude(e.target.value)}
+                        />
+                      </label>
+                      <label className="coordinate-label">
+                        <span>Широта</span>
+                        <input
+                          type="number"
+                          name="latitude"
+                          required
+                          min={-90}
+                          max={90}
+                          step={"any"}
+                          placeholder="Пример: 55.755814"
+                          value={latitude ?? ""}
+                          onChange={(e) => setLatitude(e.target.value)}
+                        />
+                      </label>
+                    </div>
+                    <div className="coordinate-hint">
+                      💡 Координаты можно скопировать с <a href="https://yandex.ru/maps" target="_blank" rel="noopener noreferrer">Яндекс.Карт</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <label>
                 Тип организации:
-                <select name="orgType" className="org-type-select">
+                <select name="orgType" className="org-type-select"
+                  onChange={(e) => {
+                    setSelectedType(e.target.value);
+                    setSelectedIconId(null);
+                  }}
+                >
                   {ROOT_ORG_TYPES.map(t => (
                     <option key={t} value={t}>{ORG_TYPE_ICONS[t]} {t}</option>
                   ))}
                 </select>
               </label>
+
+              {selectedType && iconsByType[selectedType]?.length > 0 && (
+                <div className="org-icon-selector">
+                  <h4>Выберите иконку для организации:</h4>
+                  <div className="icon-grid">
+                    {iconsByType[selectedType].map(icon => (
+                      <div
+                        key={icon.id}
+                        className={`icon-option ${selectedIconId === icon.id ? 'selected' : ''}`}
+                        onClick={() => setSelectedIconId(icon.id)}
+                      >
+                        <div className="icon-preview">
+                          <img src={getMediaUrl(icon.imageUrl)} alt={selectedType} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedType && (!iconsByType[selectedType] || iconsByType[selectedType].length === 0) && (
+                <div className="no-icons-warning">
+                  <p>⚠️ Для типа "{selectedType}" пока нет иконок. Будет использована иконка по умолчанию.</p>
+                </div>
+              )}
+
               <label>
                 Аватар:
                 <input type="file" name="avatar" accept="image/*" />
@@ -196,7 +352,7 @@ export default function Organizations() {
               <p>{org.description || 'Нет описания'}</p>
               <div className="org-info">
                 <span>👥 {org.membersCount} сотрудников</span>
-                  <span>👤 Руководитель: {org.adminUsername}</span>
+                <span>👤 Руководитель: {org.adminUsername}</span>
                 {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
               </div>
             </div>
@@ -229,6 +385,8 @@ function OrganizationDetail({
     defaultCanPost: organization.defaultCanPost === 1,
     defaultCanComment: organization.defaultCanComment === 1,
     isPrivate: organization.isPrivate === 1,
+    longitude: organization.longitude,
+    latitude: organization.latitude
   });
   const [orgAvatarFile, setOrgAvatarFile] = useState<File | null>(null);
   const [editingMember, setEditingMember] = useState<number | null>(null);
@@ -318,6 +476,9 @@ function OrganizationDetail({
       formData.append('defaultCanPost', orgFormData.defaultCanPost.toString());
       formData.append('defaultCanComment', orgFormData.defaultCanComment.toString());
       formData.append('isPrivate', orgFormData.isPrivate.toString());
+      formData.append('longitude', longitude ?? 0);
+      formData.append('latitude', latitude ?? 0);
+      formData.append('organizationIconId', selectedIconId);
       if (orgAvatarFile) {
         formData.append('avatar', orgAvatarFile);
       }
@@ -394,6 +555,38 @@ function OrganizationDetail({
     }
   };
 
+  const [selectedIconId, setSelectedIconId] = useState(organization.organization_icon_id || 1);
+  const [organizationIcons, setOrganizationIcons] = useState([]);
+  const fetchIcons = async () => {
+    try {
+      const response = await axios.get('/api/organizations/icons');
+      setOrganizationIcons(response.data.icons);
+    } catch (error) {
+      console.error('Failed to fetch icons:', error);
+    }
+  };
+
+  const iconsByType = organizationIcons.reduce((acc, icon) => {
+    if (!acc[icon.orgType]) {
+      acc[icon.orgType] = [];
+    }
+    acc[icon.orgType].push(icon);
+    return acc;
+  }, {} as Record<string, OrganizationIcon[]>);
+
+  useEffect(() => { fetchIcons(); }, []);
+
+  const [inputMode, setInputMode] = useState("address");
+  const [address, setAddress] = useState("");
+  const [longitude, setLongitude] = useState(organization.longitude);
+  const [latitude, setLatitude] = useState(organization.latitude);
+
+  const onSelectAddress = (address: string, coordinate: [number, number]) => {
+    setAddress(address);
+    setLatitude(coordinate[0].toString());
+    setLongitude(coordinate[1].toString());
+  };
+
   const roleLabels: Record<string, string> = { admin: 'Руководитель', moderator: 'Модератор', member: 'Сотрудник' };
 
   return (
@@ -450,6 +643,121 @@ function OrganizationDetail({
                 rows={3}
                 className="org-edit-textarea"
               />
+
+              <div className="org-locations">
+                <div className="input-mode-toggle">
+                  <button
+                    type="button"
+                    className={`mode-btn ${inputMode === 'address' ? 'active' : ''}`}
+                    onClick={() => setInputMode('address')}
+                  >
+                    <span className="mode-icon">📍</span>
+                    Поиск по адресу
+                  </button>
+                  <button
+                    type="button"
+                    className={`mode-btn ${inputMode === 'manual' ? 'active' : ''}`}
+                    onClick={() => setInputMode('manual')}
+                  >
+                    <span className="mode-icon">✏️</span>
+                    Ввести координаты
+                  </button>
+                </div>
+
+                {inputMode === 'address' && (
+                  <div className="address-mode">
+                    <AddressInput
+                      onSelectAddress={onSelectAddress}
+                      placeholder="Введите адрес"
+                      onTextChange={(text: string) => { setAddress(text); }}
+                    />
+                  </div>
+                )}
+
+                {inputMode === 'manual' && (
+                  <div className="manual-mode">
+                    <div className="coordinate-group">
+                      <label className="coordinate-label">
+                        <span>Долгота</span>
+                        <input
+                          type="number"
+                          required
+                          min={-180}
+                          max={180}
+                          step="any"
+                          placeholder="Пример: 37.617635"
+                          value={longitude ?? ""}
+                          onChange={(e) => setLongitude(e.target.value)}
+                        />
+                      </label>
+                      <label className="coordinate-label">
+                        <span>Широта</span>
+                        <input
+                          type="number"
+                          required
+                          min={-90}
+                          max={90}
+                          step="any"
+                          placeholder="Пример: 55.755814"
+                          value={latitude ?? ""}
+                          onChange={(e) => setLatitude(e.target.value)}
+                        />
+                      </label>
+                    </div>
+                    <div className="coordinate-hint">
+                      💡 Координаты можно скопировать с <a href="https://yandex.ru/maps" target="_blank" rel="noopener noreferrer">Яндекс.Карт</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="org-icon-section">
+                <h4>Иконка организации</h4>
+                <div className="org-icon-selector">
+                  {organizationIcons.length === 0 ? (
+                    <div className="no-icons-warning">⏳ Загрузка иконок...</div>
+                  ) : (
+                    <>
+                      {iconsByType[organization.orgType || '']?.length > 0 && (
+                        <div className="icon-category">
+                          <div className="icon-category-title">
+                            Иконки для типа "{organization.orgType || 'Организация'}"
+                          </div>
+                          <div className="icon-grid">
+                            {iconsByType[organization.orgType || ''].map(icon => (
+                              <div
+                                key={icon.id}
+                                className={`icon-option ${selectedIconId === icon.id ? 'selected' : ''}`}
+                                onClick={() => setSelectedIconId(icon.id)}
+                              >
+                                <div className="icon-preview">
+                                  <img src={getMediaUrl(icon.imageUrl)} alt={icon.orgType} />
+                                </div>
+                                {selectedIconId === icon.id && (
+                                  <div className="icon-check">✓</div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="icon-reset">
+                        <button
+                          type="button"
+                          className={`icon-reset-btn ${selectedIconId === 1 ? 'active' : ''}`}
+                          onClick={() => setSelectedIconId(1)}
+                        >
+                          🏢 Использовать иконку по умолчанию
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <input type="hidden" name="organizationIconId" value={selectedIconId ?? ""} />
+
               <div className="org-edit-actions">
                 <button onClick={handleSaveOrg} className="save-org-btn">Сохранить</button>
                 <button onClick={() => {
@@ -460,8 +768,13 @@ function OrganizationDetail({
                     defaultCanPost: organization.defaultCanPost === 1,
                     defaultCanComment: organization.defaultCanComment === 1,
                     isPrivate: organization.isPrivate === 1,
+                    longitude: organization.longitude,
+                    latitude: organization.latitude
                   });
+                  setSelectedIconId(organization.organization_icon_id || null);
                   setOrgAvatarFile(null);
+                  setLongitude(organization.longitude);
+                  setLatitude(organization.latitude);
                 }} className="cancel-org-btn">Отмена</button>
               </div>
             </div>
@@ -576,109 +889,109 @@ function OrganizationDetail({
       <div className="org-content-with-sidebar">
         <div className="org-main-content">
 
-      {/* Posts tab */}
-      {activeTab === 'posts' && (
-        <div className="org-posts-section">
-          {canPost && (
-            <div className="org-actions">
-              <button onClick={() => setShowCreatePost(!showCreatePost)} className="create-post-btn">
-                {showCreatePost ? 'Отмена' : '+ Создать пост'}
-              </button>
-            </div>
-          )}
-          {!isMember && !isAdmin && (
-            <div className="org-permission-note">
-              {organization.isPrivate
-                ? '🔒 Это закрытая организация. Вступить можно только по приглашению.'
-                : 'Вступите в организацию, чтобы создавать посты.'}
-            </div>
-          )}
-          {showCreatePost && canPost && (
-            <div className="org-create-post">
-              <CreatePost
-                organizationId={organization.id}
-                onPostCreated={() => {
-                  setShowCreatePost(false);
-                  onUpdate(organization.id);
-                }}
-              />
-            </div>
-          )}
-          <div className="org-posts">
-            {organization.posts && organization.posts.length > 0 ? (
-              organization.posts.map(post => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  onPostDeleted={() => onUpdate(organization.id)}
-                  onPostUpdated={() => onUpdate(organization.id)}
-                />
-              ))
-            ) : (
-              <div className="empty-state">Пока нет постов</div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Settings tab (admin only) */}
-      {activeTab === 'settings' && isAdmin && (
-        <div className="org-settings-section">
-          <h3>Настройки организации</h3>
-
-          <div className="settings-card">
-            <h4>Права новых сотрудников по умолчанию</h4>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={orgFormData.defaultCanPost}
-                onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanPost: e.target.checked })}
-              />
-              <span>Новые сотрудники могут создавать посты</span>
-            </label>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={orgFormData.defaultCanComment}
-                onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanComment: e.target.checked })}
-              />
-              <span>Новые сотрудники могут комментировать</span>
-            </label>
-          </div>
-
-          <div className="settings-card">
-            <h4>Видимость</h4>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={orgFormData.isPrivate}
-                onChange={(e) => setOrgFormData({ ...orgFormData, isPrivate: e.target.checked })}
-              />
-              <span>🔒 Закрытая организация (только по приглашениям)</span>
-            </label>
-          </div>
-
-          <button
-            onClick={handleSaveOrg}
-            className="save-org-btn"
-            style={{ marginTop: '1rem' }}
-          >
-            💾 Сохранить настройки
-          </button>
-
-          <div className="settings-card settings-card-danger">
-            <h4>Опасная зона</h4>
-            <p className="danger-note">Удаление организации необратимо. Все посты и данные будут удалены.
-              {organization.subOrganizations && organization.subOrganizations.length > 0 && (
-                <> Вместе с ней будут удалены все дочерние подразделения.</>
+          {/* Posts tab */}
+          {activeTab === 'posts' && (
+            <div className="org-posts-section">
+              {canPost && (
+                <div className="org-actions">
+                  <button onClick={() => setShowCreatePost(!showCreatePost)} className="create-post-btn">
+                    {showCreatePost ? 'Отмена' : '+ Создать пост'}
+                  </button>
+                </div>
               )}
-            </p>
-            <button onClick={() => setShowDeleteModal(true)} className="delete-org-btn">
-              🗑️ Удалить организацию
-            </button>
-          </div>
-        </div>
-      )}
+              {!isMember && !isAdmin && (
+                <div className="org-permission-note">
+                  {organization.isPrivate
+                    ? '🔒 Это закрытая организация. Вступить можно только по приглашению.'
+                    : 'Вступите в организацию, чтобы создавать посты.'}
+                </div>
+              )}
+              {showCreatePost && canPost && (
+                <div className="org-create-post">
+                  <CreatePost
+                    organizationId={organization.id}
+                    onPostCreated={() => {
+                      setShowCreatePost(false);
+                      onUpdate(organization.id);
+                    }}
+                  />
+                </div>
+              )}
+              <div className="org-posts">
+                {organization.posts && organization.posts.length > 0 ? (
+                  organization.posts.map(post => (
+                    <PostCard
+                      key={post.id}
+                      post={post}
+                      onPostDeleted={() => onUpdate(organization.id)}
+                      onPostUpdated={() => onUpdate(organization.id)}
+                    />
+                  ))
+                ) : (
+                  <div className="empty-state">Пока нет постов</div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Settings tab (admin only) */}
+          {activeTab === 'settings' && isAdmin && (
+            <div className="org-settings-section">
+              <h3>Настройки организации</h3>
+
+              <div className="settings-card">
+                <h4>Права новых сотрудников по умолчанию</h4>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={orgFormData.defaultCanPost}
+                    onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanPost: e.target.checked })}
+                  />
+                  <span>Новые сотрудники могут создавать посты</span>
+                </label>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={orgFormData.defaultCanComment}
+                    onChange={(e) => setOrgFormData({ ...orgFormData, defaultCanComment: e.target.checked })}
+                  />
+                  <span>Новые сотрудники могут комментировать</span>
+                </label>
+              </div>
+
+              <div className="settings-card">
+                <h4>Видимость</h4>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={orgFormData.isPrivate}
+                    onChange={(e) => setOrgFormData({ ...orgFormData, isPrivate: e.target.checked })}
+                  />
+                  <span>🔒 Закрытая организация (только по приглашениям)</span>
+                </label>
+              </div>
+
+              <button
+                onClick={handleSaveOrg}
+                className="save-org-btn"
+                style={{ marginTop: '1rem' }}
+              >
+                💾 Сохранить настройки
+              </button>
+
+              <div className="settings-card settings-card-danger">
+                <h4>Опасная зона</h4>
+                <p className="danger-note">Удаление организации необратимо. Все посты и данные будут удалены.
+                  {organization.subOrganizations && organization.subOrganizations.length > 0 && (
+                    <> Вместе с ней будут удалены все дочерние подразделения.</>
+                  )}
+                </p>
+                <button onClick={() => setShowDeleteModal(true)} className="delete-org-btn">
+                  🗑️ Удалить организацию
+                </button>
+              </div>
+            </div>
+          )}
         </div>{/* end org-main-content */}
 
         {/* Members sidebar */}

@@ -1,8 +1,36 @@
 import express from 'express';
 import { requireAdmin } from '../middleware/admin.js';
 import { db } from '../database/init.js';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const router = express.Router();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const uploadsDir = path.join(__dirname, '..', 'uploads', 'organizations');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, uniqueSuffix + extension);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
 
 // Get all users (admin only)
 router.get('/users', requireAdmin, (req, res) => {
@@ -118,7 +146,7 @@ router.get('/posts', requireAdmin, (req, res) => {
         WHERE postId IN (${placeholders})
         ORDER BY postId, id ASC
       `).all(...postIds);
-      
+
       const filesByPostId = {};
       files.forEach(file => {
         if (!filesByPostId[file.postId]) {
@@ -131,7 +159,7 @@ router.get('/posts', requireAdmin, (req, res) => {
           fileType: file.fileType
         });
       });
-      
+
       posts.forEach(post => {
         post.files = filesByPostId[post.id] || [];
       });
@@ -201,6 +229,135 @@ router.post('/users/:id/remove-admin', requireAdmin, (req, res) => {
     res.json({ message: 'Admin role removed' });
   } catch (error) {
     console.error('Remove admin error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/icons', requireAdmin, (req, res) => {
+  try {
+    const icons = db.prepare('SELECT * FROM organization_icon').all();
+    res.status(200).json({ icons: icons });
+  }
+  catch (error) {
+    console.error('get organization-images:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.post('/icons', requireAdmin, upload.single('image'), (req, res) => {
+  try {
+    const { orgType } = req.body;
+    if (!orgType) {
+      return res.status(400).json({ error: 'orgType is required' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file is required' });
+    }
+
+    const validTypes = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Свободная'];
+    if (!validTypes.includes(orgType)) {
+      return res.status(400).json({ error: 'Invalid organization type' });
+    }
+
+    const imageUrl = `/uploads/organizations/${req.file.filename}`;
+
+    const result = db.prepare(`
+      INSERT INTO organization_icon (orgType, imageUrl)
+      VALUES (?, ?)
+    `).run(orgType, imageUrl);
+
+    const newIcon = db.prepare('SELECT * FROM organization_icon WHERE id = ?').get(result.lastInsertRowid);
+    res.status(201).json(newIcon);
+
+  } catch (error) {
+    console.error('Error creating organization icon:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.put('/icons/:id', requireAdmin, upload.single('image'), (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file is required' });
+    }
+
+    const existingIcon = db.prepare('SELECT * FROM organization_icon WHERE id = ?').get(id);
+    if (!existingIcon) {
+      return res.status(404).json({ error: 'Icon not found' });
+    }
+
+    const oldImageUrl = existingIcon.imageUrl;
+    const newImageUrl = `/uploads/organizations/${req.file.filename}`;
+
+    db.prepare(`
+      UPDATE organization_icon 
+      SET imageUrl = ?
+      WHERE id = ?
+    `).run(newImageUrl, id);
+
+    try {
+      const oldFilePath = path.join(uploadsDir, oldImageUrl.replace('/uploads/organizations', ''));
+      if (fs.existsSync(oldFilePath)) {
+        fs.unlinkSync(oldFilePath);
+      }
+    } catch (fileErr) {
+      console.warn('Could not delete old file:', fileErr);
+    }
+
+    const updatedIcon = db.prepare('SELECT * FROM organization_icon WHERE id = ?').get(id);
+    res.json(updatedIcon);
+
+  } catch (error) {
+    console.error('Error updating organization icon:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.delete('/icons/:id', requireAdmin, (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const icon = db.prepare('SELECT * FROM organization_icon WHERE id = ?').get(id);
+    if (!icon) {
+      return res.status(404).json({ error: 'Icon not found' });
+    }
+
+    if (icon.orgType === 'DEFAULT') {
+      return res.status(400).json({ error: 'Cannot delete default icon' });
+    }
+
+    db.prepare(`
+      UPDATE organizations 
+      SET organization_icon_id = 1 
+      WHERE organization_icon_id = ?
+    `).run(id);
+
+    try {
+      const fileName = icon.imageUrl.split('/').pop();
+      if (fileName) {
+        const filePath = path.join(uploadsDir, fileName);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          console.log('File deleted:', fileName);
+        }
+      }
+    } catch (fileErr) {
+      console.warn('Could not delete file:', fileErr);
+    }
+
+    db.prepare('DELETE FROM organization_icon WHERE id = ?').run(id);
+    const updatedCount = db.prepare('SELECT changes() as count').get().count;
+
+    res.json({
+      message: 'Icon deleted successfully',
+      organizationsUpdated: updatedCount
+    });
+
+  } catch (error) {
+    console.error('Error deleting organization icon:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
