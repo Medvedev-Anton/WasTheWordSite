@@ -113,7 +113,7 @@ export default function Map() {
 
 
                 <img
-                    src='./../../image/border_map.png'
+                    src='/image/border_map.png'
                     className="map-frame-overlay"
                     alt=""
                 />
