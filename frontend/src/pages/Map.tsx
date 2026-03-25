@@ -13,7 +13,9 @@ interface OrganizationProps {
     id: number,
     name: string,
     description: string,
-    orgType: string
+    orgType: string,
+    membersCount: number,
+    subOrganizations?: { id: number; name: string; orgType?: string }[],
 };
 
 export default function Map() {
@@ -126,6 +128,8 @@ export default function Map() {
                         description={selectOrganization.description}
                         isOpen={isOpenModal}
                         type={selectOrganization.orgType}
+                        membersCount={selectOrganization.membersCount}
+                        subOrganizations={selectOrganization.subOrganizations}
                         onClose={() => {
                             setIsOpenModal(false);
                             setCurrentOrganization(null);

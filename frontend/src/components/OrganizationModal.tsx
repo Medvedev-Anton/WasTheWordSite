@@ -2,12 +2,20 @@
 import { useEffect } from "react";
 import "./OrganizationModal.css";
 
+interface SubOrg {
+    id: number;
+    name: string;
+    orgType?: string;
+}
+
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
     type: string;
     description: string;
+    membersCount?: number;
+    subOrganizations?: SubOrg[];
     imageUrl?: string;
 }
 
@@ -16,7 +24,9 @@ export default function OrganizationModal({
     onClose,
     title,
     type,
-    description
+    description,
+    membersCount,
+    subOrganizations,
 }: ModalProps) {
     const typeImages: Record<string, string> = {
         'Производственная': '/image/organizations/production.jpg',
@@ -66,6 +76,26 @@ export default function OrganizationModal({
                 <div className="game-modal__info">
                     <h3>{title}</h3>
                     <div className="type">{type}</div>
+                    {(membersCount !== undefined || (subOrganizations && subOrganizations.length > 0)) && (
+                        <div className="game-modal__stats">
+                            {membersCount !== undefined && (
+                                <span className="game-modal__members">👥 {membersCount} сотрудников</span>
+                            )}
+                            {subOrganizations && subOrganizations.length > 0 && (
+                                <div className="game-modal__suborgs">
+                                    <span className="game-modal__suborgs-label">🏗️ Подразделения:</span>
+                                    <ul>
+                                        {subOrganizations.slice(0, 4).map(sub => (
+                                            <li key={sub.id}>{sub.name}</li>
+                                        ))}
+                                        {subOrganizations.length > 4 && (
+                                            <li className="game-modal__suborgs-more">…и ещё {subOrganizations.length - 4}</li>
+                                        )}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    )}
                     <p>{description}</p>
                 </div>
             </div>
