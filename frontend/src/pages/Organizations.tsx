@@ -316,12 +316,10 @@ export default function Organizations() {
                 Аватар:
                 <input type="file" name="avatar" accept="image/*" />
               </label>
-              {user?.role === 'admin' && (
-                <label>
-                  Обложка (только для администраторов сайта):
-                  <input type="file" name="coverImage" accept="image/*" />
-                </label>
-              )}
+              <label>
+                Обложка:
+                <input type="file" name="coverImage" accept="image/*" />
+              </label>
               <div className="org-settings">
                 <h4>Настройки по умолчанию для новых сотрудников:</h4>
                 <label className="checkbox-label">
@@ -690,17 +688,15 @@ function OrganizationDetail({
                 >
                   {!orgCoverPreview && <span>Обложка организации</span>}
                 </div>
-                {isGlobalAdmin && (
-                  <label className="avatar-upload-label">
-                    🖼️ Изменить обложку
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setOrgCoverFile(e.target.files?.[0] || null)}
-                      style={{ display: 'none' }}
-                    />
-                  </label>
-                )}
+                <label className="avatar-upload-label">
+                  🖼️ Изменить обложку
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setOrgCoverFile(e.target.files?.[0] || null)}
+                    style={{ display: 'none' }}
+                  />
+                </label>
               </div>
 
               <div className="org-locations">
@@ -900,16 +896,14 @@ function OrganizationDetail({
                 rows={2}
                 className="org-edit-textarea"
               />
-              {isGlobalAdmin && (
-                <label>
-                  Обложка (только для администраторов сайта):
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setSubOrgCoverFile(e.target.files?.[0] || null)}
-                  />
-                </label>
-              )}
+              <label>
+                Обложка:
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setSubOrgCoverFile(e.target.files?.[0] || null)}
+                />
+              </label>
               <div className="org-edit-actions">
                 <button onClick={handleCreateSubOrg} className="save-org-btn" disabled={subOrgCreating}>
                   {subOrgCreating ? 'Создание...' : 'Создать'}
