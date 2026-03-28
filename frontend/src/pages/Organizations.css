@@ -289,7 +289,7 @@
 
 @media (min-width: 769px) {
   .org-card-cover {
-    height: 180px;
+    height: 240px;
   }
 }
 
@@ -718,6 +718,12 @@
   color: #64748b;
   font-weight: 600;
   border: 1px solid #e2e8f0;
+}
+
+@media (min-width: 769px) {
+  .org-cover-hero {
+    min-height: 280px;
+  }
 }
 
 .org-cover-hero.has-cover {
