@@ -33,6 +33,8 @@ export default function OrganizationModal({
         'Коммерческая': '/image/organizations/commercial.jpg',
         'Административная': '/image/organizations/administrative.jpg',
         'Образовательная': '/image/organizations/educational.jpg',
+        'Волонтёрская': '/image/organizations/free_appointment.jpg',
+        'Спортивная': '/image/organizations/free_appointment.jpg',
         'Свободная': '/image/organizations/free_appointment.jpg'
     };
 

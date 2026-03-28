@@ -287,6 +287,12 @@
   font-weight: 600;
 }
 
+@media (min-width: 769px) {
+  .org-card-cover {
+    height: 180px;
+  }
+}
+
 .org-card-cover.has-cover {
   color: transparent;
 }
