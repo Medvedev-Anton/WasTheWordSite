@@ -1,5 +1,6 @@
 // Modal.tsx
 import { useEffect } from "react";
+import { getMediaUrl } from "../config";
 import "./OrganizationModal.css";
 
 interface SubOrg {
@@ -16,7 +17,8 @@ interface ModalProps {
     description: string;
     membersCount?: number;
     subOrganizations?: SubOrg[];
-    imageUrl?: string;
+    coverImage?: string;
+    presetCoverUrl?: string;
 }
 
 export default function OrganizationModal({
@@ -27,6 +29,8 @@ export default function OrganizationModal({
     description,
     membersCount,
     subOrganizations,
+    coverImage,
+    presetCoverUrl,
 }: ModalProps) {
     const typeImages: Record<string, string> = {
         'Производственная': '/image/organizations/production.jpg',
@@ -56,7 +60,9 @@ export default function OrganizationModal({
 
     if (!isOpen) return null;
 
-    const imageUrl = typeImages[type];
+    // Priority: uploaded cover → preset cover → type-based static image
+    const rawImageUrl = coverImage || presetCoverUrl || typeImages[type];
+    const imageUrl = (coverImage || presetCoverUrl) ? getMediaUrl(rawImageUrl) : rawImageUrl;
 
     return (
         <div className="game-modal-overlay" onClick={onClose}>

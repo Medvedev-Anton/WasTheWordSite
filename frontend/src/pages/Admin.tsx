@@ -20,12 +20,19 @@ interface OrganizationIcon {
   imageUrl: string;
 }
 
-const ORG_TYPES: string[] = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Свободная'];
+interface OrganizationCover {
+  id: number;
+  imageUrl: string;
+}
+
+const ORG_TYPES: string[] = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Волонтёрская', 'Спортивная', 'Свободная'];
 const ORG_TO_ICON: Record<string, string> = {
   'Производственная': ' 🏭',
   'Коммерческая': '🏢',
-  'Административная': '🏛️',
+  'Административная': '🏕️',
   'Образовательная': '🎓',
+  'Волонтёрская': '🤝',
+  'Спортивная': '🏆',
   'Свободная': '🌐',
 };
 
@@ -39,27 +46,32 @@ export default function Admin() {
   const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
   const [editingIcon, setEditingIcon] = useState<OrganizationIcon | null>(null);
   const [newIconType, setNewIconType] = useState('');
-  const [newIconFile, setNewIconFile] = useState<File | null>(null);
+  const [newIconFiles, setNewIconFiles] = useState<File[]>([]);
   const [newIconPreview, setNewIconPreview] = useState<string | null>(null);
 
+  // Covers state
+  const [organizationCovers, setOrganizationCovers] = useState<OrganizationCover[]>([]);
+  const [newCoverFiles, setNewCoverFiles] = useState<File[]>([]);
+  const [newCoverPreviews, setNewCoverPreviews] = useState<string[]>([]);
+  const [imagesSubTab, setImagesSubTab] = useState<'icons' | 'covers'>('icons');
+
   const handleNewIconFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setNewIconFile(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setNewIconFiles(files);
+      // Preview first file only
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewIconPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      reader.onloadend = () => setNewIconPreview(reader.result as string);
+      reader.readAsDataURL(files[0]);
     }
   };
 
   const handleCreateIcon = async () => {
-    if (!newIconType || !newIconFile) return;
+    if (!newIconType || newIconFiles.length === 0) return;
 
     const formData = new FormData();
     formData.append('orgType', newIconType);
-    formData.append('image', newIconFile);
+    newIconFiles.forEach(f => formData.append('images', f));
 
     try {
       await axios.post('/api/admin/icons', formData, {
@@ -67,7 +79,7 @@ export default function Admin() {
       });
       handleClearNewIcon();
       fetchData();
-      alert('Иконка успешно загружена');
+      alert(`Иконка(-и) успешно загружены: ${newIconFiles.length} шт.`);
     } catch (error: any) {
       console.error('Failed to create icon:', error);
       alert(error.response?.data?.error || 'Ошибка при создании иконки');
@@ -76,7 +88,7 @@ export default function Admin() {
 
   const handleClearNewIcon = () => {
     setNewIconType('');
-    setNewIconFile(null);
+    setNewIconFiles([]);
     setNewIconPreview(null);
     const fileInput = document.getElementById('create-image-file') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
@@ -123,8 +135,12 @@ export default function Admin() {
         setOrganizations(response.data);
       }
       else if (activeTab === 'organization-images') {
-        const response = await axios.get('/api/admin/icons');
-        setOrganizationIcons(response.data.icons);
+        const [iconsRes, coversRes] = await Promise.all([
+          axios.get('/api/admin/icons'),
+          axios.get('/api/admin/covers'),
+        ]);
+        setOrganizationIcons(iconsRes.data.icons);
+        setOrganizationCovers(coversRes.data.covers);
       }
       else {
         const response = await axios.get('/api/admin/stats');
@@ -202,6 +218,49 @@ export default function Admin() {
       fetchData();
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка');
+    }
+  };
+
+  const handleNewCoverFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setNewCoverFiles(files);
+      const previews: string[] = [];
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          previews.push(reader.result as string);
+          if (previews.length === files.length) setNewCoverPreviews([...previews]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const handleCreateCovers = async () => {
+    if (newCoverFiles.length === 0) return;
+    const formData = new FormData();
+    newCoverFiles.forEach(f => formData.append('images', f));
+    try {
+      await axios.post('/api/admin/covers', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      setNewCoverFiles([]);
+      setNewCoverPreviews([]);
+      const fileInput = document.getElementById('create-cover-file') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+      fetchData();
+      alert(`Обложки загружены: ${newCoverFiles.length} шт.`);
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при загрузке обложек');
+    }
+  };
+
+  const handleDeleteCover = async (coverId: number) => {
+    if (!confirm('Удалить эту обложку?')) return;
+    try {
+      await axios.delete(`/api/admin/covers/${coverId}`);
+      fetchData();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при удалении');
     }
   };
 
@@ -446,137 +505,140 @@ export default function Admin() {
 
         {activeTab === 'organization-images' && (
           <div>
+            <div className="admin-subtabs">
+              <button className={imagesSubTab === 'icons' ? 'active' : ''} onClick={() => setImagesSubTab('icons')}>🎭 Иконки</button>
+              <button className={imagesSubTab === 'covers' ? 'active' : ''} onClick={() => setImagesSubTab('covers')}>🖼️ Обложки</button>
+            </div>
+
+            {imagesSubTab === 'icons' && (
             <div className="admin-images-section">
               <div className="section-header">
                 <h2>Изображения типов организаций</h2>
               </div>
-
               <div className="default-image-section">
                 <h3>⭐ Изображение по умолчанию</h3>
                 <div className="default-image-card">
                   <div className="image-preview default">
-                    <img
-                      src={defaultIcon?.imageUrl ? getMediaUrl(defaultIcon.imageUrl) : "/image/organizations/default.jpg"}
-                      alt="По умолчанию"
-                    />
+                    <img src={defaultIcon?.imageUrl ? getMediaUrl(defaultIcon.imageUrl) : "/image/organizations/default.jpg"} alt="По умолчанию" />
                   </div>
                   <div className="image-actions">
-                    <button className="btn-edit" onClick={() => setEditingIcon(defaultIcon ?? null)}>
-                      ✏️ Заменить
-                    </button>
+                    <button className="btn-edit" onClick={() => setEditingIcon(defaultIcon ?? null)}>✏️ Заменить</button>
                   </div>
                 </div>
               </div>
-
               <div className="org-types-container">
                 {ORG_TYPES.map((type: string) => {
                   const typeIcons = iconsByType[type] || [];
-
                   return (
                     <div className="org-type-group" key={type}>
-                      <div className="org-type-header">
-                        <h3>{ORG_TO_ICON[type]} {type}</h3>
-                      </div>
+                      <div className="org-type-header"><h3>{ORG_TO_ICON[type]} {type}</h3></div>
                       <div className="images-grid">
                         {typeIcons.map(icon => (
                           <div key={icon.id} className="image-card">
-                            <div className="image-preview">
-                              <img src={getMediaUrl(icon.imageUrl)} alt={type} />
-                            </div>
+                            <div className="image-preview"><img src={getMediaUrl(icon.imageUrl)} alt={type} /></div>
                             <div className="image-actions">
                               <button className="btn-edit" onClick={() => setEditingIcon(icon)}>✏️</button>
                               <button className="btn-delete" onClick={() => handleDeleteIcon(icon.id)}>🗑️</button>
                             </div>
                           </div>
                         ))}
-                        {typeIcons.length === 0 && (
-                          <div className="empty-icons">Нет изображений</div>
-                        )}
+                        {typeIcons.length === 0 && <div className="empty-icons">Нет изображений</div>}
                       </div>
                     </div>
                   );
                 })}
               </div>
-
               <div className="upload-section">
-                <h3>📤 Загрузить новое изображение</h3>
-
+                <h3>📤 Загрузить новые иконки</h3>
                 <div className="upload-form">
                   <div className="form-row">
                     <div className="form-group">
                       <label htmlFor="create-org-type">Тип организации:</label>
-                      <select
-                        id="create-org-type"
-                        className="org-type-select"
-                        value={newIconType}
-                        onChange={(e) => setNewIconType(e.target.value)}
-                      >
+                      <select id="create-org-type" className="org-type-select" value={newIconType} onChange={(e) => setNewIconType(e.target.value)}>
                         <option value="">Выберите тип</option>
-                        {ORG_TYPES.map(type => (
-                          <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>
-                        ))}
+                        {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
                       </select>
                     </div>
                   </div>
-
                   {newIconPreview && (
                     <div className="preview-section">
-                      <h4>Предпросмотр:</h4>
-                      <div className="icon-preview-container">
-                        <img src={newIconPreview} alt="Preview" className="icon-preview-img" />
-                      </div>
+                      <h4>Предпросмотр ({newIconFiles.length} файл):</h4>
+                      <div className="icon-preview-container"><img src={newIconPreview} alt="Preview" className="icon-preview-img" /></div>
                     </div>
                   )}
-
                   <div className="form-group">
-                    <label htmlFor="create-image-file">Изображение:</label>
+                    <label htmlFor="create-image-file">Изображения (можно несколько):</label>
                     <div className="file-input-wrapper">
-                      <input
-                        type="file"
-                        id="create-image-file"
-                        accept="image/*"
-                        className="file-input-hidden"
-                        onChange={handleNewIconFileChange}
-                      />
-                      <button
-                        className="btn-upload"
-                        type="button"
-                        onClick={() => document.getElementById('create-image-file')?.click()}
-                      >
-                        📁 Выбрать файл
-                      </button>
-                      <span className="file-name">{newIconFile?.name || 'Файл не выбран'}</span>
+                      <input type="file" id="create-image-file" accept="image/*" multiple className="file-input-hidden" onChange={handleNewIconFileChange} />
+                      <button className="btn-upload" type="button" onClick={() => document.getElementById('create-image-file')?.click()}>📁 Выбрать файлы</button>
+                      <span className="file-name">{newIconFiles.length > 0 ? `${newIconFiles.length} файл(ов) выбрано` : 'Файлы не выбраны'}</span>
                     </div>
-                    <small className="input-hint">
-                      Рекомендуемый размер: 400x300px, формат: JPG, PNG, макс. 2MB
-                    </small>
+                    <small className="input-hint">Рекомендуемый размер: 400x300px, формат: JPG, PNG, макс. 10MB на файл</small>
                   </div>
-
                   <div className="upload-actions">
-                    <button
-                      className="btn-primary"
-                      onClick={handleCreateIcon}
-                      disabled={!newIconType || !newIconFile}
-                    >
-                      Загрузить
+                    <button className="btn-primary" onClick={handleCreateIcon} disabled={!newIconType || newIconFiles.length === 0}>
+                      Загрузить {newIconFiles.length > 1 ? `(${newIconFiles.length} шт.)` : ''}
                     </button>
-                    <button
-                      className="btn-secondary"
-                      onClick={handleClearNewIcon}
-                    >
-                      Очистить
-                    </button>
+                    <button className="btn-secondary" onClick={handleClearNewIcon}>Очистить</button>
                   </div>
                 </div>
               </div>
             </div>
+            )}
 
-            <IconEditModal
-              isOpen={!!editingIcon}
-              icon={editingIcon}
-              onClose={() => setEditingIcon(null)}
-              onSave={handleUpdateIcon}
-            />
+            {imagesSubTab === 'covers' && (
+            <div className="admin-images-section">
+              <div className="section-header">
+                <h2>🖼️ Стандартные обложки организаций</h2>
+                <p style={{color:'#64748b', marginTop: 4}}>Организации могут выбрать одну из этих обложек</p>
+              </div>
+              <div className="images-grid">
+                {organizationCovers.map(cover => (
+                  <div key={cover.id} className="image-card cover-card">
+                    <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt="cover" /></div>
+                    <div className="image-actions">
+                      <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
+                    </div>
+                  </div>
+                ))}
+                {organizationCovers.length === 0 && <div className="empty-icons">Стандартных обложек пока нет</div>}
+              </div>
+              <div className="upload-section">
+                <h3>📤 Загрузить обложки</h3>
+                <div className="upload-form">
+                  {newCoverPreviews.length > 0 && (
+                    <div className="preview-section">
+                      <h4>Предпросмотр ({newCoverFiles.length} файл):</h4>
+                      <div className="images-grid preview-grid">
+                        {newCoverPreviews.map((src, i) => (
+                          <div key={i} className="image-card">
+                            <div className="image-preview cover-preview"><img src={src} alt={`preview-${i}`} /></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="form-group">
+                    <label htmlFor="create-cover-file">Обложки (можно несколько):</label>
+                    <div className="file-input-wrapper">
+                      <input type="file" id="create-cover-file" accept="image/*" multiple className="file-input-hidden" onChange={handleNewCoverFilesChange} />
+                      <button className="btn-upload" type="button" onClick={() => document.getElementById('create-cover-file')?.click()}>📁 Выбрать файлы</button>
+                      <span className="file-name">{newCoverFiles.length > 0 ? `${newCoverFiles.length} файл(ов) выбрано` : 'Файлы не выбраны'}</span>
+                    </div>
+                    <small className="input-hint">Рекомендуемый размер: 1280×400px, формат: JPG, PNG, макс. 10MB на файл</small>
+                  </div>
+                  <div className="upload-actions">
+                    <button className="btn-primary" onClick={handleCreateCovers} disabled={newCoverFiles.length === 0}>
+                      Загрузить {newCoverFiles.length > 1 ? `(${newCoverFiles.length} шт.)` : ''}
+                    </button>
+                    <button className="btn-secondary" onClick={() => { setNewCoverFiles([]); setNewCoverPreviews([]); const el = document.getElementById('create-cover-file') as HTMLInputElement; if(el) el.value=''; }}>Очистить</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            )}
+
+            <IconEditModal isOpen={!!editingIcon} icon={editingIcon} onClose={() => setEditingIcon(null)} onSave={handleUpdateIcon} />
           </div>
         )}
       </div>

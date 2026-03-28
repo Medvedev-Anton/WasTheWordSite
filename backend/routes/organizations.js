@@ -86,11 +86,13 @@ router.get('/', authenticateToken, (req, res) => {
         SELECT 
           o.*,
           ui.imageUrl as imageUrl,
+          oc.imageUrl as presetCoverUrl,
           u.username as adminUsername,
           (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
         FROM organizations o
         JOIN users u ON o.adminId = u.id
         JOIN organization_icon ui ON o.organization_icon_id = ui.id
+        LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
         WHERE o.parentId IS NULL
         ORDER BY o.createdAt DESC
       `).all();
@@ -99,10 +101,12 @@ router.get('/', authenticateToken, (req, res) => {
       const subOrgStmt = db.prepare(`
         SELECT 
           o.*,
+          oc.imageUrl as presetCoverUrl,
           u.username as adminUsername,
           (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
         FROM organizations o
         JOIN users u ON o.adminId = u.id
+        LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
         WHERE o.parentId = ?
         ORDER BY o.createdAt DESC
       `);
@@ -130,6 +134,17 @@ router.get('/icons', authenticateToken, (req, res) => {
   }
 });
 
+// Get preset covers (public)
+router.get('/covers', authenticateToken, (req, res) => {
+  try {
+    const covers = db.prepare('SELECT * FROM organization_cover ORDER BY createdAt DESC').all();
+    res.json({ covers });
+  } catch (error) {
+    console.error('Get covers error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Get organization by ID
 router.get('/:id', authenticateToken, (req, res) => {
   try {
@@ -139,10 +154,12 @@ router.get('/:id', authenticateToken, (req, res) => {
         o.*,
         u.username as adminUsername,
         ui.imageUrl as imageUrl,
+        oc.imageUrl as presetCoverUrl,
         (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
       FROM organizations o
       JOIN users u ON o.adminId = u.id
       JOIN organization_icon ui ON o.organization_icon_id = ui.id
+      LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
       WHERE o.id = ?
     `).get(orgId);
 
@@ -252,11 +269,13 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       parentId,
       longitude,
       latitude,
-      organizationIconId
+      organizationIconId,
+      organizationCoverId
     } = req.body;
     const adminId = req.user.userId;
 
     const iconId = organizationIconId === null || organizationIconId === undefined || organizationIconId === "" ? 1 : organizationIconId;
+    const coverId = organizationCoverId === null || organizationCoverId === undefined || organizationCoverId === "" ? null : parseInt(organizationCoverId);
 
     if (!name) {
       return res.status(400).json({ error: 'Name is required' });
@@ -291,9 +310,9 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
     }
 
     const result = db.prepare(`
-      INSERT INTO organizations (name, description, avatar, coverImage, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, description || null, avatarUrl, coverImageUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId);
+      INSERT INTO organizations (name, description, avatar, coverImage, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id, organization_cover_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, description || null, avatarUrl, coverImageUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId, coverId);
 
     // Add admin as member with 'admin' role
     db.prepare(`
@@ -333,7 +352,7 @@ router.put('/:id', authenticateToken, orgMediaUpload, (req, res) => {
       return res.status(403).json({ error: 'Only admin can update organization' });
     }
 
-    const { name, description, defaultCanPost, defaultCanComment, isPrivate, longitude, latitude, organizationIconId } = req.body;
+    const { name, description, defaultCanPost, defaultCanComment, isPrivate, longitude, latitude, organizationIconId, organizationCoverId } = req.body;
 
     const avatarUrl = getUploadedFileUrl(req, 'avatar') || organization.avatar;
     const coverImageUrl = getUploadedFileUrl(req, 'coverImage') || organization.coverImage;
@@ -348,6 +367,9 @@ router.put('/:id', authenticateToken, orgMediaUpload, (req, res) => {
       ? (isPrivate === 'true' || isPrivate === true || isPrivate === '1' ? 1 : 0)
       : organization.isPrivate;
     let organization_icon_id = organizationIconId ?? 1;
+    let organization_cover_id = organizationCoverId !== undefined
+      ? (organizationCoverId === '' || organizationCoverId === 'null' || organizationCoverId === null ? null : parseInt(organizationCoverId))
+      : organization.organization_cover_id;
 
     db.prepare(`
       UPDATE organizations 
@@ -361,7 +383,8 @@ router.put('/:id', authenticateToken, orgMediaUpload, (req, res) => {
         isPrivate = ?,
         longitude = ?,
         latitude = ?,
-        organization_icon_id = ?
+        organization_icon_id = ?,
+        organization_cover_id = ?
       WHERE id = ?
     `).run(
       name || organization.name,
@@ -374,6 +397,7 @@ router.put('/:id', authenticateToken, orgMediaUpload, (req, res) => {
       longitude,
       latitude,
       organization_icon_id,
+      organization_cover_id,
       orgId,
     );
 

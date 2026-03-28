@@ -424,6 +424,25 @@ export async function initDatabase() {
     console.error('Error UPDATE organizations SET organization_icon_id = 1 WHERE organization_icon_id IS NULL:', e.message);
   }
 
+  // Create organization_cover table (preset covers library)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS organization_cover (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      imageUrl TEXT NOT NULL,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Add organization_cover_id to organizations if not exists
+  const hasOrganizationCoverId = orgTableInfo.some(col => col.name === 'organization_cover_id');
+  if (!hasOrganizationCoverId) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN organization_cover_id INTEGER DEFAULT NULL`);
+    } catch (e) {
+      console.error('Error adding organization_cover_id column:', e.message);
+    }
+  }
+
   console.log('Database initialized successfully');
 }
 

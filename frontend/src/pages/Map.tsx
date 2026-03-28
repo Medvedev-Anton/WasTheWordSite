@@ -15,6 +15,8 @@ interface OrganizationProps {
     description: string,
     orgType: string,
     membersCount: number,
+    coverImage?: string,
+    presetCoverUrl?: string,
     subOrganizations?: { id: number; name: string; orgType?: string }[],
 };
 
@@ -130,6 +132,8 @@ export default function Map() {
                         type={selectOrganization.orgType}
                         membersCount={selectOrganization.membersCount}
                         subOrganizations={selectOrganization.subOrganizations}
+                        coverImage={selectOrganization.coverImage}
+                        presetCoverUrl={selectOrganization.presetCoverUrl}
                         onClose={() => {
                             setIsOpenModal(false);
                             setCurrentOrganization(null);

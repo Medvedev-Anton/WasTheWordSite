@@ -16,6 +16,37 @@
   border-bottom: 2px solid #e0e0e0;
 }
 
+.admin-subtabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.admin-subtabs button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #64748b;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+
+.admin-subtabs button.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  font-weight: 600;
+}
+
+.cover-card .image-preview,
+.cover-preview {
+  height: 100px;
+}
+
+
 .admin-tabs button {
   background: none;
   border: none;

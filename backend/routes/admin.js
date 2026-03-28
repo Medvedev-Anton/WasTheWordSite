@@ -244,31 +244,32 @@ router.get('/icons', requireAdmin, (req, res) => {
   }
 });
 
-router.post('/icons', requireAdmin, upload.single('image'), (req, res) => {
+router.post('/icons', requireAdmin, upload.array('images', 30), (req, res) => {
   try {
     const { orgType } = req.body;
     if (!orgType) {
       return res.status(400).json({ error: 'orgType is required' });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ error: 'Image file is required' });
+    const files = req.files;
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: 'At least one image file is required' });
     }
 
-    const validTypes = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Свободная'];
+    const validTypes = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная',
+      'Волонтёрская', 'Спортивная', 'Свободная'];
     if (!validTypes.includes(orgType)) {
       return res.status(400).json({ error: 'Invalid organization type' });
     }
 
-    const imageUrl = `/uploads/organizations/${req.file.filename}`;
+    const inserted = [];
+    for (const file of files) {
+      const imageUrl = `/uploads/organizations/${file.filename}`;
+      const result = db.prepare('INSERT INTO organization_icon (orgType, imageUrl) VALUES (?, ?)').run(orgType, imageUrl);
+      inserted.push(db.prepare('SELECT * FROM organization_icon WHERE id = ?').get(result.lastInsertRowid));
+    }
 
-    const result = db.prepare(`
-      INSERT INTO organization_icon (orgType, imageUrl)
-      VALUES (?, ?)
-    `).run(orgType, imageUrl);
-
-    const newIcon = db.prepare('SELECT * FROM organization_icon WHERE id = ?').get(result.lastInsertRowid);
-    res.status(201).json(newIcon);
+    res.status(201).json(inserted.length === 1 ? inserted[0] : inserted);
 
   } catch (error) {
     console.error('Error creating organization icon:', error);
@@ -358,6 +359,73 @@ router.delete('/icons/:id', requireAdmin, (req, res) => {
 
   } catch (error) {
     console.error('Error deleting organization icon:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ── Preset covers CRUD ───────────────────────────────────────────────────────
+
+// GET /admin/covers
+router.get('/covers', requireAdmin, (req, res) => {
+  try {
+    const covers = db.prepare('SELECT * FROM organization_cover ORDER BY createdAt DESC').all();
+    res.json({ covers });
+  } catch (error) {
+    console.error('Get covers error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /admin/covers  (bulk)
+router.post('/covers', requireAdmin, upload.array('images', 30), (req, res) => {
+  try {
+    const files = req.files;
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: 'At least one image file is required' });
+    }
+
+    const inserted = [];
+    for (const file of files) {
+      const imageUrl = `/uploads/organizations/${file.filename}`;
+      const result = db.prepare('INSERT INTO organization_cover (imageUrl) VALUES (?)').run(imageUrl);
+      inserted.push(db.prepare('SELECT * FROM organization_cover WHERE id = ?').get(result.lastInsertRowid));
+    }
+
+    res.status(201).json({ covers: inserted });
+  } catch (error) {
+    console.error('Error creating covers:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// DELETE /admin/covers/:id
+router.delete('/covers/:id', requireAdmin, (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const cover = db.prepare('SELECT * FROM organization_cover WHERE id = ?').get(id);
+    if (!cover) {
+      return res.status(404).json({ error: 'Cover not found' });
+    }
+
+    // Reset orgs that used this cover
+    db.prepare('UPDATE organizations SET organization_cover_id = NULL WHERE organization_cover_id = ?').run(id);
+
+    // Delete file
+    try {
+      const fileName = cover.imageUrl.split('/').pop();
+      if (fileName) {
+        const filePath = path.join(uploadsDir, fileName);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      }
+    } catch (fileErr) {
+      console.warn('Could not delete cover file:', fileErr);
+    }
+
+    db.prepare('DELETE FROM organization_cover WHERE id = ?').run(id);
+    res.json({ message: 'Cover deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting cover:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

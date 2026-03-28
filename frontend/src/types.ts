@@ -79,6 +79,7 @@ export interface Organization {
   parentOrg?: { id: number; name: string; orgType?: string } | null;
   subOrganizations?: Organization[];
   organization_icon_id?: number;
+  organization_cover_id?: number;
   imageUrl?: string;
   createdAt: string;
   members?: OrganizationMember[];

@@ -39,6 +39,11 @@ interface OrganizationIcon {
   imageUrl: string;
 }
 
+interface OrganizationCover {
+  id: number;
+  imageUrl: string;
+}
+
 export default function Organizations() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
@@ -103,6 +108,7 @@ export default function Organizations() {
     data.append('longitude', longitude);
     data.append('latitude', latitude);
     data.append('organizationIconId', organizationIconId ?? "");
+    data.append('organizationCoverId', selectedCoverId?.toString() ?? '');
 
     if (avatar && avatar.size > 0) {
       data.append('avatar', avatar);
@@ -154,9 +160,12 @@ export default function Organizations() {
 
   const [selectedType, setSelectedType] = useState('Производственная');
   const [selectedIconId, setSelectedIconId] = useState<number | null>(null);
+  const [selectedCoverId, setSelectedCoverId] = useState<number | null>(null);
   const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
+  const [organizationCovers, setOrganizationCovers] = useState<OrganizationCover[]>([]);
   useEffect(() => {
     fetchIcons();
+    fetchCovers();
   }, []);
 
   const fetchIcons = async () => {
@@ -167,6 +176,16 @@ export default function Organizations() {
       console.error('Failed to fetch icons:', error);
     }
   };
+
+  const fetchCovers = async () => {
+    try {
+      const response = await axios.get('/api/organizations/covers');
+      setOrganizationCovers(response.data.covers);
+    } catch (error) {
+      console.error('Failed to fetch covers:', error);
+    }
+  };
+
   const iconsByType = organizationIcons.reduce((acc, icon) => {
     if (!acc[icon.orgType]) {
       acc[icon.orgType] = [];
@@ -313,6 +332,32 @@ export default function Organizations() {
               {selectedType && (!iconsByType[selectedType] || iconsByType[selectedType].length === 0) && (
                 <div className="no-icons-warning">
                   <p>⚠️ Для типа "{selectedType}" пока нет иконок. Будет использована иконка по умолчанию.</p>
+                </div>
+              )}
+
+              {organizationCovers.length > 0 && (
+                <div className="org-icon-selector">
+                  <h4>Выберите обложку организации:</h4>
+                  <div className="icon-grid">
+                    <div
+                      className={`icon-option ${selectedCoverId === null ? 'selected' : ''}`}
+                      onClick={() => setSelectedCoverId(null)}
+                    >
+                      <div className="icon-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>🚫</div>
+                    </div>
+                    {organizationCovers.map(cover => (
+                      <div
+                        key={cover.id}
+                        className={`icon-option ${selectedCoverId === cover.id ? 'selected' : ''}`}
+                        onClick={() => setSelectedCoverId(cover.id)}
+                      >
+                        <div className="icon-preview" style={{ height: '60px', overflow: 'hidden' }}>
+                          <img src={getMediaUrl(cover.imageUrl)} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                        {selectedCoverId === cover.id && <div className="icon-check">✓</div>}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -512,6 +557,7 @@ function OrganizationDetail({
       formData.append('longitude', (longitude ?? 0).toString());
       formData.append('latitude', (latitude ?? 0).toString());
       formData.append('organizationIconId', (selectedIconId ?? 1).toString());
+      formData.append('organizationCoverId', selectedCoverId?.toString() ?? '');
       if (orgAvatarFile) {
         formData.append('avatar', orgAvatarFile);
       }
@@ -826,6 +872,35 @@ function OrganizationDetail({
 
               <input type="hidden" name="organizationIconId" value={selectedIconId ?? ""} />
 
+              {organizationCovers.length > 0 && (
+                <div className="org-icon-section">
+                  <h4>Обложка организации</h4>
+                  <div className="org-icon-selector">
+                    <div className="icon-grid">
+                      <div
+                        className={`icon-option ${selectedCoverId === null ? 'selected' : ''}`}
+                        onClick={() => setSelectedCoverId(null)}
+                      >
+                        <div className="icon-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>🚫</div>
+                        {selectedCoverId === null && <div className="icon-check">✓</div>}
+                      </div>
+                      {organizationCovers.map(cover => (
+                        <div
+                          key={cover.id}
+                          className={`icon-option ${selectedCoverId === cover.id ? 'selected' : ''}`}
+                          onClick={() => setSelectedCoverId(cover.id)}
+                        >
+                          <div className="icon-preview" style={{ height: '60px', overflow: 'hidden' }}>
+                            <img src={getMediaUrl(cover.imageUrl)} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          </div>
+                          {selectedCoverId === cover.id && <div className="icon-check">✓</div>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="org-edit-actions">
                 <button onClick={handleSaveOrg} className="save-org-btn">Сохранить</button>
                 <button onClick={() => {
@@ -840,6 +915,7 @@ function OrganizationDetail({
                     latitude: organization.latitude
                   });
                   setSelectedIconId(organization.organization_icon_id || null);
+                  setSelectedCoverId(organization.organization_cover_id || null);
                   setOrgAvatarFile(null);
                   setOrgCoverFile(null);
                   setLongitude(organization.longitude);
@@ -867,7 +943,10 @@ function OrganizationDetail({
             </div>
             <div className="org-header-actions">
               {isAdmin && (
-                <button onClick={() => setEditingOrg(true)} className="edit-org-btn">✏️ Редактировать</button>
+                <button onClick={() => {
+                  setEditingOrg(true);
+                  setSelectedCoverId(organization.organization_cover_id || null);
+                }} className="edit-org-btn">✏️ Редактировать</button>
               )}
               {!isMember && !organization.isPrivate && (
                 <button onClick={handleJoin} className="join-btn">Вступить</button>
