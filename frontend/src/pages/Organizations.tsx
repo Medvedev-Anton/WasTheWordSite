@@ -397,13 +397,21 @@ export default function Organizations() {
         {organizations.length === 0 ? (
           <div className="empty-state">Пока нет организаций</div>
         ) : (
-          organizations.map(org => (
+          organizations.map(org => {
+            const orgCoverSrc = org.coverImage
+              ? getMediaUrl(org.coverImage)
+              : org.presetCoverUrl
+                ? getMediaUrl(org.presetCoverUrl)
+                : org.typeDefaultCoverUrl
+                  ? getMediaUrl(org.typeDefaultCoverUrl)
+                  : null;
+            return (
             <div key={org.id} className="organization-card" onClick={() => handleSelectOrg(org.id)}>
               <div
-                className={`org-card-cover ${org.coverImage ? 'has-cover' : ''}`}
-                style={org.coverImage ? { backgroundImage: `url(${getMediaUrl(org.coverImage)})` } : undefined}
+                className={`org-card-cover ${orgCoverSrc ? 'has-cover' : ''}`}
+                style={orgCoverSrc ? { backgroundImage: `url(${orgCoverSrc})` } : undefined}
               >
-                {!org.coverImage && <span>Обложка организации</span>}
+                {!orgCoverSrc && <span>Обложка организации</span>}
               </div>
               {org.avatar ? (
                 <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
@@ -419,7 +427,8 @@ export default function Organizations() {
                 {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
@@ -676,7 +685,13 @@ function OrganizationDetail({
   const roleLabels: Record<string, string> = { admin: 'Руководитель', moderator: 'Модератор', member: 'Сотрудник' };
   const orgCoverPreview = orgCoverFile
     ? URL.createObjectURL(orgCoverFile)
-    : (organization.coverImage ? getMediaUrl(organization.coverImage) : '');
+    : organization.coverImage
+      ? getMediaUrl(organization.coverImage)
+      : organization.presetCoverUrl
+        ? getMediaUrl(organization.presetCoverUrl)
+        : organization.typeDefaultCoverUrl
+          ? getMediaUrl(organization.typeDefaultCoverUrl)
+          : '';
 
   return (
     <div className="organization-detail">
@@ -697,10 +712,10 @@ function OrganizationDetail({
       )}
 
       <div
-        className={`org-cover-hero ${organization.coverImage ? 'has-cover' : ''}`}
-        style={organization.coverImage ? { backgroundImage: `url(${getMediaUrl(organization.coverImage)})` } : undefined}
+        className={`org-cover-hero ${(organization.coverImage || organization.presetCoverUrl || organization.typeDefaultCoverUrl) ? 'has-cover' : ''}`}
+        style={orgCoverPreview ? { backgroundImage: `url(${orgCoverPreview})` } : undefined}
       >
-        {!organization.coverImage && <span>Добавьте обложку, чтобы выделить организацию</span>}
+        {!orgCoverPreview && <span>Добавьте обложку, чтобы выделить организацию</span>}
       </div>
 
       <div className="org-header">
@@ -1009,13 +1024,21 @@ function OrganizationDetail({
           )}
           <div className="suborgs-grid">
             {organization.subOrganizations && organization.subOrganizations.length > 0 ? (
-              organization.subOrganizations.map(sub => (
+              organization.subOrganizations.map(sub => {
+                const subCoverSrc = sub.coverImage
+                  ? getMediaUrl(sub.coverImage)
+                  : (sub as any).presetCoverUrl
+                    ? getMediaUrl((sub as any).presetCoverUrl)
+                    : (sub as any).typeDefaultCoverUrl
+                      ? getMediaUrl((sub as any).typeDefaultCoverUrl)
+                      : null;
+                return (
                 <div key={sub.id} className="organization-card suborg-card" onClick={() => onNavigateToOrg(sub.id)}>
                   <div
-                    className={`org-card-cover ${sub.coverImage ? 'has-cover' : ''}`}
-                    style={sub.coverImage ? { backgroundImage: `url(${getMediaUrl(sub.coverImage)})` } : undefined}
+                    className={`org-card-cover ${subCoverSrc ? 'has-cover' : ''}`}
+                    style={subCoverSrc ? { backgroundImage: `url(${subCoverSrc})` } : undefined}
                   >
-                    {!sub.coverImage && <span>Обложка подразделения</span>}
+                    {!subCoverSrc && <span>Обложка подразделения</span>}
                   </div>
                   {sub.avatar ? (
                     <img src={getMediaUrl(sub.avatar)} alt={sub.name} className="org-avatar" />
@@ -1029,7 +1052,8 @@ function OrganizationDetail({
                     <span>👥 {sub.membersCount} сотрудников</span>
                   </div>
                 </div>
-              ))
+                );
+              })
             ) : (
               <div className="empty-state">Пока нет {subOrgType && SUB_ORG_GENITIVE[subOrgType] || subOrgType?.toLowerCase()}</div>
             )}

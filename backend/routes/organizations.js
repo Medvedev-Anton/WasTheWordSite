@@ -87,12 +87,14 @@ router.get('/', authenticateToken, (req, res) => {
           o.*,
           ui.imageUrl as imageUrl,
           oc.imageUrl as presetCoverUrl,
+          tc.imageUrl as typeDefaultCoverUrl,
           u.username as adminUsername,
           (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
         FROM organizations o
         JOIN users u ON o.adminId = u.id
         JOIN organization_icon ui ON o.organization_icon_id = ui.id
         LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
+        LEFT JOIN organization_cover tc ON tc.orgType = o.orgType
         WHERE o.parentId IS NULL
         ORDER BY o.createdAt DESC
       `).all();
@@ -102,11 +104,13 @@ router.get('/', authenticateToken, (req, res) => {
         SELECT 
           o.*,
           oc.imageUrl as presetCoverUrl,
+          tc.imageUrl as typeDefaultCoverUrl,
           u.username as adminUsername,
           (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
         FROM organizations o
         JOIN users u ON o.adminId = u.id
         LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
+        LEFT JOIN organization_cover tc ON tc.orgType = o.orgType
         WHERE o.parentId = ?
         ORDER BY o.createdAt DESC
       `);
@@ -134,10 +138,10 @@ router.get('/icons', authenticateToken, (req, res) => {
   }
 });
 
-// Get preset covers (public)
+// Get preset covers (only generic presets with orgType = NULL, for user selection)
 router.get('/covers', authenticateToken, (req, res) => {
   try {
-    const covers = db.prepare('SELECT * FROM organization_cover ORDER BY createdAt DESC').all();
+    const covers = db.prepare('SELECT * FROM organization_cover WHERE orgType IS NULL ORDER BY createdAt DESC').all();
     res.json({ covers });
   } catch (error) {
     console.error('Get covers error:', error);
@@ -155,11 +159,13 @@ router.get('/:id', authenticateToken, (req, res) => {
         u.username as adminUsername,
         ui.imageUrl as imageUrl,
         oc.imageUrl as presetCoverUrl,
+        tc.imageUrl as typeDefaultCoverUrl,
         (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
       FROM organizations o
       JOIN users u ON o.adminId = u.id
       JOIN organization_icon ui ON o.organization_icon_id = ui.id
       LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
+      LEFT JOIN organization_cover tc ON tc.orgType = o.orgType
       WHERE o.id = ?
     `).get(orgId);
 

@@ -80,6 +80,8 @@ export interface Organization {
   subOrganizations?: Organization[];
   organization_icon_id?: number;
   organization_cover_id?: number;
+  presetCoverUrl?: string;
+  typeDefaultCoverUrl?: string;
   imageUrl?: string;
   createdAt: string;
   members?: OrganizationMember[];

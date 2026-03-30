@@ -19,6 +19,7 @@ interface ModalProps {
     subOrganizations?: SubOrg[];
     coverImage?: string;
     presetCoverUrl?: string;
+    typeDefaultCoverUrl?: string;
 }
 
 export default function OrganizationModal({
@@ -31,6 +32,7 @@ export default function OrganizationModal({
     subOrganizations,
     coverImage,
     presetCoverUrl,
+    typeDefaultCoverUrl,
 }: ModalProps) {
     const typeImages: Record<string, string> = {
         'Производственная': '/image/organizations/production.jpg',
@@ -60,9 +62,10 @@ export default function OrganizationModal({
 
     if (!isOpen) return null;
 
-    // Priority: uploaded cover → preset cover → type-based static image
-    const rawImageUrl = coverImage || presetCoverUrl || typeImages[type];
-    const imageUrl = (coverImage || presetCoverUrl) ? getMediaUrl(rawImageUrl) : rawImageUrl;
+    // Priority: uploaded cover → preset cover → type-default cover from DB → static fallback
+    const dynamicUrl = coverImage || presetCoverUrl || typeDefaultCoverUrl;
+    const rawImageUrl = dynamicUrl || typeImages[type];
+    const imageUrl = dynamicUrl ? getMediaUrl(rawImageUrl) : rawImageUrl;
 
     return (
         <div className="game-modal-overlay" onClick={onClose}>

@@ -23,6 +23,7 @@ interface OrganizationIcon {
 interface OrganizationCover {
   id: number;
   imageUrl: string;
+  orgType: string | null;
 }
 
 const ORG_TYPES: string[] = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Волонтёрская', 'Спортивная', 'Свободная'];
@@ -53,6 +54,7 @@ export default function Admin() {
   const [organizationCovers, setOrganizationCovers] = useState<OrganizationCover[]>([]);
   const [newCoverFiles, setNewCoverFiles] = useState<File[]>([]);
   const [newCoverPreviews, setNewCoverPreviews] = useState<string[]>([]);
+  const [newCoverType, setNewCoverType] = useState<string>('');
   const [imagesSubTab, setImagesSubTab] = useState<'icons' | 'covers'>('icons');
 
   const handleNewIconFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -241,10 +243,12 @@ export default function Admin() {
     if (newCoverFiles.length === 0) return;
     const formData = new FormData();
     newCoverFiles.forEach(f => formData.append('images', f));
+    if (newCoverType) formData.append('orgType', newCoverType);
     try {
       await axios.post('/api/admin/covers', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       setNewCoverFiles([]);
       setNewCoverPreviews([]);
+      setNewCoverType('');
       const fileInput = document.getElementById('create-cover-file') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
       fetchData();
@@ -276,6 +280,13 @@ export default function Admin() {
     acc[icon.orgType].push(icon);
     return acc;
   }, {} as Record<string, OrganizationIcon[]>);
+
+  const coversByType = organizationCovers.reduce((acc, cover) => {
+    const key = cover.orgType || '__generic__';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(cover);
+    return acc;
+  }, {} as Record<string, OrganizationCover[]>);
 
   return (
     <div className="admin-page">
@@ -589,23 +600,61 @@ export default function Admin() {
             {imagesSubTab === 'covers' && (
             <div className="admin-images-section">
               <div className="section-header">
-                <h2>🖼️ Стандартные обложки организаций</h2>
-                <p style={{color:'#64748b', marginTop: 4}}>Организации могут выбрать одну из этих обложек</p>
+                <h2>🖼️ Обложки организаций</h2>
+                <p style={{color:'#64748b', marginTop: 4}}>Обложки по типам — показываются по умолчанию. Общие пресеты — организации могут выбрать сами.</p>
               </div>
-              <div className="images-grid">
-                {organizationCovers.map(cover => (
-                  <div key={cover.id} className="image-card cover-card">
-                    <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt="cover" /></div>
-                    <div className="image-actions">
-                      <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
+
+              {/* Type-based default covers */}
+              <div className="org-types-container">
+                {ORG_TYPES.map(type => {
+                  const typeCovers = coversByType[type] || [];
+                  return (
+                    <div className="org-type-group" key={type}>
+                      <div className="org-type-header"><h3>{ORG_TO_ICON[type]} {type}</h3></div>
+                      <div className="images-grid">
+                        {typeCovers.map(cover => (
+                          <div key={cover.id} className="image-card cover-card">
+                            <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt={type} /></div>
+                            <div className="image-actions">
+                              <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
+                            </div>
+                          </div>
+                        ))}
+                        {typeCovers.length === 0 && <div className="empty-icons">Нет обложки</div>}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Generic preset covers */}
+              <div className="org-type-group" style={{marginTop: '1.5rem'}}>
+                <div className="org-type-header"><h3>🖼️ Общие пресеты (без типа)</h3></div>
+                <div className="images-grid">
+                  {(coversByType['__generic__'] || []).map(cover => (
+                    <div key={cover.id} className="image-card cover-card">
+                      <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt="cover" /></div>
+                      <div className="image-actions">
+                        <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
+                      </div>
+                    </div>
+                  ))}
+                  {!(coversByType['__generic__']?.length) && <div className="empty-icons">Нет общих пресетов</div>}
+                </div>
+              </div>
+
+              <div className="upload-section">
+                <h3>📤 Загрузить обложку</h3>
+                <div className="upload-form">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="cover-org-type">Тип организации (если обложка по умолчанию):</label>
+                      <select id="cover-org-type" className="org-type-select" value={newCoverType} onChange={(e) => setNewCoverType(e.target.value)}>
+                        <option value="">Общий пресет (без типа)</option>
+                        {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
+                      </select>
                     </div>
                   </div>
-                ))}
-                {organizationCovers.length === 0 && <div className="empty-icons">Стандартных обложек пока нет</div>}
-              </div>
-              <div className="upload-section">
-                <h3>📤 Загрузить обложки</h3>
-                <div className="upload-form">
                   {newCoverPreviews.length > 0 && (
                     <div className="preview-section">
                       <h4>Предпросмотр ({newCoverFiles.length} файл):</h4>
@@ -625,13 +674,13 @@ export default function Admin() {
                       <button className="btn-upload" type="button" onClick={() => document.getElementById('create-cover-file')?.click()}>📁 Выбрать файлы</button>
                       <span className="file-name">{newCoverFiles.length > 0 ? `${newCoverFiles.length} файл(ов) выбрано` : 'Файлы не выбраны'}</span>
                     </div>
-                    <small className="input-hint">Рекомендуемый размер: 1280×400px, формат: JPG, PNG, макс. 10MB на файл</small>
+                    <small className="input-hint">Рекомендуемый размер: 1280×400px, формат: JPG, PNG, макс. 10MB</small>
                   </div>
                   <div className="upload-actions">
                     <button className="btn-primary" onClick={handleCreateCovers} disabled={newCoverFiles.length === 0}>
-                      Загрузить {newCoverFiles.length > 1 ? `(${newCoverFiles.length} шт.)` : ''}
+                      Загрузить {newCoverType ? `(тип: ${newCoverType})` : '(общий пресет)'} {newCoverFiles.length > 1 ? `— ${newCoverFiles.length} шт.` : ''}
                     </button>
-                    <button className="btn-secondary" onClick={() => { setNewCoverFiles([]); setNewCoverPreviews([]); const el = document.getElementById('create-cover-file') as HTMLInputElement; if(el) el.value=''; }}>Очистить</button>
+                    <button className="btn-secondary" onClick={() => { setNewCoverFiles([]); setNewCoverPreviews([]); setNewCoverType(''); const el = document.getElementById('create-cover-file') as HTMLInputElement; if(el) el.value=''; }}>Очистить</button>
                   </div>
                 </div>
               </div>

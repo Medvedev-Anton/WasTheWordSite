@@ -377,6 +377,7 @@ router.get('/covers', requireAdmin, (req, res) => {
 });
 
 // POST /admin/covers  (bulk)
+// orgType is optional: if provided, this is a type-default cover; if omitted, it's a generic preset.
 router.post('/covers', requireAdmin, upload.array('images', 30), (req, res) => {
   try {
     const files = req.files;
@@ -384,10 +385,15 @@ router.post('/covers', requireAdmin, upload.array('images', 30), (req, res) => {
       return res.status(400).json({ error: 'At least one image file is required' });
     }
 
+    const { orgType } = req.body;
+    const validTypes = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная',
+      'Волонтёрская', 'Спортивная', 'Свободная'];
+    const resolvedOrgType = (orgType && validTypes.includes(orgType)) ? orgType : null;
+
     const inserted = [];
     for (const file of files) {
       const imageUrl = `/uploads/organizations/${file.filename}`;
-      const result = db.prepare('INSERT INTO organization_cover (imageUrl) VALUES (?)').run(imageUrl);
+      const result = db.prepare('INSERT INTO organization_cover (imageUrl, orgType) VALUES (?, ?)').run(imageUrl, resolvedOrgType);
       inserted.push(db.prepare('SELECT * FROM organization_cover WHERE id = ?').get(result.lastInsertRowid));
     }
 
