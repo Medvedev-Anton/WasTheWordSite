@@ -651,13 +651,24 @@ function OrganizationDetail({
   };
 
   const [selectedIconId, setSelectedIconId] = useState(organization.organization_icon_id || 1);
-  const [organizationIcons, setOrganizationIcons] = useState([]);
+  const [selectedCoverId, setSelectedCoverId] = useState<number | null>(organization.organization_cover_id || null);
+  const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
+  const [organizationCovers, setOrganizationCovers] = useState<OrganizationCover[]>([]);
   const fetchIcons = async () => {
     try {
       const response = await axios.get('/api/organizations/icons');
       setOrganizationIcons(response.data.icons);
     } catch (error) {
       console.error('Failed to fetch icons:', error);
+    }
+  };
+
+  const fetchCovers = async () => {
+    try {
+      const response = await axios.get('/api/organizations/covers');
+      setOrganizationCovers(response.data.covers);
+    } catch (error) {
+      console.error('Failed to fetch covers:', error);
     }
   };
 
@@ -669,7 +680,7 @@ function OrganizationDetail({
     return acc;
   }, {} as Record<string, OrganizationIcon[]>);
 
-  useEffect(() => { fetchIcons(); }, []);
+  useEffect(() => { fetchIcons(); fetchCovers(); }, []);
 
   const [inputMode, setInputMode] = useState("address");
   const [address, setAddress] = useState("");
