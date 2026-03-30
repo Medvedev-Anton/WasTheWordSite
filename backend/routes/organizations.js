@@ -136,10 +136,13 @@ router.get('/icons', authenticateToken, (req, res) => {
   }
 });
 
-// Get preset covers (only generic presets with orgType = NULL, for user selection)
+// Get preset covers filtered by orgType (or all if no orgType given)
 router.get('/covers', authenticateToken, (req, res) => {
   try {
-    const covers = db.prepare('SELECT * FROM organization_cover WHERE orgType IS NULL ORDER BY createdAt DESC').all();
+    const { orgType } = req.query;
+    const covers = orgType
+      ? db.prepare('SELECT * FROM organization_cover WHERE orgType = ? ORDER BY createdAt DESC').all(orgType)
+      : db.prepare('SELECT * FROM organization_cover ORDER BY createdAt DESC').all();
     res.json({ covers });
   } catch (error) {
     console.error('Get covers error:', error);

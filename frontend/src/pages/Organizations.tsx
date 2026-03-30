@@ -42,6 +42,7 @@ interface OrganizationIcon {
 interface OrganizationCover {
   id: number;
   imageUrl: string;
+  orgType?: string | null;
 }
 
 export default function Organizations() {
@@ -91,7 +92,6 @@ export default function Organizations() {
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
     const avatar = formData.get('avatar') as File;
-    const coverImage = formData.get('coverImage') as File;
     const orgType = formData.get('orgType') as string;
     const defaultCanPost = (e.currentTarget.querySelector('[name="defaultCanPost"]') as HTMLInputElement)?.checked;
     const defaultCanComment = (e.currentTarget.querySelector('[name="defaultCanComment"]') as HTMLInputElement)?.checked;
@@ -112,9 +112,6 @@ export default function Organizations() {
 
     if (avatar && avatar.size > 0) {
       data.append('avatar', avatar);
-    }
-    if (coverImage && coverImage.size > 0) {
-      data.append('coverImage', coverImage);
     }
 
     try {
@@ -193,6 +190,13 @@ export default function Organizations() {
     acc[icon.orgType].push(icon);
     return acc;
   }, {} as Record<string, OrganizationIcon[]>);
+
+  const coversByType = organizationCovers.reduce((acc, cover) => {
+    const key = cover.orgType ?? '';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(cover);
+    return acc;
+  }, {} as Record<string, OrganizationCover[]>);
 
   if (loading) {
     return <div className="loading">Загрузка...</div>;
@@ -302,6 +306,7 @@ export default function Organizations() {
                   onChange={(e) => {
                     setSelectedType(e.target.value);
                     setSelectedIconId(null);
+                    setSelectedCoverId(null);
                   }}
                 >
                   {ROOT_ORG_TYPES.map(t => (
@@ -335,7 +340,7 @@ export default function Organizations() {
                 </div>
               )}
 
-              {organizationCovers.length > 0 && (
+              {selectedType && coversByType[selectedType]?.length > 0 && (
                 <div className="org-icon-selector">
                   <h4>Выберите обложку организации:</h4>
                   <div className="icon-grid">
@@ -345,7 +350,7 @@ export default function Organizations() {
                     >
                       <div className="icon-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>🚫</div>
                     </div>
-                    {organizationCovers.map(cover => (
+                    {coversByType[selectedType].map(cover => (
                       <div
                         key={cover.id}
                         className={`icon-option ${selectedCoverId === cover.id ? 'selected' : ''}`}
@@ -364,10 +369,6 @@ export default function Organizations() {
               <label>
                 Аватар:
                 <input type="file" name="avatar" accept="image/*" />
-              </label>
-              <label>
-                Обложка:
-                <input type="file" name="coverImage" accept="image/*" />
               </label>
               <div className="org-settings">
                 <h4>Настройки по умолчанию для новых сотрудников:</h4>
@@ -469,7 +470,7 @@ function OrganizationDetail({
   const [showCreateSubOrg, setShowCreateSubOrg] = useState(false);
   const [subOrgName, setSubOrgName] = useState('');
   const [subOrgDesc, setSubOrgDesc] = useState('');
-  const [subOrgCoverFile, setSubOrgCoverFile] = useState<File | null>(null);
+  const [subOrgCoverId, setSubOrgCoverId] = useState<number | null>(null);
   const [subOrgCreating, setSubOrgCreating] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
@@ -570,9 +571,6 @@ function OrganizationDetail({
       if (orgAvatarFile) {
         formData.append('avatar', orgAvatarFile);
       }
-      if (orgCoverFile) {
-        formData.append('coverImage', orgCoverFile);
-      }
 
       await axios.put(`/api/organizations/${organization.id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -631,8 +629,8 @@ function OrganizationDetail({
       data.append('defaultCanPost', 'true');
       data.append('defaultCanComment', 'true');
       data.append('isPrivate', 'false');
-      if (subOrgCoverFile) {
-        data.append('coverImage', subOrgCoverFile);
+      if (subOrgCoverId) {
+        data.append('organizationCoverId', subOrgCoverId.toString());
       }
 
       await axios.post('/api/organizations', data, {
@@ -641,7 +639,7 @@ function OrganizationDetail({
       setShowCreateSubOrg(false);
       setSubOrgName('');
       setSubOrgDesc('');
-      setSubOrgCoverFile(null);
+      setSubOrgCoverId(null);
       onUpdate(organization.id);
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка при создании подорганизации');
@@ -680,6 +678,13 @@ function OrganizationDetail({
     return acc;
   }, {} as Record<string, OrganizationIcon[]>);
 
+  const coversByType = organizationCovers.reduce((acc, cover) => {
+    const key = cover.orgType ?? '';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(cover);
+    return acc;
+  }, {} as Record<string, OrganizationCover[]>);
+
   useEffect(() => { fetchIcons(); fetchCovers(); }, []);
 
   const [inputMode, setInputMode] = useState("address");
@@ -694,9 +699,7 @@ function OrganizationDetail({
   };
 
   const roleLabels: Record<string, string> = { admin: 'Руководитель', moderator: 'Модератор', member: 'Сотрудник' };
-  const orgCoverPreview = orgCoverFile
-    ? URL.createObjectURL(orgCoverFile)
-    : organization.coverImage
+  const orgCoverPreview = organization.coverImage
       ? getMediaUrl(organization.coverImage)
       : organization.presetCoverUrl
         ? getMediaUrl(organization.presetCoverUrl)
@@ -765,24 +768,6 @@ function OrganizationDetail({
                 rows={3}
                 className="org-edit-textarea"
               />
-
-              <div className="org-cover-editor">
-                <div
-                  className={`org-card-cover ${orgCoverPreview ? 'has-cover' : ''}`}
-                  style={orgCoverPreview ? { backgroundImage: `url(${orgCoverPreview})` } : undefined}
-                >
-                  {!orgCoverPreview && <span>Обложка организации</span>}
-                </div>
-                <label className="avatar-upload-label">
-                  🖼️ Изменить обложку
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setOrgCoverFile(e.target.files?.[0] || null)}
-                    style={{ display: 'none' }}
-                  />
-                </label>
-              </div>
 
               <div className="org-locations">
                 <div className="input-mode-toggle">
@@ -898,7 +883,7 @@ function OrganizationDetail({
 
               <input type="hidden" name="organizationIconId" value={selectedIconId ?? ""} />
 
-              {organizationCovers.length > 0 && (
+              {coversByType[organization.orgType || '']?.length > 0 && (
                 <div className="org-icon-section">
                   <h4>Обложка организации</h4>
                   <div className="org-icon-selector">
@@ -910,7 +895,7 @@ function OrganizationDetail({
                         <div className="icon-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>🚫</div>
                         {selectedCoverId === null && <div className="icon-check">✓</div>}
                       </div>
-                      {organizationCovers.map(cover => (
+                      {coversByType[organization.orgType || ''].map(cover => (
                         <div
                           key={cover.id}
                           className={`icon-option ${selectedCoverId === cover.id ? 'selected' : ''}`}
@@ -943,7 +928,6 @@ function OrganizationDetail({
                   setSelectedIconId(organization.organization_icon_id || null);
                   setSelectedCoverId(organization.organization_cover_id || null);
                   setOrgAvatarFile(null);
-                  setOrgCoverFile(null);
                   setLongitude(organization.longitude);
                   setLatitude(organization.latitude);
                 }} className="cancel-org-btn">Отмена</button>
@@ -1014,21 +998,39 @@ function OrganizationDetail({
                 rows={2}
                 className="org-edit-textarea"
               />
-              <label>
-                Обложка:
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setSubOrgCoverFile(e.target.files?.[0] || null)}
-                />
-              </label>
+              {subOrgType && coversByType[subOrgType]?.length > 0 && (
+                <div className="org-icon-selector">
+                  <h4>Выберите обложку:</h4>
+                  <div className="icon-grid">
+                    <div
+                      className={`icon-option ${subOrgCoverId === null ? 'selected' : ''}`}
+                      onClick={() => setSubOrgCoverId(null)}
+                    >
+                      <div className="icon-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>🚫</div>
+                      {subOrgCoverId === null && <div className="icon-check">✓</div>}
+                    </div>
+                    {coversByType[subOrgType].map(cover => (
+                      <div
+                        key={cover.id}
+                        className={`icon-option ${subOrgCoverId === cover.id ? 'selected' : ''}`}
+                        onClick={() => setSubOrgCoverId(cover.id)}
+                      >
+                        <div className="icon-preview" style={{ height: '60px', overflow: 'hidden' }}>
+                          <img src={getMediaUrl(cover.imageUrl)} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                        {subOrgCoverId === cover.id && <div className="icon-check">✓</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="org-edit-actions">
                 <button onClick={handleCreateSubOrg} className="save-org-btn" disabled={subOrgCreating}>
                   {subOrgCreating ? 'Создание...' : 'Создать'}
                 </button>
                 <button onClick={() => {
                   setShowCreateSubOrg(false);
-                  setSubOrgCoverFile(null);
+                  setSubOrgCoverId(null);
                 }} className="cancel-org-btn">Отмена</button>
               </div>
             </div>
