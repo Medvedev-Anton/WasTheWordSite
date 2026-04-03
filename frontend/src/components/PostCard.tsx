@@ -111,12 +111,7 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
               className={post.organizationName ? 'author-name' : 'author-name author-name-link'}
               onClick={() => !post.organizationName && post.authorId && navigate(`/users/${post.authorId}`)}
             >{displayName}</div>
-            {post.organizationName && (
-              <div
-                className="author-username author-name-link"
-                onClick={() => post.authorId && navigate(`/users/${post.authorId}`)}
-              >от {authorName}</div>
-            )}
+
             <div className="post-date">{new Date(post.createdAt).toLocaleString('ru-RU')}</div>
           </div>
         </div>
