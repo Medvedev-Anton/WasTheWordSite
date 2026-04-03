@@ -97,15 +97,18 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
     : post.authorUsername || 'Неизвестный';
 
   const displayName = post.organizationName || authorName;
-  const displayAvatar = post.organizationAvatar || post.authorAvatar;
+  const isOrgPost = !!post.organizationName;
+  const displayAvatar = isOrgPost ? post.organizationAvatar : post.authorAvatar;
 
   return (
     <div className="post-card">
       <div className="post-header">
         <div className="post-author">
-          {displayAvatar && (
+          {displayAvatar ? (
             <img src={getMediaUrl(displayAvatar)} alt={displayName} className="avatar" />
-          )}
+          ) : isOrgPost ? (
+            <div className="avatar avatar-placeholder">🏢</div>
+          ) : null}
           <div>
             <div
               className={post.organizationName ? 'author-name' : 'author-name author-name-link'}

@@ -30,6 +30,14 @@
   object-fit: cover;
 }
 
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: #e9ecef;
+  flex-shrink: 0;
+}
 .author-name {
   font-weight: 600;
   color: #333;
