@@ -235,8 +235,8 @@ export default function ChatPage() {
   const handleDeleteMessage = async (messageId: number) => {
     if (!confirm('Удалить это сообщение?')) return;
     try {
-      await axios.delete(`/api/messages/${messageId}`);
-      setMessages(prev => prev.filter(m => m.id !== messageId));
+      const response = await axios.delete(`/api/messages/${messageId}`);
+      setMessages(prev => prev.map(m => m.id === messageId ? response.data : m));
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка при удалении сообщения');
     }
@@ -328,7 +328,7 @@ export default function ChatPage() {
               {messages.map(message => {
                 const isOwn = message.userId === user?.id;
                 return (
-                  <div key={message.id} className={`message ${isOwn ? 'own' : ''}`}>
+                  <div key={message.id} className={`message ${isOwn ? 'own' : ''} ${message.isDeleted ? 'deleted' : ''}`}>
                     {!isOwn && (
                       <img
                         src={getMediaUrl(message.avatar)}
@@ -344,56 +344,64 @@ export default function ChatPage() {
                             : message.username}
                         </div>
                       )}
-                      {message.content && <div className="message-text">{message.content}</div>}
-                      {message.fileUrl && (
-                        <div className="message-file">
-                          {message.fileDeleted ? (
-                            <div className="message-file-deleted">
-                              🗑️ Файл «{message.fileName || 'файл'}» был удалён{message.fileDeletedAt ? ` ${new Date(message.fileDeletedAt).toLocaleDateString('ru-RU')}` : ''}
-                            </div>
-                          ) : message.fileType?.startsWith('image/') || message.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
-                            <img 
-                              src={getMediaUrl(message.fileUrl)} 
-                              alt={message.fileName || 'Image'}
-                              className="message-file-image"
-                              onClick={() => {
-                                const url = getMediaUrl(message.fileUrl);
-                                if (url) window.open(url, '_blank');
-                              }}
-                            />
-                          ) : message.fileType?.startsWith('video/') || message.fileUrl.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) ? (
-                            <div className="message-video">
-                              <ReactPlayer
-                                url={getMediaUrl(message.fileUrl) || ''}
-                                controls
-                                width="100%"
-                                height="auto"
-                                style={{ maxHeight: '400px' }}
-                                config={{
-                                  file: {
-                                    attributes: {
-                                      controlsList: 'nodownload'
-                                    }
-                                  }
-                                }}
-                              />
-                            </div>
-                          ) : message.fileType?.startsWith('audio/') || message.fileUrl.match(/\.(webm|mp3|wav|ogg|m4a)$/i) ? (
-                            <AudioPlayer 
-                              src={getMediaUrl(message.fileUrl) || ''}
-                              fileName={message.fileName}
-                            />
-                          ) : (
-                            <a 
-                              href={getMediaUrl(message.fileUrl)} 
-                              download={message.fileName}
-                              className="message-file-link"
-                            >
-                              <span className="file-icon">{getFileIcon(message.fileType)}</span>
-                              <span className="file-name">{message.fileName || 'Файл'}</span>
-                            </a>
-                          )}
+                      {message.isDeleted ? (
+                        <div className="message-deleted-placeholder">
+                          🚫 Сообщение удалено{message.deletedAt ? ` ${new Date(message.deletedAt).toLocaleDateString('ru-RU')}` : ''}
                         </div>
+                      ) : (
+                        <>
+                          {message.content && <div className="message-text">{message.content}</div>}
+                          {message.fileUrl && (
+                            <div className="message-file">
+                              {message.fileDeleted ? (
+                                <div className="message-file-deleted">
+                                  🗑️ Файл «{message.fileName || 'файл'}» был удалён{message.fileDeletedAt ? ` ${new Date(message.fileDeletedAt).toLocaleDateString('ru-RU')}` : ''}
+                                </div>
+                              ) : message.fileType?.startsWith('image/') || message.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                <img 
+                                  src={getMediaUrl(message.fileUrl)} 
+                                  alt={message.fileName || 'Image'}
+                                  className="message-file-image"
+                                  onClick={() => {
+                                    const url = getMediaUrl(message.fileUrl);
+                                    if (url) window.open(url, '_blank');
+                                  }}
+                                />
+                              ) : message.fileType?.startsWith('video/') || message.fileUrl.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) ? (
+                                <div className="message-video">
+                                  <ReactPlayer
+                                    url={getMediaUrl(message.fileUrl) || ''}
+                                    controls
+                                    width="100%"
+                                    height="auto"
+                                    style={{ maxHeight: '400px' }}
+                                    config={{
+                                      file: {
+                                        attributes: {
+                                          controlsList: 'nodownload'
+                                        }
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              ) : message.fileType?.startsWith('audio/') || message.fileUrl.match(/\.(webm|mp3|wav|ogg|m4a)$/i) ? (
+                                <AudioPlayer 
+                                  src={getMediaUrl(message.fileUrl) || ''}
+                                  fileName={message.fileName}
+                                />
+                              ) : (
+                                <a 
+                                  href={getMediaUrl(message.fileUrl)} 
+                                  download={message.fileName}
+                                  className="message-file-link"
+                                >
+                                  <span className="file-icon">{getFileIcon(message.fileType)}</span>
+                                  <span className="file-name">{message.fileName || 'Файл'}</span>
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </>
                       )}
                       <div className="message-time">
                         {new Date(message.createdAt).toLocaleTimeString('ru-RU', {
@@ -401,7 +409,7 @@ export default function ChatPage() {
                           minute: '2-digit',
                         })}
                       </div>
-                      {isOwn && (
+                      {isOwn && !message.isDeleted && (
                         <button
                           className="message-delete-btn"
                           title="Удалить сообщение"
@@ -481,22 +489,7 @@ export default function ChatPage() {
       {showNewChatModal && (
         <div className="modal-overlay" onClick={() => setShowNewChatModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Создать чат</h3>
-            <div className="chat-type-selector">
-              <button
-                className={chatType === 'personal' ? 'active' : ''}
-                onClick={() => setChatType('personal')}
-              >
-                Личный
-              </button>
-              <button
-                className={chatType === 'group' ? 'active' : ''}
-                onClick={() => setChatType('group')}
-              >
-                Групповой
-              </button>
-            </div>
-            {chatType === 'personal' ? (
+            <h3>Создать личный чат</h3>
               <div className="modal-form">
                 <input
                   type="text"
@@ -543,75 +536,6 @@ export default function ChatPage() {
                   </button>
                 </div>
               </div>
-            ) : (
-              <div className="modal-form">
-                <input
-                  type="text"
-                  placeholder="Название группы"
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Поиск пользователей..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="user-search-input"
-                />
-                <div className="users-list">
-                  {users
-                    .filter(u => {
-                      const query = searchQuery.toLowerCase();
-                      const name = `${u.firstName || ''} ${u.lastName || ''}`.toLowerCase();
-                      return u.username.toLowerCase().includes(query) || 
-                             name.includes(query) ||
-                             (u.email && u.email.toLowerCase().includes(query));
-                    })
-                    .map(userItem => {
-                      const isSelected = groupParticipants.includes(userItem.id.toString());
-                      return (
-                        <div 
-                          key={userItem.id} 
-                          className={`user-item ${isSelected ? 'selected' : ''}`}
-                          onClick={() => {
-                            if (isSelected) {
-                              setGroupParticipants(groupParticipants.filter(id => id !== userItem.id.toString()));
-                            } else {
-                              setGroupParticipants([...groupParticipants, userItem.id.toString()]);
-                            }
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => {}}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          {userItem.avatar && (
-                            <img src={getMediaUrl(userItem.avatar)} alt={userItem.username} className="user-item-avatar" />
-                          )}
-                          <div className="user-item-info">
-                            <div className="user-item-name">
-                              {userItem.firstName && userItem.lastName
-                                ? `${userItem.firstName} ${userItem.lastName}`
-                                : userItem.username}
-                            </div>
-                            <div className="user-item-username">@{userItem.username}</div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-                <div className="modal-actions">
-                  <button type="button" onClick={() => setShowNewChatModal(false)}>
-                    Отмена
-                  </button>
-                  <button onClick={handleCreateGroupChat} disabled={!groupName || groupParticipants.length === 0}>
-                    Создать
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       )}

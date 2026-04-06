@@ -63,6 +63,31 @@ function getSubOrgType(parentType) {
   return ORG_HIERARCHY[parentType] || null;
 }
 
+// Sync: add userId to the org's group chat (if it exists)
+function addUserToOrgGroupChat(orgId, userId) {
+  try {
+    const chat = db.prepare("SELECT id FROM chats WHERE organizationId = ? AND type = 'group'").get(orgId);
+    if (!chat) return;
+    const existing = db.prepare('SELECT id FROM chat_participants WHERE chatId = ? AND userId = ?').get(chat.id, userId);
+    if (!existing) {
+      db.prepare('INSERT INTO chat_participants (chatId, userId) VALUES (?, ?)').run(chat.id, userId);
+    }
+  } catch (e) {
+    console.error('addUserToOrgGroupChat error:', e.message);
+  }
+}
+
+// Sync: remove userId from the org's group chat (if it exists)
+function removeUserFromOrgGroupChat(orgId, userId) {
+  try {
+    const chat = db.prepare("SELECT id FROM chats WHERE organizationId = ? AND type = 'group'").get(orgId);
+    if (!chat) return;
+    db.prepare('DELETE FROM chat_participants WHERE chatId = ? AND userId = ?').run(chat.id, userId);
+  } catch (e) {
+    console.error('removeUserFromOrgGroupChat error:', e.message);
+  }
+}
+
 // Get all organizations (root-level by default, supports ?parentId=)
 router.get('/', authenticateToken, (req, res) => {
   try {
@@ -445,6 +470,7 @@ router.post('/:id/join', authenticateToken, (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(orgId, userId, 'member', memberCanPost, memberCanComment, 0);
 
+    addUserToOrgGroupChat(orgId, userId);
     res.json({ message: 'Joined organization' });
   } catch (error) {
     console.error('Join organization error:', error);
@@ -468,6 +494,7 @@ router.post('/:id/leave', authenticateToken, (req, res) => {
     }
 
     db.prepare('DELETE FROM organization_members WHERE organizationId = ? AND userId = ?').run(orgId, userId);
+    removeUserFromOrgGroupChat(orgId, userId);
     res.json({ message: 'Left organization' });
   } catch (error) {
     console.error('Leave organization error:', error);
@@ -514,6 +541,7 @@ router.post('/:id/invite', authenticateToken, (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(orgId, targetUser.id, 'member', invCanPost, invCanComment, 0);
 
+    addUserToOrgGroupChat(orgId, targetUser.id);
     res.json({ message: 'User invited successfully' });
   } catch (error) {
     console.error('Invite member error:', error);
@@ -548,6 +576,7 @@ router.delete('/:id/members/:targetUserId', authenticateToken, (req, res) => {
     }
 
     db.prepare('DELETE FROM organization_members WHERE organizationId = ? AND userId = ?').run(orgId, targetUserId);
+    removeUserFromOrgGroupChat(orgId, targetUserId);
     res.json({ message: 'Member removed' });
   } catch (error) {
     console.error('Kick member error:', error);

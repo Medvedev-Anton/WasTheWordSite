@@ -628,26 +628,55 @@
 }
 
 .message-delete-btn {
-  position: absolute;
-  top: 4px;
-  right: -28px;
-  background: none;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  background: rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
+  padding: 2px 7px;
+  color: #c00;
   opacity: 0;
-  transition: opacity 0.2s;
-  padding: 2px 4px;
-  border-radius: 4px;
+  transition: opacity 0.15s, background 0.15s;
+  user-select: none;
 }
 
 .message:hover .message-delete-btn {
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .message-delete-btn:hover {
-  opacity: 1 !important;
-  background: #fee;
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+.message.own .message-delete-btn {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.35);
+  color: #fff;
+}
+
+.message.own .message-delete-btn:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+/* Deleted message placeholder */
+.message-deleted-placeholder {
+  font-style: italic;
+  color: #999;
+  font-size: 0.9rem;
+  padding: 2px 0;
+}
+
+.message.own .message-deleted-placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+.message.deleted .message-content {
+  opacity: 0.75;
 }
 
 /* Deleted file placeholder */

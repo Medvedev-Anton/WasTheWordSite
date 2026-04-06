@@ -138,7 +138,7 @@ router.post('/', authenticateToken, upload.single('file'), (req, res) => {
   }
 });
 
-// Delete message
+// Delete message (soft delete)
 router.delete('/:id', authenticateToken, (req, res) => {
   try {
     const messageId = parseInt(req.params.id);
@@ -154,15 +154,24 @@ router.delete('/:id', authenticateToken, (req, res) => {
     }
 
     // Delete the file from disk if exists
-    if (message.fileUrl) {
+    if (message.fileUrl && !message.fileDeleted) {
       const filePath = path.join(__dirname, '..', message.fileUrl.replace(/^\//, ''));
       if (fs.existsSync(filePath)) {
         try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
       }
     }
 
-    db.prepare('DELETE FROM messages WHERE id = ?').run(messageId);
-    res.json({ message: 'Message deleted' });
+    const now = new Date().toISOString();
+    db.prepare(
+      `UPDATE messages SET isDeleted = 1, deletedAt = ?, content = '', fileUrl = NULL, fileName = NULL, fileType = NULL, fileDeleted = 1, fileDeletedAt = ? WHERE id = ?`
+    ).run(now, message.fileUrl ? now : null, messageId);
+
+    const updated = db.prepare(`
+      SELECT m.*, u.username, u.avatar, u.firstName, u.lastName
+      FROM messages m JOIN users u ON m.userId = u.id WHERE m.id = ?
+    `).get(messageId);
+
+    res.json(updated);
   } catch (error) {
     console.error('Delete message error:', error);
     res.status(500).json({ error: 'Server error' });

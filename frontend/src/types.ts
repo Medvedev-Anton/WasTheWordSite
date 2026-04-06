@@ -137,6 +137,8 @@ export interface Message {
   fileType?: string;
   fileDeleted?: number;
   fileDeletedAt?: string;
+  isDeleted?: number;
+  deletedAt?: string;
   username: string;
   avatar?: string;
   firstName?: string;

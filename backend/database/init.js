@@ -380,6 +380,8 @@ export async function initDatabase() {
 
   const hasFileDeleted = messagesTableInfo.some(col => col.name === 'fileDeleted');
   const hasFileDeletedAt = messagesTableInfo.some(col => col.name === 'fileDeletedAt');
+  const hasIsDeleted = messagesTableInfo.some(col => col.name === 'isDeleted');
+  const hasDeletedAt = messagesTableInfo.some(col => col.name === 'deletedAt');
   if (!hasFileDeleted) {
     try {
       db.exec(`ALTER TABLE messages ADD COLUMN fileDeleted INTEGER DEFAULT 0`);
@@ -392,6 +394,20 @@ export async function initDatabase() {
       db.exec(`ALTER TABLE messages ADD COLUMN fileDeletedAt TEXT`);
     } catch (e) {
       console.error('Error adding fileDeletedAt column:', e.message);
+    }
+  }
+  if (!hasIsDeleted) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN isDeleted INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding isDeleted column:', e.message);
+    }
+  }
+  if (!hasDeletedAt) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN deletedAt TEXT`);
+    } catch (e) {
+      console.error('Error adding deletedAt column:', e.message);
     }
   }
 
