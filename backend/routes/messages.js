@@ -153,6 +153,14 @@ router.delete('/:id', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
+    // Delete the file from disk if exists
+    if (message.fileUrl) {
+      const filePath = path.join(__dirname, '..', message.fileUrl.replace(/^\//, ''));
+      if (fs.existsSync(filePath)) {
+        try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+      }
+    }
+
     db.prepare('DELETE FROM messages WHERE id = ?').run(messageId);
     res.json({ message: 'Message deleted' });
   } catch (error) {

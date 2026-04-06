@@ -232,6 +232,22 @@ export default function ChatPage() {
     }
   };
 
+  const handleDeleteMessage = async (messageId: number) => {
+    if (!confirm('Удалить это сообщение?')) return;
+    try {
+      await axios.delete(`/api/messages/${messageId}`);
+      setMessages(prev => prev.filter(m => m.id !== messageId));
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при удалении сообщения');
+    }
+  };
+
+  const getChatAvatar = (chat: Chat) => {
+    if (chat.avatar) return getMediaUrl(chat.avatar);
+    if (chat.type === 'personal' && chat.otherParticipant?.avatar) return getMediaUrl(chat.otherParticipant.avatar);
+    return null;
+  };
+
   const getChatName = (chat: Chat) => {
     if (chat.type === 'group') {
       return chat.name || 'Групповой чат';
@@ -264,6 +280,15 @@ export default function ChatPage() {
                 className={`chat-item ${selectedChat?.id === chat.id ? 'active' : ''}`}
                 onClick={() => { setSelectedChat(chat); setShowSidebarOnMobile(false); }}
               >
+                <div className="chat-item-avatar">
+                  {getChatAvatar(chat) ? (
+                    <img src={getChatAvatar(chat)!} alt={getChatName(chat)} className="chat-item-avatar-img" />
+                  ) : (
+                    <div className="chat-item-avatar-placeholder">
+                      {chat.type === 'group' ? '👥' : '👤'}
+                    </div>
+                  )}
+                </div>
                 <div className="chat-item-info">
                   <div className="chat-item-header">
                     <div className="chat-item-name">{getChatName(chat)}</div>
@@ -322,7 +347,11 @@ export default function ChatPage() {
                       {message.content && <div className="message-text">{message.content}</div>}
                       {message.fileUrl && (
                         <div className="message-file">
-                          {message.fileType?.startsWith('image/') || message.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                          {message.fileDeleted ? (
+                            <div className="message-file-deleted">
+                              🗑️ Файл «{message.fileName || 'файл'}» был удалён{message.fileDeletedAt ? ` ${new Date(message.fileDeletedAt).toLocaleDateString('ru-RU')}` : ''}
+                            </div>
+                          ) : message.fileType?.startsWith('image/') || message.fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
                             <img 
                               src={getMediaUrl(message.fileUrl)} 
                               alt={message.fileName || 'Image'}
@@ -372,6 +401,15 @@ export default function ChatPage() {
                           minute: '2-digit',
                         })}
                       </div>
+                      {isOwn && (
+                        <button
+                          className="message-delete-btn"
+                          title="Удалить сообщение"
+                          onClick={() => handleDeleteMessage(message.id)}
+                        >
+                          🗑️
+                        </button>
+                      )}
                     </div>
                   </div>
                 );

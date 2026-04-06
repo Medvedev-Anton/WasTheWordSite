@@ -108,6 +108,8 @@ export interface Chat {
   id: number;
   name?: string;
   type: 'personal' | 'group';
+  avatar?: string;
+  organizationId?: number | null;
   createdAt: string;
   lastMessage?: string;
   lastMessageTime?: string;
@@ -133,6 +135,8 @@ export interface Message {
   fileUrl?: string;
   fileName?: string;
   fileType?: string;
+  fileDeleted?: number;
+  fileDeletedAt?: string;
   username: string;
   avatar?: string;
   firstName?: string;

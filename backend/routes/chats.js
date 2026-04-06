@@ -129,7 +129,7 @@ router.post('/personal', authenticateToken, (req, res) => {
 router.post('/group', authenticateToken, (req, res) => {
   try {
     const userId = req.user.userId;
-    const { name, participantIds } = req.body;
+    const { name, participantIds, avatar, organizationId } = req.body;
 
     if (!name) {
       return res.status(400).json({ error: 'Name is required' });
@@ -139,8 +139,28 @@ router.post('/group', authenticateToken, (req, res) => {
       return res.status(400).json({ error: 'At least one participant is required' });
     }
 
+    // If organizationId provided, verify the caller is the org admin
+    if (organizationId) {
+      const org = db.prepare('SELECT adminId FROM organizations WHERE id = ?').get(organizationId);
+      if (!org) {
+        return res.status(404).json({ error: 'Organization not found' });
+      }
+      if (org.adminId !== userId) {
+        return res.status(403).json({ error: 'Only the organization leader can create a group chat' });
+      }
+      // Check if org group chat already exists
+      const existingOrgChat = db.prepare("SELECT id FROM chats WHERE organizationId = ? AND type = 'group'").get(organizationId);
+      if (existingOrgChat) {
+        return res.json({ chatId: existingOrgChat.id, alreadyExists: true });
+      }
+    }
+
     // Create new chat
-    const result = db.prepare("INSERT INTO chats (name, type) VALUES (?, 'group')").run(name);
+    const result = db.prepare("INSERT INTO chats (name, type, avatar, organizationId) VALUES (?, 'group', ?, ?)").run(
+      name,
+      avatar || null,
+      organizationId || null
+    );
     const chatId = result.lastInsertRowid;
 
     // Add creator as participant

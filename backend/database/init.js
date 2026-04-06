@@ -378,6 +378,42 @@ export async function initDatabase() {
     }
   }
 
+  const hasFileDeleted = messagesTableInfo.some(col => col.name === 'fileDeleted');
+  const hasFileDeletedAt = messagesTableInfo.some(col => col.name === 'fileDeletedAt');
+  if (!hasFileDeleted) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN fileDeleted INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding fileDeleted column:', e.message);
+    }
+  }
+  if (!hasFileDeletedAt) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN fileDeletedAt TEXT`);
+    } catch (e) {
+      console.error('Error adding fileDeletedAt column:', e.message);
+    }
+  }
+
+  // Migrate chats table: add avatar and organizationId columns
+  const chatsTableInfo = db.prepare("PRAGMA table_info(chats)").all();
+  const hasChatAvatar = chatsTableInfo.some(col => col.name === 'avatar');
+  const hasChatOrgId = chatsTableInfo.some(col => col.name === 'organizationId');
+  if (!hasChatAvatar) {
+    try {
+      db.exec(`ALTER TABLE chats ADD COLUMN avatar TEXT`);
+    } catch (e) {
+      console.error('Error adding avatar column to chats:', e.message);
+    }
+  }
+  if (!hasChatOrgId) {
+    try {
+      db.exec(`ALTER TABLE chats ADD COLUMN organizationId INTEGER`);
+    } catch (e) {
+      console.error('Error adding organizationId column to chats:', e.message);
+    }
+  }
+
   // Create user_photos table
   db.exec(`
     CREATE TABLE IF NOT EXISTS user_photos (

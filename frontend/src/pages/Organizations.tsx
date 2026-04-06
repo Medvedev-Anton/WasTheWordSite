@@ -691,11 +691,30 @@ function OrganizationDetail({
   const [address, setAddress] = useState("");
   const [longitude, setLongitude] = useState(organization.longitude);
   const [latitude, setLatitude] = useState(organization.latitude);
+  const [creatingGroupChat, setCreatingGroupChat] = useState(false);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
     setLatitude(coordinate[0].toString());
     setLongitude(coordinate[1].toString());
+  };
+
+  const handleCreateOrgGroupChat = async () => {
+    setCreatingGroupChat(true);
+    try {
+      const memberIds = (organization.members || []).map(m => m.userId);
+      await axios.post('/api/chats/group', {
+        name: organization.name,
+        participantIds: memberIds,
+        avatar: organization.avatar || null,
+        organizationId: organization.id,
+      });
+      navigate('/chat');
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при создании чата');
+    } finally {
+      setCreatingGroupChat(false);
+    }
   };
 
   const roleLabels: Record<string, string> = { admin: 'Руководитель', moderator: 'Модератор', member: 'Сотрудник' };
@@ -957,6 +976,15 @@ function OrganizationDetail({
                   setEditingOrg(true);
                   setSelectedCoverId(organization.organization_cover_id || null);
                 }} className="edit-org-btn">✏️ Редактировать</button>
+              )}
+              {isAdmin && (
+                <button
+                  onClick={handleCreateOrgGroupChat}
+                  className="create-group-chat-btn"
+                  disabled={creatingGroupChat}
+                >
+                  💬 {creatingGroupChat ? 'Создание...' : 'Создать групповой чат'}
+                </button>
               )}
               {!isMember && !organization.isPrivate && (
                 <button onClick={handleJoin} className="join-btn">Вступить</button>
