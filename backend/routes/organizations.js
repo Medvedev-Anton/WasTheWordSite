@@ -280,7 +280,13 @@ router.get('/:id', authenticateToken, (req, res) => {
       });
     }
 
-    res.json({ ...organization, members, posts, subOrganizations, parentOrg });
+    // Get group chat info for this organization
+    const groupChat = db.prepare("SELECT id FROM chats WHERE organizationId = ? AND type = 'group'").get(orgId);
+    const groupChatParticipant = groupChat
+      ? db.prepare('SELECT id FROM chat_participants WHERE chatId = ? AND userId = ?').get(groupChat.id, req.user.userId)
+      : null;
+
+    res.json({ ...organization, members, posts, subOrganizations, parentOrg, groupChatId: groupChat?.id || null, isInGroupChat: !!groupChatParticipant });
   } catch (error) {
     console.error('Get organization error:', error);
     res.status(500).json({ error: 'Server error' });

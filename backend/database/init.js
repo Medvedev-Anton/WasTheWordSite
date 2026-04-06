@@ -344,6 +344,10 @@ export async function initDatabase() {
       fileUrl TEXT,
       fileName TEXT,
       fileType TEXT,
+      fileDeleted INTEGER DEFAULT 0,
+      fileDeletedAt TEXT,
+      isDeleted INTEGER DEFAULT 0,
+      deletedAt TEXT,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (chatId) REFERENCES chats(id) ON DELETE CASCADE,
       FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE

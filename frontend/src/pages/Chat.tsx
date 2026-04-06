@@ -330,11 +330,11 @@ export default function ChatPage() {
                 return (
                   <div key={message.id} className={`message ${isOwn ? 'own' : ''} ${message.isDeleted ? 'deleted' : ''}`}>
                     {!isOwn && (
-                      <img
-                        src={getMediaUrl(message.avatar)}
-                        alt={message.username}
-                        className="message-avatar"
-                      />
+                      getMediaUrl(message.avatar)
+                        ? <img src={getMediaUrl(message.avatar)} alt={message.username} className="message-avatar" />
+                        : <div className="message-avatar message-avatar-placeholder">
+                            {(message.firstName || message.username || '?')[0].toUpperCase()}
+                          </div>
                     )}
                     <div className="message-content">
                       {!isOwn && (

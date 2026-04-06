@@ -217,5 +217,36 @@ router.post('/:id/participants', authenticateToken, (req, res) => {
   }
 });
 
+// Join a group chat (for org members)
+router.post('/:id/join', authenticateToken, (req, res) => {
+  try {
+    const chatId = parseInt(req.params.id);
+    const userId = req.user.userId;
+
+    const chat = db.prepare('SELECT * FROM chats WHERE id = ?').get(chatId);
+    if (!chat) return res.status(404).json({ error: 'Chat not found' });
+    if (chat.type !== 'group') return res.status(400).json({ error: 'Not a group chat' });
+
+    // If org chat, verify org membership
+    if (chat.organizationId) {
+      const isMember = db.prepare('SELECT id FROM organization_members WHERE organizationId = ? AND userId = ?').get(chat.organizationId, userId);
+      const org = db.prepare('SELECT adminId FROM organizations WHERE id = ?').get(chat.organizationId);
+      const isAdmin = org && org.adminId === userId;
+      if (!isMember && !isAdmin) {
+        return res.status(403).json({ error: 'You must be a member of the organization to join this chat' });
+      }
+    }
+
+    const existing = db.prepare('SELECT id FROM chat_participants WHERE chatId = ? AND userId = ?').get(chatId, userId);
+    if (existing) return res.status(400).json({ error: 'Already a participant' });
+
+    db.prepare('INSERT INTO chat_participants (chatId, userId) VALUES (?, ?)').run(chatId, userId);
+    res.json({ message: 'Joined chat' });
+  } catch (error) {
+    console.error('Join chat error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 

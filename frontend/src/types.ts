@@ -83,6 +83,8 @@ export interface Organization {
   presetCoverUrl?: string;
   typeDefaultCoverUrl?: string;
   imageUrl?: string;
+  groupChatId?: number | null;
+  isInGroupChat?: boolean;
   createdAt: string;
   members?: OrganizationMember[];
   posts?: Post[],

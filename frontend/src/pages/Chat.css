@@ -173,6 +173,17 @@
   flex-shrink: 0;
 }
 
+.message-avatar-placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  user-select: none;
+}
+
 .message-content {
   background: white;
   padding: 0.75rem 1rem;

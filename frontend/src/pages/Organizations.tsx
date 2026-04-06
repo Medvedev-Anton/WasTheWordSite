@@ -706,14 +706,26 @@ function OrganizationDetail({
       await axios.post('/api/chats/group', {
         name: organization.name,
         participantIds: memberIds,
-        avatar: organization.avatar || null,
+        avatar: organization.avatar || organization.imageUrl || null,
         organizationId: organization.id,
       });
+      onUpdate(organization.id);
       navigate('/chat');
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка при создании чата');
     } finally {
       setCreatingGroupChat(false);
+    }
+  };
+
+  const handleJoinOrgGroupChat = async () => {
+    if (!organization.groupChatId) return;
+    try {
+      await axios.post(`/api/chats/${organization.groupChatId}/join`);
+      onUpdate(organization.id);
+      navigate('/chat');
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при вступлении в чат');
     }
   };
 
@@ -977,7 +989,24 @@ function OrganizationDetail({
                   setSelectedCoverId(organization.organization_cover_id || null);
                 }} className="edit-org-btn">✏️ Редактировать</button>
               )}
-              {isAdmin && (
+              {/* Group chat button logic */}
+              {organization.groupChatId ? (
+                organization.isInGroupChat ? (
+                  <button
+                    onClick={() => navigate('/chat')}
+                    className="create-group-chat-btn"
+                  >
+                    💬 Перейти в чат
+                  </button>
+                ) : (isMember || isAdmin) ? (
+                  <button
+                    onClick={handleJoinOrgGroupChat}
+                    className="create-group-chat-btn"
+                  >
+                    💬 Вступить в чат
+                  </button>
+                ) : null
+              ) : isAdmin ? (
                 <button
                   onClick={handleCreateOrgGroupChat}
                   className="create-group-chat-btn"
@@ -985,8 +1014,8 @@ function OrganizationDetail({
                 >
                   💬 {creatingGroupChat ? 'Создание...' : 'Создать групповой чат'}
                 </button>
-              )}
-              {!isMember && !organization.isPrivate && (
+              ) : null}
+              {!isMember && !organization.isPrivate && !isAdmin && (
                 <button onClick={handleJoin} className="join-btn">Вступить</button>
               )}
               {isMember && !isAdmin && (
