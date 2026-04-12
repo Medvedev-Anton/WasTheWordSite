@@ -504,7 +504,11 @@ function OrganizationDetail({
   );
   const currentMember = organization.members?.find(m => m.userId === currentUserId);
   const canPost = isAdmin || (isMember && currentMember?.canPost === 1 && !currentMember?.isBlocked);
-  const subOrgType = ORG_HIERARCHY[organization.orgType || ''] || null;
+  const grandparentType = organization.parentOrg?.orgType;
+  const subOrgType = (() => {
+    if (organization.orgType === 'Отдел' && grandparentType === 'Магазин') return null;
+    return ORG_HIERARCHY[organization.orgType || ''] || null;
+  })();
 
   // Correct Russian forms for sub-org type names
   const SUB_ORG_PLURAL: Record<string, string> = {

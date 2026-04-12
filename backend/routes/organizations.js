@@ -60,7 +60,9 @@ const ORG_HIERARCHY = {
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Волонтёрская', 'Спортивная', 'Свободная'];
 
-function getSubOrgType(parentType) {
+function getSubOrgType(parentType, grandparentType) {
+  // Prevent 4th level: Отдел under Магазин is terminal (commercial chain stops at 3 levels)
+  if (parentType === 'Отдел' && grandparentType === 'Магазин') return null;
   return ORG_HIERARCHY[parentType] || null;
 }
 
@@ -338,7 +340,8 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       if (parent.adminId !== adminId && !parentMember) {
         return res.status(403).json({ error: 'Only members can create sub-organizations' });
       }
-      const childType = getSubOrgType(parent.orgType);
+      const grandparent = parent.parentId ? db.prepare('SELECT orgType FROM organizations WHERE id = ?').get(parent.parentId) : null;
+      const childType = getSubOrgType(parent.orgType, grandparent?.orgType);
       if (!childType) {
         return res.status(400).json({ error: `Cannot create sub-organizations inside "${parent.orgType}"` });
       }
