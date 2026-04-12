@@ -1,4 +1,6 @@
-export class Rang {
+import { Model } from "./model";
+
+export class Rang extends Model {
     constructor (id, name, thumbnailUrl) {
         this.id = id;
         this.name = name;
