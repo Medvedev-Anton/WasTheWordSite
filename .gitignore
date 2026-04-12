@@ -23,7 +23,7 @@ backend/database/database.db
 backend/uploads/messages
 backend/uploads/organizations/*
 !backend/uploads/organizations/default.jpg
-backend/*
+# backend/*
 .env
 .DS_Store
 *.log
