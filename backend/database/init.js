@@ -38,6 +38,7 @@ export async function initDatabase() {
   const hasRole = tableInfo.some(col => col.name === 'role');
   const hasIsBanned = tableInfo.some(col => col.name === 'isBanned');
   const hasAllowMessagesFrom = tableInfo.some(col => col.name === 'allowMessagesFrom');
+  const hasRang = tableInfo.some(col => col.name === 'rangId');
 
   if (!hasRole) {
     try {
@@ -56,6 +57,14 @@ export async function initDatabase() {
   if (!hasAllowMessagesFrom) {
     try {
       db.exec(`ALTER TABLE users ADD COLUMN allowMessagesFrom TEXT DEFAULT 'everyone'`);
+    } catch (e) {
+      console.error('Error adding allowMessagesFrom column:', e.message);
+    }
+  }
+  if (!hasRang) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN rangId INT`);
+      db.exec(`ALTER TABLE users ADD FOREING KEY (rangId) REFERENCES rangs(id)`)
     } catch (e) {
       console.error('Error adding allowMessagesFrom column:', e.message);
     }
