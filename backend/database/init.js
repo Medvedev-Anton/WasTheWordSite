@@ -511,6 +511,15 @@ export async function initDatabase() {
     }
   }
 
+  // Create rangs table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS rangs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      thumbnail_url TEXT NOT NULL
+    )
+  `);
+
   console.log('Database initialized successfully');
 }
 
