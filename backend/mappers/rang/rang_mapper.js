@@ -57,16 +57,16 @@ export class RangMapper extends RangMapperInterface {
         }
     }
 
-    create(model) {
-        if (!(model instanceof Rang)) {
-            throw new Error('model должен иметь тип Rang');
+    create(rang) {
+        if (!(rang instanceof Rang)) {
+            throw new Error('rang должен иметь тип Rang');
         }
 
-        if (model.getName() === undefined) {
+        if (rang.getName() === undefined) {
             throw new Error('Отсутствует обязательный параметр name');
         }
 
-        if (model.getThumbnailUrl() === undefined) {
+        if (rang.getThumbnailUrl() === undefined) {
             throw new Error('Отсутствует обязательный параметр thumbnail_url');
         }
 
@@ -74,21 +74,21 @@ export class RangMapper extends RangMapperInterface {
             INSERT
             INTO rangs (name, thumbnail_url)
             VALUES (?, ?)
-        `).run(model.getName(), model.getThumbnailUrl());
+        `).run(rang.getName(), rang.getThumbnailUrl());
 
         return insertResult.lastInsertRowid;
     }
 
-    update(model) {
-        if (!(model instanceof Rang)) {
-            throw new Error('model должен иметь тип Rang');
+    update(rang) {
+        if (!(rang instanceof Rang)) {
+            throw new Error('rang должен иметь тип Rang');
         }
 
-        if (model.getId() === undefined) {
+        if (rang.getId() === undefined) {
             throw new Error('Отсутствует обязательный параметр id');
         }
 
-        if (model.getId() <= 0) {
+        if (rang.getId() <= 0) {
             throw new Error('id не может быть неположительным');
         }
 
@@ -96,7 +96,7 @@ export class RangMapper extends RangMapperInterface {
             UPDATE rangs 
             SET name = ?, thumbnail_url = ?
             WHERE id = ?
-        `).run(model.getName() || '', model.getThumbnailUrl() || '', model.getId());
+        `).run(rang.getName() || '', rang.getThumbnailUrl() || '', rang.getId());
     }
 
     delete(id) {
