@@ -13,7 +13,7 @@ export class RangResolver {
      * @param {int} userId 
      * @returns int
      */
-    getRangId(userId) {
+    calcRangId(userId) {
         return this.strategy.resolve(userId);
     }
 }
