@@ -7,6 +7,10 @@ export class UserRangMapper extends UserRangMapperInterface {
     }
 
     getRang(userId) {
+        if (typeof userId !== 'number') {
+            throw new Error('userId должен быть числовым');
+        }
+
         if (userId <= 0) {
             throw new Error('userId не может быть неположительным');
         }
@@ -20,5 +24,29 @@ export class UserRangMapper extends UserRangMapperInterface {
         `).get(userId);
 
         return result.rangId || -1;
+    }
+
+    setRang(rangId, userId) {
+        if (typeof userId !== 'number') {
+            throw new Error('userId должен быть числовым');
+        }
+
+        if (typeof rangId !== 'number') {
+            throw new Error('rangId должен быть числовым');
+        }
+
+        if (rangId <= 0) {
+            throw new Error('userId не может быть неположительным');
+        }
+
+        if (userId <= 0) {
+            throw new Error('userId не может быть неположительным');
+        }
+
+        db.prepare(`
+            UPDATE users
+            SET rangId = ?
+            WHERE userId = ?
+        `).run(rangId, userId);
     }
 }
