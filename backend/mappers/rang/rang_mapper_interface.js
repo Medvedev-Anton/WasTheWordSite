@@ -53,4 +53,13 @@ export class RangMapperInterface extends Mapper {
     delete(id) {
         throw new Error('delete должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает ранг по порядковому номеру
+     * @param {int} orderNumber
+     * @returns {Rang}
+     */
+    findByOrderNumber(orderNumber) {
+        throw new Error('findByOrderNumber должен быть переопределен в наследнике');
+    }
 }

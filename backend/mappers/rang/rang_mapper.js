@@ -124,6 +124,35 @@ export class RangMapper extends RangMapperInterface {
         return id;
     }
 
+    findByOrderNumber(orderNumber) {
+        if (typeof orderNumber !== 'number') {
+            throw new Error('orderNumber должен быть числовым');
+        }
+
+        if (orderNumber < 0) {
+            throw new Error('orderNumber не может быть отрицательным');
+        }
+
+        const rang = db.prepare(`
+            SELECT
+                *
+            FROM rangs
+            WHERE
+                orderNumber = ?    
+        `).get(orderNumber);
+
+        if (!rang) {
+            return null;
+        }
+
+        try {
+            return this.rowMapper(rang);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     rowMapper(row) {
         if (row.id === undefined) {
             throw new Error('Отсутствует обязательный параметр id');
