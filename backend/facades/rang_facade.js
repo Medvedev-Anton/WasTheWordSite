@@ -111,7 +111,7 @@ export class RangFacade {
     }
 
     /**
-     * Позвращает ID ранга пользователя
+     * Возвращает ID ранга пользователя
      * @param {int} userId
      * @returns {int}
      */
