@@ -19,4 +19,13 @@ export class UserRangServiceInterface {
     getRang(userId) {
         throw new Error('getRang должен быть переопределен в наследнике');
     }
+
+    /**
+     * Устанавливает ранг пользователю
+     * @param {int} rangId
+     * @param {int} userId
+     */
+    setRang(rangId, userId) {
+        throw new Error('setRang должен быть переопределен в наследнике');
+    }
 }

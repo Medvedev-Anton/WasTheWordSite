@@ -13,4 +13,13 @@ export class UserRangService extends UserRangServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    setRang(rangId, userId) {
+        try {
+            return this.mapper.setRang(rangId, userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
