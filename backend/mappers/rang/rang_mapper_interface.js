@@ -46,7 +46,7 @@ export class RangMapperInterface extends Mapper {
     }
 
     /**
-     * Удлаяет запись в бд
+     * Удаляет запись в бд
      * @param {int} id
      * @returns {int}
      */
