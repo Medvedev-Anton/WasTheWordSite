@@ -23,7 +23,7 @@ export class UserRangMapper extends UserRangMapperInterface {
                 id = ?
         `).get(userId);
 
-        return result.rangId || -1;
+        return parseInt(result.rangId) || -1;
     }
 
     setRang(rangId, userId) {
