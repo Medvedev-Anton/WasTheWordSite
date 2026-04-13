@@ -386,6 +386,14 @@ router.delete('/:id', authenticateToken, (req, res) => {
     }
 
     db.prepare('DELETE FROM posts WHERE id = ?').run(postId);
+
+    try {
+      UserFacade.calcAndUpdateRang(userId, 'posts');
+    }
+    catch (e) {
+      throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
+    }
+
     res.json({ message: 'Post deleted' });
   } catch (error) {
     console.error('Delete post error:', error);
