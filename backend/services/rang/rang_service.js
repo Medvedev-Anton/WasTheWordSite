@@ -1,4 +1,4 @@
-import { RangServiceInterface } from "./rang_service_interface";
+import { RangServiceInterface } from "./rang_service_interface.js";
 
 export class RangService extends RangServiceInterface {
     constructor(mapper) {
@@ -26,6 +26,24 @@ export class RangService extends RangServiceInterface {
     findAll(limit = -1) {
         try {
             return this.mapper.findAll(limit);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    create(rang) {
+        try {
+            return this.mapper.create(rang);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    delete(id) {
+        try {
+            return this.mapper.delete(id);
         }
         catch (e) {
             throw new Error(e.message);

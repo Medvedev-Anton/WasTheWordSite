@@ -1,6 +1,6 @@
-import { RangsCollection } from "../../collections/rangs_collection";
-import { RangMapper } from "../../mappers/rang/rang_mapper";
-import { Rang } from "../../models/rang";
+import { RangsCollection } from "../../collections/rangs_collection.js";
+import { RangMapper } from "../../mappers/rang/rang_mapper.js";
+import { Rang } from "../../models/rang.js";
 
 export class RangServiceInterface {
     /**
@@ -30,10 +30,28 @@ export class RangServiceInterface {
 
     /**
      * Получает все ранги
-     * @params {int} limit
+     * @param {int} limit
      * @returns {RangsCollection}
      */
     findAll(limit = -1) {
         throw new Error('findAll должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Создает ранг
+     * @param {Rang} rang
+     * @returns {int}
+     */
+    create(rang) {
+        throw new Error('create должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Удаляет ранг
+     * @param {int} id
+     * @returns {int}
+     */
+    delete(id) {
+        throw new Error('create должен быть переопределен в наследнике');
     }
 }
