@@ -50,7 +50,7 @@ export class UserRangMapper extends UserRangMapperInterface {
         db.prepare(`
             UPDATE users
             SET rangId = ?
-            WHERE userId = ?
+            WHERE id = ?
         `).run(rangId, userId);
     }
 }
