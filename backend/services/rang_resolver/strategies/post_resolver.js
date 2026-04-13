@@ -17,13 +17,13 @@ export class PostResolver extends RangResolveStrategy {
         catch (e) {
             throw new Error(e.message);
         }
-
+        
         if (currentUserRangId === -1) {
             return -1;
         }
         
         let currentUserRangOrderNumber = 0;
-
+        
         try {
             const rang = RangFacade.findById(currentUserRangId);
             currentUserRangOrderNumber = rang.getOrderNumber();
@@ -36,12 +36,12 @@ export class PostResolver extends RangResolveStrategy {
             return currentUserRangId;
         }
 
-        if (currentUserRangOrderNumber >= maxOrderNumber) {
+        if (currentUserRangOrderNumber > maxOrderNumber) {
             return currentUserRangId;
         }
 
         const countUserPosts = PostsFacade.getTotalCountByUser(userId);
-
+        
         if (typeof countUserPosts !== 'number') {
             return currentUserRang;
         }
