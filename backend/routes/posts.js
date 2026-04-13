@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { UserFacade } from '../facades/user_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -279,6 +280,13 @@ router.post('/', authenticateToken, upload.array('files', 10), (req, res) => {
     `).all(result.lastInsertRowid);
 
     post.files = files;
+
+    try {
+      UserFacade.calcAndUpdateRang(authorId, 'posts');
+    }
+    catch (e) {
+      throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
+    }
 
     res.status(201).json(post);
   } catch (error) {
