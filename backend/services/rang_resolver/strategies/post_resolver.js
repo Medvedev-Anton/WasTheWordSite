@@ -7,24 +7,37 @@ import { RangResolveStrategy } from "./rang_resolve_strategy.js";
  */
 export class PostResolver extends RangResolveStrategy {
     resolve(userId) {
-        const minOrderNumber = 1;
         const maxOrderNumber = 5;
 
-        let currentUserRang = -1;
+        let currentUserRangId = -1;
 
         try {
-            currentUserRang = RangFacade.getUserRangId(userId);
+            currentUserRangId = RangFacade.getUserRangId(userId);
         }
         catch (e) {
             throw new Error(e.message);
         }
 
-        if (currentUserRang === -1) {
+        if (currentUserRangId === -1) {
             return -1;
         }
+        
+        let currentUserRangOrderNumber = 0;
 
-        if (currentUserRang >= maxOrderNumber) {
-            return currentUserRang;
+        try {
+            const rang = RangFacade.findById(currentUserRangId);
+            currentUserRangOrderNumber = rang.getOrderNumber();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+
+        if (typeof currentUserRangOrderNumber !== 'number' || currentUserRangOrderNumber < 0) {
+            return currentUserRangId;
+        }
+
+        if (currentUserRangOrderNumber >= maxOrderNumber) {
+            return currentUserRangId;
         }
 
         const countUserPosts = PostsFacade.getTotalCountByUser(userId);
@@ -33,16 +46,25 @@ export class PostResolver extends RangResolveStrategy {
             return currentUserRang;
         }
 
-        if (countUserPosts === 1) {
-            
+        try {
+            if (countUserPosts >= 1 && countUserPosts < 4) {
+                return RangFacade.findByOrderNumber(1).getId();
+            }
+            else if (countUserPosts >= 4 && countUserPosts < 8) {
+                return RangFacade.findByOrderNumber(2).getId();
+            }
+            else if (countUserPosts >= 8 && countUserPosts < 12) {
+                return RangFacade.findByOrderNumber(3).getId();
+            }
+            else if (countUserPosts >= 12 && countUserPosts < 16) {
+                return RangFacade.findByOrderNumber(4).getId();
+            }
+            else if (countUserPosts >= 16) {
+                return RangFacade.findByOrderNumber(5).getId();
+            }
         }
-
-        /**
-         * 1) Получить текущий ранг пользователя
-         * 2) Если текущий ранг больше maxOrderNumber, то возвращает его. Иначе идем далее
-         * 3) Получаем количество созданных пользователем постов
-         * 4) Вычисляем ранг в зависимости от количества постов
-         * 5) Возвращаем вычисленный ранг
-         */
+        catch (e) {
+            throw new Error(e.message);
+        }
     }
 }
