@@ -129,6 +129,24 @@ export class RangFacade {
     }
 
     /**
+     * Устанавливает ранг пользователю
+     * @param {int} rangId
+     * @param {int} userId
+     */
+    static setUserRangId(rangId, userId) {
+        const service = new UserRangService(
+            new UserRangMapper()
+        );
+
+        try {
+            return service.setRang(rangId, userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Возвращает ранг по порядковому номеру
      * @param {int} orderNumber
      * @returns {Rang}
