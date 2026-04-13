@@ -1,19 +1,20 @@
-import { RangMapper } from "../mappers/rang/rang_mapper";
-import { Rang } from "../models/rang";
-import { RangService } from "../services/rang/rang_service";
-import { RangsCollection } from "../collections/rangs_collection";
+import { RangMapper } from "../mappers/rang/rang_mapper.js";
+import { Rang } from "../models/rang.js";
+import { RangService } from "../services/rang/rang_service.js";
+import { RangsCollection } from "../collections/rangs_collection.js";
 
 export class RangFacade {
     /**
      * Строит модель из объекта
-     * @params {Array} params
+     * @param {Array} params
      * @returns {Rang}
      */
     static buildFromArr(params) {
         return new Rang(
             params.id || 0,
             params.name || '',
-            params.thumbnailUrl || ''
+            params.thumbnailUrl || '',
+            params.orderNumber || 0
         );
     }
 
@@ -23,7 +24,7 @@ export class RangFacade {
      * @returns {int}
      */
     static update(rang) {
-        service = new RangService(
+        const service = new RangService(
             new RangMapper()
         );
 
@@ -41,7 +42,7 @@ export class RangFacade {
      * @returns {Rang}
      */
     static findById(id) {
-        service = new RangService(
+        const service = new RangService(
             new RangMapper()
         );
 
@@ -55,16 +56,52 @@ export class RangFacade {
 
     /**
      * Возвращает все ранги
-     * @params {int} limit
+     * @param {int} limit
      * @returns {RangsCollection}
      */
-    findAll(limit = -1) {
-        service = new RangService(
+    static findAll(limit = -1) {
+        const service = new RangService(
             new RangMapper()
         );
 
         try {
             return service.findAll(limit);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Создает ранг
+     * @param {Rang} rang
+     * @returns {int}
+     */
+    static create(rang) {
+        const service = new RangService(
+            new RangMapper()
+        );
+
+        try {
+            return service.create(rang);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Удаляет ранг
+     * @param {int} id 
+     * @returns {int}
+     */
+    static delete(id) {
+        const service = new RangService(
+            new RangMapper()
+        );
+
+        try {
+            return service.delete(id);
         }
         catch (e) {
             throw new Error(e.message);
