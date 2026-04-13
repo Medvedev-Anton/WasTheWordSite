@@ -11,7 +11,7 @@ export class UserRangMapper extends UserRangMapperInterface {
             throw new Error('userId не может быть неположительным');
         }
 
-        const rangId = db.prepare(`
+        const result = db.prepare(`
             SELECT 
                 rangId
             FROM users
@@ -19,6 +19,6 @@ export class UserRangMapper extends UserRangMapperInterface {
                 id = ?
         `).get(userId);
 
-        return rangId;
+        return result.rangId || null;
     }
 }
