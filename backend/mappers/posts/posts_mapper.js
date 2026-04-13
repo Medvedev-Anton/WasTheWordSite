@@ -13,7 +13,7 @@ export class PostsMapper extends PostsMapperInterface {
 
         const result = db.prepare(`
             SELECT
-                id, COUNT(id) as cnt
+                p.id, COUNT(p.id) as cnt
             FROM posts p
             JOIN users u ON p.authorId = u.id
             WHERE
