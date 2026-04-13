@@ -10,7 +10,7 @@ export class Rang extends Model {
     }
 
     getId() {
-        return this.id;
+        return parseInt(this.id);
     }
 
     getName() {
