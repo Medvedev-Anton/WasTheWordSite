@@ -7,8 +7,8 @@ export class PostsMapper extends PostsMapperInterface {
     }
 
     getTotalCountByUser(userId) {
-        if (userId <= 0) {
-            throw new Error('userId не может быть неположительным');
+        if (userId < 0) {
+            throw new Error('userId не может быть отрицательным');
         }
 
         const result = db.prepare(`

@@ -38,8 +38,8 @@ export class RangMapper extends RangMapperInterface {
             throw new Error('number должен быть числовым');
         }
 
-        if (id <= 0) {
-            throw new Error('id не может быть неположительным');
+        if (id < 0) {
+            throw new Error('id не может быть отрицательным');
         }
 
         const rang = db.prepare(`
@@ -96,8 +96,8 @@ export class RangMapper extends RangMapperInterface {
             throw new Error('Отсутствует обязательный параметр id');
         }
 
-        if (rang.getId() <= 0) {
-            throw new Error('id не может быть неположительным');
+        if (rang.getId() < 0) {
+            throw new Error('id не может быть отрицательным');
         }
 
         db.prepare(`
@@ -112,8 +112,8 @@ export class RangMapper extends RangMapperInterface {
             throw new Error('number должен быть числовым');
         }
 
-        if (id <= 0) {
-            throw new Error('id не может быть неположительным');
+        if (id < 0) {
+            throw new Error('id не может быть отрицательным');
         }
 
         db.prepare(`
