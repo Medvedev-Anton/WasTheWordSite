@@ -19,6 +19,6 @@ export class UserRangMapper extends UserRangMapperInterface {
                 id = ?
         `).get(userId);
 
-        return result.rangId || null;
+        return result.rangId || -1;
     }
 }
