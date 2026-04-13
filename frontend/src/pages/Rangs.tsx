@@ -11,21 +11,22 @@ export default function Rangs() {
     const [rangs, setRangs] = useState<RangItem[]>([]);
 
     useEffect(() => {
-        // axios.delete('/api/rangs/2');
+        // axios.delete('/api/rangs/4');
 
         
 
-        const formData = new FormData();
-        formData.append('name', 'testRang');
+        // const formData = new FormData();
+        // formData.append('name', 'testRang');
         // formData.append('thumbnailUrl', 'testUrl');
+        // formData.append('orderNumber', '0');
 
-        axios.post('/api/rangs', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => {
-            console.log(response);
-        });
+        // axios.post('/api/rangs', formData, {
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // }).then(response => {
+        //     console.log(response);
+        // });
 
 
 
