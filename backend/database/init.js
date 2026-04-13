@@ -525,9 +525,20 @@ export async function initDatabase() {
     CREATE TABLE IF NOT EXISTS rangs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(255) NOT NULL,
-      thumbnail_url TEXT NOT NULL
+      thumbnail_url TEXT NOT NULL,
+      orderNumber INTEGER NOT NULL
     )
   `);
+
+  const rangsTableInfo = db.prepare("PRAGMA table_info(rangs)").all();
+  const hasOrderNumber = rangsTableInfo.some(col => col.name === 'orderNumber');
+  if (!hasOrderNumber) {
+    try {
+      db.exec(`ALTER TABLE rangs ADD COLUMN orderNumber INTEGER DEFAULT NULL`);
+    } catch (e) {
+      console.error('Error adding orderNumber to rangs:', e.message);
+    }
+  }
 
   console.log('Database initialized successfully');
 }
