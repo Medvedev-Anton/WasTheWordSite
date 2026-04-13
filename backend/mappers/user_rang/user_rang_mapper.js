@@ -11,11 +11,11 @@ export class UserRangMapper extends UserRangMapperInterface {
             throw new Error('userId должен быть числовым');
         }
 
-        if (userId <= 0) {
-            throw new Error('userId не может быть неположительным');
+        if (userId < 0) {
+            throw new Error('userId не может быть отрицательным');
         }
 
-        const result = db.prepare(`
+        const user = db.prepare(`
             SELECT 
                 rangId
             FROM users
@@ -23,7 +23,11 @@ export class UserRangMapper extends UserRangMapperInterface {
                 id = ?
         `).get(userId);
 
-        return parseInt(result.rangId) || -1;
+        if (!user) {
+            return -1;
+        }
+
+        return parseInt(user.rangId);
     }
 
     setRang(rangId, userId) {
@@ -35,12 +39,12 @@ export class UserRangMapper extends UserRangMapperInterface {
             throw new Error('rangId должен быть числовым');
         }
 
-        if (rangId <= 0) {
-            throw new Error('userId не может быть неположительным');
+        if (rangId < 0) {
+            throw new Error('userId не может быть отрицательным');
         }
 
-        if (userId <= 0) {
-            throw new Error('userId не может быть неположительным');
+        if (userId < 0) {
+            throw new Error('userId не может быть отрицательным');
         }
 
         db.prepare(`
