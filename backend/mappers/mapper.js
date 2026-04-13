@@ -1,9 +1,11 @@
-import { MainCollection } from "../collections/main_collection";
-import { Model } from "../models/model";
+import { MainCollection } from "../collections/main_collection.js";
+import { Model } from "../models/model.js";
 
 export class Mapper {
     constructor () {
-        throw new Error('Нельзя создать экземпляр абстрактного класса');
+        if (new.target === 'Mapper') {
+            throw new Error('Нельзя создать экземпляр абстрактного класса Mapper');
+        }
     }
 
     /**

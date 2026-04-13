@@ -1,9 +1,13 @@
-import { RangMapperInterface } from "./rang_mapper_interface";
+import { RangMapperInterface } from "./rang_mapper_interface.js";
 import { db } from "../../database/init.js";
 import { Rang } from "../../models/rang.js";
 import { RangsCollection } from "../../collections/rangs_collection.js";
 
 export class RangMapper extends RangMapperInterface {
+    constructor() {
+        super();
+    }
+
     findAll(limit = -1) {
         if (typeof limit !== 'number') {
             throw new Error('limit должен быть числовым');
@@ -70,11 +74,15 @@ export class RangMapper extends RangMapperInterface {
             throw new Error('Отсутствует обязательный параметр thumbnail_url');
         }
 
+        if (rang.getOrderNumber() === undefined) {
+            throw new Error('Отсутствует обязательный параметр orderNumber');
+        }
+
         const insertResult = db.prepare(`
             INSERT
-            INTO rangs (name, thumbnail_url)
-            VALUES (?, ?)
-        `).run(rang.getName(), rang.getThumbnailUrl());
+            INTO rangs (name, thumbnail_url, orderNumber)
+            VALUES (?, ?, ?)
+        `).run(rang.getName(), rang.getThumbnailUrl(), rang.getOrderNumber());
 
         return insertResult.lastInsertRowid;
     }
@@ -94,9 +102,9 @@ export class RangMapper extends RangMapperInterface {
 
         db.prepare(`
             UPDATE rangs 
-            SET name = ?, thumbnail_url = ?
+            SET name = ?, thumbnail_url = ?, orderNumber = ?
             WHERE id = ?
-        `).run(rang.getName() || '', rang.getThumbnailUrl() || '', rang.getId());
+        `).run(rang.getName() || '', rang.getThumbnailUrl() || '', rang.getOrderNumber() || 0, rang.getId());
     }
 
     delete(id) {
@@ -129,7 +137,11 @@ export class RangMapper extends RangMapperInterface {
             throw new Error('Отсутствует обязательный параметр thumbnail_url');
         }
 
-        return new Rang(rangs.id, rangs.name, rangs.thumbnail_url);
+        if (row.orderNumber === undefined) {
+            throw new Error('Отсутствует обязательный параметр orderNumber');
+        }
+
+        return new Rang(row.id, row.name, row.thumbnail_url, this.orderNumber);
     }
 
     rowsArrayMapper(rows) {
@@ -141,11 +153,11 @@ export class RangMapper extends RangMapperInterface {
             return new RangsCollection([]);
         }
 
-        modelsArr = [];
+        const modelsArr = [];
 
         for (const row of rows) {
             const model = this.rowMapper(row);
-            modelsArr.add(model);
+            modelsArr.push(model);
         }
 
         return new RangsCollection(modelsArr);

@@ -3,7 +3,10 @@ import { Mapper } from '../mapper.js';
 
 export class RangMapperInterface extends Mapper {
     constructor () {
-        throw new Error('Нельзя создать экземпляр абстрактного класса');
+        super();
+        if (new.target === 'RangMapperInterface') {
+            throw new Error('Нельзя создать экземпляр абстрактного класса RangMapperInterface');
+        }
     }
 
     /**
