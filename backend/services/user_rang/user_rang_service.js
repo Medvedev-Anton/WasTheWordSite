@@ -1,4 +1,4 @@
-import { UserRangServiceInterface } from "./user_rang_service_interface";
+import { UserRangServiceInterface } from "./user_rang_service_interface.js";
 
 export class UserRangService extends UserRangServiceInterface {
     constructor(mapper) {
