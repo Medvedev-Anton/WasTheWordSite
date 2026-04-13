@@ -1,4 +1,4 @@
-import { UserRangMapperInterface } from "./user_rang_mapper_interface";
+import { UserRangMapperInterface } from "./user_rang_mapper_interface.js";
 import { db } from "../../database/init.js";
 
 export class UserRangMapper extends UserRangMapperInterface {
