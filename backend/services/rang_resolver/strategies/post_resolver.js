@@ -47,7 +47,10 @@ export class PostResolver extends RangResolveStrategy {
         }
 
         try {
-            if (countUserPosts >= 1 && countUserPosts < 4) {
+            if (countUserPosts < 1) {
+                return RangFacade.findByOrderNumber(0).getId();
+            }
+            else if (countUserPosts >= 1 && countUserPosts < 4) {
                 return RangFacade.findByOrderNumber(1).getId();
             }
             else if (countUserPosts >= 4 && countUserPosts < 8) {
