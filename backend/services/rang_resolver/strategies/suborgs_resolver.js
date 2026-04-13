@@ -1,4 +1,4 @@
-import { RangResolveStrategy } from "./rang_resolve_strategy";
+import { RangResolveStrategy } from "./rang_resolve_strategy.js";
 
 /**
  * Реализует логику вычисления ранга при создании подорганизаций
