@@ -58,8 +58,6 @@ export class RangController extends MainController {
      * Обработчик запроса на создание ранга
      */
     create() {
-        console.log(this.request.params);
-
         const validate = this.has([
             'name',
             'thumbnailUrl',
@@ -71,7 +69,7 @@ export class RangController extends MainController {
         }
 
         try {
-            const rangModel = RangFacade.buildFromArr(this.request);
+            const rangModel = RangFacade.buildFromArr(this.request.body);
             RangFacade.create(rangModel);
 
             this.send(200, {

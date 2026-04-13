@@ -141,7 +141,7 @@ export class RangMapper extends RangMapperInterface {
             throw new Error('Отсутствует обязательный параметр orderNumber');
         }
 
-        return new Rang(row.id, row.name, row.thumbnail_url, this.orderNumber);
+        return new Rang(row.id, row.name, row.thumbnail_url, row.orderNumber);
     }
 
     rowsArrayMapper(rows) {
