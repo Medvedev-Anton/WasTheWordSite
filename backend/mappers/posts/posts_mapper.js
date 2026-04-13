@@ -20,6 +20,6 @@ export class PostsMapper extends PostsMapperInterface {
                 u.id = ?
         `).get(userId);
 
-        return result.cnt;
+        return parseInt(result.cnt);
     }
 }
