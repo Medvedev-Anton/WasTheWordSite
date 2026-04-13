@@ -54,4 +54,13 @@ export class RangServiceInterface {
     delete(id) {
         throw new Error('create должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает ранг по порядковому номеру
+     * @param {int} orderNumber
+     * @returns {Rang}
+     */
+    findByOrderNumber(orderNumber) {
+        throw new Error('findByOrderNumber должен быть переопределен в наследнике');
+    }
 }

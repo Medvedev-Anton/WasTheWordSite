@@ -49,4 +49,13 @@ export class RangService extends RangServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    findByOrderNumber(orderNumber) {
+        try {
+            return this.mapper.findByOrderNumber(orderNumber);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

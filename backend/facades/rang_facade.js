@@ -127,4 +127,22 @@ export class RangFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает ранг по порядковому номеру
+     * @param {int} orderNumber
+     * @returns {Rang}
+     */
+    static findByOrderNumber(orderNumber) {
+        const service = new RangService(
+            new RangMapper()
+        );
+
+        try {
+            return service.findByOrderNumber(orderNumber);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
