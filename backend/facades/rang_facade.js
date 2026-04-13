@@ -2,6 +2,8 @@ import { RangMapper } from "../mappers/rang/rang_mapper.js";
 import { Rang } from "../models/rang.js";
 import { RangService } from "../services/rang/rang_service.js";
 import { RangsCollection } from "../collections/rangs_collection.js";
+import { UserRangService } from "../services/user_rang/user_rang_service.js";
+import { UserRangMapper } from "../mappers/user_rang/user_rang_mapper.js";
 
 export class RangFacade {
     /**
@@ -58,7 +60,7 @@ export class RangFacade {
      * Возвращает все ранги
      * @param {int} limit
      * @returns {RangsCollection}
-     */
+     */getRang
     static findAll(limit = -1) {
         const service = new RangService(
             new RangMapper()
@@ -102,6 +104,24 @@ export class RangFacade {
 
         try {
             return service.delete(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Позвращает ID ранга пользователя
+     * @param {int} userId
+     * @returns {int}
+     */
+    static getUserRangId(userId) {
+        const service = new UserRangService(
+            new UserRangMapper()
+        );
+
+        try {
+            return service.getRang(userId);
         }
         catch (e) {
             throw new Error(e.message);
