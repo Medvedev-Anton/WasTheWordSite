@@ -12,6 +12,7 @@ import Users from './pages/Users';
 import Admin from './pages/Admin';
 import Layout from './components/Layout';
 import Map from './pages/Map';
+import Rangs from './pages/Rangs';
 import LayoutMap from './components/LayoutMap';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/users/:id" element={<UserProfile />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/rangs" element={<Rangs />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Layout>
