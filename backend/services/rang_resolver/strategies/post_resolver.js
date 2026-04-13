@@ -3,7 +3,7 @@ import { RangFacade } from "../../../facades/rang_facade.js";
 import { RangResolveStrategy } from "./rang_resolve_strategy.js";
 
 /**
- * Реализует логику вычисления ранга при создании постов
+ * Реализует логику вычисления ранга для количества постов
  */
 export class PostResolver extends RangResolveStrategy {
     resolve(userId) {
