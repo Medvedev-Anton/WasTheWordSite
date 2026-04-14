@@ -1,7 +1,7 @@
 import { RangResolveStrategy } from "./rang_resolve_strategy.js";
 import { RangFacade } from "../../../facades/rang_facade.js";
 import { OrgsFacade } from "../../../facades/orgs_facade.js";
-import { UserFacade } from "../../../facades/user_facade.js";
+import { RangResolverFacade } from "../../../facades/rang_resolver_facade.js";
 
 /**
  * Реализует логику вычисления ранга при создании организаций
@@ -49,7 +49,7 @@ export class OrgsResolver extends RangResolveStrategy {
 
         try {
             if (countUserOrgs < 1) {
-                UserFacade.calcAndUpdateRang(userId, 'suborgs');
+                return RangResolverFacade.getResolver('suborgs').calcRangId(userId);
             }
             else if (countUserOrgs === 1) {
                 return RangFacade.findByOrderNumber(14).getId();

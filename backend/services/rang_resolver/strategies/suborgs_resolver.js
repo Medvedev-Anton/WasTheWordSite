@@ -1,7 +1,7 @@
 import { RangResolveStrategy } from "./rang_resolve_strategy.js";
 import { RangFacade } from "../../../facades/rang_facade.js";
 import { OrgsFacade } from "../../../facades/orgs_facade.js";
-import { UserFacade } from "../../../facades/user_facade.js";
+import { RangResolverFacade } from "../../../facades/rang_resolver_facade.js";
 
 /**
  * Реализует логику вычисления ранга для количества подорганизаций
@@ -45,7 +45,7 @@ export class SuborgsResolver extends RangResolveStrategy {
             const countSuborgs = OrgsFacade.getMaxCountSuborgsForSuborgsByUser(userId);
 
             if (countSuborgs < 1) {
-                UserFacade.calcAndUpdateRang(userId, 'posts');
+                return RangResolverFacade.getResolver('posts').calcRangId(userId);
             }
 
             const countAndRangMapperObj = {
