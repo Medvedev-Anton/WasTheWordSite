@@ -22,4 +22,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getMaxCountSuborgsForSuborgsByUser(userId) {
+        try {
+            return this.mapper.getMaxCountSuborgsForSuborgsByUser(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

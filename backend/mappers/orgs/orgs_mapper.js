@@ -45,4 +45,39 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return parseInt(result.cnt);
     }
+
+    getMaxCountSuborgsForSuborgsByUser(userId) {
+        if (userId < 0) {
+            throw new Error('userId не может быть отрицательным');
+        }
+
+        const result = db.prepare(`
+            SELECT 
+                o1.parentId,
+                COUNT(o1.parentId) as cnt 
+            FROM organizations o1 
+            JOIN organizations o2 ON o1.parentId = o2.id
+            WHERE 
+                o2.parentId IS NOT NULL
+                AND
+                o1.adminId = ?
+            GROUP BY o1.parentId
+        `).all(userId);
+
+        if (!result) {
+            return 0;
+        }
+
+        if (!(result instanceof Array) || result.length === 0) {
+            return 0;
+        }
+
+        const maxCount = parseInt(Math.max(...result.map(obj => obj.cnt)));
+
+        if (isNaN(maxCount)) {
+            return 0;
+        }
+
+        return maxCount;
+    }
 }

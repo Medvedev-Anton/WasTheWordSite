@@ -22,4 +22,13 @@ export class OrgsMapperInterface {
     getTotalTopLevelCountByUser(userId) {
         throw new Error('getTotalCountByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает максимальное кол-во подорганизаций у подорганизаций под авторством пользователя
+     * @param {int} userId
+     * @return {int}
+     */
+    getMaxCountSuborgsForSuborgsByUser(userId) {
+        throw new Error('getMaxCountSuborgsForSuborgsByUser должен быть переопределен в наследнике');
+    }
 }
