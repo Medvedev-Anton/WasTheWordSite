@@ -45,6 +45,7 @@ export class SuborgsResolver extends RangResolveStrategy {
             const countSuborgs = OrgsFacade.getMaxCountSuborgsForSuborgsByUser(userId);
 
             if (countSuborgs < 1) {
+                RangFacade.setUserRangId(5, userId);
                 return RangResolverFacade.getResolver('posts').calcRangId(userId);
             }
 

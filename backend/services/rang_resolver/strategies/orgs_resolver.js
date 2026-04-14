@@ -49,6 +49,7 @@ export class OrgsResolver extends RangResolveStrategy {
 
         try {
             if (countUserOrgs < 1) {
+                RangFacade.setUserRangId(13, userId);
                 return RangResolverFacade.getResolver('suborgs').calcRangId(userId);
             }
             else if (countUserOrgs === 1) {
