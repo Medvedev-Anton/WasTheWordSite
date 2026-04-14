@@ -373,7 +373,12 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
     `).get(result.lastInsertRowid);
 
     try {
-      UserFacade.calcAndUpdateRang(adminId, 'orgs');
+      if (parent) {
+        UserFacade.calcAndUpdateRang(adminId, 'suborgs');
+      }
+      else {
+        UserFacade.calcAndUpdateRang(adminId, 'orgs');
+      }      
     }
     catch (e) {
       throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
@@ -679,6 +684,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
 
     try {
       UserFacade.calcAndUpdateRang(userId, 'orgs');
+      UserFacade.calcAndUpdateRang(userId, 'suborgs');
     }
     catch (e) {
       throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
