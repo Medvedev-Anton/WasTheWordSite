@@ -55,4 +55,22 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает максимальное кол-во подорганизаций у организаций под авторством пользователя
+     * @param {int} userId
+     * @return {int}
+     */
+    static getMaxCountSuborgsForOrgsByUser(userId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getMaxCountSuborgsForOrgsByUser(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

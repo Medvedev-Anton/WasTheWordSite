@@ -33,4 +33,13 @@ export class OrgsServiceInterface {
     getMaxCountSuborgsForSuborgsByUser(userId) {
         throw new Error('getMaxCountSuborgsForSuborgsByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает максимальное кол-во подорганизаций у организаций под авторством пользователя
+     * @param {int} userId
+     * @return {int}
+     */
+    getMaxCountSuborgsForOrgsByUser(userId) {
+        throw new Error('getMaxCountSuborgsForOrgsByUser должен быть переопределен в наследнике');
+    }
 }
