@@ -373,7 +373,7 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
     `).get(result.lastInsertRowid);
 
     try {
-      if (parent) {
+      if (parentId) {
         UserFacade.calcAndUpdateRang(adminId, 'suborgs');
       }
       else {
