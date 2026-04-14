@@ -1,5 +1,6 @@
 import { PostsFacade } from "../../../facades/posts_facade.js";
 import { RangFacade } from "../../../facades/rang_facade.js";
+import { UserFacade } from "../../../facades/user_facade.js";
 import { RangResolveStrategy } from "./rang_resolve_strategy.js";
 
 /**
@@ -48,7 +49,7 @@ export class PostResolver extends RangResolveStrategy {
 
         try {
             if (countUserPosts < 1) {
-                return RangFacade.findByOrderNumber(0).getId();
+                UserFacade.calcAndUpdateRang(userId, 'registration');
             }
             else if (countUserPosts >= 1 && countUserPosts < 4) {
                 return RangFacade.findByOrderNumber(1).getId();
