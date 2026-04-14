@@ -40,7 +40,7 @@ export class OrgsResolver extends RangResolveStrategy {
             return currentUserRangId;
         }
 
-        const countUserOrgs = OrgsFacade.getTotalCountByUser(userId);
+        const countUserOrgs = OrgsFacade.getTotalTopLevelCountByUser(userId);
 
         if (typeof countUserOrgs !== 'number') {
             return currentUserRang;
