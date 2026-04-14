@@ -13,4 +13,13 @@ export class OrgsMapperInterface {
     getTotalCountByUser(userId) {
         throw new Error('getTotalCountByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает количество организаций верхнего уровня под авторством пользователя
+     * @param {int} userId 
+     * @returns {int}
+     */
+    getTotalTopLevelCountByUser(userId) {
+        throw new Error('getTotalCountByUser должен быть переопределен в наследнике');
+    }
 }

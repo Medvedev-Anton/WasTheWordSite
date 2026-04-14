@@ -19,4 +19,22 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает количество организаций верхнего уровня под авторством пользователя
+     * @param {int} userId 
+     * @returns {int}
+     */
+    static getTotalTopLevelCountByUser(userId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getTotalTopLevelCountByUser(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

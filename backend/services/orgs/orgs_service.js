@@ -13,4 +13,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getTotalTopLevelCountByUser(userId) {
+        try {
+            return this.mapper.getTotalTopLevelCountByUser(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
