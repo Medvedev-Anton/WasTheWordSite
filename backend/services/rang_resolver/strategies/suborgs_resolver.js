@@ -70,6 +70,12 @@ export class SuborgsResolver extends RangResolveStrategy {
         else {
             const countSuborgs = OrgsFacade.getMaxCountSuborgsForOrgsByUser(userId);
 
+            if (countSuborgs < 1) {
+                const minRangId = RangFacade.findByOrderNumber(5).getId();
+                RangFacade.setUserRangId(minRangId, userId);
+                return RangResolverFacade.getResolver('posts').calcRangId(userId);
+            }
+
             const countAndRangMapperObj = {
                 1: 11,
                 2: 12,
