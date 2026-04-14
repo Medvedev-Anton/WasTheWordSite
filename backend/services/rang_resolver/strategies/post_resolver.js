@@ -49,7 +49,8 @@ export class PostResolver extends RangResolveStrategy {
 
         try {
             if (countUserPosts < 1) {
-                RangFacade.setUserRangId(0, userId);
+                const minRangId = RangFacade.findByOrderNumber(0).getId();
+                RangFacade.setUserRangId(minRangId, userId);
                 return RangResolverFacade.getResolver('registration').calcRangId(userId);
             }
             else if (countUserPosts >= 1 && countUserPosts < 4) {
