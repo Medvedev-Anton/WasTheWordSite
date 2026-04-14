@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { UserFacade } from '../facades/user_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -371,6 +372,13 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
 
+    try {
+      UserFacade.calcAndUpdateRang(adminId, 'orgs');
+    }
+    catch (e) {
+      throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
+    }
+
     res.status(201).json(organization);
   } catch (error) {
     console.error('Create organization error:', error);
@@ -668,6 +676,14 @@ router.delete('/:id', authenticateToken, (req, res) => {
     }
 
     db.prepare('DELETE FROM organizations WHERE id = ?').run(orgId);
+
+    try {
+      UserFacade.calcAndUpdateRang(userId, 'orgs');
+    }
+    catch (e) {
+      throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
+    }
+
     res.json({ message: 'Organization deleted' });
   } catch (error) {
     console.error('Delete organization error:', error);
