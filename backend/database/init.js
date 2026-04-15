@@ -540,6 +540,41 @@ export async function initDatabase() {
     }
   }
 
+  const defaultRangs = [
+    { name: 'НПС 0', thumbnail_url: '/uploads/rangs/0.png', orderNumber: 0 },
+    { name: 'НПС 1', thumbnail_url: '/uploads/rangs/1.png', orderNumber: 1 },
+    { name: 'НПС 2', thumbnail_url: '/uploads/rangs/2.png', orderNumber: 2 },
+    { name: 'НПС 3', thumbnail_url: '/uploads/rangs/3.png', orderNumber: 3 },
+    { name: 'НПС 4', thumbnail_url: '/uploads/rangs/4.png', orderNumber: 4 },
+    { name: 'НПС 5', thumbnail_url: '/uploads/rangs/5.png', orderNumber: 5 },
+    { name: 'Младший Зам- Координатор', thumbnail_url: '/uploads/rangs/6.png', orderNumber: 6 },
+    { name: 'Зам- Координатор', thumbnail_url: '/uploads/rangs/7.png', orderNumber: 7 },
+    { name: 'Старший  Зам - Координатор', thumbnail_url: '/uploads/rangs/8.png', orderNumber: 8 },
+    { name: 'Суб-Мастер', thumbnail_url: '/uploads/rangs/9.png', orderNumber: 9 },
+    { name: 'Старший Суб-мастер', thumbnail_url: '/uploads/rangs/10.png', orderNumber: 10 },
+    { name: 'Младший Старт- Координатор', thumbnail_url: '/uploads/rangs/11.png', orderNumber: 11 },
+    { name: 'Старт- Координатор', thumbnail_url: '/uploads/rangs/12.png', orderNumber: 12 },
+    { name: 'Старший  Старт- Координатор', thumbnail_url: '/uploads/rangs/13.png', orderNumber: 13 },
+    { name: 'Младший  Суб- Координатор', thumbnail_url: '/uploads/rangs/14.png', orderNumber: 14 },
+    { name: 'Суб- Координатор', thumbnail_url: '/uploads/rangs/15.png', orderNumber: 15 },
+    { name: 'Старший  Суб- Координатор', thumbnail_url: '/uploads/rangs/16.png', orderNumber: 16 },
+    { name: 'Штаб – Координатор III ранга', thumbnail_url: '/uploads/rangs/17.png', orderNumber: 17 },
+    { name: 'Штаб – Координатор II ранга', thumbnail_url: '/uploads/rangs/18.png', orderNumber: 18 },
+    { name: 'Штаб – Координатор I ранга', thumbnail_url: '/uploads/rangs/189.png', orderNumber: 19 },
+    { name: 'Арт - Координатор', thumbnail_url: '/uploads/rangs/20.png', orderNumber: 20 },
+  ];
+
+  defaultRangs.forEach(rang => {
+    const rangSelect = db.prepare(`SELECT COUNT(*) as count FROM rangs WHERE name = ?`).get(rang.name);
+
+    if (rangSelect.count === 0) {
+      db.prepare(`
+        INSERT INTO rangs (name, thumbnail_url, orderNumber) 
+        VALUES (?, ?, ?)
+      `).run(rang.name, rang.thumbnail_url, rang.orderNumber);
+    }
+  });
+  
   console.log('Database initialized successfully');
 }
 
