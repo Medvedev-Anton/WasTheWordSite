@@ -35,11 +35,18 @@ router.get('/', authenticateToken, (req, res) => {
     const currentUserId = req.user.userId;
     const users = db.prepare(`
       SELECT 
-        id, username, email, firstName, lastName, avatar, allowMessagesFrom
+        id, username, email, firstName, lastName, avatar, allowMessagesFrom, rangId
       FROM users
       WHERE id != ? AND isBanned = 0
       ORDER BY username ASC
     `).all(currentUserId);
+
+    users.map(user => {
+      if (user.rangId !== undefined && user.rangId !== null) {
+        const rang = RangFacade.findById(user.rangId);
+        user['rang'] = rang;
+      }      
+    });
 
     res.json(users);
   } catch (error) {
