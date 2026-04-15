@@ -41,8 +41,6 @@ export class SuborgsResolver extends RangResolveStrategy {
             return currentUserRangId;
         }
 
-        /* */
-
         const countSuborgsForSuborgs = OrgsFacade.getMaxCountSuborgsForSuborgsByUser(userId);
         const countSuborgsForOrgs = OrgsFacade.getMaxCountSuborgsForOrgsByUser(userId);
 
