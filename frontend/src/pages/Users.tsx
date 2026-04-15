@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getMediaUrl } from '../config';
 import './Users.css';
+import { Rang } from '../types';
 
 interface UserItem {
   id: number;
@@ -10,6 +11,7 @@ interface UserItem {
   firstName?: string;
   lastName?: string;
   avatar?: string;
+  rang?: Rang;
 }
 
 export default function Users() {
@@ -62,6 +64,15 @@ export default function Users() {
                 {u.firstName && u.lastName ? `${u.firstName} ${u.lastName}` : u.username}
               </div>
               <div className="user-card-username">@{u.username}</div>
+              {
+                u.rang ?
+                (
+                  <div>
+                    <img src={u.rang.thumbnailUrl} alt={u.username} />
+                  </div>
+                )
+                : ''
+              }
             </div>
           ))
         )}
