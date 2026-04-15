@@ -145,6 +145,15 @@ export default function Profile() {
         </div>
         <div className="profile-info">
           <h1>{fullName}</h1>
+          {
+            user.rang ? 
+            (
+              <div className="rang-image-wrapper">
+                <img src={user.rang.thumbnailUrl} />
+              </div>
+            )
+            : ''
+          }
           <p className="username">@{user.username}</p>
           {!editing ? (
             <button onClick={() => setEditing(true)} className="edit-btn">
