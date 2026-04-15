@@ -107,7 +107,18 @@ router.get('/:id', authenticateToken, (req, res) => {
       });
     }
 
-    res.json({ ...user, photos, posts });
+    const rang = db.prepare(`
+      SELECT 
+        r.id,
+        r.name,
+        r.thumbnail_url thumbnailUrl,
+        r.orderNumber
+      FROM users u 
+      JOIN rangs r ON u.rangId = r.id
+      WHERE u.id = ?
+    `).get(userId);
+
+    res.json({ ...user, photos, posts, rang });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ error: 'Server error' });
