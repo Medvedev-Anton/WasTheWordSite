@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { RangFacade } from '../facades/rang_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -107,16 +108,8 @@ router.get('/:id', authenticateToken, (req, res) => {
       });
     }
 
-    const rang = db.prepare(`
-      SELECT 
-        r.id,
-        r.name,
-        r.thumbnail_url thumbnailUrl,
-        r.orderNumber
-      FROM users u 
-      JOIN rangs r ON u.rangId = r.id
-      WHERE u.id = ?
-    `).get(userId);
+    const rangId = RangFacade.getUserRangId(userId);
+    const rang = RangFacade.findById(rangId);
 
     res.json({ ...user, photos, posts, rang });
   } catch (error) {
