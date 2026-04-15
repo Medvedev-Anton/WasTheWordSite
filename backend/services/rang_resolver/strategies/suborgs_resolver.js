@@ -41,15 +41,21 @@ export class SuborgsResolver extends RangResolveStrategy {
             return currentUserRangId;
         }
 
-        if (currentUserRangOrderNumber <= 10) {
-            const countSuborgs = OrgsFacade.getMaxCountSuborgsForSuborgsByUser(userId);
+        /* */
 
-            if (countSuborgs < 1) {
-                const minRangId = RangFacade.findByOrderNumber(5).getId();
-                RangFacade.setUserRangId(minRangId, userId);
-                return RangResolverFacade.getResolver('posts').calcRangId(userId);
-            }
+        const countSuborgsForSuborgs = OrgsFacade.getMaxCountSuborgsForSuborgsByUser(userId);
+        const countSuborgsForOrgs = OrgsFacade.getMaxCountSuborgsForOrgsByUser(userId);
 
+        if (Math.max(countSuborgsForSuborgs, countSuborgsForOrgs) === 0) {
+            const minRangId = RangFacade.findByOrderNumber(5).getId();
+            RangFacade.setUserRangId(minRangId, userId);
+            return RangResolverFacade.getResolver('posts').calcRangId(userId);
+        }
+
+        let newRangNumberSuborgsForSuborgs = 0;
+        let newRangNumberSuborgsForOrgs = 0;
+
+        if (countSuborgsForSuborgs >= 1) {
             const countAndRangMapperObj = {
                 1: 6,
                 2: 7,
@@ -58,33 +64,21 @@ export class SuborgsResolver extends RangResolveStrategy {
                 5: 10
             };
 
-            const newRangNumber = countAndRangMapperObj[countSuborgs];
-
-            if (newRangNumber !== undefined) {
-                return RangFacade.findByOrderNumber(newRangNumber).getId();
-            }            
-            else {
-                return RangFacade.findByOrderNumber(10).getId();
-            }
+            newRangNumberSuborgsForSuborgs = countAndRangMapperObj[countSuborgsForSuborgs] || 10;
         }
-        else {
-            const countSuborgs = OrgsFacade.getMaxCountSuborgsForOrgsByUser(userId);
 
-            if (countSuborgs < 1) {
-                const minRangId = RangFacade.findByOrderNumber(5).getId();
-                RangFacade.setUserRangId(minRangId, userId);
-                return RangResolverFacade.getResolver('posts').calcRangId(userId);
-            }
-
+        if (countSuborgsForOrgs >= 1) {
             const countAndRangMapperObj = {
                 1: 11,
                 2: 12,
                 3: 13,
             };
 
-            const newRangNumber = countAndRangMapperObj[countSuborgs];
-
-            return RangFacade.findByOrderNumber(newRangNumber).getId();
+            newRangNumberSuborgsForOrgs = countAndRangMapperObj[countSuborgsForOrgs] || 13;
         }
+
+        const newRangNumber = Math.max(newRangNumberSuborgsForSuborgs, newRangNumberSuborgsForOrgs);
+
+        return RangFacade.findByOrderNumber(newRangNumber).getId();
     }
 }
