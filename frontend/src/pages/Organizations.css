@@ -720,6 +720,10 @@
   border: 1px solid #e2e8f0;
 }
 
+.org-member-rang-wrapper {
+  margin-top: 10px;
+}
+
 @media (min-width: 769px) {
   .org-cover-hero {
     min-height: 280px;
