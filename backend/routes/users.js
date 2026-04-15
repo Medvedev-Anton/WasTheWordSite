@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { RangFacade } from '../facades/rang_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -34,11 +35,18 @@ router.get('/', authenticateToken, (req, res) => {
     const currentUserId = req.user.userId;
     const users = db.prepare(`
       SELECT 
-        id, username, email, firstName, lastName, avatar, allowMessagesFrom
+        id, username, email, firstName, lastName, avatar, allowMessagesFrom, rangId
       FROM users
       WHERE id != ? AND isBanned = 0
       ORDER BY username ASC
     `).all(currentUserId);
+
+    users.map(user => {
+      if (user.rangId !== undefined && user.rangId !== null) {
+        const rang = RangFacade.findById(user.rangId);
+        user['rang'] = rang;
+      }      
+    });
 
     res.json(users);
   } catch (error) {
@@ -107,7 +115,10 @@ router.get('/:id', authenticateToken, (req, res) => {
       });
     }
 
-    res.json({ ...user, photos, posts });
+    const rangId = RangFacade.getUserRangId(userId);
+    const rang = RangFacade.findById(rangId);
+
+    res.json({ ...user, photos, posts, rang });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ error: 'Server error' });

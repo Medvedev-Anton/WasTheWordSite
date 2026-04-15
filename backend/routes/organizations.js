@@ -5,6 +5,8 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { UserFacade } from '../facades/user_facade.js';
+import { RangFacade } from '../facades/rang_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -208,12 +210,20 @@ router.get('/:id', authenticateToken, (req, res) => {
         u.username,
         u.avatar,
         u.firstName,
-        u.lastName
+        u.lastName,
+        u.rangId
       FROM organization_members om
       JOIN users u ON om.userId = u.id
       WHERE om.organizationId = ?
       ORDER BY om.role DESC, om.createdAt ASC
     `).all(orgId);
+
+    members.map(member => {
+      if (member.rangId !== undefined && member.rangId !== null) {
+        const rang = RangFacade.findById(member.rangId);
+        member['rang'] = rang;
+      }
+    });
 
     // Get sub-organizations
     const subOrganizations = db.prepare(`
@@ -370,6 +380,18 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       JOIN users u ON o.adminId = u.id
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
+
+    try {
+      if (parentId) {
+        UserFacade.calcAndUpdateRang(adminId, 'suborgs');
+      }
+      else {
+        UserFacade.calcAndUpdateRang(adminId, 'orgs');
+      }      
+    }
+    catch (e) {
+      throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
+    }
 
     res.status(201).json(organization);
   } catch (error) {
@@ -668,6 +690,15 @@ router.delete('/:id', authenticateToken, (req, res) => {
     }
 
     db.prepare('DELETE FROM organizations WHERE id = ?').run(orgId);
+
+    try {
+      UserFacade.calcAndUpdateRang(userId, 'orgs');
+      UserFacade.calcAndUpdateRang(userId, 'suborgs');
+    }
+    catch (e) {
+      throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
+    }
+
     res.json({ message: 'Organization deleted' });
   } catch (error) {
     console.error('Delete organization error:', error);

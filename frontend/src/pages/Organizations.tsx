@@ -1368,6 +1368,15 @@ function OrganizationDetail({
                         {m.firstName && m.lastName ? `${m.firstName} ${m.lastName}` : m.username}
                       </div>
                       <div className="members-modal-list-role">{roleLabels[m.role] || m.role}</div>
+                      {
+                        m.rang ?
+                        (
+                          <div className="org-member-rang-wrapper">
+                            <img src={m.rang.thumbnailUrl} alt={m.username} />
+                          </div>
+                        )
+                        : ''
+                      }
                     </div>
                   </div>
                 ))}

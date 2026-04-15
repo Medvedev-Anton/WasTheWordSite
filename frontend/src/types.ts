@@ -14,6 +14,14 @@ export interface User {
   allowMessagesFrom?: 'everyone' | 'friends' | 'nobody';
   photos?: Photo[];
   posts?: Post[];
+  rang?: Rang;
+}
+
+export interface Rang {
+  id: number;
+  name: string;
+  thumbnailUrl: string;
+  orderNumber: number;
 }
 
 export interface Photo {
@@ -104,6 +112,7 @@ export interface OrganizationMember {
   avatar?: string;
   firstName?: string;
   lastName?: string;
+  rang?: Rang;
 }
 
 export interface Chat {
