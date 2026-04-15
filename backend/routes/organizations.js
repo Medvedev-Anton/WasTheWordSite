@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { UserFacade } from '../facades/user_facade.js';
+import { RangFacade } from '../facades/rang_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -209,12 +210,20 @@ router.get('/:id', authenticateToken, (req, res) => {
         u.username,
         u.avatar,
         u.firstName,
-        u.lastName
+        u.lastName,
+        u.rangId
       FROM organization_members om
       JOIN users u ON om.userId = u.id
       WHERE om.organizationId = ?
       ORDER BY om.role DESC, om.createdAt ASC
     `).all(orgId);
+
+    members.map(member => {
+      if (member.rangId !== undefined && member.rangId !== null) {
+        const rang = RangFacade.findById(member.rangId);
+        member['rang'] = rang;
+      }
+    });
 
     // Get sub-organizations
     const subOrganizations = db.prepare(`
