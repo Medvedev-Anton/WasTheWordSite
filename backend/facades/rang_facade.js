@@ -1,7 +1,6 @@
 import { RangMapper } from "../mappers/rang/rang_mapper.js";
 import { Rang } from "../models/rang.js";
 import { RangService } from "../services/rang/rang_service.js";
-import { RangsCollection } from "../collections/rangs_collection.js";
 import { UserRangService } from "../services/user_rang/user_rang_service.js";
 import { UserRangMapper } from "../mappers/user_rang/user_rang_mapper.js";
 
