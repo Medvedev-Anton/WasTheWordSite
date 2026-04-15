@@ -9,12 +9,9 @@ export class UserFacade {
      */
     static calcAndUpdateRang(userId, entity) {
         try {
-            const currentUserRangId = RangFacade.getUserRangId(userId);
             const newRangId = RangResolverFacade.getResolver(entity).calcRangId(userId);
 
-            if (currentUserRangId !== newRangId) {
-                RangFacade.setUserRangId(newRangId, userId);
-            }
+            RangFacade.setUserRangId(newRangId, userId);
         }
         catch (e) {
             throw new Error(e.message);
