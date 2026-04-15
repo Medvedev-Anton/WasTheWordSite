@@ -22,4 +22,10 @@ router.delete('/:id', authenticateToken, (req, res) => {
     controller.delete();
 });
 
+// Find user rang
+router.get('/user-rang', authenticateToken, (req, res) => {
+    const controller = new RangController(req, res);
+    controller.findByUserId();
+});
+
 export default router;

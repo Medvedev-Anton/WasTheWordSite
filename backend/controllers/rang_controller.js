@@ -120,4 +120,43 @@ export class RangController extends MainController {
             });
         }
     }
+
+    /**
+     * Возвращает модель ранга пользователя
+     */
+    findByUserId() {
+        const validate = this.has([
+            'userId'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        const userId = parseInt(this.request.user.userId);
+
+        if (isNaN(userId)) {
+            this.send(400, {
+                message: 'userId is not a numeric value'
+            });
+
+            return;
+        }
+
+        try {
+            const rangId = RangFacade.getUserRangId(userId);
+            const rang = RangFacade.findById(rangId);
+
+            this.send(200, {
+                message: 'Find success',
+                rang: rang
+            });
+        }
+        catch (e) {
+            console.error('Find user rang errror:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }

@@ -18,7 +18,8 @@ export class MainController {
             if (
                 (this.request[param] === undefined) && 
                 (this.request.body !== undefined && this.request.body[param] === undefined) &&
-                (this.request.params !== undefined && this.request.params[param] === undefined)
+                (this.request.params !== undefined && this.request.params[param] === undefined) &&
+                (this.request.user !== undefined && this.request.user[param] === undefined)
             ) {
                 this.send(400, {
                     message: `Отсутствует обязательный параметр: ${param}`
