@@ -112,6 +112,7 @@ export interface OrganizationMember {
   avatar?: string;
   firstName?: string;
   lastName?: string;
+  rang?: Rang;
 }
 
 export interface Chat {
