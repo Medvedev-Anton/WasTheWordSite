@@ -63,7 +63,7 @@ export async function initDatabase() {
   }
   if (!hasRang) {
     try {
-      db.exec(`ALTER TABLE users ADD COLUMN rangId INT`);
+      db.exec(`ALTER TABLE users ADD COLUMN rangId INT DEFAULT 0`);
       db.exec(`ALTER TABLE users ADD FOREIGN KEY (rangId) REFERENCES rangs(id)`)
     } catch (e) {
       console.error('Error adding allowMessagesFrom column:', e.message);
