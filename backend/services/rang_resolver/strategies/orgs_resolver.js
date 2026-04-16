@@ -27,7 +27,13 @@ export class OrgsResolver extends RangResolveStrategy {
         
         try {
             const rang = RangFacade.findById(currentUserRangId);
-            currentUserRangOrderNumber = rang.getOrderNumber();
+
+            if (rang === null) {
+                currentUserRangOrderNumber = 0;
+            }
+            else {
+                currentUserRangOrderNumber = rang.getOrderNumber();
+            }   
         }
         catch (e) {
             throw new Error(e.message);

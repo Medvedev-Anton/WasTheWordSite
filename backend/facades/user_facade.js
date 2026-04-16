@@ -11,7 +11,9 @@ export class UserFacade {
         try {
             const newRangId = RangResolverFacade.getResolver(entity).calcRangId(userId);
 
-            RangFacade.setUserRangId(newRangId, userId);
+            if (newRangId >= 0) {
+                RangFacade.setUserRangId(newRangId, userId);
+            }            
         }
         catch (e) {
             throw new Error(e.message);
