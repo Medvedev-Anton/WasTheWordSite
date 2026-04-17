@@ -50,6 +50,7 @@
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
   text-align: center;
+  justify-content: space-between;
 }
 
 .user-card:hover {
