@@ -7,7 +7,13 @@ export class UserRangService extends UserRangServiceInterface {
 
     getRang(userId) {
         try {
-            return this.mapper.getRang(userId);
+            const rangId = this.mapper.getRang(userId);
+
+            if (isNaN(rangId)) {
+                return 0;
+            }
+
+            return rangId;
         }
         catch (e) {
             throw new Error(e.message);
