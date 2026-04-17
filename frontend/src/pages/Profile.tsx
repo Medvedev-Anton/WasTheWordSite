@@ -150,6 +150,7 @@ export default function Profile() {
             (
               <div className="rang-image-wrapper">
                 <img src={user.rang.thumbnailUrl} />
+                <p>{user.rang.name}</p>
               </div>
             )
             : ''

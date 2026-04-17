@@ -1373,6 +1373,7 @@ function OrganizationDetail({
                         (
                           <div className="org-member-rang-wrapper">
                             <img src={m.rang.thumbnailUrl} alt={m.username} />
+                            <p>{m.rang.name}</p>
                           </div>
                         )
                         : ''
