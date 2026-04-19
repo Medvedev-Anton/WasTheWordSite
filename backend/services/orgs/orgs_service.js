@@ -40,4 +40,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getOrgMembersIds(orgId) {
+        try {
+            return this.mapper.getOrgMembersIds(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

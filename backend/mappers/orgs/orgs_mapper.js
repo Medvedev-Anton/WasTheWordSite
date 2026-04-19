@@ -115,4 +115,27 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return maxCount;
     }
+
+    getOrgMembersIds(orgId) {
+        if (orgId < 0) {
+            throw new Error('orgId не может быть отрицательным');
+        }
+
+        const results = db.prepare(`
+            SELECT
+                userId
+            FROM organization_members
+            WHERE id = ?    
+        `).all(orgId);
+
+        if (!results) {
+            return [];
+        }
+
+        if (results.length === 0) {
+            return [];
+        }
+
+        return results.filter(user => user.userId);
+    }
 }

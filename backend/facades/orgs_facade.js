@@ -73,4 +73,22 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает максимальное кол-во подорганизаций у организаций под авторством пользователя
+     * @param {int} orgId
+     * @return {int}
+     */
+    static getOrgMembersIds(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getOrgMembersIds(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

@@ -42,4 +42,13 @@ export class OrgsServiceInterface {
     getMaxCountSuborgsForOrgsByUser(userId) {
         throw new Error('getMaxCountSuborgsForOrgsByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Вовзращает массив ID всех участников организации
+     * @param {int} orgId
+     * @return {Array}
+     */
+    getOrgMembersIds(orgId) {
+        throw new Error('getOrgMembersIds должен быть переопределен в наследнике');
+    }
 }
