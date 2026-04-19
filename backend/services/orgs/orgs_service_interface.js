@@ -1,4 +1,9 @@
+import { OrgsMapper } from "../../mappers/orgs/orgs_mapper.js";
+
 export class OrgsServiceInterface {
+    /**
+     * @param {OrgsMapper} mapper 
+     */
     constructor(mapper) {
         if (new.target === 'OrgsServiceInterface') {
             throw new Error('Нельзя создать экземпляр класса OrgsServiceInterface');
