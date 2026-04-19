@@ -79,13 +79,13 @@ export class OrgsFacade {
      * @param {int} orgId
      * @return {int}
      */
-    static getOrgMembersIds(orgId) {
+    static getOrgMembers(orgId) {
         const service = new OrgsService(
             new OrgsMapper()
         );
 
         try {
-            return service.getOrgMembersIds(orgId);
+            return service.getOrgMembers(orgId);
         }
         catch (e) {
             throw new Error(e.message);

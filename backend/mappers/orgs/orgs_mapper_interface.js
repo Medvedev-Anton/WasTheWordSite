@@ -46,7 +46,7 @@ export class OrgsMapperInterface {
      * @param {int} orgId
      * @return {Array}
      */
-    getOrgMembersIds(orgId) {
-        throw new Error('getOrgMembersIds должен быть переопределен в наследнике');
+    getOrgMembers(orgId) {
+        throw new Error('getOrgMembers должен быть переопределен в наследнике');
     }
 }

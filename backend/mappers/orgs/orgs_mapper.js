@@ -116,7 +116,7 @@ export class OrgsMapper extends OrgsMapperInterface {
         return maxCount;
     }
 
-    getOrgMembersIds(orgId) {
+    getOrgMembers(orgId) {
         if (orgId < 0) {
             throw new Error('orgId не может быть отрицательным');
         }
@@ -125,7 +125,7 @@ export class OrgsMapper extends OrgsMapperInterface {
             SELECT
                 userId
             FROM organization_members
-            WHERE id = ?    
+            WHERE organizationId = ?
         `).all(orgId);
 
         if (!results) {
@@ -136,6 +136,6 @@ export class OrgsMapper extends OrgsMapperInterface {
             return [];
         }
 
-        return results.filter(user => user.userId);
+        return results;
     }
 }

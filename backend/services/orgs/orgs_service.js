@@ -41,9 +41,9 @@ export class OrgsService extends OrgsServiceInterface {
         }
     }
 
-    getOrgMembersIds(orgId) {
+    getOrgMembers(orgId) {
         try {
-            return this.mapper.getOrgMembersIds(orgId);
+            return this.mapper.getOrgMembers(orgId);
         }
         catch (e) {
             throw new Error(e.message);
