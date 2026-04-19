@@ -3,6 +3,10 @@ import { Rang } from "../models/rang.js";
 import { RangService } from "../services/rang/rang_service.js";
 import { UserRangService } from "../services/user_rang/user_rang_service.js";
 import { UserRangMapper } from "../mappers/user_rang/user_rang_mapper.js";
+import { OrgsService } from "../services/orgs/orgs_service.js";
+import { OrgsMapper } from "../mappers/orgs/orgs_mapper.js";
+import { UserFacade } from "./user_facade.js";
+import { OrgsFacade } from "./orgs_facade.js";
 
 export class RangFacade {
     /**
@@ -157,6 +161,25 @@ export class RangFacade {
 
         try {
             return service.findByOrderNumber(orderNumber);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Обновляет ранг всех участников организации при ее удалении
+     * @param {Array} members
+     * @returns
+     */
+    static updateOrgMembersRangOnDelete(members) {
+        try {
+            if (members.length > 0) {
+                members.forEach(user => {
+                    UserFacade.calcAndUpdateRang(user.userId, 'orgs');
+                    UserFacade.calcAndUpdateRang(user.userId, 'suborgs');
+                });
+            }
         }
         catch (e) {
             throw new Error(e.message);

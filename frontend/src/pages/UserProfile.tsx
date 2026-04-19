@@ -76,6 +76,16 @@ export default function UserProfile() {
         </div>
         <div className="profile-info">
           <h1>{fullName}</h1>
+          {
+            user.rang ? 
+            (
+              <div className="rang-image-wrapper">
+                <img src={user.rang.thumbnailUrl} />
+                <p>{user.rang.name}</p>
+              </div>
+            )
+            : ''
+          }
           <p className="username">@{user.username}</p>
           {canMessage ? (
             <button

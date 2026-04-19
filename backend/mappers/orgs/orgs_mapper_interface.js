@@ -40,4 +40,13 @@ export class OrgsMapperInterface {
     getMaxCountSuborgsForOrgsByUser(userId) {
         throw new Error('getMaxCountSuborgsForOrgsByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Вовзращает массив ID всех участников организации
+     * @param {int} orgId
+     * @return {Array}
+     */
+    getOrgMembers(orgId) {
+        throw new Error('getOrgMembers должен быть переопределен в наследнике');
+    }
 }

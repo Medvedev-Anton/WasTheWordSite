@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { UserFacade } from '../facades/user_facade.js';
 import { RangFacade } from '../facades/rang_facade.js';
+import { OrgsFacade } from '../facades/orgs_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -689,15 +690,11 @@ router.delete('/:id', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Only organization admin or global admin can delete organization' });
     }
 
+    const members = OrgsFacade.getOrgMembers(orgId);
+
     db.prepare('DELETE FROM organizations WHERE id = ?').run(orgId);
 
-    try {
-      UserFacade.calcAndUpdateRang(userId, 'orgs');
-      UserFacade.calcAndUpdateRang(userId, 'suborgs');
-    }
-    catch (e) {
-      throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);
-    }
+    RangFacade.updateOrgMembersRangOnDelete(members);
 
     res.json({ message: 'Organization deleted' });
   } catch (error) {

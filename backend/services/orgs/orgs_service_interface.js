@@ -1,4 +1,9 @@
+import { OrgsMapper } from "../../mappers/orgs/orgs_mapper.js";
+
 export class OrgsServiceInterface {
+    /**
+     * @param {OrgsMapper} mapper 
+     */
     constructor(mapper) {
         if (new.target === 'OrgsServiceInterface') {
             throw new Error('Нельзя создать экземпляр класса OrgsServiceInterface');
@@ -41,5 +46,14 @@ export class OrgsServiceInterface {
      */
     getMaxCountSuborgsForOrgsByUser(userId) {
         throw new Error('getMaxCountSuborgsForOrgsByUser должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Вовзращает массив ID всех участников организации
+     * @param {int} orgId
+     * @return {Array}
+     */
+    getOrgMembers(orgId) {
+        throw new Error('getOrgMembers должен быть переопределен в наследнике');
     }
 }

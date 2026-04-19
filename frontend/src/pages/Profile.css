@@ -312,6 +312,10 @@
   margin: 12px 0;
 }
 
+.rang-image-wrapper p {
+  margin-top: 5px;
+}
+
 @media (max-width: 768px) {
   .profile-header {
     flex-direction: column;
