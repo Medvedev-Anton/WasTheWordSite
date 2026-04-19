@@ -23,18 +23,18 @@ export class OrgsService extends OrgsServiceInterface {
         }
     }
 
-    getMaxCountSuborgsForSuborgsByUser(userId) {
+    getTotalCountSuborgsForSuborgsByUser(userId) {
         try {
-            return this.mapper.getMaxCountSuborgsForSuborgsByUser(userId);
+            return this.mapper.getTotalCountSuborgsForSuborgsByUser(userId);
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    getMaxCountSuborgsForOrgsByUser(userId) {
+    getTotalCountSuborgsForOrgsByUser(userId) {
         try {
-            return this.mapper.getMaxCountSuborgsForOrgsByUser(userId);
+            return this.mapper.getTotalCountSuborgsForOrgsByUser(userId);
         }
         catch (e) {
             throw new Error(e.message);

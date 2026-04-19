@@ -28,8 +28,8 @@ export class OrgsMapperInterface {
      * @param {int} userId
      * @return {int}
      */
-    getMaxCountSuborgsForSuborgsByUser(userId) {
-        throw new Error('getMaxCountSuborgsForSuborgsByUser должен быть переопределен в наследнике');
+    getTotalCountSuborgsForSuborgsByUser(userId) {
+        throw new Error('getTotalCountSuborgsForSuborgsByUser должен быть переопределен в наследнике');
     }
 
     /**
@@ -37,8 +37,8 @@ export class OrgsMapperInterface {
      * @param {int} userId
      * @return {int}
      */
-    getMaxCountSuborgsForOrgsByUser(userId) {
-        throw new Error('getMaxCountSuborgsForOrgsByUser должен быть переопределен в наследнике');
+    getTotalCountSuborgsForOrgsByUser(userId) {
+        throw new Error('getTotalCountSuborgsForOrgsByUser должен быть переопределен в наследнике');
     }
 
     /**
