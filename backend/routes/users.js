@@ -42,8 +42,14 @@ router.get('/', authenticateToken, (req, res) => {
     `).all(currentUserId);
 
     users.map(user => {
-      if (user.rangId !== undefined && user.rangId !== null) {
-        const rang = RangFacade.findById(user.rangId);
+      if (user.rangId !== undefined) {
+        let rangId = user.rangId;
+
+        if (rangId === null) {
+          rangId = 0;
+        }
+
+        const rang = RangFacade.findById(rangId);
         user['rang'] = rang;
       }      
     });
