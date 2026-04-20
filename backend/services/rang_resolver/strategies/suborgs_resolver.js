@@ -47,8 +47,8 @@ export class SuborgsResolver extends RangResolveStrategy {
             return currentUserRangId;
         }
 
-        const countSuborgsForSuborgs = OrgsFacade.getMaxCountSuborgsForSuborgsByUser(userId);
-        const countSuborgsForOrgs = OrgsFacade.getMaxCountSuborgsForOrgsByUser(userId);
+        const countSuborgsForSuborgs = OrgsFacade.getTotalCountSuborgsForSuborgsByUser(userId);
+        const countSuborgsForOrgs = OrgsFacade.getTotalCountSuborgsForOrgsByUser(userId);
 
         if (Math.max(countSuborgsForSuborgs, countSuborgsForOrgs) === 0) {
             const minRangId = RangFacade.findByOrderNumber(5).getId();

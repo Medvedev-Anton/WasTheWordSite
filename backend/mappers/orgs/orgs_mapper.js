@@ -46,7 +46,7 @@ export class OrgsMapper extends OrgsMapperInterface {
         return parseInt(result.cnt);
     }
 
-    getMaxCountSuborgsForSuborgsByUser(userId) {
+    getTotalCountSuborgsForSuborgsByUser(userId) {
         if (userId < 0) {
             throw new Error('userId не может быть отрицательным');
         }
@@ -72,7 +72,7 @@ export class OrgsMapper extends OrgsMapperInterface {
             return 0;
         }
 
-        const maxCount = parseInt(Math.max(...result.map(obj => obj.cnt)));
+        const maxCount = parseInt(Math.sumPrecise(...result.map(obj => obj.cnt)));
 
         if (isNaN(maxCount)) {
             return 0;
@@ -81,7 +81,7 @@ export class OrgsMapper extends OrgsMapperInterface {
         return maxCount;
     }
 
-    getMaxCountSuborgsForOrgsByUser(userId) {
+    getTotalCountSuborgsForOrgsByUser(userId) {
         if (userId < 0) {
             throw new Error('userId не может быть отрицательным');
         }
@@ -107,7 +107,7 @@ export class OrgsMapper extends OrgsMapperInterface {
             return 0;
         }
 
-        const maxCount = parseInt(Math.max(...result.map(obj => obj.cnt)));
+        const maxCount = parseInt(Math.sumPrecise(...result.map(obj => obj.cnt)));
 
         if (isNaN(maxCount)) {
             return 0;

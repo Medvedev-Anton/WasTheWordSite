@@ -43,13 +43,13 @@ export class OrgsFacade {
      * @param {int} userId
      * @return {int}
      */
-    static getMaxCountSuborgsForSuborgsByUser(userId) {
+    static getTotalCountSuborgsForSuborgsByUser(userId) {
         const service = new OrgsService(
             new OrgsMapper()
         );
 
         try {
-            return service.getMaxCountSuborgsForSuborgsByUser(userId);
+            return service.getTotalCountSuborgsForSuborgsByUser(userId);
         }
         catch (e) {
             throw new Error(e.message);
@@ -61,13 +61,13 @@ export class OrgsFacade {
      * @param {int} userId
      * @return {int}
      */
-    static getMaxCountSuborgsForOrgsByUser(userId) {
+    static getTotalCountSuborgsForOrgsByUser(userId) {
         const service = new OrgsService(
             new OrgsMapper()
         );
 
         try {
-            return service.getMaxCountSuborgsForOrgsByUser(userId);
+            return service.getTotalCountSuborgsForOrgsByUser(userId);
         }
         catch (e) {
             throw new Error(e.message);
