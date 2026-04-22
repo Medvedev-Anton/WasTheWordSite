@@ -72,7 +72,7 @@ export class OrgsMapper extends OrgsMapperInterface {
             return 0;
         }
 
-        const maxCount = parseInt(Math.sumPrecise(...result.map(obj => obj.cnt)));
+        const maxCount = parseInt(result.reduce((sum, item) => sum += item.cnt, 0));
 
         if (isNaN(maxCount)) {
             return 0;
@@ -107,7 +107,7 @@ export class OrgsMapper extends OrgsMapperInterface {
             return 0;
         }
 
-        const maxCount = parseInt(Math.sumPrecise(...result.map(obj => obj.cnt)));
+        const maxCount = parseInt(result.reduce((sum, item) => sum += item.cnt, 0));
 
         if (isNaN(maxCount)) {
             return 0;

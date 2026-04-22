@@ -46,11 +46,13 @@ router.get('/', authenticateToken, (req, res) => {
         let rangId = user.rangId;
 
         if (rangId === null) {
-          rangId = 0;
+          const rang = RangFacade.findByOrderNumber(0);
+          user['rang'] = rang;
         }
-
-        const rang = RangFacade.findById(rangId);
-        user['rang'] = rang;
+        else {
+            const rang = RangFacade.findById(rangId);
+            user['rang'] = rang;
+        }
       }      
     });
 
