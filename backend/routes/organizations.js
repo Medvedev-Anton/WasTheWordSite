@@ -50,6 +50,8 @@ const ORG_HIERARCHY = {
   'Коммерческая': 'Магазин',
   'Административная': 'Отдел',
   'Образовательная': 'Факультет',
+  'Правительственная': 'Департамент',
+  'Банковская': 'Филиал',
   'Волонтёрская': 'Отряд',
   'Спортивная': 'Отряд',
   'Свободная': 'Группа',
@@ -57,11 +59,13 @@ const ORG_HIERARCHY = {
   'Цех': 'Мастерская',
   'Магазин': 'Отдел',
   'Отдел': 'Сектор',
+  'Департамент': 'Управление',
+  'Филиал': 'Отделение',
   'Факультет': 'Кафедра',
   'Отряд': 'Звено',
 };
 
-const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Волонтёрская', 'Спортивная', 'Свободная'];
+const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
 
 function getSubOrgType(parentType, grandparentType) {
   // Prevent 4th level: Отдел under Магазин is terminal (commercial chain stops at 3 levels)
@@ -359,6 +363,14 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       resolvedType = childType;
     } else {
       resolvedType = ROOT_ORG_TYPES.includes(orgType) ? orgType : (orgType || ROOT_ORG_TYPES[0]);
+    }
+
+    if (resolvedType === 'Правительственная') {
+      const currentUser = db.prepare('SELECT role, canCreateGovernmentOrganizations FROM users WHERE id = ?').get(adminId);
+      const hasAccessToGovernmentOrgs = currentUser?.role === 'admin' || currentUser?.canCreateGovernmentOrganizations === 1;
+      if (!hasAccessToGovernmentOrgs) {
+        return res.status(403).json({ error: 'You are not allowed to create government organizations' });
+      }
     }
 
     const result = db.prepare(`

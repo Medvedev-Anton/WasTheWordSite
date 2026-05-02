@@ -39,6 +39,7 @@ export async function initDatabase() {
   const hasIsBanned = tableInfo.some(col => col.name === 'isBanned');
   const hasAllowMessagesFrom = tableInfo.some(col => col.name === 'allowMessagesFrom');
   const hasRang = tableInfo.some(col => col.name === 'rangId');
+  const hasCanCreateGovernmentOrganizations = tableInfo.some(col => col.name === 'canCreateGovernmentOrganizations');
 
   if (!hasRole) {
     try {
@@ -69,11 +70,19 @@ export async function initDatabase() {
       console.error('Error adding allowMessagesFrom column:', e.message);
     }
   }
+  if (!hasCanCreateGovernmentOrganizations) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN canCreateGovernmentOrganizations INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding canCreateGovernmentOrganizations column:', e.message);
+    }
+  }
   // Update existing users
   try {
     db.exec(`UPDATE users SET role = 'user' WHERE role IS NULL OR role = ''`);
     db.exec(`UPDATE users SET isBanned = 0 WHERE isBanned IS NULL`);
     db.exec(`UPDATE users SET allowMessagesFrom = 'everyone' WHERE allowMessagesFrom IS NULL`);
+    db.exec(`UPDATE users SET canCreateGovernmentOrganizations = 0 WHERE canCreateGovernmentOrganizations IS NULL`);
   } catch (e) {
     console.error('Error updating users:', e.message);
   }

@@ -10,6 +10,7 @@ export interface User {
   avatar?: string;
   role?: 'admin' | 'user';
   isBanned?: number;
+  canCreateGovernmentOrganizations?: number;
   postsCount?: number;
   allowMessagesFrom?: 'everyone' | 'friends' | 'nobody';
   photos?: Photo[];

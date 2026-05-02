@@ -10,13 +10,15 @@ import { getMediaUrl } from '../config';
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
 
-const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Волонтёрская', 'Спортивная', 'Свободная'];
+const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
 
 const ORG_TYPE_ICONS: Record<string, string> = {
   'Производственная': '🏭',
   'Коммерческая': '🏢',
   'Административная': '🏛️',
   'Образовательная': '🎓',
+  'Правительственная': '🏛️',
+  'Банковская': '🏦',
   'Волонтёрская': '🤝',
   'Спортивная': '🏆',
   'Свободная': '🌐',
@@ -24,6 +26,10 @@ const ORG_TYPE_ICONS: Record<string, string> = {
   'Отдел': '📋',
   'Мастерская': '🔧',
   'Магазин': '🛒',
+  'Департамент': '🏛️',
+  'Управление': '📑',
+  'Филиал': '🏦',
+  'Отделение': '💳',
   'Отряд': '👥',
   'Звено': '👤',
   'Факультет': '📚',
@@ -483,6 +489,8 @@ function OrganizationDetail({
     'Коммерческая': 'Магазин',
     'Административная': 'Отдел',
     'Образовательная': 'Факультет',
+    'Правительственная': 'Департамент',
+    'Банковская': 'Филиал',
     'Волонтёрская': 'Отряд',
     'Спортивная': 'Отряд',
     'Свободная': 'Группа',
@@ -490,6 +498,8 @@ function OrganizationDetail({
     'Цех': 'Мастерская',
     'Магазин': 'Отдел',
     'Отдел': 'Сектор',
+    'Департамент': 'Управление',
+    'Филиал': 'Отделение',
     'Факультет': 'Кафедра',
     'Отряд': 'Звено',
   };
@@ -653,6 +663,7 @@ function OrganizationDetail({
     }
   };
 
+
   const [selectedIconId, setSelectedIconId] = useState(organization.organization_icon_id || 1);
   const [selectedCoverId, setSelectedCoverId] = useState<number | null>(organization.organization_cover_id || null);
   const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
@@ -690,7 +701,10 @@ function OrganizationDetail({
     return acc;
   }, {} as Record<string, OrganizationCover[]>);
 
-  useEffect(() => { fetchIcons(); fetchCovers(); }, []);
+  useEffect(() => {
+    fetchIcons();
+    fetchCovers();
+  }, [organization.id]);
 
   const [inputMode, setInputMode] = useState("address");
   const [address, setAddress] = useState("");

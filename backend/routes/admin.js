@@ -37,7 +37,7 @@ router.get('/users', requireAdmin, (req, res) => {
   try {
     const users = db.prepare(`
       SELECT 
-        id, username, email, firstName, lastName, role, isBanned, createdAt,
+        id, username, email, firstName, lastName, role, isBanned, canCreateGovernmentOrganizations, createdAt,
         (SELECT COUNT(*) FROM posts WHERE authorId = users.id) as postsCount
       FROM users
       ORDER BY createdAt DESC
@@ -233,6 +233,26 @@ router.post('/users/:id/remove-admin', requireAdmin, (req, res) => {
   }
 });
 
+router.post('/users/:id/government-org-access', requireAdmin, (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const { canCreateGovernmentOrganizations } = req.body;
+
+    const user = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    db.prepare('UPDATE users SET canCreateGovernmentOrganizations = ? WHERE id = ?')
+      .run(canCreateGovernmentOrganizations ? 1 : 0, userId);
+
+    res.json({ message: 'Government organization creation permission updated' });
+  } catch (error) {
+    console.error('Update government organization access error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/icons', requireAdmin, (req, res) => {
   try {
     const icons = db.prepare('SELECT * FROM organization_icon').all();
@@ -257,7 +277,7 @@ router.post('/icons', requireAdmin, upload.array('images', 30), (req, res) => {
     }
 
     const validTypes = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная',
-      'Волонтёрская', 'Спортивная', 'Свободная'];
+      'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
     if (!validTypes.includes(orgType)) {
       return res.status(400).json({ error: 'Invalid organization type' });
     }
@@ -387,7 +407,7 @@ router.post('/covers', requireAdmin, upload.array('images', 30), (req, res) => {
 
     const { orgType } = req.body;
     const validTypes = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная',
-      'Волонтёрская', 'Спортивная', 'Свободная'];
+      'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
     const resolvedOrgType = (orgType && validTypes.includes(orgType)) ? orgType : null;
 
     const inserted = [];

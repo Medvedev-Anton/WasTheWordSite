@@ -26,12 +26,14 @@ interface OrganizationCover {
   orgType: string | null;
 }
 
-const ORG_TYPES: string[] = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Волонтёрская', 'Спортивная', 'Свободная'];
+const ORG_TYPES: string[] = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
 const ORG_TO_ICON: Record<string, string> = {
   'Производственная': ' 🏭',
   'Коммерческая': '🏢',
   'Административная': '🏕️',
   'Образовательная': '🎓',
+  'Правительственная': '🏛️',
+  'Банковская': '🏦',
   'Волонтёрская': '🤝',
   'Спортивная': '🏆',
   'Свободная': '🌐',
@@ -223,6 +225,17 @@ export default function Admin() {
     }
   };
 
+  const handleGovernmentOrgAccess = async (userId: number, enabled: boolean) => {
+    try {
+      await axios.post(`/api/admin/users/${userId}/government-org-access`, {
+        canCreateGovernmentOrganizations: enabled,
+      });
+      fetchData();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при обновлении доступа');
+    }
+  };
+
   const handleNewCoverFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
@@ -364,6 +377,7 @@ export default function Admin() {
                   <th>Имя пользователя</th>
                   <th>Email</th>
                   <th>Имя</th>
+                  <th>Создание правительственных организаций</th>
                   <th>Роль</th>
                   <th>Постов</th>
                   <th>Статус</th>
@@ -377,6 +391,16 @@ export default function Admin() {
                     <td>{user.username}</td>
                     <td>{user.email}</td>
                     <td>{user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : '-'}</td>
+                    <td>
+                      <label className="checkbox-label" style={{ justifyContent: 'center' }}>
+                        <input
+                          type="checkbox"
+                          checked={user.canCreateGovernmentOrganizations === 1}
+                          onChange={(e) => handleGovernmentOrgAccess(user.id, e.target.checked)}
+                        />
+                        <span>Разрешено</span>
+                      </label>
+                    </td>
                     <td>
                       <span className={`role-badge ${user.role === 'admin' ? 'admin' : 'user'}`}>
                         {user.role === 'admin' ? 'Админ' : 'Пользователь'}
