@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Layout.css';
-import './LayoutMap.css';
+import './FullWidthLayout.css';
 
-export default function LayoutMap({ children }: { children: React.ReactNode }) {
+export default function FullWidthLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="layout-map">
+    <div className="layout-full-width">
       <header className="header">
         <div className="header-content">
           <Link to="/" className="logo" onClick={closeSidebar}>
@@ -92,7 +92,7 @@ export default function LayoutMap({ children }: { children: React.ReactNode }) {
       </aside>
       <div className={`nav-overlay${sidebarOpen ? ' open' : ''}`} onClick={closeSidebar} />
 
-      <main className="main-content-map">
+      <main className="main-content-full-width">
         {children}
       </main>
     </div>

@@ -10,6 +10,7 @@ import chatRoutes from './routes/chats.js';
 import messageRoutes from './routes/messages.js';
 import adminRoutes from './routes/admin.js';
 import rangsRouter from './routes/rangs.js';
+import heroesRouter from './routes/heroes.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -51,6 +52,7 @@ app.use('/api/chats', chatRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/rangs', rangsRouter);
+app.use('/api/heroes', heroesRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {

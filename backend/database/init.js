@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { userInfo } from 'os';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -574,7 +575,37 @@ export async function initDatabase() {
       `).run(rang.name, rang.thumbnail_url, rang.orderNumber);
     }
   });
-  
+
+  // Create table heroes
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS heroes(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      defaultImagePath TEXT NOT NULL
+    );
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS hero_states(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      heroId INTEGER NOT NULL,
+      minRangId INTEGER NOT NULL,
+      imagePath TEXT NOT NULL,
+      FOREIGN KEY (heroId) REFERENCES heroes(id) ON DELETE CASCADE,
+      FOREIGN KEY (minRangId) REFERENCES rangs(id) ON DELETE CASCADE,
+      UNIQUE(heroId, minRangId)
+    );
+  `);
+
+  const hasUserHeroId = tableInfo.some(col => (col.name === 'heroId'));
+  if (!hasUserHeroId) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN heroId INTEGER DEFAULT NULL`);
+    } catch (e) {
+      console.error('Error adding heroId to users:', e.message);
+    }
+  }
+
   console.log('Database initialized successfully');
 }
 

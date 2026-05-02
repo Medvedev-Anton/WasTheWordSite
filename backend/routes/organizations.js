@@ -212,7 +212,8 @@ router.get('/:id', authenticateToken, (req, res) => {
         u.avatar,
         u.firstName,
         u.lastName,
-        u.rangId
+        u.rangId,
+        u.heroId
       FROM organization_members om
       JOIN users u ON om.userId = u.id
       WHERE om.organizationId = ?
@@ -224,6 +225,26 @@ router.get('/:id', authenticateToken, (req, res) => {
         const rang = RangFacade.findById(member.rangId);
         member['rang'] = rang;
       }
+    });
+
+    members.map(member => {
+      const hero = db.prepare(`
+      SELECT 
+        COALESCE(
+          (SELECT imagePath FROM hero_states
+          JOIN rangs ON hero_states.minRangId = rangs.id
+          WHERE rangs.orderNumber <= (SELECT orderNumber FROM rangs WHERE id = ?) AND hero_states.heroId = ?
+          ORDER BY rangs.orderNumber DESC
+          LIMIT 1),
+          defaultImagePath
+        ) as imagePath,
+        name,
+        id
+      FROM heroes
+      WHERE heroes.id = ?;
+  `).get(member?.rang?.id ?? null, member.heroId ?? null, member.heroId ?? null) || null;
+
+      member['hero'] = hero;
     });
 
     // Get sub-organizations
@@ -388,7 +409,7 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       }
       else {
         UserFacade.calcAndUpdateRang(adminId, 'orgs');
-      }      
+      }
     }
     catch (e) {
       throw new Error(`Ошибка при обновлении ранга пользователя: ${e.message}`);

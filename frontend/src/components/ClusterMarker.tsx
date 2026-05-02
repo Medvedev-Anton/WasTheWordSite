@@ -32,7 +32,6 @@ export const ClusterMarker: React.FC<ClusterMarkerProps> = ({
             data-count={getCountAttribute()}
             onClick={onClick}
         >
-            <div className="cluster-pulse" />
             <div className="cluster-glow" />
             <div className="cluster-content">
                 <span className="cluster-count">{count}</span>

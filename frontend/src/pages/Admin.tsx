@@ -38,7 +38,7 @@ const ORG_TO_ICON: Record<string, string> = {
 };
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations'>('stats');
+  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations' | 'heroes'>('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -49,6 +49,9 @@ export default function Admin() {
   const [newIconType, setNewIconType] = useState('');
   const [newIconFiles, setNewIconFiles] = useState<File[]>([]);
   const [newIconPreview, setNewIconPreview] = useState<string | null>(null);
+  const [rangs, setRangs] = useState<[]>([]);
+  const [showStateHeroesModal, setShowStateHeroesModal] = useState(false);
+  const [imageStateHero, setImageStateHero] = useState<File | null>(null);
 
   // Covers state
   const [organizationCovers, setOrganizationCovers] = useState<OrganizationCover[]>([]);
@@ -56,6 +59,182 @@ export default function Admin() {
   const [newCoverPreviews, setNewCoverPreviews] = useState<string[]>([]);
   const [newCoverType, setNewCoverType] = useState<string>('');
   const [imagesSubTab, setImagesSubTab] = useState<'icons' | 'covers'>('icons');
+
+  const [selectedRangId, setSelectedRangId] = useState<number | null>(null);
+  const [isDefault, setIsDefault] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [selectedHero, setSelectedHero] = useState<any | null>(null);
+  const [heroes, setHeroes] = useState<any[]>([]);
+  const [showCreateHeroModal, setShowCreateHeroModal] = useState(false);
+  const [newHeroName, setNewHeroName] = useState('');
+  const [newHeroImage, setNewHeroImage] = useState<File | null>(null);
+  const [newHeroPreview, setNewHeroPreview] = useState<string | null>(null);
+  const [showDefaultImageModal, setShowDefaultImageModal] = useState(false);
+  const [defaultImageFile, setDefaultImageFile] = useState<File | null>(null);
+  const [defaultImagePreview, setDefaultImagePreview] = useState<string | null>(null);
+  const [showEditStateModal, setShowEditStateModal] = useState(false);
+  const [editingState, setEditingState] = useState<any>(null);
+  const [editStateRangId, setEditStateRangId] = useState<number | null>(null);
+  const [editStateImageFile, setEditStateImageFile] = useState<File | null>(null);
+  const [editStateImagePreview, setEditStateImagePreview] = useState<string | null>(null);
+
+  const handleDeleteHeroState = async (heroStateId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить это состояние?')) return;
+
+    try {
+      await axios.delete(`/api/admin/heroes/states/${heroStateId}`);
+      alert('✅ Состояние удалено');
+
+      if (selectedHero) {
+        const updatedStates = selectedHero.states.filter((s: any) => s.id !== heroStateId);
+        setSelectedHero({ ...selectedHero, states: updatedStates });
+      }
+
+      setHeroes(prev =>
+        prev.map(hero =>
+          hero.id === selectedHero?.id
+            ? { ...hero, states: hero.states.filter((s: any) => s.id !== heroStateId) }
+            : hero
+        )
+      );
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      alert(error.response?.data?.error || 'Ошибка при удалении');
+    }
+  };
+
+  const handleDeleteHero = async (heroId: number, heroName: string) => {
+    if (!confirm(`Вы уверены, что хотите удалить героя "${heroName}"? Все его состояния также будут удалены.`)) return;
+
+    try {
+      await axios.delete(`/api/admin/heroes/${heroId}`);
+      alert('✅ Герой удалён');
+
+      const updatedHeroes = heroes.filter(h => h.id !== heroId);
+      setHeroes(updatedHeroes);
+
+      if (selectedHero?.id === heroId) {
+        setSelectedHero(updatedHeroes[0] || null);
+      }
+
+      fetchData();
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      alert(error.response?.data?.error || 'Ошибка при удалении героя');
+    }
+  };
+
+  const handleEditState = (state: any) => {
+    setEditingState(state);
+    setEditStateRangId(state.minRangId);
+    setEditStateImagePreview(state.imagePath);
+    setShowEditStateModal(true);
+  };
+
+  const handleUpdateState = async () => {
+    if (!editingState || !editStateRangId) {
+      alert('Заполните все поля');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('minRangId', String(editStateRangId));
+    if (editStateImageFile) {
+      formData.append('image', editStateImageFile);
+    }
+
+    try {
+      await axios.put(`/api/admin/heroes/states/${editingState.id}`, formData);
+      alert('✅ Состояние обновлено');
+      setShowEditStateModal(false);
+      setEditingState(null);
+      setEditStateRangId(null);
+      setEditStateImageFile(null);
+      setEditStateImagePreview(null);
+      fetchData();
+    } catch (error: any) {
+      console.error('Update error:', error);
+      alert(error.response?.data?.error || 'Ошибка при обновлении');
+    }
+  };
+
+  const handleSaveDefaultImage = async () => {
+    if (!defaultImageFile || !selectedHero) return;
+
+    const formData = new FormData();
+    formData.append('defaultImage', defaultImageFile);
+    formData.append('name', selectedHero.name);
+
+    try {
+      await axios.put(`/api/admin/heroes/${selectedHero.id}`, formData);
+      setShowDefaultImageModal(false);
+      setDefaultImageFile(null);
+      setDefaultImagePreview(null);
+      fetchData();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при обновлении');
+    }
+  };
+
+  const handleCreateHero = async () => {
+    if (!newHeroName.trim()) {
+      alert('Введите имя героя');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', newHeroName.trim());
+    if (newHeroImage) formData.append('defaultImage', newHeroImage);
+
+    try {
+      await axios.post('/api/admin/heroes', formData);
+      alert('✅ Герой успешно создан');
+      setShowCreateHeroModal(false);
+      setNewHeroName('');
+      setNewHeroImage(null);
+      setNewHeroPreview(null);
+      fetchData();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка при создании героя');
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageStateHero(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveState = async () => {
+    if (!selectedRangId || !imageStateHero) {
+      alert('Заполните все поля');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('rangId', String(selectedRangId));
+    formData.append('image', imageStateHero);
+    formData.append('isDefault', String(isDefault));
+
+    try {
+      await axios.post(`/api/admin/heroes/${selectedHero.id}/states`, formData);
+      alert('Состояние добавлено');
+      setShowStateHeroesModal(false);
+      setSelectedRangId(null);
+      setImageStateHero(null);
+      setImagePreview(null);
+      setIsDefault(false);
+      fetchData();
+    } catch (error) {
+      console.error('Failed to save state:', error);
+      alert('Ошибка при сохранении');
+    }
+  };
 
   const handleNewIconFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -143,6 +322,19 @@ export default function Admin() {
         ]);
         setOrganizationIcons(iconsRes.data.icons);
         setOrganizationCovers(coversRes.data.covers);
+      }
+      else if (activeTab === 'heroes') {
+        const [rangsResult, heroesResult] = await Promise.all([
+          axios.get('/api/rangs'),
+          axios.get('/api/admin/heroes'),
+        ]);
+
+        if (heroesResult.data.heroes && 0 < heroesResult.data.heroes.length) {
+          setSelectedHero(heroesResult.data.heroes[0]);
+        }
+
+        setRangs(rangsResult.data.rangs.items || []);
+        setHeroes(heroesResult.data.heroes);
       }
       else {
         const response = await axios.get('/api/admin/stats');
@@ -322,6 +514,13 @@ export default function Admin() {
           onClick={() => setActiveTab('organization-images')}
         >
           Картинки
+        </button>
+
+        <button
+          className={activeTab === 'heroes' ? 'active' : ''}
+          onClick={() => setActiveTab('heroes')}
+        >
+          Герои
         </button>
       </div>
 
@@ -522,174 +721,573 @@ export default function Admin() {
             </div>
 
             {imagesSubTab === 'icons' && (
-            <div className="admin-images-section">
-              <div className="section-header">
-                <h2>Изображения типов организаций</h2>
-              </div>
-              <div className="default-image-section">
-                <h3>⭐ Изображение по умолчанию</h3>
-                <div className="default-image-card">
-                  <div className="image-preview default">
-                    <img src={defaultIcon?.imageUrl ? getMediaUrl(defaultIcon.imageUrl) : "/image/organizations/default.jpg"} alt="По умолчанию" />
-                  </div>
-                  <div className="image-actions">
-                    <button className="btn-edit" onClick={() => setEditingIcon(defaultIcon ?? null)}>✏️ Заменить</button>
+              <div className="admin-images-section">
+                <div className="section-header">
+                  <h2>Изображения типов организаций</h2>
+                </div>
+                <div className="default-image-section">
+                  <h3>⭐ Изображение по умолчанию</h3>
+                  <div className="default-image-card">
+                    <div className="image-preview default">
+                      <img src={defaultIcon?.imageUrl ? getMediaUrl(defaultIcon.imageUrl) : "/image/organizations/default.jpg"} alt="По умолчанию" />
+                    </div>
+                    <div className="image-actions">
+                      <button className="btn-edit" onClick={() => setEditingIcon(defaultIcon ?? null)}>✏️ Заменить</button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="org-types-container">
-                {ORG_TYPES.map((type: string) => {
-                  const typeIcons = iconsByType[type] || [];
-                  return (
-                    <div className="org-type-group" key={type}>
-                      <div className="org-type-header"><h3>{ORG_TO_ICON[type]} {type}</h3></div>
-                      <div className="images-grid">
-                        {typeIcons.map(icon => (
-                          <div key={icon.id} className="image-card">
-                            <div className="image-preview"><img src={getMediaUrl(icon.imageUrl)} alt={type} /></div>
-                            <div className="image-actions">
-                              <button className="btn-edit" onClick={() => setEditingIcon(icon)}>✏️</button>
-                              <button className="btn-delete" onClick={() => handleDeleteIcon(icon.id)}>🗑️</button>
+                <div className="org-types-container">
+                  {ORG_TYPES.map((type: string) => {
+                    const typeIcons = iconsByType[type] || [];
+                    return (
+                      <div className="org-type-group" key={type}>
+                        <div className="org-type-header"><h3>{ORG_TO_ICON[type]} {type}</h3></div>
+                        <div className="images-grid">
+                          {typeIcons.map(icon => (
+                            <div key={icon.id} className="image-card">
+                              <div className="image-preview"><img src={getMediaUrl(icon.imageUrl)} alt={type} /></div>
+                              <div className="image-actions">
+                                <button className="btn-edit" onClick={() => setEditingIcon(icon)}>✏️</button>
+                                <button className="btn-delete" onClick={() => handleDeleteIcon(icon.id)}>🗑️</button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                        {typeIcons.length === 0 && <div className="empty-icons">Нет изображений</div>}
+                          ))}
+                          {typeIcons.length === 0 && <div className="empty-icons">Нет изображений</div>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="upload-section">
+                  <h3>📤 Загрузить новые иконки</h3>
+                  <div className="upload-form">
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="create-org-type">Тип организации:</label>
+                        <select id="create-org-type" className="org-type-select" value={newIconType} onChange={(e) => setNewIconType(e.target.value)}>
+                          <option value="">Выберите тип</option>
+                          {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
+                        </select>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-              <div className="upload-section">
-                <h3>📤 Загрузить новые иконки</h3>
-                <div className="upload-form">
-                  <div className="form-row">
+                    {newIconPreview && (
+                      <div className="preview-section">
+                        <h4>Предпросмотр ({newIconFiles.length} файл):</h4>
+                        <div className="icon-preview-container"><img src={newIconPreview} alt="Preview" className="icon-preview-img" /></div>
+                      </div>
+                    )}
                     <div className="form-group">
-                      <label htmlFor="create-org-type">Тип организации:</label>
-                      <select id="create-org-type" className="org-type-select" value={newIconType} onChange={(e) => setNewIconType(e.target.value)}>
-                        <option value="">Выберите тип</option>
-                        {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
-                      </select>
+                      <label htmlFor="create-image-file">Изображения (можно несколько):</label>
+                      <div className="file-input-wrapper">
+                        <input type="file" id="create-image-file" accept="image/*" multiple className="file-input-hidden" onChange={handleNewIconFileChange} />
+                        <button className="btn-upload" type="button" onClick={() => document.getElementById('create-image-file')?.click()}>📁 Выбрать файлы</button>
+                        <span className="file-name">{newIconFiles.length > 0 ? `${newIconFiles.length} файл(ов) выбрано` : 'Файлы не выбраны'}</span>
+                      </div>
+                      <small className="input-hint">Рекомендуемый размер: 400x300px, формат: JPG, PNG, макс. 10MB на файл</small>
                     </div>
-                  </div>
-                  {newIconPreview && (
-                    <div className="preview-section">
-                      <h4>Предпросмотр ({newIconFiles.length} файл):</h4>
-                      <div className="icon-preview-container"><img src={newIconPreview} alt="Preview" className="icon-preview-img" /></div>
+                    <div className="upload-actions">
+                      <button className="btn-primary" onClick={handleCreateIcon} disabled={!newIconType || newIconFiles.length === 0}>
+                        Загрузить {newIconFiles.length > 1 ? `(${newIconFiles.length} шт.)` : ''}
+                      </button>
+                      <button className="btn-secondary" onClick={handleClearNewIcon}>Очистить</button>
                     </div>
-                  )}
-                  <div className="form-group">
-                    <label htmlFor="create-image-file">Изображения (можно несколько):</label>
-                    <div className="file-input-wrapper">
-                      <input type="file" id="create-image-file" accept="image/*" multiple className="file-input-hidden" onChange={handleNewIconFileChange} />
-                      <button className="btn-upload" type="button" onClick={() => document.getElementById('create-image-file')?.click()}>📁 Выбрать файлы</button>
-                      <span className="file-name">{newIconFiles.length > 0 ? `${newIconFiles.length} файл(ов) выбрано` : 'Файлы не выбраны'}</span>
-                    </div>
-                    <small className="input-hint">Рекомендуемый размер: 400x300px, формат: JPG, PNG, макс. 10MB на файл</small>
-                  </div>
-                  <div className="upload-actions">
-                    <button className="btn-primary" onClick={handleCreateIcon} disabled={!newIconType || newIconFiles.length === 0}>
-                      Загрузить {newIconFiles.length > 1 ? `(${newIconFiles.length} шт.)` : ''}
-                    </button>
-                    <button className="btn-secondary" onClick={handleClearNewIcon}>Очистить</button>
                   </div>
                 </div>
               </div>
-            </div>
             )}
 
             {imagesSubTab === 'covers' && (
-            <div className="admin-images-section">
-              <div className="section-header">
-                <h2>🖼️ Обложки организаций</h2>
-                <p style={{color:'#64748b', marginTop: 4}}>Обложки по типам — показываются по умолчанию. Общие пресеты — организации могут выбрать сами.</p>
-              </div>
+              <div className="admin-images-section">
+                <div className="section-header">
+                  <h2>🖼️ Обложки организаций</h2>
+                  <p style={{ color: '#64748b', marginTop: 4 }}>Обложки по типам — показываются по умолчанию. Общие пресеты — организации могут выбрать сами.</p>
+                </div>
 
-              {/* Type-based default covers */}
-              <div className="org-types-container">
-                {ORG_TYPES.map(type => {
-                  const typeCovers = coversByType[type] || [];
-                  return (
-                    <div className="org-type-group" key={type}>
-                      <div className="org-type-header"><h3>{ORG_TO_ICON[type]} {type}</h3></div>
-                      <div className="images-grid">
-                        {typeCovers.map(cover => (
-                          <div key={cover.id} className="image-card cover-card">
-                            <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt={type} /></div>
-                            <div className="image-actions">
-                              <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
+                {/* Type-based default covers */}
+                <div className="org-types-container">
+                  {ORG_TYPES.map(type => {
+                    const typeCovers = coversByType[type] || [];
+                    return (
+                      <div className="org-type-group" key={type}>
+                        <div className="org-type-header"><h3>{ORG_TO_ICON[type]} {type}</h3></div>
+                        <div className="images-grid">
+                          {typeCovers.map(cover => (
+                            <div key={cover.id} className="image-card cover-card">
+                              <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt={type} /></div>
+                              <div className="image-actions">
+                                <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                        {typeCovers.length === 0 && <div className="empty-icons">Нет обложки</div>}
+                          ))}
+                          {typeCovers.length === 0 && <div className="empty-icons">Нет обложки</div>}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Generic preset covers */}
-              <div className="org-type-group" style={{marginTop: '1.5rem'}}>
-                <div className="org-type-header"><h3>🖼️ Общие пресеты (без типа)</h3></div>
-                <div className="images-grid">
-                  {(coversByType['__generic__'] || []).map(cover => (
-                    <div key={cover.id} className="image-card cover-card">
-                      <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt="cover" /></div>
-                      <div className="image-actions">
-                        <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
-                      </div>
-                    </div>
-                  ))}
-                  {!(coversByType['__generic__']?.length) && <div className="empty-icons">Нет общих пресетов</div>}
+                    );
+                  })}
                 </div>
-              </div>
 
-              <div className="upload-section">
-                <h3>📤 Загрузить обложку</h3>
-                <div className="upload-form">
-                  <div className="form-row">
+                {/* Generic preset covers */}
+                <div className="org-type-group" style={{ marginTop: '1.5rem' }}>
+                  <div className="org-type-header"><h3>🖼️ Общие пресеты (без типа)</h3></div>
+                  <div className="images-grid">
+                    {(coversByType['__generic__'] || []).map(cover => (
+                      <div key={cover.id} className="image-card cover-card">
+                        <div className="image-preview cover-preview"><img src={getMediaUrl(cover.imageUrl)} alt="cover" /></div>
+                        <div className="image-actions">
+                          <button className="btn-delete" onClick={() => handleDeleteCover(cover.id)}>🗑️</button>
+                        </div>
+                      </div>
+                    ))}
+                    {!(coversByType['__generic__']?.length) && <div className="empty-icons">Нет общих пресетов</div>}
+                  </div>
+                </div>
+
+                <div className="upload-section">
+                  <h3>📤 Загрузить обложку</h3>
+                  <div className="upload-form">
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label htmlFor="cover-org-type">Тип организации (если обложка по умолчанию):</label>
+                        <select id="cover-org-type" className="org-type-select" value={newCoverType} onChange={(e) => setNewCoverType(e.target.value)}>
+                          <option value="">Общий пресет (без типа)</option>
+                          {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    {newCoverPreviews.length > 0 && (
+                      <div className="preview-section">
+                        <h4>Предпросмотр ({newCoverFiles.length} файл):</h4>
+                        <div className="images-grid preview-grid">
+                          {newCoverPreviews.map((src, i) => (
+                            <div key={i} className="image-card">
+                              <div className="image-preview cover-preview"><img src={src} alt={`preview-${i}`} /></div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div className="form-group">
-                      <label htmlFor="cover-org-type">Тип организации (если обложка по умолчанию):</label>
-                      <select id="cover-org-type" className="org-type-select" value={newCoverType} onChange={(e) => setNewCoverType(e.target.value)}>
-                        <option value="">Общий пресет (без типа)</option>
-                        {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
-                      </select>
-                    </div>
-                  </div>
-                  {newCoverPreviews.length > 0 && (
-                    <div className="preview-section">
-                      <h4>Предпросмотр ({newCoverFiles.length} файл):</h4>
-                      <div className="images-grid preview-grid">
-                        {newCoverPreviews.map((src, i) => (
-                          <div key={i} className="image-card">
-                            <div className="image-preview cover-preview"><img src={src} alt={`preview-${i}`} /></div>
-                          </div>
-                        ))}
+                      <label htmlFor="create-cover-file">Обложки (можно несколько):</label>
+                      <div className="file-input-wrapper">
+                        <input type="file" id="create-cover-file" accept="image/*" multiple className="file-input-hidden" onChange={handleNewCoverFilesChange} />
+                        <button className="btn-upload" type="button" onClick={() => document.getElementById('create-cover-file')?.click()}>📁 Выбрать файлы</button>
+                        <span className="file-name">{newCoverFiles.length > 0 ? `${newCoverFiles.length} файл(ов) выбрано` : 'Файлы не выбраны'}</span>
                       </div>
+                      <small className="input-hint">Рекомендуемый размер: 1280×400px, формат: JPG, PNG, макс. 10MB</small>
                     </div>
-                  )}
-                  <div className="form-group">
-                    <label htmlFor="create-cover-file">Обложки (можно несколько):</label>
-                    <div className="file-input-wrapper">
-                      <input type="file" id="create-cover-file" accept="image/*" multiple className="file-input-hidden" onChange={handleNewCoverFilesChange} />
-                      <button className="btn-upload" type="button" onClick={() => document.getElementById('create-cover-file')?.click()}>📁 Выбрать файлы</button>
-                      <span className="file-name">{newCoverFiles.length > 0 ? `${newCoverFiles.length} файл(ов) выбрано` : 'Файлы не выбраны'}</span>
+                    <div className="upload-actions">
+                      <button className="btn-primary" onClick={handleCreateCovers} disabled={newCoverFiles.length === 0}>
+                        Загрузить {newCoverType ? `(тип: ${newCoverType})` : '(общий пресет)'} {newCoverFiles.length > 1 ? `— ${newCoverFiles.length} шт.` : ''}
+                      </button>
+                      <button className="btn-secondary" onClick={() => { setNewCoverFiles([]); setNewCoverPreviews([]); setNewCoverType(''); const el = document.getElementById('create-cover-file') as HTMLInputElement; if (el) el.value = ''; }}>Очистить</button>
                     </div>
-                    <small className="input-hint">Рекомендуемый размер: 1280×400px, формат: JPG, PNG, макс. 10MB</small>
-                  </div>
-                  <div className="upload-actions">
-                    <button className="btn-primary" onClick={handleCreateCovers} disabled={newCoverFiles.length === 0}>
-                      Загрузить {newCoverType ? `(тип: ${newCoverType})` : '(общий пресет)'} {newCoverFiles.length > 1 ? `— ${newCoverFiles.length} шт.` : ''}
-                    </button>
-                    <button className="btn-secondary" onClick={() => { setNewCoverFiles([]); setNewCoverPreviews([]); setNewCoverType(''); const el = document.getElementById('create-cover-file') as HTMLInputElement; if(el) el.value=''; }}>Очистить</button>
                   </div>
                 </div>
               </div>
-            </div>
             )}
 
             <IconEditModal isOpen={!!editingIcon} icon={editingIcon} onClose={() => setEditingIcon(null)} onSave={handleUpdateIcon} />
           </div>
         )}
+
+        {activeTab === 'heroes' && (
+          <div className="heroes-simple">
+            <div className="heroes-actions">
+              <button className="btn-add-hero" onClick={() => setShowCreateHeroModal(true)}>+ Добавить героя</button>
+            </div>
+
+            <div className="heroes-two-columns">
+              <div className="heroes-list-col">
+                <div className="heroes-items">
+
+                  {
+                    heroes.map(hero =>
+                      <div
+                        className={"hero-item-simple " + (selectedHero?.id === hero.id ? "active" : "")}
+                        key={hero.id}
+                        onClick={() => setSelectedHero(hero)}
+                      >
+                        <div className="hero-name-simple">{hero.name}</div>
+                        <button
+                          className="hero-delete-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteHero(hero.id, hero.name);
+                          }}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+
+              <div className="hero-editor-col">
+                <div className="editor-header">
+                  <h2>Редактор: {selectedHero?.name ?? ""}</h2>
+                </div>
+
+                <div className="editor-section">
+                  <h3>⭐ Изображение по умолчанию</h3>
+                  <div className="default-image-row">
+                    <div className="default-preview">
+                      <img
+                        src={selectedHero?.defaultImagePath}
+                        alt="Default"
+                      />
+                    </div>
+                    <div className="default-actions">
+                      <button
+                        className="btn-upload-default"
+                        onClick={() => setShowDefaultImageModal(true)}
+                      >
+                        📁 Загрузить
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="editor-section">
+                  <div className="section-title">
+                    <h3>🎨 Состояния по рангам</h3>
+                    <button className="btn-add-state-simple" onClick={() => { setShowStateHeroesModal(true); }}>+ Добавить</button>
+                  </div>
+
+                  <div className="states-list">
+                    {
+                      selectedHero?.states && 0 < selectedHero?.states.length ?
+                        selectedHero.states.map(state =>
+                          <div className="state-row" key={state.id}>
+                            <div className="state-rank">{rangs.find(rang => { return rang.id == state.minRangId; }).name}</div>
+                            <div className="state-image-preview">
+                              <img src={state.imagePath} alt="Rank1" />
+                            </div>
+                            <div className="state-actions">
+                              <button
+                                className="btn-edit-state"
+                                onClick={() => handleEditState(state)}
+                              >
+                                ✏️
+                              </button>
+                              <button
+                                className="btn-delete-state"
+                                onClick={() => {
+                                  handleDeleteHeroState(state.id);
+                                }}
+                              >🗑️</button>
+                            </div>
+                          </div>
+                        )
+                        : ""
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showStateHeroesModal && (
+          <div className="modal-simple">
+            <div className="modal-simple-content">
+              <h3>Добавить состояние</h3>
+
+              <div className="modal-field">
+                <label>Ранг</label>
+                <select
+                  name='rangId'
+                  value={selectedRangId || ''}
+                  onChange={(e) => setSelectedRangId(Number(e.target.value))}
+                >
+                  <option value="">Выберите ранг</option>
+                  {rangs.map(rang => (
+                    <option value={rang.id} key={rang.id}>{rang.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="modal-field">
+                <label>Изображение</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                {imagePreview && (
+                  <div className="image-preview-mini">
+                    <img src={imagePreview} alt="Preview" />
+                  </div>
+                )}
+              </div>
+
+              <div className="modal-buttons">
+                <button className="btn-save" onClick={handleSaveState}>Сохранить</button>
+                <button className="btn-cancel" onClick={() => {
+                  setShowStateHeroesModal(false);
+                  setSelectedRangId(null);
+                  setImageStateHero(null);
+                  setImagePreview(null);
+                  setIsDefault(false);
+                }}>Отмена</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showCreateHeroModal && (
+          <div className="rzz-admin-hero-modal-overlay" onClick={() => setShowCreateHeroModal(false)}>
+            <div className="rzz-admin-hero-modal" onClick={e => e.stopPropagation()}>
+              <div className="rzz-admin-hero-modal-header">
+                <h3>➕ Создать нового героя</h3>
+                <button className="rzz-admin-hero-modal-close" onClick={() => setShowCreateHeroModal(false)}>✕</button>
+              </div>
+
+              <div className="rzz-admin-hero-modal-body">
+                <div className="rzz-admin-hero-form-group">
+                  <label>Имя героя <span className="rzz-admin-hero-required">*</span></label>
+                  <input
+                    type="text"
+                    className="rzz-admin-hero-input"
+                    placeholder="Например: LINTIAL, OMEGA, VOID"
+                    value={newHeroName}
+                    onChange={e => setNewHeroName(e.target.value)}
+                    autoFocus
+                  />
+                </div>
+
+                <div className="rzz-admin-hero-form-group">
+                  <label>Изображение по умолчанию</label>
+                  <div className="rzz-admin-hero-file-area">
+                    <input
+                      type="file"
+                      id="rzz-hero-default-image"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setNewHeroImage(file);
+                          setNewHeroPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="rzz-admin-hero-btn-upload"
+                      onClick={() => document.getElementById('rzz-hero-default-image')?.click()}
+                    >
+                      📁 Выбрать файл
+                    </button>
+                    <span className="rzz-admin-hero-file-hint">PNG, JPG до 10MB</span>
+                  </div>
+                  {newHeroPreview && (
+                    <div className="rzz-admin-hero-preview">
+                      <img src={newHeroPreview} alt="Preview" />
+                      <button
+                        className="rzz-admin-hero-preview-remove"
+                        onClick={() => {
+                          setNewHeroImage(null);
+                          setNewHeroPreview(null);
+                          const input = document.getElementById('rzz-hero-default-image') as HTMLInputElement;
+                          if (input) input.value = '';
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="rzz-admin-hero-modal-footer">
+                <button
+                  className="rzz-admin-hero-btn-cancel"
+                  onClick={() => {
+                    setShowCreateHeroModal(false);
+                    setNewHeroName('');
+                    setNewHeroImage(null);
+                    setNewHeroPreview(null);
+                  }}
+                >
+                  Отмена
+                </button>
+                <button
+                  className="rzz-admin-hero-btn-create"
+                  onClick={handleCreateHero}
+                  disabled={!newHeroName.trim()}
+                >
+                  Создать героя
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showDefaultImageModal && (
+          <div className="rzz-admin-hero-modal-overlay" onClick={() => setShowDefaultImageModal(false)}>
+            <div className="rzz-admin-hero-modal" style={{ maxWidth: '450px' }} onClick={e => e.stopPropagation()}>
+              <div className="rzz-admin-hero-modal-header">
+                <h3>🖼️ Изменить изображение по умолчанию</h3>
+                <button className="rzz-admin-hero-modal-close" onClick={() => setShowDefaultImageModal(false)}>✕</button>
+              </div>
+
+              <div className="rzz-admin-hero-modal-body">
+                <div className="rzz-admin-hero-form-group">
+                  <label>Текущее изображение</label>
+                  <div className="rzz-admin-hero-current-image">
+                    <img
+                      src={selectedHero?.defaultImagePath ? getMediaUrl(selectedHero.defaultImagePath) : '/placeholder.png'}
+                      alt="Current"
+                      className='rzz-admin-hero-preview-default-image'
+                    />
+                  </div>
+                </div>
+
+                <div className="rzz-admin-hero-form-group">
+                  <label>Новое изображение</label>
+                  <div className="rzz-admin-hero-file-area">
+                    <input
+                      type="file"
+                      id="hero-default-update"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setDefaultImageFile(file);
+                          setDefaultImagePreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="rzz-admin-hero-btn-upload"
+                      onClick={() => document.getElementById('hero-default-update')?.click()}
+                    >
+                      📁 Выбрать файл
+                    </button>
+                  </div>
+                  {defaultImagePreview && (
+                    <div className="rzz-admin-hero-preview">
+                      <img src={defaultImagePreview} alt="Preview" />
+                      <button
+                        className="rzz-admin-hero-preview-remove"
+                        onClick={() => {
+                          setDefaultImageFile(null);
+                          setDefaultImagePreview(null);
+                          const input = document.getElementById('hero-default-update') as HTMLInputElement;
+                          if (input) input.value = '';
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="rzz-admin-hero-modal-footer">
+                <button className="rzz-admin-hero-btn-cancel" onClick={() => setShowDefaultImageModal(false)}>
+                  Отмена
+                </button>
+                <button
+                  className="rzz-admin-hero-btn-create"
+                  onClick={handleSaveDefaultImage}
+                  disabled={!defaultImageFile}
+                >
+                  Сохранить
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showEditStateModal && editingState && (
+          <div className="rzz-admin-hero-modal-overlay" onClick={() => setShowEditStateModal(false)}>
+            <div className="rzz-admin-hero-modal" style={{ maxWidth: '450px' }} onClick={e => e.stopPropagation()}>
+              <div className="rzz-admin-hero-modal-header">
+                <h3>✏️ Редактировать состояние</h3>
+                <button className="rzz-admin-hero-modal-close" onClick={() => setShowEditStateModal(false)}>✕</button>
+              </div>
+
+              <div className="rzz-admin-hero-modal-body">
+                <div className="rzz-admin-hero-form-group">
+                  <label>Ранг</label>
+                  <select
+                    className="rzz-admin-hero-input"
+                    value={editStateRangId || ''}
+                    onChange={(e) => setEditStateRangId(Number(e.target.value))}
+                  >
+                    <option value="">Выберите ранг</option>
+                    {rangs.map(rang => (
+                      <option key={rang.id} value={rang.id}>{rang.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="rzz-admin-hero-form-group">
+                  <label>Текущее изображение</label>
+                  <div className="rzz-admin-hero-current-image-state">
+                    <img src={editStateImagePreview || '/placeholder.png'} alt="Current" />
+                  </div>
+                </div>
+
+                <div className="rzz-admin-hero-form-group">
+                  <label>Новое изображение (опционально)</label>
+                  <div className="rzz-admin-hero-file-area">
+                    <input
+                      type="file"
+                      id="state-image-update"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setEditStateImageFile(file);
+                          setEditStateImagePreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="rzz-admin-hero-btn-upload"
+                      onClick={() => document.getElementById('state-image-update')?.click()}
+                    >
+                      📁 Выбрать файл
+                    </button>
+                  </div>
+                  {editStateImageFile && (
+                    <div className="rzz-admin-hero-preview">
+                      <img src={editStateImagePreview} alt="Preview" />
+                      <button
+                        className="rzz-admin-hero-preview-remove"
+                        onClick={() => {
+                          setEditStateImageFile(null);
+                          setEditStateImagePreview(null);
+                          const input = document.getElementById('state-image-update') as HTMLInputElement;
+                          if (input) input.value = '';
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="rzz-admin-hero-modal-footer">
+                <button className="rzz-admin-hero-btn-cancel" onClick={() => setShowEditStateModal(false)}>
+                  Отмена
+                </button>
+                <button className="rzz-admin-hero-btn-create" onClick={handleUpdateState}>
+                  Сохранить изменения
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ backend/uploads/messages
 backend/uploads/organizations/*
 !backend/uploads/organizations/default.jpg
 !backend/uploads/rangs
-# backend/*
+backend/*
 .env
 .DS_Store
 *.log

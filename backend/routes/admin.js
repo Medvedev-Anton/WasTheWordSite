@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { error } from 'console';
 
 const router = express.Router();
 
@@ -29,6 +30,27 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
+
+const heroesUploadsDir = path.join(__dirname, '..', 'uploads', 'heroes');
+if (!fs.existsSync(heroesUploadsDir)) {
+  fs.mkdirSync(heroesUploadsDir, { recursive: true });
+}
+
+const heroStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, heroesUploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, 'hero-' + uniqueSuffix + extension);
+  }
+});
+
+const uploadHero = multer({
+  storage: heroStorage,
   limits: { fileSize: 10 * 1024 * 1024 }
 });
 
@@ -433,6 +455,302 @@ router.delete('/covers/:id', requireAdmin, (req, res) => {
   } catch (error) {
     console.error('Error deleting cover:', error);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/heroes/:id/states', requireAdmin, (req, res) => {
+  try {
+    const heroId = req.params.id;
+
+    const states = db.prepare(`
+      SELECT hs.*, r.name as rangName, r.orderNumber as rangLevel
+      FROM hero_states hs
+      LEFT JOIN rangs r ON hs.minRangId = r.id
+      WHERE hs.heroId = ?
+      ORDER BY r.orderNumber ASC
+    `).all(heroId);
+
+    res.json(states);
+  } catch (error) {
+    console.error('Error get states:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /admin/heroes/:id/states
+router.post('/heroes/:id/states', requireAdmin, uploadHero.single('image'), (req, res) => {
+  try {
+    const heroId = req.params.id;
+    const { rangId } = req.body;
+
+    if (!rangId) {
+      return res.status(400).json({ error: 'rangId is required' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image is required' });
+    }
+
+    const imagePath = `/uploads/heroes/${req.file.filename}`;
+
+    const result = db.prepare(`
+      INSERT INTO hero_states (heroId, minRangId, imagePath) 
+      VALUES (?, ?, ?)
+    `).run(heroId, rangId, imagePath);
+
+    const newState = db.prepare(`
+      SELECT hs.*, r.name as rangName 
+      FROM hero_states hs
+      LEFT JOIN rangs r ON hs.minRangId = r.id
+      WHERE hs.id = ?
+    `).get(result.lastInsertRowid);
+
+    res.status(201).json({
+      message: 'State created',
+      state: newState
+    });
+  } catch (error) {
+    console.error('Create state error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// PUT /admin/heroes/states/:stateId
+router.put('/heroes/states/:stateId', requireAdmin, uploadHero.single('image'), (req, res) => {
+  try {
+    const stateId = req.params.stateId;
+    const { minRangId } = req.body;
+
+    const existing = db.prepare('SELECT * FROM hero_states WHERE id = ?').get(stateId);
+    if (!existing) {
+      return res.status(404).json({ error: 'State not found' });
+    }
+
+    let imagePath = existing.imagePath;
+    if (req.file) {
+      try {
+        const oldFilePath = path.join(heroesUploadsDir, existing.imagePath.split('/').pop());
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
+      } catch (fileErr) {
+        console.warn('Could not delete old image:', fileErr);
+      }
+      imagePath = `/uploads/heroes/${req.file.filename}`;
+    }
+
+    db.prepare(`
+      UPDATE hero_states 
+      SET minRangId = COALESCE(?, minRangId),
+          imagePath = COALESCE(?, imagePath)
+      WHERE id = ?
+    `).run(minRangId || null, imagePath, stateId);
+
+    const updatedState = db.prepare(`
+      SELECT hs.*, r.name as rangName 
+      FROM hero_states hs
+      LEFT JOIN rangs r ON hs.minRangId = r.id
+      WHERE hs.id = ?
+    `).get(stateId);
+
+    res.json({
+      message: 'State updated',
+      state: updatedState
+    });
+  } catch (error) {
+    console.error('Update state error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// DELETE /admin/heroes/states/:stateId
+router.delete('/heroes/states/:stateId', requireAdmin, (req, res) => {
+  try {
+    const stateId = req.params.stateId;
+
+    const existing = db.prepare('SELECT imagePath FROM hero_states WHERE id = ?').get(stateId);
+    if (existing && existing.imagePath) {
+      try {
+        const fileName = existing.imagePath.split('/').pop();
+        const filePath = path.join(heroesUploadsDir, fileName);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (fileErr) {
+        console.warn('Could not delete image:', fileErr);
+      }
+    }
+
+    db.prepare('DELETE FROM hero_states WHERE id = ?').run(stateId);
+
+    res.json({ message: 'State deleted', stateId: parseInt(stateId) });
+  } catch (error) {
+    console.error('Delete state error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// GET /admin/heroes
+router.get('/heroes', requireAdmin, (req, res) => {
+  try {
+    const heroes = db.prepare(`
+      SELECT 
+        heroes.*,	
+        COALESCE(
+          '[' || GROUP_CONCAT(
+            CASE WHEN hs.id IS NOT NULL THEN
+              json_object(
+                'id', hs.id,
+                'minRangId', hs.minRangId,
+                'imagePath', hs.imagePath,
+                'heroId', hs.heroId
+              )
+            ELSE
+              NULL
+            END
+          ) || ']',
+          '[]'
+        ) as states
+      FROM heroes
+      LEFT JOIN hero_states hs ON heroes.id = hs.heroId
+      GROUP BY heroes.id;
+    `).all();
+
+    const parsedHeroes = heroes.map(hero => ({
+      id: hero.id,
+      name: hero.name,
+      defaultImagePath: hero.defaultImagePath,
+      states: JSON.parse(hero.states)
+    }));
+    res.json({ heroes: parsedHeroes });
+  }
+  catch (error) {
+    console.error('Error fetching heroes:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /admin/heroes
+router.post('/heroes', requireAdmin, uploadHero.single('defaultImage'), (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: 'Hero name' });
+    }
+
+    const existing = db.prepare('SELECT id FROM heroes WHERE name = ?').get(name);
+    if (existing) {
+      return res.status(400).json({ error: 'This Hero already exists with name' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'It is necessary to indicate the image of the hero' });
+    }
+
+    let defaultImagePath = `/uploads/heroes/${req.file.filename}`;
+
+    const result = db.prepare(`
+      INSERT INTO heroes (name, defaultImagePath) 
+      VALUES (?, ?)
+    `).run(name, defaultImagePath);
+
+    const newHero = db.prepare('SELECT * FROM heroes WHERE id = ?').get(result.lastInsertRowid);
+
+    res.status(201).json({ message: "Hero created successfully", hero: newHero });
+  } catch (error) {
+    console.error('Create hero error:', error);
+    res.status(500).json({ error: 'Error server' });
+  }
+});
+
+// DELETE /admin/heroes/:id
+router.delete('/heroes/:id', requireAdmin, (req, res) => {
+  try {
+    const heroId = req.params.id;
+    const existing = db.prepare('SELECT id, defaultImagePath FROM heroes WHERE id = ?').get(heroId);
+    if (!existing) {
+      return res.status(404).json({ error: 'Hero not found' });
+    }
+
+    if (existing.defaultImagePath) {
+      try {
+        const filePath = path.join(__dirname, '..', existing.defaultImagePath);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (fileErr) {
+        console.warn('Could not delete hero image:', fileErr);
+      }
+    }
+
+    const result = db.prepare('DELETE FROM heroes WHERE id = ?').run(heroId);
+    if (result.changes === 0) {
+      return res.status(404).json({ error: 'Hero not found' });
+    }
+
+    db.prepare('UPDATE users SET heroId = NULL WHERE heroId = ?').run(heroId);
+
+    res.json({
+      message: 'Hero deleted',
+      deletedId: parseInt(heroId)
+    });
+  } catch (error) {
+    console.error('Delete hero error:', error);
+    res.status(500).json({ error: 'Error server' });
+  }
+});
+
+// PUT /admin/heroes/:id
+router.put('/heroes/:id', requireAdmin, uploadHero.single('defaultImage'), (req, res) => {
+  try {
+    const heroId = req.params.id;
+    const { name } = req.body;
+
+    const existing = db.prepare('SELECT * FROM heroes WHERE id = ?').get(heroId);
+    if (!existing) {
+      return res.status(404).json({ error: 'Hero not found' });
+    }
+
+    if (name && name !== existing.name) {
+      const nameExists = db.prepare('SELECT id FROM heroes WHERE name = ? AND id != ?').get(name, heroId);
+      if (nameExists) {
+        return res.status(400).json({ error: 'Hero already exists' });
+      }
+    }
+
+    let defaultImagePath = existing.defaultImagePath;
+
+    if (req.file) {
+      if (existing.defaultImagePath) {
+        try {
+          const oldFilePath = path.join(__dirname, '..', existing.defaultImagePath);
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        } catch (fileErr) {
+          console.warn('Could not delete old image:', fileErr);
+        }
+      }
+      defaultImagePath = `/uploads/heroes/${req.file.filename}`;
+    }
+
+    db.prepare(`
+      UPDATE heroes 
+      SET name = COALESCE(?, name),
+          defaultImagePath = COALESCE(?, defaultImagePath)
+      WHERE id = ?
+    `).run(name || null, defaultImagePath, heroId);
+
+    const updatedHero = db.prepare('SELECT * FROM heroes WHERE id = ?').get(heroId);
+
+    res.json({
+      message: 'Hero updated',
+      hero: updatedHero
+    });
+  } catch (error) {
+    console.error('Update hero error:', error);
+    res.status(500).json({ error: 'Error server' });
   }
 });
 

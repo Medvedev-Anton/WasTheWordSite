@@ -15,6 +15,47 @@
   color: #333;
 }
 
+.member-hero-section {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.member-hero-label {
+  font-size: 0.7rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+
+.member-hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.member-hero-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 2px solid #667eea;
+}
+
+.member-hero-image.default-hero {
+  border-color: #ccc;
+  opacity: 0.8;
+}
+
+.member-hero-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
 .create-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
