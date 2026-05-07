@@ -617,6 +617,19 @@ export async function initDatabase() {
       `).run(balance.name, balance.value);
     }
   });
+
+  // Таблица кредитных параметров банков
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS banks_loan_params (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      bank_id INTEGER NOT NULL,
+      loan_percent_users INTEGER NOT NULL,
+      loan_during_days_users INTEGER NOT NULL,
+      loan_percent_orgs INTEGER NOT NULL,
+      loan_during_days_orgs INTEGER NOT NULL,
+      FOREIGN KEY (bank_id) REFERENCES organizations(id)
+    )
+  `);
   
   console.log('Database initialized successfully');
 }
