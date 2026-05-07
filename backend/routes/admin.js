@@ -463,7 +463,7 @@ router.delete('/covers/:id', requireAdmin, (req, res) => {
 // Получить начальный баланс пользователей
 router.get('/initial-balances/user', (req, res) => {
   try {
-    controller = new InitialBalancesController(req, res);
+    const controller = new InitialBalancesController(req, res);
     controller.getUserBalance();
   }
   catch (error) {
@@ -475,7 +475,7 @@ router.get('/initial-balances/user', (req, res) => {
 // Получить начальный баланс организаций
 router.get('/initial-balances/org', (req, res) => {
   try {
-    controller = new InitialBalancesController(req, res);
+    const controller = new InitialBalancesController(req, res);
     controller.getOrgBalance();
   }
   catch (error) {
@@ -487,7 +487,7 @@ router.get('/initial-balances/org', (req, res) => {
 // Обновить начальный баланс пользователя
 router.post('/initial-balances/user', (req, res) => {
   try {
-    controller = new InitialBalancesController(req, res);
+    const controller = new InitialBalancesController(req, res);
     controller.updateUserBalance();
   }
   catch (error) {
@@ -499,7 +499,7 @@ router.post('/initial-balances/user', (req, res) => {
 // Обновить начальный баланс организаций
 router.post('/initial-balances/user', (req, res) => {
   try {
-    controller = new InitialBalancesController(req, res);
+    const controller = new InitialBalancesController(req, res);
     controller.updateOrgBalance();
   }
   catch (error) {
