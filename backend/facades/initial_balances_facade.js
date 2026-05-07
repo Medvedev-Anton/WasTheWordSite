@@ -1,10 +1,17 @@
+import { InitialBalancesMapper } from "../mappers/initial_balances/initial_balances_mapper.js";
+import { InitialBalancesService } from "../services/initial_balances/initial_balances_service.js";
+
 export class InitialBalancesFacade {
     /**
      * Получает начальный баланс пользователей
      * @returns {int}
      */
     static getUserInitialBalance() {
-        return this.mapper.getBalanceByName('user');
+        const service = new InitialBalancesService(
+            new InitialBalancesMapper()
+        );
+
+        return service.getUserInitialBalance();
     }
 
     /**
@@ -12,7 +19,11 @@ export class InitialBalancesFacade {
      * @returns {int}
      */
     static getOrgInitialBalance() {
-        return this.mapper.getBalanceByName('org');
+        const service = new InitialBalancesService(
+            new InitialBalancesMapper()
+        );
+
+        return service.getOrgInitialBalance();
     }
 
     /**
@@ -21,8 +32,12 @@ export class InitialBalancesFacade {
      * @returns {void}
      */
     static updateUserInitialBalance(newBalance) {
+        const service = new InitialBalancesService(
+            new InitialBalancesMapper()
+        );
+
         try {
-            return this.mapper.updateBalanceByName('user', newBalance);
+            return service.updateUserInitialBalance(newBalance);
         }
         catch (e) {
             throw new Error(`Ошибка при обновлении начального баланса пользователя: ${e.message}`);
@@ -35,8 +50,12 @@ export class InitialBalancesFacade {
      * @returns {void}
      */
     static updateOrgInitialBalance(newBalance) {
+        const service = new InitialBalancesService(
+            new InitialBalancesMapper()
+        );
+
         try {
-            return this.mapper.updateBalanceByName('org', newBalance);
+            return service.updateOrgInitialBalance(newBalance);
         }
         catch (e) {
             throw new Error(`Ошибка при обновлении начального баланса организации: ${e.message}`);
