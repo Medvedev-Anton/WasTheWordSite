@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { InitialBalancesController } from '../controllers/initial_balances_controller.js';
 
 const router = express.Router();
 
@@ -452,6 +453,57 @@ router.delete('/covers/:id', requireAdmin, (req, res) => {
     res.json({ message: 'Cover deleted successfully' });
   } catch (error) {
     console.error('Error deleting cover:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+// ── Initial users and orgs balances ───────────────────────────────────────────────────────
+
+// Получить начальный баланс пользователей
+router.get('/initial-balances/user', (req, res) => {
+  try {
+    controller = new InitialBalancesController(req, res);
+    controller.getUserBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Получить начальный баланс организаций
+router.get('/initial-balances/org', (req, res) => {
+  try {
+    controller = new InitialBalancesController(req, res);
+    controller.getOrgBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Обновить начальный баланс пользователя
+router.post('/initial-balances/user', (req, res) => {
+  try {
+    controller = new InitialBalancesController(req, res);
+    controller.updateUserBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Обновить начальный баланс организаций
+router.post('/initial-balances/user', (req, res) => {
+  try {
+    controller = new InitialBalancesController(req, res);
+    controller.updateOrgBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
