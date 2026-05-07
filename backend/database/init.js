@@ -40,6 +40,7 @@ export async function initDatabase() {
   const hasAllowMessagesFrom = tableInfo.some(col => col.name === 'allowMessagesFrom');
   const hasRang = tableInfo.some(col => col.name === 'rangId');
   const hasCanCreateGovernmentOrganizations = tableInfo.some(col => col.name === 'canCreateGovernmentOrganizations');
+  const hasBalance = tableInfo.some(col => col.name === 'balance');
 
   if (!hasRole) {
     try {
@@ -77,12 +78,20 @@ export async function initDatabase() {
       console.error('Error adding canCreateGovernmentOrganizations column:', e.message);
     }
   }
+  if (!hasBalance) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN balance BIGINT DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding balance column:', e.message);
+    }
+  }
   // Update existing users
   try {
     db.exec(`UPDATE users SET role = 'user' WHERE role IS NULL OR role = ''`);
     db.exec(`UPDATE users SET isBanned = 0 WHERE isBanned IS NULL`);
     db.exec(`UPDATE users SET allowMessagesFrom = 'everyone' WHERE allowMessagesFrom IS NULL`);
     db.exec(`UPDATE users SET canCreateGovernmentOrganizations = 0 WHERE canCreateGovernmentOrganizations IS NULL`);
+    db.exec(`UPDATE users SET balance = 0 WHERE balance IS NULL`);
   } catch (e) {
     console.error('Error updating users:', e.message);
   }
@@ -581,6 +590,31 @@ export async function initDatabase() {
         INSERT INTO rangs (name, thumbnail_url, orderNumber) 
         VALUES (?, ?, ?)
       `).run(rang.name, rang.thumbnail_url, rang.orderNumber);
+    }
+  });
+
+  // Таблица начальных балансов пользователей и организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS initial_balances (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value INT NOT NULL
+    )
+  `);
+
+  const defaultBalances = [
+    { name: "user", value: 0 },
+    { name: "org", value: 0 },
+  ];
+
+  defaultBalances.forEach(balance => {
+    const balanceSelect = db.prepare(`SELECT COUNT(*) as count FROM initial_balances WHERE name = ?`).get(balance.name);
+
+    if (balanceSelect.count === 0) {
+      db.prepare(`
+        INSERT INTO initial_balances (name, value) 
+        VALUES (?, ?)
+      `).run(balance.name, balance.value);
     }
   });
   
