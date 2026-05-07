@@ -40,7 +40,7 @@ const ORG_TO_ICON: Record<string, string> = {
 };
 
 export default function Admin() {
-  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations'>('stats');
+  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations' | 'finance'>('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -58,6 +58,10 @@ export default function Admin() {
   const [newCoverPreviews, setNewCoverPreviews] = useState<string[]>([]);
   const [newCoverType, setNewCoverType] = useState<string>('');
   const [imagesSubTab, setImagesSubTab] = useState<'icons' | 'covers'>('icons');
+
+  // Значения начальный балансов
+  const [initialUserBalance, setInitialUserBalance] = useState<number>(0);
+  const [initialOrgBalance, setInitialOrgBalance] = useState<number>(0);
 
   const handleNewIconFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -145,6 +149,13 @@ export default function Admin() {
         ]);
         setOrganizationIcons(iconsRes.data.icons);
         setOrganizationCovers(coversRes.data.covers);
+      }
+      else if (activeTab === 'finance') {
+          const responseUser = await axios.get('/api/admin/initial-balances/user');
+          setInitialUserBalance(parseInt(responseUser.data.balance) / 100);
+
+          const responseOrg = await axios.get('/api/admin/initial-balances/org');
+          setInitialOrgBalance(parseInt(responseOrg.data.balance) / 100);
       }
       else {
         const response = await axios.get('/api/admin/stats');
@@ -301,6 +312,44 @@ export default function Admin() {
     return acc;
   }, {} as Record<string, OrganizationCover[]>);
 
+  const requestInitialUserBalanceUpdate = async (e: any) => {
+    let newBalance = e.target.value;
+
+    if (newBalance == '') {
+      newBalance = 0;
+      setInitialUserBalance(0);
+    }
+
+    axios.post('/api/admin/initial-balances/user', {
+      newBalance: newBalance * 100
+    });
+  }
+
+  const handleInitialUserBalanceChange = (e: any) => {
+    const newBalance = e.target.value;
+
+    setInitialUserBalance(newBalance);
+  }
+
+  const requestInitialOrgBalanceUpdate = async (e: any) => {
+    let newBalance = e.target.value;
+
+    if (newBalance == '') {
+      newBalance = 0;
+      setInitialOrgBalance(0);
+    }
+
+    axios.post('/api/admin/initial-balances/org', {
+      newBalance: newBalance * 100
+    });
+  }
+
+  const handleInitialOrgBalanceChange = (e: any) => {
+    const newBalance = e.target.value;
+
+    setInitialOrgBalance(newBalance);
+  }
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
@@ -335,6 +384,12 @@ export default function Admin() {
           onClick={() => setActiveTab('organization-images')}
         >
           Картинки
+        </button>
+        <button
+          className={activeTab === 'finance' ? 'active' : ''}
+          onClick={() => setActiveTab('finance')}
+        >
+          Финансы
         </button>
       </div>
 
@@ -712,6 +767,47 @@ export default function Admin() {
             )}
 
             <IconEditModal isOpen={!!editingIcon} icon={editingIcon} onClose={() => setEditingIcon(null)} onSave={handleUpdateIcon} />
+          </div>
+        )}
+
+        {activeTab === 'finance' && (
+          <div>
+            <h2>Начальные балансы</h2>
+
+            <div className="intial-balance-wrapper">
+              <label 
+                htmlFor="initial-balance-label"
+                className="initial-balance-label"
+              >
+                Пользователя: 
+              </label>
+              <input 
+                type="number" 
+                step="any"
+                name="initial-user-balance"
+                value={initialUserBalance}
+                onChange={handleInitialUserBalanceChange}
+                onBlur={requestInitialUserBalanceUpdate}
+              />
+            </div>
+
+            <div className="intial-balance-wrapper">
+              <label 
+                htmlFor="initial-balance-label"
+                className="initial-balance-label"
+              >
+                Организация: 
+              </label>
+              <input 
+                type="number" 
+                step="any"
+                name="initial-user-balance"
+                value={initialOrgBalance}
+                onChange={handleInitialOrgBalanceChange}
+                onBlur={requestInitialOrgBalanceUpdate}
+              />
+            </div>
+            
           </div>
         )}
       </div>
