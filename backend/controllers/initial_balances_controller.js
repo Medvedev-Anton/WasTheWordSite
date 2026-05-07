@@ -59,6 +59,8 @@ export class InitialBalancesController extends MainController {
         }
 
         try {
+            const newBalance = parseInt(this.request.body.newBalance);
+
             InitialBalancesFacade.updateUserInitialBalance(newBalance);
 
             this.send(200, {
@@ -86,6 +88,8 @@ export class InitialBalancesController extends MainController {
         }
 
         try {
+            const newBalance = parseInt(this.request.body.newBalance);
+            
             InitialBalancesFacade.updateOrgInitialBalance(newBalance);
 
             this.send(200, {
