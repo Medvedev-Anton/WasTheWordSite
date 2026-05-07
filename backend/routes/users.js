@@ -160,7 +160,7 @@ router.get('/:id', authenticateToken, (req, res) => {
       id
     FROM heroes
     WHERE heroes.id = ?;
-  `).get(user?.rang?.id ?? null, user.heroId ?? null, user.heroId ?? null) || null;
+  `).get(rangId ?? null, user.heroId ?? null, user.heroId ?? null) || null;
     res.json({ ...user, photos, posts, rang, hero: hero });
   } catch (error) {
     console.error('Get user error:', error);
