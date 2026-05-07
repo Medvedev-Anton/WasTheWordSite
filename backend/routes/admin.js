@@ -461,7 +461,7 @@ router.delete('/covers/:id', requireAdmin, (req, res) => {
 // ── Initial users and orgs balances ───────────────────────────────────────────────────────
 
 // Получить начальный баланс пользователей
-router.get('/initial-balances/user', (req, res) => {
+router.get('/initial-balances/user', requireAdmin, (req, res) => {
   try {
     const controller = new InitialBalancesController(req, res);
     controller.getUserBalance();
@@ -473,7 +473,7 @@ router.get('/initial-balances/user', (req, res) => {
 });
 
 // Получить начальный баланс организаций
-router.get('/initial-balances/org', (req, res) => {
+router.get('/initial-balances/org', requireAdmin, (req, res) => {
   try {
     const controller = new InitialBalancesController(req, res);
     controller.getOrgBalance();
@@ -485,7 +485,7 @@ router.get('/initial-balances/org', (req, res) => {
 });
 
 // Обновить начальный баланс пользователя
-router.post('/initial-balances/user', (req, res) => {
+router.post('/initial-balances/user', requireAdmin, (req, res) => {
   try {
     const controller = new InitialBalancesController(req, res);
     controller.updateUserBalance();
@@ -497,7 +497,7 @@ router.post('/initial-balances/user', (req, res) => {
 });
 
 // Обновить начальный баланс организаций
-router.post('/initial-balances/org', (req, res) => {
+router.post('/initial-balances/org', requireAdmin, (req, res) => {
   try {
     const controller = new InitialBalancesController(req, res);
     controller.updateOrgBalance();
