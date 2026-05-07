@@ -127,7 +127,7 @@ export class BankController extends MainController {
     }
 
     /**
-     * Обработчик обновления срока кредита для пользователей
+     * Обработчик обновления срока кредита для организаций
      */
     updateOrgsLoanDuring() {
         const validate = this.has([
