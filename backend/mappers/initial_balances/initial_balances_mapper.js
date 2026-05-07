@@ -1,4 +1,4 @@
-import { InitialBalancesMapperInterface } from "./intital_balances_mapper_interface.js";
+import { InitialBalancesMapperInterface } from "./initial_balances_mapper_interface.js";
 import { db } from "../../database/init.js";
 
 export class InitialBalancesMapper extends InitialBalancesMapperInterface {
