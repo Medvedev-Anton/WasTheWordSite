@@ -33,6 +33,6 @@ export class InitialBalancesMapper extends InitialBalancesMapperInterface {
             SET value = ?
             WHERE
                 name = ?    
-        `).run(name, balance);
+        `).run(balance, name);
     }
 }
