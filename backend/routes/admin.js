@@ -497,7 +497,7 @@ router.post('/initial-balances/user', (req, res) => {
 });
 
 // Обновить начальный баланс организаций
-router.post('/initial-balances/user', (req, res) => {
+router.post('/initial-balances/org', (req, res) => {
   try {
     const controller = new InitialBalancesController(req, res);
     controller.updateOrgBalance();
