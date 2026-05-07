@@ -14,7 +14,7 @@ export class InitialBalancesController extends MainController {
             const userBalance = InitialBalancesFacade.getUserInitialBalance();
 
             this.send(200, {
-                message: 'Update success',
+                message: 'Get success',
                 balance: userBalance
             });
         }
@@ -34,7 +34,7 @@ export class InitialBalancesController extends MainController {
             const prgBalance = InitialBalancesFacade.getOrgInitialBalance();
 
             this.send(200, {
-                message: 'Update success',
+                message: 'Get success',
                 balance: prgBalance
             });
         }
