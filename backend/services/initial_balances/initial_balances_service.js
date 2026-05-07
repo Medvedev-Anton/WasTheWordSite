@@ -1,6 +1,6 @@
-import { InitialBalancesMapperInterface } from "../../mappers/intital_balances/intital_balances_mapper_interface.js";
+import { InitialBalancesServiceInterface } from "./initial_balances_service_interface.js";
 
-export class InitialBalancesService extends InitialBalancesMapperInterface {
+export class InitialBalancesService extends InitialBalancesServiceInterface {
     constructor(mapper) {
         super(mapper);
     }

@@ -1,4 +1,4 @@
-import { InitialBalancesMapper } from "../../mappers/intital_balances/intital_balances_mapper.js";
+import { InitialBalancesMapper } from "../../mappers/initial_balances/initial_balances_mapper.js";
 
 export class InitialBalancesServiceInterface {
     /**
