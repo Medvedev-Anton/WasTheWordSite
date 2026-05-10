@@ -64,4 +64,28 @@ router.post('/:bankId/params/orgs-loan-during', authenticateToken, (req, res) =>
     }
 });
 
+// Получение всех заемщиков-пользователей банка
+router.get('/:bankId/borrowers/users', authenticateToken, (req, res) => {
+    try {
+        const controller = new BankController(req, res);
+        controller.getUsersBorrowers();
+    }
+    catch (error) {
+        console.error('Get bank users borrowers error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+})
+
+// Получение всех заемщиков-организаций банка
+router.get('/:bankId/borrowers/users', authenticateToken, (req, res) => {
+    try {
+        const controller = new BankController(req, res);
+        controller.getOrgsBorrowers();
+    }
+    catch (error) {
+        console.error('Get bank orgs borrowers error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+})
+
 export default router;

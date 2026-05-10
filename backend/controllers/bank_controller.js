@@ -186,7 +186,7 @@ export class BankController extends MainController {
     /**
      * Обработчик получения всех заемщиков-организаций банка
      */
-    getUsersBorrowers() {
+    getOrgsBorrowers() {
         const validate = this.has([
             'bankId',
         ]);
