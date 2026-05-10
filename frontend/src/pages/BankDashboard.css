@@ -1,0 +1,23 @@
+h1 {
+    text-align: center;
+}
+
+.loan-params-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+
+.loan-params-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.loan-param input {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    height: 30px;
+    font-size: 16px;
+}

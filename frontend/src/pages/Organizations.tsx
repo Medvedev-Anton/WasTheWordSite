@@ -1036,6 +1036,7 @@ function OrganizationDetail({
               ) : null}
               <button
                 className="org-dashboard-btn"
+                onClick={() => navigate(`/banks/dashboard/${organization.id}`)}
               >
                 Панель управления
               </button>
