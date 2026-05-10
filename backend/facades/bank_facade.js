@@ -53,7 +53,7 @@ export class BankFacade {
                 this.createBankRowDefault(bankId);
             }
             
-            return service.updateUserPercent(bankId, newPercent);
+            return this.paramsService().updateUserPercent(bankId, newPercent);
         }
         catch (e) {
             throw new Error(e.message);
