@@ -28,6 +28,20 @@ export class BankFacade {
     }
 
     /**
+     * Создает строку с набором параметров банка по умолчанию
+     * @param {int} bankId
+     * @return {void}
+     */
+    static createBankRowDefault(bankId) {
+        try {
+            return this.paramsService().createBankRowDefault(bankId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Обновляет процент по кредиту для пользователей
      * @param {int} bankId
      * @param {int} newPercent
@@ -35,7 +49,7 @@ export class BankFacade {
      */
     static updateUserPercent(bankId, newPercent) {
         try {
-            return this.paramsService().updateUserPercent(bankId, newPercent);
+            return service.updateUserPercent(bankId, newPercent);
         }
         catch (e) {
             throw new Error(e.message);

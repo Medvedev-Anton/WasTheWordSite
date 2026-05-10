@@ -14,6 +14,15 @@ export class BankParamsService extends BankParamsServiceInterface {
         }
     }
 
+    createBankRowDefault(bankId) {
+        try {
+            return this.mapper.createBankRowDefault(bankId);
+        }
+        catch (e) {
+            throw new Error(e);
+        }
+    }
+
     updateUserPercent(bankId, newPercent) {
         try {
             return this.mapper.updateUserPercent(bankId, newPercent);

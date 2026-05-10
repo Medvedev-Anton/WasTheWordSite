@@ -22,6 +22,15 @@ export class BankParamsServiceInterface {
     }
 
     /**
+     * Создает строку с набором параметров банка по умолчанию
+     * @param {int} bankId
+     * @return {void}
+     */
+    createBankRowDefault(bankId) {
+        throw new Error('createBankRow должен быть переопределен в наследнике');
+    }
+
+    /**
      * Обновляет процент по кредиту для пользователей
      * @param {int} bankId
      * @param {int} newPercent

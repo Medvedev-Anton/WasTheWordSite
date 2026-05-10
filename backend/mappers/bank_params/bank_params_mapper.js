@@ -27,6 +27,28 @@ export class BankParamsMapper extends BankParamsMapperInterface {
         return result;
     }
 
+    createBankRowDefault(bankId) {
+        if (bankId < 0) {
+            throw new Error('bankId не может быть отрицательным');
+        }
+
+        if (isNaN(parseInt(bankId))) {
+            throw new Error('bankId не может быть целочисленным');
+        }
+
+        db.prepare(`
+            INSERT INTO 
+                banks_loan_params(
+                    bank_id,
+                    loan_percent_users, 
+                    loan_during_days_users,
+                    loan_percent_orgs,
+                    loan_during_days_orgs
+                )
+            VALUES(?, 0, 0, 0, 0)
+        `).run(bankId);
+    }
+
     updateUserPercent(bankId, newPercent) {
         if (bankId < 0) {
             throw new Error('bankId не может быть отрицательным');
