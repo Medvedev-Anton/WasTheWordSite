@@ -1,4 +1,5 @@
 import { BankFacade } from "../facades/bank_facade.js";
+import { LoansFacade } from "../facades/loans_facade.js";
 import { MainController } from "./main_controller.js";
 
 export class BankController extends MainController {
@@ -152,6 +153,54 @@ export class BankController extends MainController {
         }
         catch (e) {
             console.error('Update bank loan orgs during error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обработчик получения всех заемщиков-пользователей банка
+     */
+    getUsersBorrowers() {
+        const validate = this.has([
+            'bankId',
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const bankId = parseInt(this.request.params.bankId);
+            const borrowers = LoansFacade.entity('users').getAllBorrowersByCreditor(bankId);
+        }
+        catch (e) {
+            console.error('Get users borrowers error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обработчик получения всех заемщиков-организаций банка
+     */
+    getUsersBorrowers() {
+        const validate = this.has([
+            'bankId',
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const bankId = parseInt(this.request.params.bankId);
+            const borrowers = LoansFacade.entity('orgs').getAllBorrowersByCreditor(bankId);
+        }
+        catch (e) {
+            console.error('Get orgs borrowers error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
