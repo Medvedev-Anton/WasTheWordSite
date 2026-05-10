@@ -154,6 +154,6 @@ export class BankParamsMapper extends BankParamsMapperInterface {
                 loan_during_days_orgs = ?
             WHERE
                 bank_id = ?
-        `).run(newPercent, bankId);
+        `).run(newDuringDays, bankId);
     }
 }
