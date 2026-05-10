@@ -1034,6 +1034,11 @@ function OrganizationDetail({
                   💬 {creatingGroupChat ? 'Создание...' : 'Создать групповой чат'}
                 </button>
               ) : null}
+              <button
+                className="org-dashboard-btn"
+              >
+                Панель управления
+              </button>
               {!isMember && !organization.isPrivate && !isAdmin && (
                 <button onClick={handleJoin} className="join-btn">Вступить</button>
               )}
