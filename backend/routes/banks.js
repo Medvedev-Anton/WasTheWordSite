@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
+import { BankController } from '../controllers/bank_controller.js';
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.get('/:bankId/params', authenticateToken, (req, res) => {
         const controller = new BankController(req, res);
         controller.getLoanParams();
     }
-    catch (e) {
+    catch (error) {
         console.error('Get bank params error:', error);
         res.status(500).json({ error: 'Server error' });
     }
@@ -21,7 +22,7 @@ router.post('/:bankId/params/users-loan-percent', authenticateToken, (req, res) 
         const controller = new BankController(req, res);
         controller.updateUsersLoanPercent();
     }
-    catch (e) {
+    catch (error) {
         console.error('Update users percent bank error:', error);
         res.status(500).json({ error: 'Server error' });
     }
@@ -33,7 +34,7 @@ router.post('/:bankId/params/users-loan-during', authenticateToken, (req, res) =
         const controller = new BankController(req, res);
         controller.updateUsersLoanDuring();
     }
-    catch (e) {
+    catch (error) {
         console.error('Update users percent bank error:', error);
         res.status(500).json({ error: 'Server error' });
     }
@@ -45,7 +46,7 @@ router.post('/:bankId/params/orgs-loan-percent', authenticateToken, (req, res) =
         const controller = new BankController(req, res);
         controller.updateOrgsLoanPercent();
     }
-    catch (e) {
+    catch (error) {
         console.error('Update users percent bank error:', error);
         res.status(500).json({ error: 'Server error' });
     }
@@ -57,7 +58,7 @@ router.post('/:bankId/params/orgs-loan-during', authenticateToken, (req, res) =>
         const controller = new BankController(req, res);
         controller.updateOrgsLoanDuring();
     }
-    catch (e) {
+    catch (error) {
         console.error('Update users percent bank error:', error);
         res.status(500).json({ error: 'Server error' });
     }

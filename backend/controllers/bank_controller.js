@@ -1,4 +1,5 @@
 import { BankFacade } from "../facades/bank_facade.js";
+import { MainController } from "./main_controller.js";
 
 export class BankController extends MainController {
     constructor(request, response) {

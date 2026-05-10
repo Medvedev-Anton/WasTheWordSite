@@ -1,6 +1,6 @@
 import { BankParamsMapper } from "../mappers/bank_params/bank_params_mapper.js";
 import { BankParamsService } from "../services/bank_params/bank_params_service.js";
-import { BankParamsServiceInterface } from "../services/bank_params/bank_params_service_interface";
+import { BankParamsServiceInterface } from "../services/bank_params/bank_params_service_interface.js";
 
 export class BankFacade {
     /**
@@ -18,7 +18,7 @@ export class BankFacade {
      * @param {int} bankId
      * @return {object}
      */
-    getBankParams(bankId) {
+    static getBankParams(bankId) {
         try {
             return this.paramsService().getBankParams(bankId);
         }
@@ -33,7 +33,7 @@ export class BankFacade {
      * @param {int} newPercent
      * @return {void}
      */
-    updateUserPercent(bankId, newPercent) {
+    static updateUserPercent(bankId, newPercent) {
         try {
             return this.paramsService().updateUserPercent(bankId, newPercent);
         }
@@ -48,7 +48,7 @@ export class BankFacade {
      * @param {int} newDuringDays
      * @return {void}
      */
-    updateUserDuring(bankId, newDuringDays) {
+    static updateUserDuring(bankId, newDuringDays) {
         try {
             return this.paramsService().updateUserDuring(bankId, newDuringDays);
         }
@@ -63,7 +63,7 @@ export class BankFacade {
      * @param {int} newPercent
      * @return {void}
      */
-    updateOrgPercent(bankId, newPercent) {
+    static updateOrgPercent(bankId, newPercent) {
         try {
             return this.paramsService().updateOrgPercent(bankId, newPercent);
         }
@@ -78,7 +78,7 @@ export class BankFacade {
      * @param {int} newDuringDays
      * @return {void}
      */
-    updateOrgDuring(bankId, newDuringDays) {
+    static updateOrgDuring(bankId, newDuringDays) {
         try {
             return this.paramsService().updateOrgDuring(bankId, newDuringDays);
         }
