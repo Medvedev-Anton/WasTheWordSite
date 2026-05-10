@@ -643,6 +643,19 @@ export async function initDatabase() {
       FOREIGN KEY (borrowerId) REFERENCES users(id)
     )
   `);
+
+  // Таблица кредитов организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_loans (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      creditorId INTEGER NOT NULL,
+      borrowerId INTEGER NOT NULL,
+      startSum INTEGER NOT NULL,
+      currentSum INTEGER NOT NULL,
+      FOREIGN KEY (creditorId) REFERENCES organizations(id),
+      FOREIGN KEY (borrowerId) REFERENCES organizations(id)
+    )
+  `);
   
   console.log('Database initialized successfully');
 }
