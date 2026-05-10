@@ -49,6 +49,10 @@ export class BankFacade {
      */
     static updateUserPercent(bankId, newPercent) {
         try {
+            if (this.getBankParams(bankId) === undefined) {
+                this.createBankRowDefault(bankId);
+            }
+            
             return service.updateUserPercent(bankId, newPercent);
         }
         catch (e) {
@@ -64,6 +68,10 @@ export class BankFacade {
      */
     static updateUserDuring(bankId, newDuringDays) {
         try {
+            if (this.getBankParams(bankId) === undefined) {
+                this.createBankRowDefault(bankId);
+            }
+
             return this.paramsService().updateUserDuring(bankId, newDuringDays);
         }
         catch (e) {
@@ -79,6 +87,10 @@ export class BankFacade {
      */
     static updateOrgPercent(bankId, newPercent) {
         try {
+            if (this.getBankParams(bankId) === undefined) {
+                this.createBankRowDefault(bankId);
+            }
+
             return this.paramsService().updateOrgPercent(bankId, newPercent);
         }
         catch (e) {
@@ -94,6 +106,10 @@ export class BankFacade {
      */
     static updateOrgDuring(bankId, newDuringDays) {
         try {
+            if (this.getBankParams(bankId) === undefined) {
+                this.createBankRowDefault(bankId);
+            }
+
             return this.paramsService().updateOrgDuring(bankId, newDuringDays);
         }
         catch (e) {
