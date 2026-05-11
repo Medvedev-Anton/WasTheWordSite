@@ -16,6 +16,7 @@ export default function UserProfile() {
     const [startingChat, setStartingChat] = useState(false);
     const [organizations, setOrganizations] = useState<[]>([]);
     const [skins, setSkins] = useState<[]>([]);
+    const [imageHero, setImageHero] = useState(null);
 
     useEffect(() => {
         if (id) {
@@ -31,6 +32,15 @@ export default function UserProfile() {
             setSkins(responseHeroes.data.heroes);
             const responseOrganizations = await axios.get(`/api/users/${id}/organizations`);
             setOrganizations(responseOrganizations.data.organizations);
+
+            if (!response?.data?.hero) {
+                if (response.data.gender === 'M') {
+                    setImageHero('/image/hero/default_male_hero.png');
+                }
+                else {
+                    setImageHero('/image/hero/default_female_hero.png');
+                }
+            }
         } catch (error) {
             console.error('Failed to fetch user:', error);
         } finally {
@@ -214,13 +224,7 @@ export default function UserProfile() {
                                         });
 
                                     }}>
-                                        <div className="org-icon">
-                                            {
-                                                organization.avatar ?
-                                                    <img src={getMediaUrl(organization.avatar)} />
-                                                    : ""
-                                            }
-                                            <img src="" alt="" /></div>
+                                        <div className="org-icon"></div>
                                         <span>{organization.name || ""}</span>
                                     </div>
                                 )
@@ -245,7 +249,14 @@ export default function UserProfile() {
                                     <span className="info-value">{user.lastName}</span>
                                 </div>
                             )}
-
+                            {user.gender && (
+                                <div className="info-item">
+                                    <span className="info-label">Пол:</span>
+                                    <span className="info-value">
+                                        {user.gender === 'M' ? 'Мужской' : user.gender === 'F' ? 'Женский' : 'Не указан'}
+                                    </span>
+                                </div>
+                            )}
                             {user.age && (
                                 <div className="info-item">
                                     <span className="info-label">Возраст:</span>
@@ -273,9 +284,9 @@ export default function UserProfile() {
                     <div className="character-display">
                         <div className="character-glow"></div>
                         {user?.heroId ? (
-                            <img src={user?.hero.imagePath ?? '/image/hero/default_hero.png'} alt="Character" className="character-image" />
+                            <img src={user?.hero.imagePath ?? imageHero} alt="Character" className="character-image" />
                         ) : (
-                            <img src={'/image/hero/default_hero.png'} alt="Character" className="character-image" />
+                            <img src={imageHero} alt="Character" className="character-image" />
                         )}
                     </div>
                 </div>

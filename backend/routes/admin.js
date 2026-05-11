@@ -595,7 +595,7 @@ router.get('/heroes', requireAdmin, (req, res) => {
   try {
     const heroes = db.prepare(`
       SELECT 
-        heroes.*,	
+        heroes.*,
         COALESCE(
           '[' || GROUP_CONCAT(
             CASE WHEN hs.id IS NOT NULL THEN
@@ -619,6 +619,7 @@ router.get('/heroes', requireAdmin, (req, res) => {
     const parsedHeroes = heroes.map(hero => ({
       id: hero.id,
       name: hero.name,
+      gender: hero.gender,
       defaultImagePath: hero.defaultImagePath,
       states: JSON.parse(hero.states)
     }));
@@ -633,10 +634,14 @@ router.get('/heroes', requireAdmin, (req, res) => {
 // POST /admin/heroes
 router.post('/heroes', requireAdmin, uploadHero.single('defaultImage'), (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, gender } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ error: 'Hero name' });
+    }
+
+    if (!gender || (gender != 'M' && gender != 'F')) {
+      return res.status(400).json({ error: 'Invalid gender' });
     }
 
     const existing = db.prepare('SELECT id FROM heroes WHERE name = ?').get(name);
@@ -651,9 +656,9 @@ router.post('/heroes', requireAdmin, uploadHero.single('defaultImage'), (req, re
     let defaultImagePath = `/uploads/heroes/${req.file.filename}`;
 
     const result = db.prepare(`
-      INSERT INTO heroes (name, defaultImagePath) 
-      VALUES (?, ?)
-    `).run(name, defaultImagePath);
+      INSERT INTO heroes (name, defaultImagePath, gender) 
+      VALUES (?, ?, ?)
+    `).run(name, defaultImagePath, gender);
 
     const newHero = db.prepare('SELECT * FROM heroes WHERE id = ?').get(result.lastInsertRowid);
 

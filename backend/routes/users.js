@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { RangFacade } from '../facades/rang_facade.js';
+import { error } from 'console';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -35,7 +36,7 @@ router.get('/', authenticateToken, (req, res) => {
     const currentUserId = req.user.userId;
     const users = db.prepare(`
       SELECT 
-        id, username, email, firstName, lastName, avatar, allowMessagesFrom, rangId, heroId
+        id, username, email, firstName, lastName, avatar, allowMessagesFrom, rangId, heroId, gender
       FROM users
       WHERE id != ? AND isBanned = 0
       ORDER BY username ASC
@@ -87,7 +88,7 @@ router.get('/', authenticateToken, (req, res) => {
 router.get('/:id', authenticateToken, (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-    const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, allowMessagesFrom, heroId FROM users WHERE id = ?').get(userId);
+    const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, allowMessagesFrom, heroId, gender FROM users WHERE id = ?').get(userId);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -178,13 +179,17 @@ router.put('/:id', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const { firstName, lastName, age, work, about, allowMessagesFrom } = req.body;
+    const { firstName, lastName, age, work, about, allowMessagesFrom, gender } = req.body;
+
+    if (gender != 'M' && gender != 'F') {
+      return res.status(400).json({ error: 'gender must be either male or female' });
+    }
 
     db.prepare(`
       UPDATE users 
-      SET firstName = ?, lastName = ?, age = ?, work = ?, about = ?, allowMessagesFrom = ?
+      SET firstName = ?, lastName = ?, age = ?, work = ?, about = ?, allowMessagesFrom = ?, gender = ?
       WHERE id = ?
-    `).run(firstName || null, lastName || null, age || null, work || null, about || null, allowMessagesFrom || 'everyone', userId);
+    `).run(firstName || null, lastName || null, age || null, work || null, about || null, allowMessagesFrom || 'everyone', gender || 'M', userId);
 
     const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, allowMessagesFrom FROM users WHERE id = ?').get(userId);
 
@@ -270,7 +275,7 @@ router.get('/:id/organizations', authenticateToken, (req, res) => {
     const organizations = db.prepare(`
       SELECT organizations.* FROM organization_members 
         INNER JOIN organizations ON organizations.id = organization_members.organizationId
-        WHERE userId = ? AND organizations.parentId IS NULL
+        WHERE userId = ?
       `).all(userId);
 
     res.json({ organizations: organizations });
@@ -294,6 +299,19 @@ router.patch('/:id/heroes', authenticateToken, (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
+    }
+
+    const newHero = db.prepare(`
+      SELECT * FROM heroes WHERE id = ?
+      `).get(heroId);
+    if (!newHero) {
+      return res.status(404).json({ error: 'Hero not found' });
+    }
+
+    if (user.gender !== newHero.gender) {
+      return res.status(400).json({
+        error: 'Gender mismatch',
+      });
     }
 
     db.prepare(`

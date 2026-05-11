@@ -19,6 +19,7 @@ export default function Profile() {
     work: '',
     about: '',
     allowMessagesFrom: 'everyone' as 'everyone' | 'friends' | 'nobody',
+    gender: '' as '' | 'M' | 'F'
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -27,6 +28,7 @@ export default function Profile() {
   const [showSkinModal, setShowSkinModal] = useState<boolean>(false);
   const [organizations, setOrganizations] = useState<[]>([]);
   const [skins, setSkins] = useState<[]>([]);
+  const [imageHero, setImageHero] = useState(null);
 
   const navigate = useNavigate();
 
@@ -49,11 +51,24 @@ export default function Profile() {
         work: response.data.work || '',
         about: response.data.about || '',
         allowMessagesFrom: response.data.allowMessagesFrom || 'everyone',
+        gender: response.data.gender || 'M'
       });
+
       const responseSkins = await axios.get(`/api/heroes`);
-      setSkins(responseSkins.data.heroes || []);
+      const skins = responseSkins.data.heroes;
+      const filterSkins = skins ? skins.filter(skin => { return skin.gender === response.data.gender; }) : [];
+      setSkins(filterSkins|| []);
       const responseOrganizations = await axios.get(`/api/users/${currentUser.id}/organizations`);
       setOrganizations(responseOrganizations.data.organizations);
+
+      if (!response.data.hero) {
+        if (response.data.gender === 'M') {
+          setImageHero('/image/hero/default_male_hero.png');
+        }
+        else {
+          setImageHero('/image/hero/default_female_hero.png');
+        }
+      }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
     } finally {
@@ -72,6 +87,7 @@ export default function Profile() {
         work: formData.work || null,
         about: formData.about || null,
         allowMessagesFrom: formData.allowMessagesFrom,
+        gender: formData.gender
       });
 
       if (avatarFile) {
@@ -258,13 +274,7 @@ export default function Profile() {
                     });
 
                   }}>
-                    <div className="org-icon">
-                      {
-                        organization.avatar ?
-                          <img src={getMediaUrl(organization.avatar)} />
-                          : ""
-                      }
-                      <img src="" alt="" /></div>
+                    <div className="org-icon"></div>
                     <span>{organization.name || ""}</span>
                   </div>
                 )
@@ -289,7 +299,14 @@ export default function Profile() {
                     <span className="info-value">{user.lastName}</span>
                   </div>
                 )}
-
+                {user.gender && (
+                  <div className="info-item">
+                    <span className="info-label">Пол:</span>
+                    <span className="info-value">
+                      {user.gender === 'M' ? 'Мужской' : user.gender === 'F' ? 'Женский' : 'Не указан'}
+                    </span>
+                  </div>
+                )}
                 {user.age && (
                   <div className="info-item">
                     <span className="info-label">Возраст:</span>
@@ -329,6 +346,16 @@ export default function Profile() {
                     />
                   </label>
                 </div>
+                <label>
+                  Пол
+                  <select
+                    value={formData.gender}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value as '' | 'M' | 'F' })}
+                  >
+                    <option value="M">Мужской</option>
+                    <option value="F">Женский</option>
+                  </select>
+                </label>
                 <label>
                   Возраст
                   <input
@@ -373,9 +400,9 @@ export default function Profile() {
           <div className="character-display">
             <div className="character-glow"></div>
             {user.heroId ? (
-              <img src={user.hero.imagePath ?? '/image/hero/default_hero.png'} alt="Character" className="character-image" />
+              <img src={user?.hero?.imagePath ?? imageHero} alt="Character" className="character-image" />
             ) : (
-              <img src={'/image/hero/default_hero.png'} alt="Character" className="character-image" />
+              <img src={imageHero ?? '/image/hero/default_male_hero.png'} alt="Character" className="character-image" />
             )}
           </div>
 

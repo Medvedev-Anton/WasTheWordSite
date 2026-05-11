@@ -78,6 +78,7 @@ export default function Admin() {
   const [editStateRangId, setEditStateRangId] = useState<number | null>(null);
   const [editStateImageFile, setEditStateImageFile] = useState<File | null>(null);
   const [editStateImagePreview, setEditStateImagePreview] = useState<string | null>(null);
+  const [newHeroGender, setNewHeroGender] = useState<'M' | 'F' | ''>('');
 
   const handleDeleteHeroState = async (heroStateId: number) => {
     if (!confirm('Вы уверены, что хотите удалить это состояние?')) return;
@@ -185,6 +186,7 @@ export default function Admin() {
 
     const formData = new FormData();
     formData.append('name', newHeroName.trim());
+    formData.append('gender', newHeroGender);
     if (newHeroImage) formData.append('defaultImage', newHeroImage);
 
     try {
@@ -908,6 +910,11 @@ export default function Admin() {
                         onClick={() => setSelectedHero(hero)}
                       >
                         <div className="hero-name-simple">{hero.name}</div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>
+                            {hero.gender === 'M' ? '♂ Мужской' : hero.gender === 'F' ? '♀ Женский' : '⚬ Не указан'}
+                          </div>
+                        </div>
                         <button
                           className="hero-delete-btn"
                           onClick={(e) => {
@@ -1098,6 +1105,19 @@ export default function Admin() {
                     </div>
                   )}
                 </div>
+
+                <div className="rzz-admin-hero-form-group">
+                  <label>Пол героя <span className="rzz-admin-hero-required">*</span></label>
+                  <select
+                    className="rzz-admin-hero-input"
+                    value={newHeroGender}
+                    onChange={(e) => setNewHeroGender(e.target.value)}
+                  >
+                    <option value={''}>Не указано</option>
+                    <option value={'M'}>Мужской</option>
+                    <option value={'F'}>Женский</option>
+                  </select>
+                </div>
               </div>
 
               <div className="rzz-admin-hero-modal-footer">
@@ -1106,6 +1126,7 @@ export default function Admin() {
                   onClick={() => {
                     setShowCreateHeroModal(false);
                     setNewHeroName('');
+                    setNewHeroGender('');
                     setNewHeroImage(null);
                     setNewHeroPreview(null);
                   }}

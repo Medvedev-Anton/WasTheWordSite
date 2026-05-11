@@ -40,6 +40,7 @@ export async function initDatabase() {
   const hasIsBanned = tableInfo.some(col => col.name === 'isBanned');
   const hasAllowMessagesFrom = tableInfo.some(col => col.name === 'allowMessagesFrom');
   const hasRang = tableInfo.some(col => col.name === 'rangId');
+  const hasGender = tableInfo.some(col => col.name === 'gender');
 
   if (!hasRole) {
     try {
@@ -70,6 +71,15 @@ export async function initDatabase() {
       console.error('Error adding allowMessagesFrom column:', e.message);
     }
   }
+  if (!hasGender) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN gender VARCHAR(1) DEFAULT 'M'`);
+    }
+    catch (e) {
+      console.error('Error adding gender column:', e.message);
+    }
+  }
+
   // Update existing users
   try {
     db.exec(`UPDATE users SET role = 'user' WHERE role IS NULL OR role = ''`);
@@ -584,6 +594,16 @@ export async function initDatabase() {
       defaultImagePath TEXT NOT NULL
     );
   `);
+
+  const heroTableInfo = db.prepare("PRAGMA table_info(heroes)").all();
+  const hasHeroGender = heroTableInfo.some(col => (col.name === 'gender'));
+  if (!hasHeroGender) {
+    try {
+      db.exec(`ALTER TABLE heroes ADD COLUMN gender VARCHAR(1) DEFAULT 'M'`);
+    } catch (e) {
+      console.error('Error adding gender to users:', e.message);
+    }
+  }
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS hero_states(

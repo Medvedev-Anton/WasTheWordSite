@@ -1387,20 +1387,13 @@ function OrganizationDetail({
               {/* Right: detail */}
               {selectedMember && (
                 <div className="members-modal-detail">
-                  {selectedMember.avatar
-                    ? <img src={getMediaUrl(selectedMember.avatar)} alt={selectedMember.username} className="members-modal-detail-avatar" />
-                    : <div className="members-modal-detail-avatar-ph">{(selectedMember.firstName || selectedMember.username)[0].toUpperCase()}</div>
-                  }
-                  <div className="members-modal-detail-name">
-                    {selectedMember.firstName && selectedMember.lastName
-                      ? `${selectedMember.firstName} ${selectedMember.lastName}`
-                      : selectedMember.username}
-                  </div>
-                  <div className="members-modal-detail-role">{roleLabels[selectedMember.role] || selectedMember.role}</div>
-                  {selectedMember.isBlocked && <div className="member-blocked-label">Заблокирован</div>}
+                  {selectedMember.isBlocked === 1 ? <div className="member-blocked-label">Заблокирован</div> : ""}
 
                   <div className="member-hero-section">
                     <div className="member-hero-content">
+                      <div className='member-hero-user'>
+                        {selectedMember.username}
+                      </div>
                       {selectedMember.hero?.imagePath ? (
                         <img
                           src={getMediaUrl(selectedMember.hero.imagePath)}
@@ -1409,21 +1402,21 @@ function OrganizationDetail({
                         />
                       ) : (
                         <img
-                          src="/image/hero/default_hero.png"
+                          src={selectedMember.gender === 'M' ? '/image/hero/default_male_hero.png' : '/image/hero/default_female_hero.png'}
                           alt="Default hero"
                           className="member-hero-image default-hero"
                         />
                       )}
-                      <span className="member-hero-name">{selectedMember.hero?.name || 'Default'}</span>
+                      <span className="member-hero-name">{roleLabels[selectedMember.role] || selectedMember.role}</span>
+
+                      <button
+                        className="members-modal-profile-btn"
+                        onClick={() => { setShowMembersModal(false); navigate(`/users/${selectedMember.userId}`); }}
+                      >
+                        👤 Открыть профиль
+                      </button>
                     </div>
                   </div>
-
-                  <button
-                    className="members-modal-profile-btn"
-                    onClick={() => { setShowMembersModal(false); navigate(`/users/${selectedMember.userId}`); }}
-                  >
-                    👤 Открыть профиль
-                  </button>
 
                   {(isAdmin || isModerator) && selectedMember.userId !== currentUserId && selectedMember.role !== 'admin' && (
                     <div className="members-modal-actions">

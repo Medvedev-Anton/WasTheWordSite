@@ -213,7 +213,8 @@ router.get('/:id', authenticateToken, (req, res) => {
         u.firstName,
         u.lastName,
         u.rangId,
-        u.heroId
+        u.heroId,
+        u.gender
       FROM organization_members om
       JOIN users u ON om.userId = u.id
       WHERE om.organizationId = ?

@@ -10,6 +10,7 @@ export default function Register() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
+  const [gender, setGender] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -18,7 +19,7 @@ export default function Register() {
     setError('');
 
     try {
-      await register(username, email, password, firstName || undefined, lastName || undefined);
+      await register(username, email, password, firstName || undefined, lastName || undefined, gender || 'M');
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Ошибка регистрации');
@@ -65,6 +66,15 @@ export default function Register() {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="gender-select"
+            required
+          >
+            <option value="M">Мужской</option>
+            <option value="F">Женский</option>
+          </select>
           <button type="submit">Зарегистрироваться</button>
         </form>
         <p>
