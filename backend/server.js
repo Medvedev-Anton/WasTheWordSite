@@ -11,6 +11,7 @@ import messageRoutes from './routes/messages.js';
 import adminRoutes from './routes/admin.js';
 import rangsRouter from './routes/rangs.js';
 import banksRouter from './routes/banks.js';
+import taxesRouter from './routes/taxes.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -53,6 +54,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/rangs', rangsRouter);
 app.use('/api/banks', banksRouter);
+app.use('/api/taxes', taxesRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
