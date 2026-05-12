@@ -681,6 +681,31 @@ export async function initDatabase() {
       `).run(tax.name, tax.value);
     }
   });
+
+  // Таблица цен за определенные действия
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS action_prices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value INT NOT NULL
+    )
+  `);
+
+  const defaultPrices = [
+    { name: "postView", value: 0 },
+    { name: "orgCreate", value: 0 },
+  ];
+
+  defaultPrices.forEach(price => {
+    const priceSelect = db.prepare(`SELECT COUNT(*) as count FROM action_prices WHERE name = ?`).get(price.name);
+
+    if (priceSelect.count === 0) {
+      db.prepare(`
+        INSERT INTO action_prices (name, value) 
+        VALUES (?, ?)
+      `).run(price.name, price.value);
+    }
+  });
   
   console.log('Database initialized successfully');
 }
