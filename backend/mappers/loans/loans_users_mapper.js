@@ -19,7 +19,7 @@ export class LoansUsersMapper extends LoansMapperInterface {
             SELECT
                 borrowerId
             FROM 
-                ${this.tableName}
+                users_loans
             WHERE
                 creditorId = ?    
         `).get(creditorId);
