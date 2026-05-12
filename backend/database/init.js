@@ -706,6 +706,18 @@ export async function initDatabase() {
       `).run(price.name, price.value);
     }
   });
+
+  // Таблица доходв организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_profit (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgId INTEGER NOT NULL,
+      incomingSum INTEGER NOT NULL,
+      date DATE NOT NULL,
+      FOREIGN KEY (orgId) REFERENCES organizations(id)
+    )
+  `);
+
   
   console.log('Database initialized successfully');
 }
