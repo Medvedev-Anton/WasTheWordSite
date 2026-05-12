@@ -707,7 +707,7 @@ export async function initDatabase() {
     }
   });
 
-  // Таблица доходв организаций
+  // Таблица доходов организаций
   db.exec(`
     CREATE TABLE IF NOT EXISTS orgs_profit (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -718,6 +718,16 @@ export async function initDatabase() {
     )
   `);
 
+  // Таблица доходов пользователей
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_profit (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      incomingSum INTEGER NOT NULL,
+      date DATE NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id)
+    )
+  `);
   
   console.log('Database initialized successfully');
 }
