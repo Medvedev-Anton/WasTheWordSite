@@ -656,6 +656,31 @@ export async function initDatabase() {
       FOREIGN KEY (borrowerId) REFERENCES organizations(id)
     )
   `);
+
+  // Таблица налогов
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS taxes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value INT NOT NULL
+    )
+  `);
+
+  const defaultTaxes = [
+    { name: "user", value: 0 },
+    { name: "org", value: 0 },
+  ];
+
+  defaultTaxes.forEach(tax => {
+    const taxSelect = db.prepare(`SELECT COUNT(*) as count FROM taxes WHERE name = ?`).get(tax.name);
+
+    if (taxSelect.count === 0) {
+      db.prepare(`
+        INSERT INTO taxes (name, value) 
+        VALUES (?, ?)
+      `).run(tax.name, tax.value);
+    }
+  });
   
   console.log('Database initialized successfully');
 }
