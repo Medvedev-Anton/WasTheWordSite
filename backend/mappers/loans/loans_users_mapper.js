@@ -17,11 +17,16 @@ export class LoansUsersMapper extends LoansMapperInterface {
 
         const result = db.prepare(`
             SELECT
-                borrowerId
+                l.borrowerId,
+                u.username
             FROM 
-                users_loans
+                users_loans l
+            JOIN
+                users u
+            ON
+                u.id = l.borrowerId
             WHERE
-                creditorId = ?    
+                l.creditorId = ?    
         `).get(creditorId);
 
         return result;
