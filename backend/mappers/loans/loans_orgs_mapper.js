@@ -1,9 +1,9 @@
 import { LoansMapperInterface } from "./loans_mapper_interface.js";
 import { db } from "../../database/init.js";
 
-export class LoansMapper extends LoansMapperInterface {
-    constructor(tableName) {
-        super(tableName);
+export class LoansOrgsMapper extends LoansMapperInterface {
+    constructor() {
+        super();
     }
 
     getAllBorrowersByCreditor(creditorId) {

@@ -1,17 +1,18 @@
-import { LoansMapper } from "../mappers/loans/loans_mapper.js";
+import { LoansOrgsMapper } from "../mappers/loans/loans_orgs_mapper.js";
+import { LoansUsersMapper } from "../mappers/loans/loans_users_mapper.js";
 import { LoansService } from "../services/loans_service/loans_service.js";
 
 export class LoansFacade {
     constructor(entity) {
         if (entity === 'users') {
             this.service = new LoansService(
-                new LoansMapper('users_loans')
-            )
+                new LoansUsersMapper()
+            );
         }
         else if (entity === 'orgs') {
             this.service = new LoansService(
-                new LoansMapper('orgs_loans')
-            )
+                new LoansOrgsMapper()
+            );
         }
         else {
             throw new Error('Неизвестная сущность заемщика: ' + entity);

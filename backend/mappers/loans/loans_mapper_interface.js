@@ -1,14 +1,12 @@
 export class LoansMapperInterface {
-    constructor(tableName) {
+    constructor() {
         if (new.target === 'LoansMapperInterface') {
             throw new Error('Нельзя создать экзмепляр класса LoansMapperInterface');
         }
-
-        this.tableName = tableName;
     }
 
     /**
-     * Получить ID всех заемщиков кредитора
+     * Получить данные всех заемщиков кредитора
      * @param {int} creditorId
      */
     getAllBorrowersByCreditor(creditorId) {
