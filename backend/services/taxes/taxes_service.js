@@ -80,4 +80,13 @@ export class TaxesService extends TaxesServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getCurrentUserTax(userId) {
+        try {
+            return this.mapper.getCurrentUserTax(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

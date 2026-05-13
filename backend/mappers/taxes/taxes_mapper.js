@@ -121,4 +121,25 @@ export class TaxesMapper extends TaxesMapperInterface {
             VALUES (?, ?)    
         `).run(orgId, tax);
     }
+
+    getCurrentUserTax(userId) {
+        if (isNaN(parseInt(userId))) {
+            throw new Error('userId должен быть числовым');
+        }
+
+        if (userId < 0) {
+            throw new Error('userId должен быть больше нуля');
+        }
+
+        const result = db.prepare(`
+            SELECT
+                tax
+            FROM
+                users_tax
+            WHERE
+                userId = ?
+        `).get(userId);
+
+        return result.tax || 0;
+    }
 }

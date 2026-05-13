@@ -60,7 +60,11 @@ export class TaxesMapperInterface {
     }
 
     /**
-     * Получает текущее значение налога организации
-     * @param
+     * Получает текущее значение налога пользователя
+     * @param {int} userId
+     * @return {int}
      */
+    getCurrentUserTax(userId) {
+        throw new Error('getCurrentUserTax должен быть переопределен в наследнике');
+    }
 }
