@@ -63,6 +63,15 @@ export class TaxesService extends TaxesServiceInterface {
         }
     }
 
+    incrementOrCreateCurrentUserTax(userId, incrementValue) {
+        try {
+
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     createCurrentUserTax(userId, tax) {
         try {
             return this.mapper.createCurrentUserTax(userId, tax);
@@ -83,7 +92,7 @@ export class TaxesService extends TaxesServiceInterface {
 
     getCurrentUserTax(userId) {
         try {
-            return this.mapper.getCurrentUserTax(userId);
+            return this.mapper.getCurrentUserTax(userId) || 0;
         }
         catch (e) {
             throw new Error(e.message);
@@ -92,7 +101,7 @@ export class TaxesService extends TaxesServiceInterface {
 
     getCurrentOrgTax(orgId) {
         try {
-            return this.mapper.getCurrentOrgTax(orgId);
+            return this.mapper.getCurrentOrgTax(orgId) || 0;
         }
         catch (e) {
             throw new Error(e.message);
