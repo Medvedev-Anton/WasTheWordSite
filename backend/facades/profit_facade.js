@@ -5,12 +5,12 @@ import { ProfitService } from "../services/profit/profit_service.js";
 export class ProfitFacade {
     constructor(entity) {
         if (entity === 'users') {
-            this.service = new ProfitService(
+            this.profitService = new ProfitService(
                 new ProfitUsersMapper()
             );
         }
         else if (entity === 'orgs') {
-            this.service = new ProfitService(
+            this.profitService = new ProfitService(
                 new ProfitOrgsMapper()
             );
         }
@@ -32,7 +32,7 @@ export class ProfitFacade {
      */
     createProfit(entityId, incomingSum, date) {
         try {
-            return this.service.create(entityId, incomingSum, date);
+            return this.profitService.create(entityId, incomingSum, date);
         }
         catch (e) {
             throw new Error(e.message);
@@ -48,7 +48,7 @@ export class ProfitFacade {
      */
     getSumInDateInterval(entityId, dateStart, dateFinish) {
         try {
-            return this.service.getSumInDateInterval(entityId, dateStart, dateFinish);
+            return this.profitService.getSumInDateInterval(entityId, dateStart, dateFinish);
         }
         catch (e) {
             throw new Error(e.message);
