@@ -41,4 +41,14 @@ export class TaxesServiceInterface {
     updateOrgsTaxPercent(newTax) {
         throw new Error('updateOrgsTaxPercent должен быть переопределен в наследнике');
     }
+
+    /**
+     * Расчитывает величину налога с поступления
+     * @param {int} income
+     * @param {int} taxPercent
+     * @return {int}
+     */
+    calcTaxByIncome(income, taxPercent) {
+        throw new Error('calcTaxByIncome должен быть переопределен в наследнике');
+    }
 }

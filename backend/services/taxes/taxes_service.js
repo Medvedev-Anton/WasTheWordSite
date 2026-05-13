@@ -40,4 +40,8 @@ export class TaxesService extends TaxesServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    calcTaxByIncome(income, taxPercent) {
+        return income / 100 * taxPercent;
+    }
 }
