@@ -71,6 +71,24 @@ export class TaxesServiceInterface {
     }
 
     /**
+     * Увеличивает\создает текущую сумму налога пользователя
+     * @param {int} userId
+     * @param {int} incrementValue
+     */
+    incrementOrCreateCurrentUserTax(userId, incrementValue) {
+        throw new Error('incrementCurrentUserTax должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Увеличивает\создает текущую сумму налога организации
+     * @param {int} orgId
+     * @param {int} incrementValue
+     */
+    incrementOrCreateCurrentOrgTax(orgId, incrementValue) {
+        throw new Error('incrementCurrentOrgTax должен быть переопределен в наследнике');
+    }
+
+    /**
      * Создает запись о сумме налога пользователя
      * @param {int} userId
      * @param {int} tax

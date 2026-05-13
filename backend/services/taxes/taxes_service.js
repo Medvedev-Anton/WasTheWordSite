@@ -65,7 +65,30 @@ export class TaxesService extends TaxesServiceInterface {
 
     incrementOrCreateCurrentUserTax(userId, incrementValue) {
         try {
+            const userTax = this.mapper.getCurrentUserTax(userId);
 
+            if (!userTax) {
+                return this.mapper.createCurrentUserTax(userId, incrementValue);
+            }
+            else {
+                return this.mapper.incrementCurrentUserTax(userId, incrementValue);
+            }
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    incrementOrCreateCurrentOrgTax(orgId, incrementValue) {
+        try {
+            const orgTax = this.mapper.getCurrentOrgTax(orgId);
+
+            if (!orgTax) {
+                return this.mapper.createCurrentOrgTax(orgId, incrementValue);
+            }
+            else {
+                return this.mapper.incrementCurrentOrgTax(orgId, incrementValue);
+            }
         }
         catch (e) {
             throw new Error(e.message);
