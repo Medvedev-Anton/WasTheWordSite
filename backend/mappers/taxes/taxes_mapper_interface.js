@@ -6,15 +6,16 @@ export class TaxesMapperInterface {
     }
 
     /**
-     * Получает налог для пользователей
+     * Получает процент налога сущности
      * @param {string} name
+     * @return {int}
      */
     getTaxPercentByName(name) {
         throw new Error('getTaxPercentByName должен быть переопределен в наследнике');
     }
 
     /**
-     * Обновляет налог для пользователей
+     * Обновляет процент налога сущности
      * @param {string} name
      * @param {int} newTax
      */
@@ -57,4 +58,9 @@ export class TaxesMapperInterface {
     createCurrentOrgTax(orgId, tax) {
         throw new Error('createCurrentOrgTax должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает текущее значение налога организации
+     * @param
+     */
 }
