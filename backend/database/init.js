@@ -728,6 +728,26 @@ export async function initDatabase() {
       FOREIGN KEY (userId) REFERENCES users(id)
     )
   `);
+
+  // Таблица налогов организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_tax (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgId INTEGER NOT NULL,
+      tax INTEGER NOT NULL,
+      FOREIGN KEY (orgId) REFERENCES organizations(id)
+    )
+  `);
+
+  // Таблица налогов пользователей
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_tax (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      tax INTEGER NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id)
+    )
+  `);
   
   console.log('Database initialized successfully');
 }
