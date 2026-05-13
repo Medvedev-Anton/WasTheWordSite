@@ -62,4 +62,13 @@ export class TaxesService extends TaxesServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    createCurrentUserTax(userId, tax) {
+        try {
+            return this.mapper.createCurrentUserTax(userId, tax);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

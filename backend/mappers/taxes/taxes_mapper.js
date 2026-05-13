@@ -75,4 +75,27 @@ export class TaxesMapper extends TaxesMapperInterface {
                 orgId = ?    
         `).run(incrementValue, orgId);
     }
+
+    createCurrentUserTax(userId, tax) {
+        if (isNaN(parseInt(userId))) {
+            throw new Error('userId должен быть числовым');
+        }
+
+        if (userId < 0) {
+            throw new Error('userId должен быть больше нуля');
+        }
+
+        if (isNaN(parseInt(tax))) {
+            throw new Error('tax должен быть числовым');
+        }
+
+        if (tax < 0) {
+            throw new Error('tax должен быть больше нуля');
+        }
+
+        db.prepare(`
+            INSERT INTO users_tax (userId, tax)
+            VALUES (?, ?)    
+        `).run(userId, tax);
+    }
 }

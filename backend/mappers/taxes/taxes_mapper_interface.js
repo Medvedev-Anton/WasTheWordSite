@@ -39,4 +39,13 @@ export class TaxesMapperInterface {
     incrementCurrentOrgTax(orgId, incrementValue) {
         throw new Error('incrementCurrentOrgTax должен быть переопределен в наследнике');
     }
+
+    /**
+     * Создает запись о сумме налога пользователя
+     * @param {int} userId
+     * @param {int} tax
+     */
+    createCurrentUserTax(userId, tax) {
+        throw new Error('createCurrentUserTax должен быть переопределен в наследнике');
+    }
 }
