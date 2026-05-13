@@ -37,4 +37,42 @@ export class TaxesMapper extends TaxesMapperInterface {
                 name = ?
         `).run(newTax, name);
     }
+
+    incrementCurrentUserTax(userId, incrementValue) {
+        if (isNaN(parseInt(userId))) {
+            throw new Error('userId должен быть числовым');
+        }
+
+        if (userId < 0) {
+            throw new Error('userId должен быть больше нуля');
+        }
+
+        db.prepare(`
+            UPDATE
+                users_tax
+            SET
+                tax = tax + ?
+            WHERE
+                userId = ?    
+        `).run(incrementValue, userId);
+    }
+
+    incrementCurrentOrgTax(orgId, incrementValue) {
+        if (isNaN(parseInt(orgId))) {
+            throw new Error('orgId должен быть числовым');
+        }
+
+        if (orgId < 0) {
+            throw new Error('orgId должен быть больше нуля');
+        }
+
+        db.prepare(`
+            UPDATE
+                orgs_tax
+            SET
+                tax = tax + ?
+            WHERE
+                orgId = ?    
+        `).run(incrementValue, orgId);
+    }
 }

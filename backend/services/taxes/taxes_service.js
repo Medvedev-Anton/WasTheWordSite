@@ -44,4 +44,22 @@ export class TaxesService extends TaxesServiceInterface {
     calcTaxByIncome(income, taxPercent) {
         return income / 100 * taxPercent;
     }
+
+    incrementCurrentUserTax(userId, incrementValue) {
+        try {
+            return this.mapper.incrementCurrentUserTax(userId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    incrementCurrentOrgTax(orgId, incrementValue) {
+        try {
+            return this.mapper.incrementCurrentOrgTax(orgId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

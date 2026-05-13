@@ -21,4 +21,22 @@ export class TaxesMapperInterface {
     updateTaxPercentByName(name, newTax) {
         throw new Error('updateTaxPercentByName должен быть переопределен в наследнике');
     }
+
+    /**
+     * Увеличивает текущую сумму налога пользователя
+     * @param {int} userId
+     * @param {int} incrementValue
+     */
+    incrementCurrentUserTax(userId, incrementValue) {
+        throw new Error('incrementCurrentUserTax должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Увеличивает текущую сумму налога организации
+     * @param {int} orgId
+     * @param {int} incrementValue
+     */
+    incrementCurrentOrgTax(orgId, incrementValue) {
+        throw new Error('incrementCurrentOrgTax должен быть переопределен в наследнике');
+    }
 }
