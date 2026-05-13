@@ -140,7 +140,7 @@ export class TaxesMapper extends TaxesMapperInterface {
                 userId = ?
         `).get(userId);
 
-        return result.tax || 0;
+        return result.tax;
     }
 
     getCurrentOrgTax(orgId) {
@@ -161,6 +161,6 @@ export class TaxesMapper extends TaxesMapperInterface {
                 orgId = ?
         `).get(orgId);
 
-        return result.tax || 0;
+        return result.tax;
     }
 }
