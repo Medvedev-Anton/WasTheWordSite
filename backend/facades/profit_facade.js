@@ -45,23 +45,7 @@ export class ProfitFacade {
     static entity(entity) {
         return new self(entity);
     }
-
-    /**
-     * Создает запись о доходе
-     * @param {int} entityId
-     * @param {int} incomingSum
-     * @param {string} date
-     * @return {int}
-     */
-    createProfit(entityId, incomingSum, date) {
-        try {
-            return this.profitService.create(entityId, incomingSum, date);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
+    
     /**
      * Возвращает сумму доходов сущности за указанный период
      * @param {int} entityId
