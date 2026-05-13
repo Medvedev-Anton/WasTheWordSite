@@ -13,36 +13,6 @@ export class TaxesServiceInterface {
     }
 
     /**
-     * Получить налог для пользователей
-     */
-    getUsersTaxPercent() {
-        throw new Error('getUsersTaxPercent должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Получить налог для организаций
-     */
-    getOrgsTaxPercent() {
-        throw new Error('getOrgsTaxPercent должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет налог пользователей
-     * @param {int} newTax 
-     */
-    updateUsersTaxPercent(newTax) {
-        throw new Error('updateUsersTaxPercent должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет налог организаций
-     * @param {int} newTax
-     */
-    updateOrgsTaxPercent(newTax) {
-        throw new Error('updateOrgsTaxPercent должен быть переопределен в наследнике');
-    }
-
-    /**
      * Расчитывает величину налога с поступления
      * @param {int} income
      * @param {int} taxPercent
@@ -53,74 +23,54 @@ export class TaxesServiceInterface {
     }
 
     /**
-     * Увеличивает текущую сумму налога пользователя
-     * @param {int} userId
-     * @param {int} incrementValue
-     */
-    incrementCurrentUserTax(userId, incrementValue) {
-        throw new Error('incrementCurrentUserTax должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Увеличивает текущую сумму налога организации
-     * @param {int} orgId
-     * @param {int} incrementValue
-     */
-    incrementCurrentOrgTax(orgId, incrementValue) {
-        throw new Error('incrementCurrentOrgTax должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Увеличивает\создает текущую сумму налога пользователя
-     * @param {int} userId
-     * @param {int} incrementValue
-     */
-    incrementOrCreateCurrentUserTax(userId, incrementValue) {
-        throw new Error('incrementCurrentUserTax должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Увеличивает\создает текущую сумму налога организации
-     * @param {int} orgId
-     * @param {int} incrementValue
-     */
-    incrementOrCreateCurrentOrgTax(orgId, incrementValue) {
-        throw new Error('incrementCurrentOrgTax должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Создает запись о сумме налога пользователя
-     * @param {int} userId
-     * @param {int} tax
-     */
-    createCurrentUserTax(userId, tax) {
-        throw new Error('createCurrentUserTax должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Создает запись о сумме налога организации
-     * @param {int} orgId
-     * @param {int} tax
-     */
-    createCurrentOrgTax(orgId, tax) {
-        throw new Error('createCurrentOrgTax должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Получает текущее значение налога пользователя
-     * @param {int} userId
+     * Получает процент налога
      * @return {int}
      */
-    getCurrentUserTax(userId) {
-        throw new Error('getCurrentUserTax должен быть переопределен в наследнике');
+    getTaxPercent() {
+        throw new Error('getTaxPercent должен быть переопределен в наследнике');
     }
 
     /**
-     * Получает текущее значение налога организации
-     * @param {int} orgId
+     * Обновляет процент налога сущности
+     * @param {int} newTax
+     */
+    updateTaxPercent(newTax) {
+        throw new Error('updateTaxPercent должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Увеличивает текущую сумму налога
+     * @param {int} entityId
+     * @param {int} incrementValue
+     */
+    incrementCurrentTax(entityId, incrementValue) {
+        throw new Error('incrementCurrentTax должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Создает запись о сумме налога
+     * @param {int} entityId
+     * @param {int} tax
+     */
+    createCurrentTax(entityId, tax) {
+        throw new Error('createCurrentTax должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Получает текущее значение налога
+     * @param {int} entityId
      * @return {int}
      */
-    getCurrentOrgTax(orgId) {
-        throw new Error('getCurrentOrgTax должен быть переопределен в наследнике');
+    getCurrentTax(entityId) {
+        throw new Error('getCurrentTax должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Увеличивает/создает текущую сумму налога
+     * @param {int} entityId
+     * @param {int} incrementValue
+     */
+    incrementOrCreateCurrentTax(entityId, incrementValue) {
+        throw new Error('incrementOrCreateCurrentTax должен быть переопределен в наследнике');
     }
 }

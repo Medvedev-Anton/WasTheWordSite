@@ -1,25 +1,25 @@
 import { TaxesMapperInterface } from "./taxes_mapper_interface.js";
 import { db } from "../../database/init.js";
 
-export class TaxesMapper extends TaxesMapperInterface {
+export class TaxesOrgsMapper extends TaxesMapperInterface {
     constructor() {
         super();
     }
 
-    getTaxPercentByName(name) {
+    getTaxPercent() {
         const result = db.prepare(`
             SELECT
                 value
             FROM
                 taxes
             WHERE
-                name = ?
-        `).get(name);
+                name = 'org'
+        `);
 
         return result.value || 0;
     }
 
-    updateTaxPercentByName(name, newTax) {
+    updateTaxPercent(newTax) {
         if (isNaN(parseInt(newTax))) {
             throw new Error('newTax должен быть числовым');
         }
@@ -34,30 +34,11 @@ export class TaxesMapper extends TaxesMapperInterface {
             SET
                 value = ?
             WHERE
-                name = ?
-        `).run(newTax, name);
+                name = 'org'
+        `).run(newTax);
     }
 
-    incrementCurrentUserTax(userId, incrementValue) {
-        if (isNaN(parseInt(userId))) {
-            throw new Error('userId должен быть числовым');
-        }
-
-        if (userId < 0) {
-            throw new Error('userId должен быть больше нуля');
-        }
-
-        db.prepare(`
-            UPDATE
-                users_tax
-            SET
-                tax = tax + ?
-            WHERE
-                userId = ?    
-        `).run(incrementValue, userId);
-    }
-
-    incrementCurrentOrgTax(orgId, incrementValue) {
+    incrementCurrentTax(orgId, incrementValue) {
         if (isNaN(parseInt(orgId))) {
             throw new Error('orgId должен быть числовым');
         }
@@ -76,30 +57,7 @@ export class TaxesMapper extends TaxesMapperInterface {
         `).run(incrementValue, orgId);
     }
 
-    createCurrentUserTax(userId, tax) {
-        if (isNaN(parseInt(userId))) {
-            throw new Error('userId должен быть числовым');
-        }
-
-        if (userId < 0) {
-            throw new Error('userId должен быть больше нуля');
-        }
-
-        if (isNaN(parseInt(tax))) {
-            throw new Error('tax должен быть числовым');
-        }
-
-        if (tax < 0) {
-            throw new Error('tax должен быть больше нуля');
-        }
-
-        db.prepare(`
-            INSERT INTO users_tax (userId, tax)
-            VALUES (?, ?)    
-        `).run(userId, tax);
-    }
-
-    createCurrentOrgTax(orgId, tax) {
+    createCurrentTax(orgId, tax) {
         if (isNaN(parseInt(orgId))) {
             throw new Error('orgId должен быть числовым');
         }
@@ -122,28 +80,7 @@ export class TaxesMapper extends TaxesMapperInterface {
         `).run(orgId, tax);
     }
 
-    getCurrentUserTax(userId) {
-        if (isNaN(parseInt(userId))) {
-            throw new Error('userId должен быть числовым');
-        }
-
-        if (userId < 0) {
-            throw new Error('userId должен быть больше нуля');
-        }
-
-        const result = db.prepare(`
-            SELECT
-                tax
-            FROM
-                users_tax
-            WHERE
-                userId = ?
-        `).get(userId);
-
-        return result.tax;
-    }
-
-    getCurrentOrgTax(orgId) {
+    getCurrentTax(orgId) {
         if (isNaN(parseInt(orgId))) {
             throw new Error('orgId должен быть числовым');
         }

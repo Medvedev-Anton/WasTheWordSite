@@ -11,7 +11,7 @@ export class TaxController extends MainController {
      */
     getUsersTaxPercent() {
         try {
-            const tax = TaxesFacade.getUsersTaxPercent();
+            const tax = TaxesFacade.entity('users').getTaxPercent();
 
             this.send(200, {
                 tax: tax
@@ -30,7 +30,7 @@ export class TaxController extends MainController {
      */
     getOrgsTaxPercent() {
         try {
-            const tax = TaxesFacade.getOrgsTaxPercent();
+            const tax = TaxesFacade.entity('orgs').getTaxPercent();
 
             this.send(200, {
                 tax: tax
@@ -58,7 +58,7 @@ export class TaxController extends MainController {
 
         try {
             const newTax = parseInt(this.request.body.newTax);
-            TaxesFacade.updateUsersTaxPercent(newTax);
+            TaxesFacade.entity('users').updateTaxPercent(newTax);
 
             this.send(200, {
                 message: 'Update success'
@@ -86,7 +86,7 @@ export class TaxController extends MainController {
 
         try {
             const newTax = parseInt(this.request.body.newTax);
-            TaxesFacade.updateOrgsTaxPercent(newTax);
+            TaxesFacade.entity('orgs').updateTaxPercent(newTax);
 
             this.send(200, {
                 message: 'Update success'

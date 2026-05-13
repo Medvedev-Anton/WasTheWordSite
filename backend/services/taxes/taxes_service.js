@@ -5,36 +5,18 @@ export class TaxesService extends TaxesServiceInterface {
         super(mapper);
     }
 
-    getUsersTaxPercent() {
+    getTaxPercent() {
         try {
-            return this.mapper.getTaxPercentByName('user');
+            return this.mapper.getTaxPercent();
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    getOrgsTaxPercent() {
+    updateTaxPercent(newTax) {
         try {
-            return this.mapper.getTaxPercentByName('org');
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    updateUsersTaxPercent(newTax) {
-        try {
-            return this.mapper.updateTaxPercentByName('user', newTax);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    updateOrgsTaxPercent(newTax) {
-        try {
-            return this.mapper.updateTaxPercentByName('org', newTax);
+            return this.mapper.updateTaxPercent(newTax);
         }
         catch (e) {
             throw new Error(e.message);
@@ -45,33 +27,24 @@ export class TaxesService extends TaxesServiceInterface {
         return income / 100 * taxPercent;
     }
 
-    incrementCurrentUserTax(userId, incrementValue) {
+    incrementCurrentTax(entityId, incrementValue) {
         try {
-            return this.mapper.incrementCurrentUserTax(userId, incrementValue);
+            return this.mapper.incrementCurrentTax(entityId, incrementValue)
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    incrementCurrentOrgTax(orgId, incrementValue) {
+    incrementOrCreateCurrentTax(entityId, incrementValue) {
         try {
-            return this.mapper.incrementCurrentOrgTax(orgId, incrementValue);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    incrementOrCreateCurrentUserTax(userId, incrementValue) {
-        try {
-            const userTax = this.mapper.getCurrentUserTax(userId);
+            const userTax = this.mapper.getCurrentTax(entityId);
 
             if (!userTax) {
-                return this.mapper.createCurrentUserTax(userId, incrementValue);
+                return this.mapper.createCurrentTax(entityId, incrementValue);
             }
             else {
-                return this.mapper.incrementCurrentUserTax(userId, incrementValue);
+                return this.mapper.incrementCurrentTax(entityId, incrementValue);
             }
         }
         catch (e) {
@@ -79,52 +52,18 @@ export class TaxesService extends TaxesServiceInterface {
         }
     }
 
-    incrementOrCreateCurrentOrgTax(orgId, incrementValue) {
+    createCurrentTax(entityId, tax) {
         try {
-            const orgTax = this.mapper.getCurrentOrgTax(orgId);
-
-            if (!orgTax) {
-                return this.mapper.createCurrentOrgTax(orgId, incrementValue);
-            }
-            else {
-                return this.mapper.incrementCurrentOrgTax(orgId, incrementValue);
-            }
+            return this.mapper.createCurrentTax(entityId, tax);
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    createCurrentUserTax(userId, tax) {
+    getCurrentTax(entityId) {
         try {
-            return this.mapper.createCurrentUserTax(userId, tax);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    createCurrentOrgTax(orgId, tax) {
-        try {
-            return this.mapper.createCurrentOrgTax(orgId, tax);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    getCurrentUserTax(userId) {
-        try {
-            return this.mapper.getCurrentUserTax(userId) || 0;
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    getCurrentOrgTax(orgId) {
-        try {
-            return this.mapper.getCurrentOrgTax(orgId) || 0;
+            return this.mapper.getCurrentTax(entityId) || 0;
         }
         catch (e) {
             throw new Error(e.message);
