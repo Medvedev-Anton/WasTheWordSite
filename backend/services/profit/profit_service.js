@@ -5,9 +5,9 @@ export class ProfitService extends ProfitServiceInterface {
         super(mapper);
     }
 
-    create(entityId, incomingSum, date) {
+    create(entityId, incomingSum) {
         try {
-            return this.mapper.insert(entityId, incomingSum, date);
+            return this.mapper.insert(entityId, incomingSum);
         }
         catch (e) {
             throw new Error(e.message);

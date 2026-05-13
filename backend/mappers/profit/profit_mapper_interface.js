@@ -9,10 +9,9 @@ export class ProfitMapperInterface {
      * Создает запись о доходе
      * @param {int} entityId
      * @param {int} incomingSum
-     * @param {string} date
      * @return {int}
      */
-    insert(entityId, incomingSum, date) {
+    insert(entityId, incomingSum) {
         throw new Error('insert должен быть переопределен в наследнике');
     }
 

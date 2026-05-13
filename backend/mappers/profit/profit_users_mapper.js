@@ -6,7 +6,7 @@ export class ProfitUsersMapper extends ProfitMapperInterface {
         super();
     }
 
-    insert(entityId, incomingSum, date) {
+    insert(entityId, incomingSum) {
         if (isNaN(parseInt(entityId))) {
             throw new Error('entityId должен быть числовым');
         }
@@ -24,9 +24,9 @@ export class ProfitUsersMapper extends ProfitMapperInterface {
         }
 
         const result = db.prepare(`
-            INSERT INTO users_profit (userId, incomingSum, date)
-            VALUES (?, ?, ?)    
-        `).run(entityId, incomingSum, date);
+            INSERT INTO users_profit (userId, incomingSum)
+            VALUES (?, ?)    
+        `).run(entityId, incomingSum);
 
         return result.lastInsertRowid;
     }

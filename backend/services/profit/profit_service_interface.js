@@ -16,10 +16,9 @@ export class ProfitServiceInterface {
      * Создает запись о доходе
      * @param {int} entityId
      * @param {int} incomingSum
-     * @param {string} date
      * @return {int}
      */
-    create(entityId, incomingSum, date) {
+    create(entityId, incomingSum) {
         throw new Error('create должен быть переопределен в наследнике');
     }
 

@@ -723,7 +723,7 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       orgId INTEGER NOT NULL,
       incomingSum INTEGER NOT NULL,
-      date DATE NOT NULL,
+      date DATE DEFAULT CURRENT_DATE NOT NULL,
       FOREIGN KEY (orgId) REFERENCES organizations(id)
     )
   `);
@@ -734,7 +734,7 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       userId INTEGER NOT NULL,
       incomingSum INTEGER NOT NULL,
-      date DATE NOT NULL,
+      date DATE DEFAULT CURRENT_DATE NOT NULL,
       FOREIGN KEY (userId) REFERENCES users(id)
     )
   `);
