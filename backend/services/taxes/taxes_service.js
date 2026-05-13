@@ -24,6 +24,10 @@ export class TaxesService extends TaxesServiceInterface {
     }
 
     calcTaxByIncome(income, taxPercent) {
+        if (taxPercent === 0) {
+            return 0;
+        }
+
         return income / 100 * taxPercent;
     }
 
