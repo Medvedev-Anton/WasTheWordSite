@@ -96,4 +96,13 @@ export class TaxesServiceInterface {
     getCurrentUserTax(userId) {
         throw new Error('getCurrentUserTax должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает текущее значение налога организации
+     * @param {int} orgId
+     * @return {int}
+     */
+    getCurrentOrgTax(orgId) {
+        throw new Error('getCurrentOrgTax должен быть переопределен в наследнике');
+    }
 }

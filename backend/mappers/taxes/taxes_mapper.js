@@ -142,4 +142,25 @@ export class TaxesMapper extends TaxesMapperInterface {
 
         return result.tax || 0;
     }
+
+    getCurrentOrgTax(orgId) {
+        if (isNaN(parseInt(orgId))) {
+            throw new Error('orgId должен быть числовым');
+        }
+
+        if (orgId < 0) {
+            throw new Error('orgId должен быть больше нуля');
+        }
+
+        const result = db.prepare(`
+            SELECT
+                tax
+            FROM
+                orgs_tax
+            WHERE
+                orgId = ?
+        `).get(orgId);
+
+        return result.tax || 0;
+    }
 }
