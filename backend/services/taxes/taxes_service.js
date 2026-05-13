@@ -71,4 +71,13 @@ export class TaxesService extends TaxesServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    createCurrentOrgTax(orgId, tax) {
+        try {
+            return this.mapper.createCurrentOrgTax(orgId, tax);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

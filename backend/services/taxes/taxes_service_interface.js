@@ -78,4 +78,13 @@ export class TaxesServiceInterface {
     createCurrentUserTax(userId, tax) {
         throw new Error('createCurrentUserTax должен быть переопределен в наследнике');
     }
+
+    /**
+     * Создает запись о сумме налога организации
+     * @param {int} orgId
+     * @param {int} tax
+     */
+    createCurrentOrgTax(orgId, tax) {
+        throw new Error('createCurrentOrgTax должен быть переопределен в наследнике');
+    }
 }

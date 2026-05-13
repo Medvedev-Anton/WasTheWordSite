@@ -98,4 +98,27 @@ export class TaxesMapper extends TaxesMapperInterface {
             VALUES (?, ?)    
         `).run(userId, tax);
     }
+
+    createCurrentOrgTax(orgId, tax) {
+        if (isNaN(parseInt(orgId))) {
+            throw new Error('orgId должен быть числовым');
+        }
+
+        if (orgId < 0) {
+            throw new Error('orgId должен быть больше нуля');
+        }
+
+        if (isNaN(parseInt(tax))) {
+            throw new Error('tax должен быть числовым');
+        }
+
+        if (tax < 0) {
+            throw new Error('tax должен быть больше нуля');
+        }
+
+        db.prepare(`
+            INSERT INTO orgs_tax (orgId, tax)
+            VALUES (?, ?)    
+        `).run(orgId, tax);
+    }
 }
