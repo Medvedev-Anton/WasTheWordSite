@@ -6,7 +6,7 @@ export class TaxesMapper extends TaxesMapperInterface {
         super();
     }
 
-    getTaxByName(name) {
+    getTaxPercentByName(name) {
         const result = db.prepare(`
             SELECT
                 value
@@ -19,7 +19,7 @@ export class TaxesMapper extends TaxesMapperInterface {
         return result.value || 0;
     }
 
-    updateTaxByName(name, newTax) {
+    updateTaxPercentByName(name, newTax) {
         if (isNaN(parseInt(newTax))) {
             throw new Error('newTax должен быть числовым');
         }

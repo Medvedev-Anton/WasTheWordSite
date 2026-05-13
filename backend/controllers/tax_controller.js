@@ -9,9 +9,9 @@ export class TaxController extends MainController {
     /**
      * Обработчик получения налогов пользователей
      */
-    getUsersTax() {
+    getUsersTaxPercent() {
         try {
-            const tax = TaxesFacade.getUsersTax();
+            const tax = TaxesFacade.getUsersTaxPercent();
 
             this.send(200, {
                 tax: tax
@@ -28,9 +28,9 @@ export class TaxController extends MainController {
     /**
      * Обработчик получения налогов организаций
      */
-    getOrgsTax() {
+    getOrgsTaxPercent() {
         try {
-            const tax = TaxesFacade.getOrgsTax();
+            const tax = TaxesFacade.getOrgsTaxPercent();
 
             this.send(200, {
                 tax: tax
@@ -47,7 +47,7 @@ export class TaxController extends MainController {
     /**
      * Обработчик обновления налогов пользователей
      */
-    updateUsersTax() {
+    updateUsersTaxPercent() {
         const validate = this.has([
             'newTax'
         ]);
@@ -58,7 +58,7 @@ export class TaxController extends MainController {
 
         try {
             const newTax = parseInt(this.request.body.newTax);
-            TaxesFacade.updateUsersTax(newTax);
+            TaxesFacade.updateUsersTaxPercent(newTax);
 
             this.send(200, {
                 message: 'Update success'
@@ -75,7 +75,7 @@ export class TaxController extends MainController {
     /**
      * Обработчик обновления налогов организаций
      */
-    updateOrgsTax() {
+    updateOrgsTaxPercent() {
         const validate = this.has([
             'newTax'
         ]);
@@ -86,7 +86,7 @@ export class TaxController extends MainController {
 
         try {
             const newTax = parseInt(this.request.body.newTax);
-            TaxesFacade.updateOrgsTax(newTax);
+            TaxesFacade.updateOrgsTaxPercent(newTax);
 
             this.send(200, {
                 message: 'Update success'

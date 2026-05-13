@@ -5,36 +5,36 @@ export class TaxesService extends TaxesServiceInterface {
         super(mapper);
     }
 
-    getUsersTax() {
+    getUsersTaxPercent() {
         try {
-            return this.mapper.getTaxByName('user');
+            return this.mapper.getTaxPercentByName('user');
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    getOrgsTax() {
+    getOrgsTaxPercent() {
         try {
-            return this.mapper.getTaxByName('org');
+            return this.mapper.getTaxPercentByName('org');
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    updateUsersTax(newTax) {
+    updateUsersTaxPercent(newTax) {
         try {
-            return this.mapper.updateTaxByName('user', newTax);
+            return this.mapper.updateTaxPercentByName('user', newTax);
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    updateOrgsTax(newTax) {
+    updateOrgsTaxPercent(newTax) {
         try {
-            return this.mapper.updateTaxByName('org', newTax);
+            return this.mapper.updateTaxPercentByName('org', newTax);
         }
         catch (e) {
             throw new Error(e.message);

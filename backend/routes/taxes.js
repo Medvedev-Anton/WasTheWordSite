@@ -7,25 +7,25 @@ const router = express.Router();
 // Получение налога пользователей
 router.get('/users', authenticateToken, (req, res) => {
     const controller = new TaxController(req, res);
-    controller.getUsersTax();
+    controller.getUsersTaxPercent();
 });
 
 // Получение налога организаций
 router.get('/orgs', authenticateToken, (req, res) => {
     const controller = new TaxController(req, res);
-    controller.getOrgsTax();
+    controller.getOrgsTaxPercent();
 });
 
 // Обновление налога пользователей
 router.post('/users', authenticateToken, (req, res) => {
     const controller = new TaxController(req, res);
-    controller.updateUsersTax();
+    controller.updateUsersTaxPercent();
 });
 
 // Обновление налога организаций
 router.post('/orgs', authenticateToken, (req, res) => {
     const controller = new TaxController(req, res);
-    controller.updateOrgsTax();
+    controller.updateOrgsTaxPercent();
 });
 
 export default router;

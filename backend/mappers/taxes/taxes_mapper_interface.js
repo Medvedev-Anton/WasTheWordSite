@@ -9,8 +9,8 @@ export class TaxesMapperInterface {
      * Получает налог для пользователей
      * @param {string} name
      */
-    getTaxByName(name) {
-        throw new Error('getTaxByName должен быть переопределен в наследнике');
+    getTaxPercentByName(name) {
+        throw new Error('getTaxPercentByName должен быть переопределен в наследнике');
     }
 
     /**
@@ -18,7 +18,7 @@ export class TaxesMapperInterface {
      * @param {string} name
      * @param {int} newTax
      */
-    updateTaxByName(name, newTax) {
-        throw new Error('updateTaxByName должен быть переопределен в наследнике');
+    updateTaxPercentByName(name, newTax) {
+        throw new Error('updateTaxPercentByName должен быть переопределен в наследнике');
     }
 }

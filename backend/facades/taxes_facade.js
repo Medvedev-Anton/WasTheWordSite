@@ -11,9 +11,9 @@ export class TaxesFacade {
     /**
      * Получить налог для пользователей
      */
-    getUsersTax() {
+    getUsersTaxPercent() {
         try {
-            return this.getService().getUsersTax();
+            return this.getService().getUsersTaxPercent();
         }
         catch (e) {
             throw new Error(e.message);
@@ -23,9 +23,9 @@ export class TaxesFacade {
     /**
      * Получить налог для организаций
      */
-    getOrgsTax() {
+    getOrgsTaxPercent() {
         try {
-            return this.getService().getOrgsTax();
+            return this.getService().getOrgsTaxPercent();
         }
         catch (e) {
             throw new Error(e.message);
@@ -36,9 +36,9 @@ export class TaxesFacade {
      * Обновляет налог пользователей
      * @param {int} newTax 
      */
-    updateUsersTax(newTax) {
+    updateUsersTaxPercent(newTax) {
         try {
-            return this.getService().updateUsersTax(newTax);
+            return this.getService().updateUsersTaxPercent(newTax);
         }
         catch (e) {
             throw new Error(e.message);
@@ -49,9 +49,9 @@ export class TaxesFacade {
      * Обновляет налог организаций
      * @param {int} newTax
      */
-    updateOrgsTax(newTax) {
+    updateOrgsTaxPercent(newTax) {
         try {
-            return this.getService().updateOrgsTax(newTax);
+            return this.getService().updateOrgsTaxPercent(newTax);
         }
         catch (e) {
             throw new Error(e.message);
