@@ -7,6 +7,7 @@ import { TaxesUsersMapper } from "../mappers/taxes/taxes_users_mapper.js";
 import { BalanceService } from "../services/balance/balance_service.js";
 import { ProfitService } from "../services/profit/profit_service.js";
 import { TaxesService } from "../services/taxes/taxes_service.js";
+import { db } from "../../database/init.js";
 
 export class ProfitFacade {
     constructor(entity) {
@@ -83,19 +84,28 @@ export class ProfitFacade {
      * @param {int} incomingSum
      */
     processWithTax(entityId, incomingSum) {
-        try {
-            this.balanceService.increment(entityId, incomingSum);
-            this.profitService.create(entityId, incomingSum);
+        const transation = db.transation(() => {
+            try {
+                this.balanceService.increment(entityId, incomingSum);
+                this.profitService.create(entityId, incomingSum);
 
-            const taxPercent = this.taxService.getTaxPercent();
-            const taxValue = this.taxService.calcTaxByIncome(incomingSum, taxPercent);
+                const taxPercent = this.taxService.getTaxPercent();
+                const taxValue = this.taxService.calcTaxByIncome(incomingSum, taxPercent);
 
-            if (taxValue !== 0) {
-                this.taxService.incrementOrCreateCurrentTax(entityId, taxValue);
+                if (taxValue !== 0) {
+                    this.taxService.incrementOrCreateCurrentTax(entityId, taxValue);
+                }
             }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transation();
         }
         catch (e) {
-            throw new Error(e.message);
+            throw new Error('ошибка выполнения транзакции по обработке поступления: ' + e);
         }
     }
 }
