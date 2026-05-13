@@ -29,7 +29,8 @@ export async function initDatabase() {
       role TEXT NOT NULL DEFAULT 'user',
       isBanned INTEGER DEFAULT 0,
       allowMessagesFrom TEXT DEFAULT 'everyone',
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      balance BIGINT DEFAULT 0
     )
   `);
 
@@ -124,6 +125,7 @@ export async function initDatabase() {
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       longitude DECIMAL(9, 8) NULL,
       latitude DECIMAL(9, 8) NULL,
+      balance BIGINT DEFAULT 0,
       FOREIGN KEY (adminId) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (parentId) REFERENCES organizations(id) ON DELETE CASCADE
     )
@@ -139,6 +141,7 @@ export async function initDatabase() {
   const hasLongitude = orgTableInfo.some(col => col.name === 'longitude');
   const hasLatitude = orgTableInfo.some(col => col.name === 'latitude');
   const hasCoverImage = orgTableInfo.some(col => col.name === 'coverImage');
+  const hasOrgBalance = orgTableInfo.some(col => col.name === 'balance');
 
   if (!hasDefaultCanPost) {
     try {
@@ -196,6 +199,13 @@ export async function initDatabase() {
       db.exec(`ALTER TABLE organizations ADD COLUMN coverImage TEXT`);
     } catch (e) {
       console.error('Error adding coverImage column:', e.message);
+    }
+  }
+  if (!hasOrgBalance) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN balance BIGINT DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding balance column:', e.message);
     }
   }
 
