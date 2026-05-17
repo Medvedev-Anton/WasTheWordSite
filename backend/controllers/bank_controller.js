@@ -174,6 +174,10 @@ export class BankController extends MainController {
         try {
             const bankId = parseInt(this.request.params.bankId);
             const borrowers = LoansFacade.entity('users').getAllBorrowersByCreditor(bankId);
+        
+            return this.send(200, {
+                borrowers: borrowers
+            });
         }
         catch (e) {
             console.error('Get users borrowers error:', e.message);
@@ -198,6 +202,10 @@ export class BankController extends MainController {
         try {
             const bankId = parseInt(this.request.params.bankId);
             const borrowers = LoansFacade.entity('orgs').getAllBorrowersByCreditor(bankId);
+
+            return this.send(200, {
+                borrowers: borrowers
+            });
         }
         catch (e) {
             console.error('Get orgs borrowers error:', e.message);
