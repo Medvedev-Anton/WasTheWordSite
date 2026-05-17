@@ -43,7 +43,7 @@ export class ProfitFacade {
     }
 
     static entity(entity) {
-        return new self(entity);
+        return new this(entity);
     }
     
     /**

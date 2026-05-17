@@ -20,7 +20,7 @@ export class TaxesFacade {
     }
 
     static entity(entity) {
-        return new self(entity);
+        return new this(entity);
     }
 
     /**
