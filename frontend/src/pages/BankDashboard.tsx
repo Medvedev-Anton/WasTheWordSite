@@ -4,6 +4,12 @@ import { useParams } from 'react-router-dom';
 import { Organization } from '../types';
 import axios from 'axios';
 
+interface Borrower {
+    borrowerId: number,
+    name: string,
+    percent: number
+}
+
 export default function BankDashboard() {
     const { id } = useParams();
     const [org, setOrg] = useState<Organization | null>(null);
@@ -14,6 +20,8 @@ export default function BankDashboard() {
     const [loanUsersPercent, setLoanUsersPercent] = useState<number>(0);
     const [loanUsersDuring, setLoanUsersDuring] = useState<number>(0);
 
+    const [orgsBorrowers, setOrgsBorrowers] = useState<Borrower[]>([]);
+    const [usersBorrowers, setUsersBorrowers] = useState<Borrower[]>([]);
 
     useEffect(() => {
         if (id !== undefined) {
@@ -21,14 +29,18 @@ export default function BankDashboard() {
 
             fetchOrg(ID);
             fetchBankParams(ID);
+            fetchOrgsBorrowers(ID);
+            fetchUsersBorrowers(ID);
         }
     }, [id]);
 
+    // Устанавливает данные организации
     const fetchOrg = async (id: number) => {
         const orgData = await axios.get(`/api/organizations/${id}`);
         setOrg(orgData.data);
     }
 
+    // Устанавливает кредитные параметры панка
     const fetchBankParams = async(id: number) => {
         const paramsResult = await axios.get(`/api/banks/${id}/params`);
         const params = paramsResult.data.params;
@@ -44,6 +56,21 @@ export default function BankDashboard() {
         setLoanUsersDuring(usersDuring);
     }
 
+    // Устанавливает список заемщиков-организаций
+    const fetchOrgsBorrowers = async(id: number) => {
+        const result = await axios.get(`/api/banks/${id}/borrowers/orgs`);
+        const borrowers = result.data.borrowers;
+        setOrgsBorrowers(borrowers);
+    }
+
+    // Устанавливает список заемщиков-пользователей
+    const fetchUsersBorrowers = async(id: number) => {
+        const result = await axios.get(`/api/banks/${id}/borrowers/users`);
+        const borrowers = result.data.borrowers;
+        setUsersBorrowers(borrowers);
+    }
+
+    // Обновляет параметры банков в БД
     const fetchUpdateOrgsPercent = (percent: number) => {
         axios.post(`/api/banks/${id}/params/orgs-loan-percent`, {
             newPercent: percent
@@ -65,6 +92,7 @@ export default function BankDashboard() {
         });
     }
 
+    // Обработка изменения инпутов параметров
     const handleOrgsPercentChange = (e: any) => {
         const value = e.target.value;
 
@@ -176,6 +204,52 @@ export default function BankDashboard() {
                             onBlur={handleUsersDuringUpdate}
                         />
                     </div>
+                </div>
+            </div>
+            <div className="borrowers-wrapper">
+                <div className="borrowers-orgs borrowers-list">
+                    <h2>Организации взявшие кредит</h2>
+
+                    {
+                        orgsBorrowers.map(borrower => {
+                            return (
+                                <div className="borrower-elem" key={borrower.borrowerId}>
+                                    <span className="borrower-name">
+                                        {borrower.name}
+                                    </span>
+                                    <input 
+                                        type="number"
+                                        readOnly
+                                        value={Math.round(borrower.percent)}
+                                        step="any" 
+                                        className="orgLoanPaymentPercent"
+                                    />
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+                <div className="borrowers-users borrowers-list">
+                    <h2>Пользователи взявшие кредит</h2>
+
+                    {
+                        usersBorrowers.map(borrower => {
+                            return (
+                                <div className="borrower-elem" key={borrower.borrowerId}>
+                                    <span className="borrower-name">
+                                        {borrower.name}
+                                    </span>
+                                    <input 
+                                        type="number"
+                                        readOnly
+                                        value={Math.round(borrower.percent)}
+                                        step="any" 
+                                        className="orgLoanPaymentPercent"
+                                    />
+                                </div>
+                            )
+                        })
+                    }
                 </div>
             </div>
         </div>

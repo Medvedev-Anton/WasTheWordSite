@@ -14,10 +14,34 @@ h1 {
     gap: 30px;
 }
 
-.loan-param input {
+input[type="number"] {
     width: 100%;
     text-align: center;
     margin-top: 15px;
     height: 30px;
     font-size: 16px;
+}
+
+.borrowers-list {
+    margin-top: 40px;
+}
+
+.borrowers-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.borrower-elem {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.borrower-name {
+    width: 100%;
+}
+
+.orgLoanPaymentPercent {
+    width: unset !important;
+    margin-top: 0 !important;
 }
