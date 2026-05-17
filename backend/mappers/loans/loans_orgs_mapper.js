@@ -18,7 +18,8 @@ export class LoansOrgsMapper extends LoansMapperInterface {
         const result = db.prepare(`
             SELECT
                 l.borrowerId,
-                o.name
+                o.name,
+                percent = l.currentSum * 100 / l.startSum
             FROM 
                 orgs_loans l
             JOIN
