@@ -77,7 +77,7 @@ router.get('/:bankId/borrowers/users', authenticateToken, (req, res) => {
 });
 
 // Получение всех заемщиков-организаций банка
-router.get('/:bankId/borrowers/users', authenticateToken, (req, res) => {
+router.get('/:bankId/borrowers/orgs', authenticateToken, (req, res) => {
     try {
         const controller = new BankController(req, res);
         controller.getOrgsBorrowers();
