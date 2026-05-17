@@ -74,7 +74,7 @@ router.get('/:bankId/borrowers/users', authenticateToken, (req, res) => {
         console.error('Get bank users borrowers error:', error);
         res.status(500).json({ error: 'Server error' });
     }
-})
+});
 
 // Получение всех заемщиков-организаций банка
 router.get('/:bankId/borrowers/users', authenticateToken, (req, res) => {
@@ -86,6 +86,6 @@ router.get('/:bankId/borrowers/users', authenticateToken, (req, res) => {
         console.error('Get bank orgs borrowers error:', error);
         res.status(500).json({ error: 'Server error' });
     }
-})
+});
 
 export default router;
