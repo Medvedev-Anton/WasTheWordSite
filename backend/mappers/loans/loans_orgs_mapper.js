@@ -28,7 +28,7 @@ export class LoansOrgsMapper extends LoansMapperInterface {
                 o.id = l.borrowerId
             WHERE
                 l.creditorId = ?    
-        `).get(creditorId);
+        `).all(creditorId);
 
         return result;
     }
