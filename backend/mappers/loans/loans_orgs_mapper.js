@@ -19,7 +19,7 @@ export class LoansOrgsMapper extends LoansMapperInterface {
             SELECT
                 l.borrowerId,
                 o.name,
-                percent = l.currentSum * 100 / l.startSum
+                (l.currentSum * 100.0 / NULLIF(l.startSum, 0)) AS percent
             FROM 
                 orgs_loans l
             JOIN
