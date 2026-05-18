@@ -8,6 +8,9 @@ import { BalanceService } from "../services/balance/balance_service.js";
 import { ProfitService } from "../services/profit/profit_service.js";
 import { TaxesService } from "../services/taxes/taxes_service.js";
 import { db } from "../../database/init.js";
+import { UserTaxPercentMapper } from "../mappers/user_tax_percent/user_tax_percent_mapper.js";
+import { OrgTaxPercentAdapter } from "../adapters/org_tax_percent_adapter.js";
+import { OrgTaxPercentMapper } from "../mappers/org_tax_percent/org_tax_percent_mapper.js";
 
 export class ProfitFacade {
     constructor(entity) {
@@ -19,6 +22,8 @@ export class ProfitFacade {
             this.taxService = new TaxesService(
                 new TaxesUsersMapper()
             );
+
+            this.taxPercentMapper = new UserTaxPercentMapper();
 
             this.balanceService = new BalanceService(
                 new BalanceUsersMapper()
@@ -44,6 +49,13 @@ export class ProfitFacade {
 
     static entity(entity) {
         return new this(entity);
+    }
+
+    static orgType(orgType) {
+        this.taxPercentMapper = new OrgTaxPercentAdapterercentAdapter(
+            new OrgTaxPercentMapper(),
+            orgType
+        );
     }
     
     /**
@@ -73,7 +85,7 @@ export class ProfitFacade {
                 this.balanceService.increment(entityId, incomingSum);
                 this.profitService.create(entityId, incomingSum);
 
-                const taxPercent = this.taxService.getTaxPercent();
+                const taxPercent = this.taxPercentMapper.getTaxPercent();
                 const taxValue = this.taxService.calcTaxByIncome(incomingSum, taxPercent);
 
                 if (taxValue !== 0) {
