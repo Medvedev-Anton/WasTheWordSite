@@ -764,5 +764,29 @@ router.put('/:id/members/:targetUserId/permissions', authenticateToken, (req, re
   }
 });
 
+// Get all orgs by author id
+router.get('/all-by-author/:authorId', authenticateToken, (req, res) => {
+  try {
+    const authorId = parseInt(req.params.authorId);
+    const orgs = db.prepare(`
+      SELECT
+        id,
+        name
+      FROM
+        organizations
+      WHERE 
+        author_id = ?  
+    `).all(authorId);
+
+    res.json({
+      orgs: orgs
+    });
+  }
+  catch (error) {
+    console.error('Get all user orgs error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 
