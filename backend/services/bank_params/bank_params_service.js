@@ -58,4 +58,17 @@ export class BankParamsService extends BankParamsServiceInterface {
             throw new Error(e);
         }
     }
+
+    calcUserLoanForecast(loanValue) {
+        try {
+            const loanParams = this.getBankParams();
+            const percent = parseInt(loanParams.loan_percent_users);
+            const during = parseInt(loanParams.loan_during_days_users);
+
+            
+        }
+        catch (e) {
+            throw new Error(e);
+        }
+    }
 }

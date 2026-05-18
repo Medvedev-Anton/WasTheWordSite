@@ -69,4 +69,13 @@ export class BankParamsServiceInterface {
     updateOrgDuring(bankId, newDuringDays) {
         throw new Error('updateOrgDuring должен быть переопределен в наследнике');
     }
+
+    /**
+     * Высчитывает прогноз кредита для пользователя
+     * @param {int} loanValue
+     * @return
+     */
+    calcUserLoanForecast(loanValue) {
+        throw new Error('calcLoanForecast должен быть переопределен в наследнике');
+    }
 }
