@@ -442,6 +442,11 @@ export default function Organizations() {
   );
 }
 
+interface UserOrg {
+  id: number,
+  name: string
+}
+
 function OrganizationDetail({
   organization,
   onBack,
@@ -481,6 +486,10 @@ function OrganizationDetail({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any | null>(null);
+  const [showLoanModal, setShowLoanModal] = useState(false);
+  const [currentUserOrgs, setCurrentUserOrgs] = useState<UserOrg[]>([]);
+  const [loanValue, setLoanValue] = useState<number>(0);
+  const [showCalcLoanResult, SetShowCalcLoanResult] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -711,6 +720,7 @@ function OrganizationDetail({
   const [longitude, setLongitude] = useState(organization.longitude);
   const [latitude, setLatitude] = useState(organization.latitude);
   const [creatingGroupChat, setCreatingGroupChat] = useState(false);
+  const [loanForRadio, setLoanForRadio] = useState('');
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -756,6 +766,28 @@ function OrganizationDetail({
         : organization.typeDefaultCoverUrl
           ? getMediaUrl(organization.typeDefaultCoverUrl)
           : '';
+
+  const fetchUserOrgs = async (userId: number) => {
+    return axios.get(`/api/organizations/all-by-author/${userId}`);
+  }
+
+  const handleChangeLoanForInput = async (e: any) => {
+    const value = e.target.value;
+
+    if (value === 'orgs' && user !== null) {
+      const result = await fetchUserOrgs(user.id);
+      const orgs = result.data.orgs;
+      setCurrentUserOrgs(orgs);
+    }
+
+    setLoanForRadio(value);
+  }
+
+  const handleChangeLoanValue = (e: any) => {
+    const value = e.target.value;
+
+    setLoanValue(value);
+  }
 
   return (
     <div className="organization-detail">
@@ -1034,12 +1066,35 @@ function OrganizationDetail({
                   💬 {creatingGroupChat ? 'Создание...' : 'Создать групповой чат'}
                 </button>
               ) : null}
-              <button
-                className="org-dashboard-btn"
-                onClick={() => navigate(`/banks/dashboard/${organization.id}`)}
-              >
-                Панель управления
-              </button>
+              {
+                isAdmin
+                ?
+                (
+                  <button
+                    className="org-dashboard-btn"
+                    onClick={() => navigate(`/banks/dashboard/${organization.id}`)}
+                  >
+                    Панель управления
+                  </button>
+                )
+                :
+                ""
+              }
+              {
+                (!isAdmin && organization.orgType === 'Банковская')
+                ?
+                (
+                  <button
+                    className="org-dashboard-btn"
+                    onClick={() => setShowLoanModal(true)}
+                  >
+                    Взять кредит
+                  </button>
+                )
+                :
+                ""
+              }
+              
               {!isMember && !organization.isPrivate && !isAdmin && (
                 <button onClick={handleJoin} className="join-btn">Вступить</button>
               )}
@@ -1449,6 +1504,127 @@ function OrganizationDetail({
           </div>
         </div>
       )}
+
+      {/* Get loan modal */}
+      {
+        showLoanModal && (
+        <div className="modal-overlay" onClick={() => setShowLoanModal(false)}>
+          <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="members-modal-header">
+              <h3>Взять кредит</h3>
+            </div>
+            <div className="members-modal-body loan-modal-body">
+              
+              <div className="loan-for-wrapper">
+                <strong>Для кого?</strong>
+
+                <div className="loan-for-labels">
+                  <label>
+                    <input 
+                      type="radio"
+                      name="loanFor" 
+                      value="orgs"
+                      checked={loanForRadio === 'orgs'}
+                      onChange={(e) => handleChangeLoanForInput(e)}
+                    />
+                    Для организации
+                  </label>
+
+                  <label>
+                    <input 
+                      type="radio"
+                      name="loanFor" 
+                      value="users"
+                      checked={loanForRadio === 'users'}
+                      onChange={(e) => handleChangeLoanForInput(e)}
+                    />
+                    Для себя
+                  </label>
+                </div>
+              </div>
+
+              {
+                loanForRadio === 'orgs'
+                ?
+                (
+                  <div className="loan-org-wrapper">
+                    <strong>Выберите организацию:</strong>
+                    <select 
+                      name="loanOrg" 
+                      id="loanOrg"
+                    >
+                      {
+                        currentUserOrgs.map(org => {
+                          return (
+                            <option key={org.id} value={org.id}>
+                              {org.name}
+                            </option>
+                          )
+                        })
+                      }
+                    </select>
+                  </div>
+                )
+                :
+                ""
+              }
+
+              <div className="loan-sum-wrapper">
+                <strong>Введите сумму:</strong>
+                <input 
+                  type="number" 
+                  step="any"
+                  name="loanValue"
+                  value={loanValue}
+                  onChange={(e) => handleChangeLoanValue(e)}
+                />
+              </div>
+
+              {
+                showCalcLoanResult
+                ?
+                (
+                  <div className="calc-loan-result">
+                    <div className="calc-loan-row">
+                      <span>
+                        Сумма для выплаты:
+                      </span>
+                      <span>
+                        123
+                      </span>
+                    </div>
+
+                    <div className="calc-loan-row">
+                      <span>
+                        Срок:
+                      </span>
+                      <span>
+                        123
+                      </span>
+                    </div>
+
+                    <div className="calc-loan-row">
+                      <span>
+                        Ежемесячный платеж:
+                      </span>
+                      <span>
+                        123
+                      </span>
+                    </div>
+                  </div>
+                )
+                :
+                ""
+              }
+
+              <button className="btn calc-loan-btn">
+                Рассчитать кредит
+              </button>
+              
+            </div>
+          </div>
+        </div>)
+      }
     </div>
   );
 }

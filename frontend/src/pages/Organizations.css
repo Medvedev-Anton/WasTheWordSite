@@ -1787,6 +1787,46 @@
   transition: opacity 0.2s;
 }
 
+.loan-modal-body {
+  padding: 25px;
+  flex-direction: column;
+  align-items: start;
+}
+
+.loan-for-labels {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+}
+
+.loan-org-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.loan-sum-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.loan-sum-wrapper input {
+  margin-top: 0 !important;
+}
+
+.calc-loan-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s;
+  margin-top: 30px;
+}
+
 @media (max-width: 640px) {
   .icon-grid {
     grid-template-columns: 1fr 1fr;
