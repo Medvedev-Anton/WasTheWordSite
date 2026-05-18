@@ -669,7 +669,7 @@ export async function initDatabase() {
 
   // Таблица налогов
   db.exec(`
-    CREATE TABLE IF NOT EXISTS taxes (
+    CREATE TABLE IF NOT EXISTS taxes_percent (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(255) NOT NULL,
       value INT NOT NULL
@@ -678,15 +678,14 @@ export async function initDatabase() {
 
   const defaultTaxes = [
     { name: "user", value: 0 },
-    { name: "org", value: 0 },
   ];
 
   defaultTaxes.forEach(tax => {
-    const taxSelect = db.prepare(`SELECT COUNT(*) as count FROM taxes WHERE name = ?`).get(tax.name);
+    const taxSelect = db.prepare(`SELECT COUNT(*) as count FROM taxes_percent WHERE name = ?`).get(tax.name);
 
     if (taxSelect.count === 0) {
       db.prepare(`
-        INSERT INTO taxes (name, value) 
+        INSERT INTO taxes_percent (name, value) 
         VALUES (?, ?)
       `).run(tax.name, tax.value);
     }
@@ -758,6 +757,36 @@ export async function initDatabase() {
       FOREIGN KEY (userId) REFERENCES users(id)
     )
   `);
+
+  // Таблица процентов налогов организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_tax_percent (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgType VARCHAR(255) NOT NULL,
+      percent FLOAT NOT NULL
+    )
+  `);
+
+  const defaultOrgsTaxPercents = [
+    { orgType: "Производственная", percent: 0 },
+    { orgType: "Коммерческая", percent: 0 },
+    { orgType: "Административная", percent: 0 },
+    { orgType: "Образовательная", percent: 0 },
+    { orgType: "Волонтёрская", percent: 0 },
+    { orgType: "Спортивная", percent: 0 },
+    { orgType: "Свободная", percent: 0 },
+  ];
+
+  defaultOrgsTaxPercents.forEach(row => {
+    const orgType = db.prepare(`SELECT COUNT(*) as count FROM orgs_tax_percent WHERE orgType = ?`).get(row.orgType);
+
+    if (orgType.count === 0) {
+      db.prepare(`
+        INSERT INTO orgs_tax_percent (orgType, percent) 
+        VALUES (?, ?)
+      `).run(row.orgType, row.percent);
+    }
+  });
   
   console.log('Database initialized successfully');
 }

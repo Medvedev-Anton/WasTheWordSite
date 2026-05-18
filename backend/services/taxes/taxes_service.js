@@ -5,24 +5,6 @@ export class TaxesService extends TaxesServiceInterface {
         super(mapper);
     }
 
-    getTaxPercent() {
-        try {
-            return this.mapper.getTaxPercent();
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    updateTaxPercent(newTax) {
-        try {
-            return this.mapper.updateTaxPercent(newTax);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
     calcTaxByIncome(income, taxPercent) {
         if (taxPercent === 0) {
             return 0;

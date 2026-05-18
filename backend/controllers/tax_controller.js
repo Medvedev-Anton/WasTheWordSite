@@ -1,4 +1,5 @@
-import { TaxesFacade } from "../facades/taxes_facade.js";
+import { OrgTaxPercentFacade } from "../facades/org_tax_percent_facade.js";
+import { UserTaxPercentFacade } from "../facades/user_tax_percent_facade.js";
 import { MainController } from "./main_controller.js";
 
 export class TaxController extends MainController {
@@ -11,7 +12,7 @@ export class TaxController extends MainController {
      */
     getUsersTaxPercent() {
         try {
-            const tax = TaxesFacade.entity('users').getTaxPercent();
+            const tax = UserTaxPercentFacade.getTaxPercent();
 
             this.send(200, {
                 tax: tax
@@ -29,8 +30,17 @@ export class TaxController extends MainController {
      * Обработчик получения налогов организаций
      */
     getOrgsTaxPercent() {
+        const validate = this.has([
+            'orgType'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
         try {
-            const tax = TaxesFacade.entity('orgs').getTaxPercent();
+            const orgType = this.request.params.orgType;
+            const tax = OrgTaxPercentFacade.getTaxPercent(orgType);
 
             this.send(200, {
                 tax: tax
@@ -57,8 +67,8 @@ export class TaxController extends MainController {
         }
 
         try {
-            const newTax = parseInt(this.request.body.newTax);
-            TaxesFacade.entity('users').updateTaxPercent(newTax);
+            const newTax = parseFloat(this.request.body.newTax);
+            UserTaxPercentFacade.updateTaxPercent(newTax);
 
             this.send(200, {
                 message: 'Update success'
@@ -77,6 +87,7 @@ export class TaxController extends MainController {
      */
     updateOrgsTaxPercent() {
         const validate = this.has([
+            'orgType',
             'newTax'
         ]);
 
@@ -85,8 +96,10 @@ export class TaxController extends MainController {
         }
 
         try {
-            const newTax = parseInt(this.request.body.newTax);
-            TaxesFacade.entity('orgs').updateTaxPercent(newTax);
+            const newTax = parseFloat(this.request.body.newTax);
+            const orgType = this.request.params.orgType;
+
+            OrgTaxPercentFacade.updateTaxPercent(orgType, newTax);
 
             this.send(200, {
                 message: 'Update success'

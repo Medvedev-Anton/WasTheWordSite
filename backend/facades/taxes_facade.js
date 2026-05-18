@@ -22,29 +22,4 @@ export class TaxesFacade {
     static entity(entity) {
         return new this(entity);
     }
-
-    /**
-     * Получить налог для пользователей
-     */
-    getTaxPercent() {
-        try {
-            return this.service.getTaxPercent();
-        }
-        catch (e) {
-            throw new Error(e.message);
-        } 
-    }
-
-    /**
-     * Обновляет налог пользователей
-     * @param {int} newTax 
-     */
-    updateTaxPercent(newTax) {
-        try {
-            return this.service.updateTaxPercent(newTax);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        } 
-    }
 }

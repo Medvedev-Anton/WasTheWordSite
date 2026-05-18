@@ -6,38 +6,6 @@ export class TaxesOrgsMapper extends TaxesMapperInterface {
         super();
     }
 
-    getTaxPercent() {
-        const result = db.prepare(`
-            SELECT
-                value
-            FROM
-                taxes
-            WHERE
-                name = 'org'
-        `);
-
-        return result.value || 0;
-    }
-
-    updateTaxPercent(newTax) {
-        if (isNaN(parseInt(newTax))) {
-            throw new Error('newTax должен быть числовым');
-        }
-
-        if (newTax < 0) {
-            throw new Error('newTax должен быть больше нуля');
-        }
-
-        const result = db.prepare(`
-            UPDATE
-                taxes
-            SET
-                value = ?
-            WHERE
-                name = 'org'
-        `).run(newTax);
-    }
-
     incrementCurrentTax(orgId, incrementValue) {
         if (isNaN(parseInt(orgId))) {
             throw new Error('orgId должен быть числовым');

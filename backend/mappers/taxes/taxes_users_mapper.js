@@ -6,38 +6,6 @@ export class TaxesUsersMapper extends TaxesMapperInterface {
         super();
     }
 
-    getTaxPercent() {
-        const result = db.prepare(`
-            SELECT
-                value
-            FROM
-                taxes
-            WHERE
-                name = user
-        `);
-
-        return result.value || 0;
-    }
-
-    updateTaxPercent(newTax) {
-        if (isNaN(parseInt(newTax))) {
-            throw new Error('newTax должен быть числовым');
-        }
-
-        if (newTax < 0) {
-            throw new Error('newTax должен быть больше нуля');
-        }
-
-        const result = db.prepare(`
-            UPDATE
-                taxes
-            SET
-                value = ?
-            WHERE
-                name = 'user'
-        `).run(newTax);
-    }
-
     incrementCurrentTax(userId, incrementValue) {
         if (isNaN(parseInt(userId))) {
             throw new Error('userId должен быть числовым');

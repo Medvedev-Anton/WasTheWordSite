@@ -6,22 +6,6 @@ export class TaxesMapperInterface {
     }
 
     /**
-     * Получает процент налога
-     * @return {int}
-     */
-    getTaxPercent() {
-        throw new Error('getTaxPercent должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет процент налога сущности
-     * @param {int} newTax
-     */
-    updateTaxPercent(newTax) {
-        throw new Error('updateTaxPercent должен быть переопределен в наследнике');
-    }
-
-    /**
      * Увеличивает текущую сумму налога
      * @param {int} entityId
      * @param {int} incrementValue
