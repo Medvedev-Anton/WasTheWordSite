@@ -775,7 +775,7 @@ router.get('/all-by-author/:authorId', authenticateToken, (req, res) => {
       FROM
         organizations
       WHERE 
-        author_id = ?  
+        adminId = ?  
     `).all(authorId);
 
     res.json({
