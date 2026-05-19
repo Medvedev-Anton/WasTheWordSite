@@ -8,10 +8,14 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password, firstName, lastName } = req.body;
+    const { username, email, password, firstName, lastName, gender } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'Username, email and password are required' });
+    }
+
+    if (gender != 'M' && gender != 'F') {
+      return res.status(400).json({ error: 'gender must be either male or female' });
     }
 
     // Check if user exists
@@ -25,9 +29,9 @@ router.post('/register', async (req, res) => {
 
     // Create user
     const result = db.prepare(`
-      INSERT INTO users (username, email, password, firstName, lastName, role, isBanned)
-      VALUES (?, ?, ?, ?, ?, 'user', 0)
-    `).run(username, email, hashedPassword, firstName || null, lastName || null);
+      INSERT INTO users (username, email, password, firstName, lastName, role, isBanned, gender)
+      VALUES (?, ?, ?, ?, ?, 'user', 0, ?)
+    `).run(username, email, hashedPassword, firstName || null, lastName || null, gender);
 
     const user = db.prepare('SELECT id, username, email, firstName, lastName, avatar, role, isBanned FROM users WHERE id = ?').get(result.lastInsertRowid);
 
@@ -93,7 +97,7 @@ router.get('/me', async (req, res) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned FROM users WHERE id = ?').get(decoded.userId);
+    const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, gender FROM users WHERE id = ?').get(decoded.userId);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });

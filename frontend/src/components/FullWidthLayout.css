@@ -1,11 +1,10 @@
-.main-content-map {
+.main-content-full-width {
     width: 100%;
-    margin-top: 30px;
     flex: 1;
     display: flex;
 }
 
-.layout-map {
+.layout-full-width {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -13,7 +12,7 @@
 
 
 @media (max-width: 770px) {
-    .main-content-map {
+    .main-content-full-width {
         margin-top: 0;
     }
 }
