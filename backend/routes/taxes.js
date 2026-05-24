@@ -10,10 +10,16 @@ router.get('/users', authenticateToken, (req, res) => {
     controller.getUsersTaxPercent();
 });
 
-// Получение налога организаций
+// Получение налога организации
 router.get('/orgs', authenticateToken, (req, res) => {
     const controller = new TaxController(req, res);
     controller.getOrgsTaxPercent();
+});
+
+// Получение всех налогов организаций
+router.get('/orgs/all', authenticateToken, (req, res) => {
+    const controller = new TaxController(req, res);
+    controller.getAllOrgsTaxesPercents();
 });
 
 // Обновление налога пользователей

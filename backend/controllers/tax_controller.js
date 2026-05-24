@@ -55,6 +55,25 @@ export class TaxController extends MainController {
     }
 
     /**
+     * Обработчик получения налогов всех организаций сразу
+     */
+    getAllOrgsTaxesPercents() {
+        try {
+            const taxes = OrgTaxPercentFacade.getAllTaxes();
+
+            this.send(200, {
+                taxes: taxes
+            });
+        }
+        catch (e) {
+            console.error('Get all orgs taxes error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
      * Обработчик обновления налогов пользователей
      */
     updateUsersTaxPercent() {
