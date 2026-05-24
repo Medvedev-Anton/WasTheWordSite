@@ -798,13 +798,17 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
   try {
     const orgs = db.prepare(`
       SELECT
+        id,
         name,
         balance
       FROM
         organizations
     `).all();
 
-    const orgsObj = Object.fromEntries(orgs.map(o => [o.name, o.balance]));
+    const orgsObj = Object.fromEntries(orgs.map(o => [o.name, {
+      id: o.id,
+      balance: o.balance
+    }]));
 
     res.json({
       orgs: orgsObj
