@@ -816,6 +816,39 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
   }
 });
 
+// Update org balance
+router.post('/:id/balance', authenticateToken, (req, res, next) => {
+  try {
+    const id = parseInt(this.request.params.id);
+    const newBalance = parseInt(this.request.body.newBalance);
+
+    if (isNaN(id)) {
+      next();
+    }
+
+    if (isNaN(newBalance)) {
+      next();
+    }
+
+    db.prepare(`
+      UPDATE
+        organizations
+      SET
+        balance = ?
+      WHERE
+        id = ?  
+    `).run(newBalance, id);
+
+    res.json({
+      message: 'Update success'
+    });
+  }
+  catch (error) {
+    console.error('Update org balance error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 export default router;
 
