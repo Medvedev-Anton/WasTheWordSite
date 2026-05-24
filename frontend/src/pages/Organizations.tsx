@@ -789,6 +789,21 @@ function OrganizationDetail({
     setLoanValue(value);
   }
 
+  const handleGoToDashboard = () => {
+    const orgId = organization.id;
+    const orgType = organization.orgType;
+
+    switch (orgType) {
+      case "Банковская":
+        navigate(`/banks/dashboard/${orgId}`);
+        break;
+
+      case "Правительственная":
+        navigate(`/government/dashboard/${orgId}`);
+        break;
+    }
+  }
+
   return (
     <div className="organization-detail">
       <button onClick={onBack} className="back-btn">← Назад</button>
@@ -1072,7 +1087,7 @@ function OrganizationDetail({
                 (
                   <button
                     className="org-dashboard-btn"
-                    onClick={() => navigate(`/banks/dashboard/${organization.id}`)}
+                    onClick={handleGoToDashboard}
                   >
                     Панель управления
                   </button>
