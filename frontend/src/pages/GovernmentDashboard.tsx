@@ -21,12 +21,31 @@ export default function GovernmentDashboard() {
     const [orgsCreationPrices, setOrgsCreationPrices] = useState<OrgFormValues>(() => {
         return Object.fromEntries(ROOT_ORG_TYPES.map(t => [t, 0])) as OrgFormValues
     });
+    const [orgsBalances, setOrgsBalances] = useState<Record<string, Record<any, any>>>({});
+    const [addingOrgBalance, setAddingOrgBalance] = useState<Record<string, Record<any, any>>>({});
+    const [postViewPrice, setPostViewPrice] = useState<number>(0);
 
     useEffect(() => {
         fetchUsersTax();
         fetchOrgTax();
         fetchAllOrgsCreationPrices();
+        fetchAllOrgsWithBalances();
+        fetchPostViewPrice();
     }, []);
+
+    useEffect(() => {
+        Object.entries(orgsBalances).map(([name, org]) => {
+            setAddingOrgBalance(prev => (
+                {
+                    ...prev,
+                    [name as string]: {
+                        id: org.id,
+                        adding: 0
+                    }
+                }
+            ));
+        });
+    }, [orgsBalances]);
 
     /* Налог пользователя */
 
@@ -55,6 +74,35 @@ export default function GovernmentDashboard() {
     const handleChangeUsersTax = (e: any) => {
         const newValue = e.target.value;
         setUsersTax(newValue);
+    }
+
+    /* Цена за просмотр поста */
+
+    // Получает значение цены за просмотр поста
+    const fetchPostViewPrice = async() => {
+        const result = await axios.get('/api/prices/post-view');
+        const price = result.data.price;
+        setPostViewPrice(price);
+    }
+
+    // Обрабатывает изменение цены за просмотр поста
+    const handleChangePostViewPrice = (e: any) => {
+        const newPrice = e.target.value;
+        setPostViewPrice(newPrice);
+    }
+
+    // Отправляет запрос на изменение цены за просмотр поста
+    const fetchUpdatePostViewPrice = (e: any) => {
+        let newPrice = e.target.value;
+
+        if (newPrice === '') {
+            newPrice = 0;
+            setPostViewPrice(0);
+        }
+
+        axios.post('/api/prices/post-view', {
+            newPrice: newPrice
+        });
     }
 
     /* Налоги организаций */
@@ -123,6 +171,86 @@ export default function GovernmentDashboard() {
         });
     }
 
+    /* Бюджеты организаций */
+    
+    // Получает список всех организаций с бюджетами
+    const fetchAllOrgsWithBalances = async() => {
+        const result = await axios.get('/api/organizations/all-with-balance');
+        const orgs = result.data.orgs;
+        setOrgsBalances(orgs);
+    }
+
+    // Обрабатывает изменение бюджета организации
+    const handleChangeOrgBalance = (e: any) => {
+        const newBalance = e.target.value;
+        const orgName = e.target.getAttribute('data-name');
+        const id = e.target.getAttribute('data-id');
+
+        setOrgsBalances(prev => (
+            {
+                ...prev,
+                [orgName as string]: {
+                    id: id,
+                    balance: newBalance
+                }
+            }
+        ));
+    } 
+
+    // Отправляет запрос на обновление бюджета организации
+    const fetchUpdateOrgBalance = (e: any) => {
+        let newBalance = e.target.value;
+        const orgName = e.target.getAttribute('data-name');
+        const id = e.target.getAttribute('data-id');
+
+        if (newBalance === '') {
+            newBalance = 0;
+                setOrgsBalances(prev => (
+                {
+                    ...prev,
+                    [orgName as string]: {
+                        id: id,
+                        balance: newBalance
+                    }
+                }
+            ));
+        }
+
+        axios.post(`/api/organizations/${id}/balance`, {
+            id: id,
+            newBalance: newBalance
+        });
+    }
+
+    // Обрабатывает изменение поля с добавлением к балансу организации
+    const handleChangeAddingToOrgBalance = (e: any) => {
+        const addingValue = e.target.value;
+        const name = e.target.getAttribute('data-name');
+        const id = e.target.getAttribute('data-id');
+
+        setAddingOrgBalance(prev => (
+            {
+                ...prev,
+                [name as string]: {
+                    id: id,
+                    adding: addingValue
+                }
+            }
+        ));
+    }
+
+    // Отправляет запрос на добавление суммы к текущему балансу организации
+    const fetchAddingToOrgBalance = (e: any) => {
+        const addingBalance = e.target.value;
+        const id = e.target.getAttribute('data-id');
+
+        axios.post(`/api/organizations/${id}/balance/adding`, {
+            addingBalance: addingBalance
+        });
+
+        fetchAllOrgsWithBalances();
+    }
+
     return (
         <div className="dashboard-wrapper" id="government-dashboard">
             <h1>
@@ -140,6 +268,90 @@ export default function GovernmentDashboard() {
                         onChange={handleChangeUsersTax}
                         onBlur={handleBlurUsersTax}
                     />
+                </div>
+
+                <div className="general-param">
+                    <p>
+                        Цена просмотра поста
+                    </p>
+                    <input 
+                        type="number" 
+                        value={postViewPrice}
+                        onChange={handleChangePostViewPrice}
+                        onBlur={fetchUpdatePostViewPrice}
+                    />
+                </div>
+            </div>
+
+            <div className="orgs-management">
+                <h2>
+                    Управление всеми организациями
+                </h2>
+                <div className="orgs-management-wrapper">
+                    <div className="gover-statistic">
+                        <h3>
+                            Правительственная организация
+                        </h3>
+                        <div className="gover-balance-diagram">
+
+                        </div>
+                    </div>
+                    <div className="created-orgs-wrapper">
+                        <h3>
+                            Созданные организации
+                        </h3>
+                        <div className="orgs-management-table">
+                            <div className="orgs-management-table-head">
+                                <div className="orgs-management-table-head-ceil orgs-management-table-ceil">
+                                    <span>
+                                        Название
+                                    </span>
+                                </div>
+                                <div className="orgs-management-table-head-ceil orgs-management-table-ceil">
+                                    <span>
+                                        Выделить на развитие
+                                    </span>
+                                </div>
+                                <div className="orgs-management-table-head-ceil orgs-management-table-ceil">
+                                    <span>
+                                        Бюджет организации
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="orgs-management-table-content">
+                                {
+                                    Object.entries(orgsBalances).map(([name, org]) => (
+                                            <div className="orgs-management-table-content-row" key={name}>
+                                                <div className="orgs-management-table-content-ceil orgs-management-table-ceil">
+                                                    <span>{name}</span>
+                                                </div>
+                                                <div className="orgs-management-table-content-ceil orgs-management-table-ceil">
+                                                    <input 
+                                                        type="number" 
+                                                        value={addingOrgBalance[name]?.adding ?? 0}
+                                                        data-name={name}
+                                                        data-id={org.id}
+                                                        onChange={handleChangeAddingToOrgBalance}
+                                                        onBlur={fetchAddingToOrgBalance}
+                                                    />
+                                                </div>
+                                                <div className="orgs-management-table-content-ceil orgs-management-table-ceil">
+                                                    <input 
+                                                        type="number" 
+                                                        value={org.balance}
+                                                        data-name={name}
+                                                        data-id={org.id}
+                                                        onChange={handleChangeOrgBalance}
+                                                        onBlur={fetchUpdateOrgBalance}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

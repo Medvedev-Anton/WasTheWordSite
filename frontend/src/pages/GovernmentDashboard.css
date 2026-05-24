@@ -5,6 +5,12 @@ input[type="number"] {
     font-size: 16px;
 }
 
+.general-params-wrapper {
+    display: flex;
+    gap: 50px;
+    margin-top: 30px;
+}
+
 #government-dashboard .general-params-wrapper input[type="number"] {
     max-width: 250px;
     margin-top: 15px;
@@ -39,6 +45,43 @@ input[type="number"] {
 }
 
 .resources-table-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.orgs-management {
+    margin-top: 30px;
+}
+
+.orgs-management h2, .orgs-management h3 {
+    text-align: center;
+}
+
+.orgs-management-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 30px;
+}
+
+.orgs-management-table {
+    margin-top: 25px;
+}
+
+.orgs-management-table-head, .orgs-management-table-content-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.orgs-management-table-ceil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orgs-management-table-content {
     margin-top: 25px;
     display: flex;
     flex-direction: column;
