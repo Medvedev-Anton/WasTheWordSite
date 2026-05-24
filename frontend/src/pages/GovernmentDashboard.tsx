@@ -108,7 +108,7 @@ export default function GovernmentDashboard() {
 
             <div className="resources-for-org-creation">
                 <h2>
-                    Ресурсы и предметы необходимые<br /> создания организаций
+                    Ресурсы и предметы необходимые<br /> для создания организаций
                 </h2>
                 <div className="resources-table">
                     <div className="resources-table-head">
