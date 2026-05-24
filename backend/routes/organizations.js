@@ -186,9 +186,14 @@ router.get('/covers', authenticateToken, (req, res) => {
 });
 
 // Get organization by ID
-router.get('/:id', authenticateToken, (req, res) => {
+router.get('/:id', authenticateToken, (req, res, next) => {
   try {
     const orgId = parseInt(req.params.id);
+
+    if (isNaN(orgId)) {
+      return next();
+    }
+
     const organization = db.prepare(`
       SELECT 
         o.*,
@@ -799,8 +804,10 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
         organizations
     `).all();
 
+    const orgsObj = Object.fromEntries(orgs.map(o => [o.name, o.balance]));
+
     res.json({
-      orgs: orgs
+      orgs: orgsObj
     });
   }
   catch (error) {
@@ -808,6 +815,7 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 export default router;
 
