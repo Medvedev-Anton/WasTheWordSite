@@ -855,6 +855,38 @@ router.post('/:id/balance', authenticateToken, (req, res, next) => {
   }
 });
 
+// Addings to org balance
+router.post('/:id/balance/adding', authenticateToken, (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    const addingBalance = parseInt(req.body.addingBalance);
+
+    if (isNaN(id)) {
+      next();
+    }
+
+    if (isNaN(addingBalance)) {
+      next();
+    }
+
+    db.prepare(`
+      UPDATE
+        organizations
+      SET
+        balance = balance + ?
+      WHERE
+        id = ?  
+    `).run(addingBalance, id);
+
+    res.json({
+      message: 'Update success'
+    });
+  }
+  catch (error) {
+    console.error('Addings to org balance error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 export default router;
 
