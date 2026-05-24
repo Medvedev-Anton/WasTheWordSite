@@ -14,7 +14,7 @@ h1 {
     gap: 30px;
 }
 
-input[type="number"] {
+#bank-dashboard input[type="number"] {
     width: 100%;
     text-align: center;
     margin-top: 15px;

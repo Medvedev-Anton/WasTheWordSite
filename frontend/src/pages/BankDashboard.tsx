@@ -158,7 +158,7 @@ export default function BankDashboard() {
     }
 
     return (
-        <div className="dashboard-wrapper">
+        <div className="dashboard-wrapper" id="bank-dashboard">
             <h1>Управление банком</h1>
             <div className="loan-params-wrapper">
                 <div className="loan-params-orgs loan-params-list">
