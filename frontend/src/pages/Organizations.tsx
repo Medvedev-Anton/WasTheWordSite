@@ -1094,22 +1094,7 @@ function OrganizationDetail({
                 )
                 :
                 ""
-              }
-              {
-                (!isAdmin && organization.orgType === 'Банковская')
-                ?
-                (
-                  <button
-                    className="org-dashboard-btn"
-                    onClick={() => setShowLoanModal(true)}
-                  >
-                    Взять кредит
-                  </button>
-                )
-                :
-                ""
-              }
-              
+              }              
               {!isMember && !organization.isPrivate && !isAdmin && (
                 <button onClick={handleJoin} className="join-btn">Вступить</button>
               )}
@@ -1119,6 +1104,23 @@ function OrganizationDetail({
             </div>
           </>
         )}
+      </div>
+
+      <div className="org-header get-loan-wrapper">
+        {
+          (!isAdmin && organization.orgType === 'Банковская')
+          ?
+          (
+            <button
+              className="get-loan-btn"
+              onClick={() => setShowLoanModal(true)}
+            >
+              Взять кредит
+            </button>
+          )
+          :
+          ""
+        }
       </div>
 
       {/* Sub-organizations section (visible inline, no tab) */}

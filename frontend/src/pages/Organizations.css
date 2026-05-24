@@ -1827,6 +1827,25 @@
   margin-top: 30px;
 }
 
+.get-loan-wrapper {
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.get-loan-btn {
+  width: 70%;
+  height: 100px;
+  border-radius: 10px;
+  color: #000;
+  font-size: 60px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: #ff7903;
+}
+
 @media (max-width: 640px) {
   .icon-grid {
     grid-template-columns: 1fr 1fr;
