@@ -11,7 +11,7 @@ export class PricesFacade {
     /**
      * Получает цену за просмотр поста
      */
-    getPostViewPrice() {
+    static getPostViewPrice() {
         try {
             return this.getService().getPostViewPrice();
         }
@@ -23,7 +23,7 @@ export class PricesFacade {
     /**
      * Обновляет цену за создание поста
      */
-    updatePostViewPrice(newPrice) {
+    static updatePostViewPrice(newPrice) {
         try {
             return this.getService().updatePostViewPrice(newPrice);
         }
