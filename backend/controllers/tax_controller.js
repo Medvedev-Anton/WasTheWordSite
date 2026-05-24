@@ -116,7 +116,7 @@ export class TaxController extends MainController {
 
         try {
             const newTax = parseFloat(this.request.body.newTax);
-            const orgType = this.request.params.orgType;
+            const orgType = this.request.body.orgType;
 
             OrgTaxPercentFacade.updateTaxPercent(orgType, newTax);
 
