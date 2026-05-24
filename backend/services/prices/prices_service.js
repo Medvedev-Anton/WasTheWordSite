@@ -1,6 +1,10 @@
 import { PricesMapperInterace } from "../../mappers/prices/prices_mapper_interface.js";
+import { PricesServiceInterface } from "./prices_service_interface.js";
 
-export class PricesService extends PricesMapperInterace {
+export class PricesService extends PricesServiceInterface {
+    /**
+     * @param {PricesMapperInterace} mapper 
+     */
     constructor(mapper) {
         super(mapper);
     }
