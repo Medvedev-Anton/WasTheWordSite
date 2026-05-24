@@ -788,5 +788,26 @@ router.get('/all-by-author/:authorId', authenticateToken, (req, res) => {
   }
 });
 
+// Get all orgs with balances
+router.get('/all-with-balance', authenticateToken, (req, res) => {
+  try {
+    const orgs = db.prepare(`
+      SELECT
+        name,
+        balance
+      FROM
+        organizations
+    `).all();
+
+    res.json({
+      orgs: orgs
+    });
+  }
+  catch (error) {
+    console.error('Get all orgs with balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 
