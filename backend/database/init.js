@@ -786,6 +786,36 @@ export async function initDatabase() {
       `).run(row.orgType, row.percent);
     }
   });
+
+  // Таблица цен создания организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_creation_prices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgType VARCHAR(255) NOT NULL,
+      price INT NOT NULL
+    )
+  `);
+
+  const defaultOrgsCreationPrices = [
+    { orgType: "Производственная", price: 0 },
+    { orgType: "Коммерческая", price: 0 },
+    { orgType: "Административная", price: 0 },
+    { orgType: "Образовательная", price: 0 },
+    { orgType: "Волонтёрская", price: 0 },
+    { orgType: "Спортивная", price: 0 },
+    { orgType: "Свободная", price: 0 },
+  ];
+
+  defaultOrgsCreationPrices.forEach(row => {
+    const orgType = db.prepare(`SELECT COUNT(*) as count FROM orgs_creation_prices WHERE orgType = ?`).get(row.orgType);
+
+    if (orgType.count === 0) {
+      db.prepare(`
+        INSERT INTO orgs_creation_prices (orgType, price) 
+        VALUES (?, ?)
+      `).run(row.orgType, row.price);
+    }
+  });
   
   console.log('Database initialized successfully');
 }
