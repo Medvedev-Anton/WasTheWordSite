@@ -12,9 +12,15 @@ export class OrgTaxPercentMapper extends OrgTaxPercentMapperInterface {
                 *
             FROM 
                 orgs_tax_percent
-        `);
+        `).all();
+        
+        const resultObj = {};
 
-        return result;
+        for (const row of result) {
+            resultObj[row.orgType] = row.percent;
+        }
+
+        return resultObj;
     }
 
     getTaxPercent(orgType) {

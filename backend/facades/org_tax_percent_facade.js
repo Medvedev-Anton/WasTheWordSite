@@ -15,7 +15,7 @@ export class OrgTaxPercentFacade {
     /**
      * Получает налоги всех организаций
      */
-    getAllTaxes() {
+    static getAllTaxes() {
         try {
             return this.getService().getAllTaxes();
         }
