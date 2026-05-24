@@ -13,6 +13,7 @@ import rangsRouter from './routes/rangs.js';
 import banksRouter from './routes/banks.js';
 import taxesRouter from './routes/taxes.js';
 import pricesRouter from './routes/prices.js';
+import orgCreationPriceRouter from './routes/org-creation-price.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -57,6 +58,7 @@ app.use('/api/rangs', rangsRouter);
 app.use('/api/banks', banksRouter);
 app.use('/api/taxes', taxesRouter);
 app.use('/api/prices', pricesRouter);
+app.use('/api/orgs/creation-prices', orgCreationPriceRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
