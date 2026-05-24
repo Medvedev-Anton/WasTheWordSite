@@ -15,37 +15,26 @@ export default function GovernmentDashboard() {
     type OrgFormValues = Record<typeof ROOT_ORG_TYPES[number], 0>;
 
     const [usersTax, setUsersTax] = useState<number>(0);
-
-    // Налоги организаций
     const [orgsTaxes, setOrgsTaxes] = useState<OrgFormValues>(() => {
+        return Object.fromEntries(ROOT_ORG_TYPES.map(t => [t, 0])) as OrgFormValues
+    });
+    const [orgsCreationPrices, setOrgsCreationPrices] = useState<OrgFormValues>(() => {
         return Object.fromEntries(ROOT_ORG_TYPES.map(t => [t, 0])) as OrgFormValues
     });
 
     useEffect(() => {
         fetchUsersTax();
         fetchOrgTax();
+        fetchAllOrgsCreationPrices();
     }, []);
 
-    
+    /* Налог пользователя */
 
     // Получает значение налога пользователей
     const fetchUsersTax = async () => {
         const result = await axios.get('/api/taxes/users');
         const tax = result.data.tax;
         setUsersTax(tax);
-    }
-
-    // Получает значение налога организации
-    const fetchOrgTax = async() => {
-        const result = await axios.get('/api/taxes/orgs/all');
-        const taxes = result.data.taxes;
-        setOrgsTaxes(taxes);
-    }
-
-    // Обрабатывает изменение ввода налога пользователя
-    const handleChangeUsersTax = (e: any) => {
-        const newValue = e.target.value;
-        setUsersTax(newValue);
     }
 
     // Отправляет запрос на обновление налога пользователя
@@ -60,6 +49,21 @@ export default function GovernmentDashboard() {
         axios.post('/api/taxes/users', {
             newTax: newValue
         });
+    }
+
+    // Обрабатывает изменение ввода налога пользователя
+    const handleChangeUsersTax = (e: any) => {
+        const newValue = e.target.value;
+        setUsersTax(newValue);
+    }
+
+    /* Налоги организаций */
+
+    // Получает значение налогов всех организаций
+    const fetchOrgTax = async() => {
+        const result = await axios.get('/api/taxes/orgs/all');
+        const taxes = result.data.taxes;
+        setOrgsTaxes(taxes);
     }
 
     // Обрабатывает изменение ввода налога организации
@@ -83,6 +87,39 @@ export default function GovernmentDashboard() {
         axios.post('/api/taxes/orgs', {
             orgType: orgType,
             newTax: newTax
+        });
+    }
+
+    /* Цены создания организаций */
+
+    // Получает цены создания всех организаций
+    const fetchAllOrgsCreationPrices = async() => {
+        const result = await axios.get('/api/orgs/creation-prices/all');
+        const prices = result.data.prices;
+        setOrgsCreationPrices(prices);
+    } 
+
+    // Обрабатывает изменение цены создания организации
+    const handleChangeOrgCreationPrice = (e: any) => {
+        const orgType = e.target.getAttribute('data-type');
+        const newPrice = e.target.value;
+
+        setOrgsCreationPrices(prev => ({ ...prev, [orgType as keyof OrgFormValues]: newPrice }));
+    }
+
+    // Отправляет запрос на обновление цены создания организации
+    const fetchBlurOrgCreationPrice = (e: any) => {
+        const orgType = e.target.getAttribute('data-type');
+        let newPrice = e.target.value;
+
+        if (newPrice === '') {
+            newPrice = 0;
+            setOrgsCreationPrices(prev => ({ ...prev, [orgType as keyof OrgFormValues]: newPrice }));
+        }
+
+        axios.post('/api/orgs/creation-prices', {
+            orgType: orgType,
+            newPrice: newPrice
         });
     }
 
@@ -143,6 +180,9 @@ export default function GovernmentDashboard() {
                                             <input 
                                                 type="number"
                                                 data-type={type} 
+                                                value={orgsCreationPrices[type]}
+                                                onChange={handleChangeOrgCreationPrice}
+                                                onBlur={fetchBlurOrgCreationPrice}
                                             />
                                         </div>
                                         <div className="resources-table-content-ceil resources-table-ceil">
