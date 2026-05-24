@@ -13,6 +13,18 @@ export class OrgTaxPercentFacade {
     }
 
     /**
+     * Получает налоги всех организаций
+     */
+    getAllTaxes() {
+        try {
+            return this.getService().getAllTaxes();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Получает процент налога для типа организации
      * @param {string} orgType
      * @return {number}

@@ -6,6 +6,17 @@ export class OrgTaxPercentMapper extends OrgTaxPercentMapperInterface {
         super();
     }
 
+    getAllTaxes() {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM 
+                orgs_tax_percent
+        `);
+
+        return result;
+    }
+
     getTaxPercent(orgType) {
         const result = db.prepare(`
             SELECT

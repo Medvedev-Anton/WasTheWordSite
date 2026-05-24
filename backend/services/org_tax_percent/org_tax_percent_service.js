@@ -5,6 +5,15 @@ export class OrgTaxPercentService extends OrgTaxPercentServiceInterface {
         super(mapper);
     }
 
+    getAllTaxes() {
+        try {
+            return this.mapper.getAllTaxes();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     getTaxPercent(orgType) {
         try {
             return this.mapper.getTaxPercent(orgType);

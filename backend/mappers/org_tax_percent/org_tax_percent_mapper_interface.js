@@ -6,6 +6,13 @@ export class OrgTaxPercentMapperInterface {
     }
 
     /**
+     * Получает налоги всех организаций
+     */
+    getAllTaxes() {
+        throw new Error('getAllTaxes должен быть переопределен в наследнике');
+    }
+
+    /**
      * Получает процент налога для типа организации
      * @param {string} orgType
      * @return {number}
