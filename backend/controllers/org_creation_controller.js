@@ -12,7 +12,7 @@ export class OrgCreationController extends MainController {
     getAllPrices() {
         try {
             const prices = OrgCreationFacade.getAllPrices();
-            this.send({
+            this.send(200, {
                 prices: prices
             });
         }

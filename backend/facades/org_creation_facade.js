@@ -11,7 +11,7 @@ export class OrgCreationFacade {
     /**
      * Возвращает цены создания всех организаций сразу
      */
-    getAllPrices() {
+    static getAllPrices() {
         try {
             return this.getService().getAllPrices();
         }
@@ -25,7 +25,7 @@ export class OrgCreationFacade {
      * @param {string} orgType
      * @return {number}
      */
-    getOrgPrice(orgType) {
+    static getOrgPrice(orgType) {
         try {
             return this.getService().getOrgPrice(orgType);
         }
@@ -39,7 +39,7 @@ export class OrgCreationFacade {
      * @param {string} orgType
      * @param {number} newPrice
      */
-    updateOrgPrice(orgType, newPrice) {
+    static updateOrgPrice(orgType, newPrice) {
         try {
             return this.getService().updateOrgPrice(orgType, newPrice)
         }
