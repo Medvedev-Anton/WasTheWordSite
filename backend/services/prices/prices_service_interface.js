@@ -20,23 +20,9 @@ export class PricesServiceInterface {
     }
 
     /**
-     * Получает цену за создание организации
-     */
-    getOrgCreatePrice() {
-        throw new Error('getOrgCreatePrice должен быть переопределен в наследнике');
-    }
-
-    /**
      * Обновляет цену за создание поста
      */
     updatePostViewPrice(newPrice) {
         throw new Error('updatePostViewPrice должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет цену за создание организации
-     */
-    updateOrgCreatePrice(newPrice) {
-        throw new Error('updateOrgCreatePrice должен быть переопределен в наследнике');
     }
 }

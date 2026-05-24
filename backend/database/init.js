@@ -702,7 +702,6 @@ export async function initDatabase() {
 
   const defaultPrices = [
     { name: "postView", value: 0 },
-    { name: "orgCreate", value: 0 },
   ];
 
   defaultPrices.forEach(price => {

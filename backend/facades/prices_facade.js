@@ -21,35 +21,11 @@ export class PricesFacade {
     }
 
     /**
-     * Получает цену за создание организации
-     */
-    getOrgCreatePrice() {
-        try {
-            return this.getService().getOrgCreatePrice();
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    /**
      * Обновляет цену за создание поста
      */
     updatePostViewPrice(newPrice) {
         try {
             return this.getService().updatePostViewPrice(newPrice);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    /**
-     * Обновляет цену за создание организации
-     */
-    updateOrgCreatePrice(newPrice) {
-        try {
-            return this.getService().updateOrgCreatePrice(newPrice);
         }
         catch (e) {
             throw new Error(e.message);
