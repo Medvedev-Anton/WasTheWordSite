@@ -803,6 +803,8 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
         balance
       FROM
         organizations
+      WHERE
+        orgType != 'Правительственная'
     `).all();
 
     const orgsObj = Object.fromEntries(orgs.map(o => [o.name, {
