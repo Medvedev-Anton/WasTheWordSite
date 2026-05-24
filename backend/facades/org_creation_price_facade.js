@@ -1,10 +1,10 @@
-import { OrgCreationMapper } from "../mappers/org_creation/org_creation_mapper.js";
-import { OrgCreationService } from "../services/org_creation/org_creation_service.js";
+import { OrgCreationPriceMapper } from "../mappers/org_creation_price/org_creation_price_mapper.js";
+import { OrgCreationPriceService } from "../services/org_creation_price/org_creation_price_service.js";
 
-export class OrgCreationFacade {
+export class OrgCreationPriceFacade {
     static getService() {
-        return new OrgCreationService(
-            new OrgCreationMapper()
+        return new OrgCreationPriceService(
+            new OrgCreationPriceMapper()
         );
     }
 

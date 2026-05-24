@@ -1,6 +1,6 @@
-import { OrgCreationServiceInterface } from "./org_creation_service_interface.js";
+import { OrgCreationPriceServiceInterface } from "./org_creation_price_service_interface.js";
 
-export class OrgCreationService extends OrgCreationServiceInterface {
+export class OrgCreationPriceService extends OrgCreationPriceServiceInterface {
     constructor(mapper) {
         super(mapper);
     }

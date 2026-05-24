@@ -1,7 +1,7 @@
-export class OrgCreationMapperInterface {
+export class OrgCreationPriceMapperInterface {
     constructor() {
-        if (new.target === 'OrgCreationMapperInterface') {
-            throw new Error('Нельзя создать экземпляр класса OrgCreationMapperInterface');
+        if (new.target === 'OrgCreationPriceMapperInterface') {
+            throw new Error('Нельзя создать экземпляр класса OrgCreationPriceMapperInterface');
         }
     }
 

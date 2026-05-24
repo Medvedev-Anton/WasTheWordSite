@@ -1,7 +1,7 @@
-import { OrgCreationMapperInterface } from "./org_creation_mapper_interface.js";
+import { OrgCreationPriceMapperInterface } from "./org_creation_price_mapper_interface.js";
 import { db } from "../../database/init.js";
 
-export class OrgCreationMapper extends OrgCreationMapperInterface {
+export class OrgCreationPriceMapper extends OrgCreationPriceMapperInterface {
     constructor() {
         super();
     }

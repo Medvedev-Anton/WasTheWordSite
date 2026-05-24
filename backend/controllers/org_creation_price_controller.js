@@ -1,7 +1,7 @@
-import { OrgCreationFacade } from "../facades/org_creation_facade.js";
+import { OrgCreationPriceFacade } from "../facades/org_creation_price_facade.js";
 import { MainController } from "./main_controller.js";
 
-export class OrgCreationController extends MainController {
+export class OrgCreationPriceController extends MainController {
     constructor(request, response) {
         super(request, response);
     }
@@ -11,7 +11,7 @@ export class OrgCreationController extends MainController {
      */
     getAllPrices() {
         try {
-            const prices = OrgCreationFacade.getAllPrices();
+            const prices = OrgCreationPriceFacade.getAllPrices();
             this.send(200, {
                 prices: prices
             });
@@ -41,7 +41,7 @@ export class OrgCreationController extends MainController {
             const newPrice = parseFloat(this.request.body.newPrice);
             const orgType = this.request.body.orgType;
 
-            OrgCreationFacade.updateOrgPrice(orgType, newPrice);
+            OrgCreationPriceFacade.updateOrgPrice(orgType, newPrice);
 
             this.send(200, {
                 message: 'Update success'

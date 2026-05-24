@@ -1,12 +1,12 @@
-import { OrgCreationMapperInterface } from "../../mappers/org_creation/org_creation_mapper_interface.js";
+import { OrgCreationPriceMapperInterface } from "../../mappers/org_creation_price/org_creation_price_mapper_interface.js";
 
-export class OrgCreationServiceInterface {
+export class OrgCreationPriceServiceInterface {
     /**
-     * @param {OrgCreationMapperInterface} mapper 
+     * @param {OrgCreationPriceMapperInterface} mapper 
      */
     constructor(mapper) {
-        if (new.target === 'OrgCreationServiceInterface') {
-            throw new Error('нельзя создать экземпляр класса OrgCreationServiceInterface');
+        if (new.target === 'OrgCreationPriceServiceInterface') {
+            throw new Error('нельзя создать экземпляр класса OrgCreationPriceServiceInterface');
         }
 
         this.mapper = mapper;
