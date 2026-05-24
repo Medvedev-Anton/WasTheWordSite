@@ -14,6 +14,7 @@ import Layout from './components/Layout';
 import Map from './pages/Map';
 import BankDashboard from './pages/BankDashboard';
 import LayoutMap from './components/LayoutMap';
+import GovernmentDashboard from './pages/GovernmentDashboard';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                     <Route path="/users" element={<Users />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/banks/dashboard/:id" element={<BankDashboard />} />
+                    <Route path="/government/dashboard/:id" element={<GovernmentDashboard />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Layout>
