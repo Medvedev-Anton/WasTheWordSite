@@ -1,0 +1,46 @@
+input[type="number"] {
+    width: 100%;
+    text-align: center;
+    height: 30px;
+    font-size: 16px;
+}
+
+#government-dashboard .general-params-wrapper input[type="number"] {
+    max-width: 250px;
+    margin-top: 15px;
+}
+
+#government-dashboard span, #government-dashboard p {
+    color: #000;
+}
+
+.resources-for-org-creation {
+    margin-top: 30px;
+}
+
+.resources-for-org-creation h2 {
+    text-align: center;
+}
+
+.resources-table {
+    margin-top: 30px;
+}
+
+.resources-table-head, .resources-table-content-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.resources-table-head-ceil, .resources-table-content-ceil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resources-table-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
