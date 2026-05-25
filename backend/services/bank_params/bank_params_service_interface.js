@@ -17,8 +17,17 @@ export class BankParamsServiceInterface {
      * @param {int} bankId
      * @return {object}
      */
-    getBankParams(bankId) {
-        throw new Error('getBankParams должен быть переопределен в наследнике');
+    getBankAllParams(bankId) {
+        throw new Error('getBankAllParams должен быть переопределен в наследнике'); 
+    }
+
+    /**
+     * Получает набор параметров банка только соответствующей сущности
+     * @param {int} bankId
+     * @return {object}
+     */
+    getBankEntityParams(bankId) {
+        throw new Error('getBankEntityParams должен быть переопределен в наследнике');
     }
 
     /**
@@ -27,55 +36,26 @@ export class BankParamsServiceInterface {
      * @return {void}
      */
     createBankRowDefault(bankId) {
-        throw new Error('createBankRow должен быть переопределен в наследнике');
+        throw new Error('createBankRowDefault должен быть переопределен в наследнике'); 
     }
 
     /**
-     * Обновляет процент по кредиту для пользователей
+     * Обновляет процент по кредиту
      * @param {int} bankId
      * @param {int} newPercent
      * @return {void}
      */
-    updateUserPercent(bankId, newPercent) {
-        throw new Error('updateUserPercent должен быть переопределен в наследнике');
+    updateLoanPercent(bankId, newPercent) {
+        throw new Error('updateLoanPercent должен быть переопределен в наследнике');
     }
 
     /**
-     * Обновляет срок кредита для пользователей
+     * Обновляет срок кредита
      * @param {int} bankId
      * @param {int} newDuringDays
      * @return {void}
      */
-    updateUserDuring(bankId, newDuringDays) {
-        throw new Error('updateUserDuring должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет процент по кредиту для организаций
-     * @param {int} bankId
-     * @param {int} newPercent
-     * @return {void}
-     */
-    updateOrgPercent(bankId, newPercent) {
-        throw new Error('updateOrgPercent должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет срок кредита для организаций
-     * @param {int} bankId
-     * @param {int} newDuringDays
-     * @return {void}
-     */
-    updateOrgDuring(bankId, newDuringDays) {
-        throw new Error('updateOrgDuring должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Высчитывает прогноз кредита для пользователя
-     * @param {int} loanValue
-     * @return
-     */
-    calcUserLoanForecast(loanValue) {
-        throw new Error('calcLoanForecast должен быть переопределен в наследнике');
+    updateLoanDuring(bankId, newDuringDays) {
+        throw new Error('updateLoanDuring должен быть переопределен в наследнике');
     }
 }

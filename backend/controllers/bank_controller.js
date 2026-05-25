@@ -21,7 +21,7 @@ export class BankController extends MainController {
 
         try {
             const bankId = parseInt(this.request.params.bankId);
-            const params = BankFacade.getBankParams(bankId);
+            const params = BankFacade.entity('users').getBankAllParams(bankId);
 
             return this.send(200, {
                 params: params
@@ -52,7 +52,7 @@ export class BankController extends MainController {
             const bankId = parseInt(this.request.params.bankId);
             const newPercent = parseInt(this.request.body.newPercent);
 
-            BankFacade.updateUserPercent(bankId, newPercent);
+            BankFacade.entity('users').updateLoanPercent(bankId, newPercent);
 
             return this.send(200, {
                 message: 'Success update'
@@ -83,7 +83,7 @@ export class BankController extends MainController {
             const bankId = parseInt(this.request.params.bankId);
             const newDuringDays = parseInt(this.request.body.newDuringDays);
 
-            BankFacade.updateUserDuring(bankId, newDuringDays);
+            BankFacade.entity('users').updateLoanDuring(bankId, newDuringDays);
 
             return this.send(200, {
                 message: 'Success update'
@@ -114,7 +114,7 @@ export class BankController extends MainController {
             const bankId = parseInt(this.request.params.bankId);
             const newPercent = parseInt(this.request.body.newPercent);
 
-            BankFacade.updateOrgPercent(bankId, newPercent);
+            BankFacade.entity('orgs').updateLoanPercent(bankId, newPercent);
 
             return this.send(200, {
                 message: 'Success update'
@@ -145,7 +145,7 @@ export class BankController extends MainController {
             const bankId = parseInt(this.request.params.bankId);
             const newDuringDays = parseInt(this.request.body.newDuringDays);
 
-            BankFacade.updateOrgDuring(bankId, newDuringDays);
+            BankFacade.entity('orgs').updateLoanDuring(bankId, newDuringDays);
 
             return this.send(200, {
                 message: 'Success update'

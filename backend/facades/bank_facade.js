@@ -1,16 +1,27 @@
-import { BankParamsMapper } from "../mappers/bank_params/bank_params_mapper.js";
+import { BankOrgParamsMapper } from "../mappers/bank_params/bank_org_params_mapper.js";
+import { BankUserParamsMapper } from "../mappers/bank_params/bank_user_params_mapper.js";
 import { BankParamsService } from "../services/bank_params/bank_params_service.js";
 import { BankParamsServiceInterface } from "../services/bank_params/bank_params_service_interface.js";
 
 export class BankFacade {
-    /**
-     * Возвращает объект сервиса параметров
-     * @return {BankParamsServiceInterface}
-     */
-    static paramsService() {
-        return new BankParamsService(
-            new BankParamsMapper()
-        );
+    constructor(entity) {
+        if (entity === 'orgs') {
+            this.service = new BankParamsService(
+                new BankOrgParamsMapper()
+            );
+        }
+        else if (entity === 'users') {
+            this.service = new BankParamsService(
+                new BankUserParamsMapper()
+            );
+        }
+        else {
+            throw new Error('Неизвестная сущность для работы с параметрами банков: ' + entity);
+        }
+    }
+
+    static entity(entity) {
+        return new this(entity);
     }
 
     /**
@@ -18,9 +29,9 @@ export class BankFacade {
      * @param {int} bankId
      * @return {object}
      */
-    static getBankParams(bankId) {
+    getBankAllParams(bankId) {
         try {
-            return this.paramsService().getBankParams(bankId);
+            return this.service.getBankAllParams(bankId);
         }
         catch (e) {
             throw new Error(e.message);
@@ -32,9 +43,9 @@ export class BankFacade {
      * @param {int} bankId
      * @return {void}
      */
-    static createBankRowDefault(bankId) {
+    createBankRowDefault(bankId) {
         try {
-            return this.paramsService().createBankRowDefault(bankId);
+            return this.service.createBankRowDefault(bankId);
         }
         catch (e) {
             throw new Error(e.message);
@@ -42,18 +53,14 @@ export class BankFacade {
     }
 
     /**
-     * Обновляет процент по кредиту для пользователей
+     * Обновляет процент по кредиту
      * @param {int} bankId
      * @param {int} newPercent
      * @return {void}
      */
-    static updateUserPercent(bankId, newPercent) {
+    updateLoanPercent(bankId, newPercent) {
         try {
-            if (this.getBankParams(bankId) === undefined) {
-                this.createBankRowDefault(bankId);
-            }
-            
-            return this.paramsService().updateUserPercent(bankId, newPercent);
+            return this.service.updateLoanPercent(bankId, newPercent);
         }
         catch (e) {
             throw new Error(e.message);
@@ -61,56 +68,14 @@ export class BankFacade {
     }
 
     /**
-     * Обновляет срок кредита для пользователей
+     * Обновляет срок кредита
      * @param {int} bankId
      * @param {int} newDuringDays
      * @return {void}
      */
-    static updateUserDuring(bankId, newDuringDays) {
+    updateLoanDuring(bankId, newDuringDays) {
         try {
-            if (this.getBankParams(bankId) === undefined) {
-                this.createBankRowDefault(bankId);
-            }
-
-            return this.paramsService().updateUserDuring(bankId, newDuringDays);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    /**
-     * Обновляет процент по кредиту для организаций
-     * @param {int} bankId
-     * @param {int} newPercent
-     * @return {void}
-     */
-    static updateOrgPercent(bankId, newPercent) {
-        try {
-            if (this.getBankParams(bankId) === undefined) {
-                this.createBankRowDefault(bankId);
-            }
-
-            return this.paramsService().updateOrgPercent(bankId, newPercent);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
-    /**
-     * Обновляет срок кредита для организаций
-     * @param {int} bankId
-     * @param {int} newDuringDays
-     * @return {void}
-     */
-    static updateOrgDuring(bankId, newDuringDays) {
-        try {
-            if (this.getBankParams(bankId) === undefined) {
-                this.createBankRowDefault(bankId);
-            }
-
-            return this.paramsService().updateOrgDuring(bankId, newDuringDays);
+            return this.service.updateLoanDuring(bankId, newDuringDays);
         }
         catch (e) {
             throw new Error(e.message);

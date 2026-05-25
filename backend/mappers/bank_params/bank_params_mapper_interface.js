@@ -1,3 +1,5 @@
+import { db } from "../../database/init.js";
+
 export class BankParamsMapperInterface {
     constructor() {
         if (new.target === 'BankParamsMapperInterface') {
@@ -6,12 +8,38 @@ export class BankParamsMapperInterface {
     }
 
     /**
-     * Получает набор параметров банка
+     * Получает набор всех параметров банка
      * @param {int} bankId
      * @return {object}
      */
-    getBankParams(bankId) {
-        throw new Error('getBankParams должен быть переопределен в наследнике');
+    getBankAllParams(bankId) {
+        if (bankId < 0) {
+            throw new Error('bankId не может быть отрицательным');
+        }
+
+        if (isNaN(parseInt(bankId))) {
+            throw new Error('bankId не может быть целочисленным');
+        }
+
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM 
+                banks_loan_params
+            WHERE
+                bank_id = ?
+        `).get(bankId);
+
+        return result;
+    }
+
+    /**
+     * Получает набор параметров банка только соответствующей сущности
+     * @param {int} bankId
+     * @return {object}
+     */
+    getBankEntityParams(bankId) {
+        throw new Error('getBankEntityParams должен быть переопределен в наследнике');
     }
 
     /**
@@ -20,46 +48,44 @@ export class BankParamsMapperInterface {
      * @return {void}
      */
     createBankRowDefault(bankId) {
-        throw new Error('createBankRowDefault должен быть переопределен в наследнике');
+        if (bankId < 0) {
+            throw new Error('bankId не может быть отрицательным');
+        }
+
+        if (isNaN(parseInt(bankId))) {
+            throw new Error('bankId не может быть целочисленным');
+        }
+
+        db.prepare(`
+            INSERT INTO 
+                banks_loan_params(
+                    bank_id,
+                    loan_percent_users, 
+                    loan_during_days_users,
+                    loan_percent_orgs,
+                    loan_during_days_orgs
+                )
+            VALUES(?, 0, 0, 0, 0)
+        `).run(bankId);
     }
 
     /**
-     * Обновляет процент по кредиту для пользователей
+     * Обновляет процент по кредиту
      * @param {int} bankId
      * @param {int} newPercent
      * @return {void}
      */
-    updateUserPercent(bankId, newPercent) {
-        throw new Error('updateUserPercent должен быть переопределен в наследнике');
+    updateLoanPercent(bankId, newPercent) {
+        throw new Error('updateLoanPercent должен быть переопределен в наследнике');
     }
 
     /**
-     * Обновляет срок кредита для пользователей
+     * Обновляет срок кредита
      * @param {int} bankId
      * @param {int} newDuringDays
      * @return {void}
      */
-    updateUserDuring(bankId, newDuringDays) {
-        throw new Error('updateUserDuring должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет процент по кредиту для организаций
-     * @param {int} bankId
-     * @param {int} newPercent
-     * @return {void}
-     */
-    updateOrgPercent(bankId, newPercent) {
-        throw new Error('updateOrgPercent должен быть переопределен в наследнике');
-    }
-
-    /**
-     * Обновляет срок кредита для организаций
-     * @param {int} bankId
-     * @param {int} newDuringDays
-     * @return {void}
-     */
-    updateOrgDuring(bankId, newDuringDays) {
-        throw new Error('updateOrgDuring должен быть переопределен в наследнике');
+    updateLoanDuring(bankId, newDuringDays) {
+        throw new Error('updateLoanDuring должен быть переопределен в наследнике');
     }
 }

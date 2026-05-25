@@ -5,9 +5,18 @@ export class BankParamsService extends BankParamsServiceInterface {
         super(mapper);
     }
 
-    getBankParams(bankId) {
+    getBankAllParams(bankId) {
         try {
-            return this.mapper.getBankParams(bankId);
+            return this.mapper.getBankAllParams(bankId);
+        }
+        catch (e) {
+            throw new Error(e);
+        }
+    }
+
+    getBankEntityParams(bankId) {
+        try {
+            return this.mapper.getBankEntityParams(bankId);
         }
         catch (e) {
             throw new Error(e);
@@ -23,49 +32,18 @@ export class BankParamsService extends BankParamsServiceInterface {
         }
     }
 
-    updateUserPercent(bankId, newPercent) {
+    updateLoanPercent(bankId, newPercent) {
         try {
-            return this.mapper.updateUserPercent(bankId, newPercent);
+            return this.mapper.updateLoanPercent(bankId, newPercent);
         }
         catch (e) {
             throw new Error(e);
         }
     }
 
-    updateUserDuring(bankId, newDuringDays) {
+    updateLoanDuring(bankId, newDuringDays) {
         try {
-            return this.mapper.updateUserDuring(bankId, newDuringDays);
-        }
-        catch (e) {
-            throw new Error(e);
-        }
-    }
-
-    updateOrgPercent(bankId, newPercent) {
-        try {
-            return this.mapper.updateOrgPercent(bankId, newPercent);
-        }
-        catch (e) {
-            throw new Error(e);
-        }
-    }
-
-    updateOrgDuring(bankId, newDuringDays) {
-        try {
-            return this.mapper.updateOrgDuring(bankId, newDuringDays);
-        }
-        catch (e) {
-            throw new Error(e);
-        }
-    }
-
-    calcUserLoanForecast(loanValue) {
-        try {
-            const loanParams = this.getBankParams();
-            const percent = parseInt(loanParams.loan_percent_users);
-            const during = parseInt(loanParams.loan_during_days_users);
-
-            
+            return this.mapper.updateLoanDuring(bankId, newDuringDays);
         }
         catch (e) {
             throw new Error(e);
