@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { BankController } from '../controllers/bank_controller.js';
+import { LoansController } from '../controllers/loans_controller.js';
 
 const router = express.Router();
 
@@ -86,6 +87,18 @@ router.get('/:bankId/borrowers/orgs', authenticateToken, (req, res) => {
         console.error('Get bank orgs borrowers error:', error);
         res.status(500).json({ error: 'Server error' });
     }
+});
+
+// Расчет кредитных данных для пользователя
+router.post('/:bankId/loan/users/calc', authenticateToken, (req, res) => {
+    const controller = new LoansController(req, res);
+    controller.calcUserLoanData();
+});
+
+// Расчет кредитных данных для организации
+router.post('/:bankId/loan/orgs/calc', authenticateToken, (req, res) => {
+    const controller = new LoansController(req, res);
+    controller.calcOrgsLoanData();
 });
 
 export default router;

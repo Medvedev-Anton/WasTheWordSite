@@ -13,4 +13,16 @@ export class LoansService extends LoansServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    calcFinalSum(sum, percents, days) {
+        return sum * (1 + (percents * days) / 100);
+    }
+
+    calcDailyPayment(sum, days) {
+        if (days === 0) {
+            return 0;
+        }
+
+        return sum / days;
+    }
 }
