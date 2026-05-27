@@ -140,4 +140,33 @@ export class LoansFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Списать платеж по кредиту у сущности
+     * @param {number} entityId
+     */
+    getLoanPayment(entityId) {
+        try {
+            const transaction = db.transaction(() => {
+                try {
+                    const paymentSum = this.service.getPaymentSum(entityId);
+                    this.service.decrementLoanSum(entityId);
+                    ProfitFacade.entity(this.entity).processWithTax(entityId, paymentSum);
+                }
+                catch (e) {
+                    throw new Error(e.message);
+                }
+            });
+
+            try {
+                transaction();
+            }
+            catch (e) {
+                throw new Error('ошибка выполнения транзакции по обработке поступления: ' + e.message);
+            }
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
