@@ -50,4 +50,18 @@ export class BalanceFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает текущий баланс
+     * @param {number} entityId
+     * @returns {nubmer}
+     */
+    getBalance(entityId) {
+        try {
+            return this.service.getBalance(entityId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
