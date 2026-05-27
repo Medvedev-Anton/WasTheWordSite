@@ -776,6 +776,7 @@ export async function initDatabase() {
     { orgType: "Волонтёрская", percent: 0 },
     { orgType: "Спортивная", percent: 0 },
     { orgType: "Свободная", percent: 0 },
+    { orgType: "Банковская", percent: 0 },
   ];
 
   defaultOrgsTaxPercents.forEach(row => {
@@ -805,7 +806,7 @@ export async function initDatabase() {
     { orgType: "Образовательная", price: 0 },
     { orgType: "Волонтёрская", price: 0 },
     { orgType: "Спортивная", price: 0 },
-    { orgType: "Свободная", price: 0 },
+    { orgType: "Свободная", price: 0 }
   ];
 
   defaultOrgsCreationPrices.forEach(row => {
