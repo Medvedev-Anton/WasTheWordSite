@@ -25,4 +25,13 @@ export class LoansService extends LoansServiceInterface {
 
         return sum / days;
     }
+
+    createLoan(creditorId, borrowerId, startSum) {
+        try {
+            return this.mapper.insertLoanData(creditorId, borrowerId, startSum);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

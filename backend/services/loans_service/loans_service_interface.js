@@ -40,4 +40,14 @@ export class LoansServiceInterface {
     calcDailyPayment(sum, days) {
         throw new Error('calcDailyPayment должен быть переопределен в наследнике');
     }
+
+    /**
+     * Создать данные о кредите
+     * @param {number} creditorId
+     * @param {number} borrowerId
+     * @param {number} startSum
+     */
+    createLoan(creditorId, borrowerId, startSum) {
+        throw new Error('insertLoanData должен быть переопределен в наследнике');
+    }
 }
