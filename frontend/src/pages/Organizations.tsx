@@ -489,7 +489,7 @@ function OrganizationDetail({
   const [showLoanModal, setShowLoanModal] = useState(false);
   const [currentUserOrgs, setCurrentUserOrgs] = useState<UserOrg[]>([]);
   const [loanValue, setLoanValue] = useState<number>(0);
-  const [showCalcLoanResult, SetShowCalcLoanResult] = useState<boolean>(false);
+  const [showCalcLoanResult, setShowCalcLoanResult] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -721,6 +721,9 @@ function OrganizationDetail({
   const [latitude, setLatitude] = useState(organization.latitude);
   const [creatingGroupChat, setCreatingGroupChat] = useState(false);
   const [loanForRadio, setLoanForRadio] = useState('');
+  const [loanForecastSum, setLoanForecastSum] = useState(0);
+  const [loanForecastDuring, setLoanForecastDuring] = useState(0);
+  const [loanForecastDailyPayment, setLoanForecastDailyPayment] = useState(0);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -801,6 +804,47 @@ function OrganizationDetail({
       case "Правительственная":
         navigate(`/government/dashboard/${orgId}`);
         break;
+    }
+  }
+
+  const setForecastData = (forecast: any) => {
+    const sum = +parseFloat(forecast.finalSum || 0).toFixed(2);
+    const during = parseInt(forecast.during || 0);
+    const dailyPayment = +parseFloat(forecast.dailyPayment || 0).toFixed(2);
+
+    setLoanForecastSum(sum / 100);
+    setLoanForecastDuring(during);
+    setLoanForecastDailyPayment(dailyPayment / 100);
+  }
+
+  const fetchUsersLoanForecat = async () => {
+    const result = await axios.post(`/api/banks/${organization.id}/loan/users/calc`, {
+      loanSum: loanValue * 100
+    });
+
+    const forecast = result.data.forecast;
+
+    setForecastData(forecast);
+    setShowCalcLoanResult(true);
+  }
+
+  const fetchOrgsLoanForecat = async () => {
+    const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/calc`, {
+      loanSum: loanValue * 100
+    });
+
+    const forecast = result.data.forecast;
+
+    setForecastData(forecast);
+    setShowCalcLoanResult(true);
+  }
+
+  const fetchLoanForecst = () => {
+    if (loanForRadio === 'users') {
+      fetchUsersLoanForecat();
+    }
+    else if (loanForRadio === 'orgs') {
+      fetchOrgsLoanForecat();
     }
   }
 
@@ -1604,37 +1648,46 @@ function OrganizationDetail({
                   <div className="calc-loan-result">
                     <div className="calc-loan-row">
                       <span>
-                        Сумма для выплаты:
+                        Сумма для выплаты: 
                       </span>
                       <span>
-                        123
+                        {loanForecastSum}
                       </span>
                     </div>
 
                     <div className="calc-loan-row">
                       <span>
-                        Срок:
+                        Срок, дни: 
                       </span>
                       <span>
-                        123
+                        {loanForecastDuring}
                       </span>
                     </div>
 
                     <div className="calc-loan-row">
                       <span>
-                        Ежемесячный платеж:
+                        Ежедневный платеж: 
                       </span>
                       <span>
-                        123
+                        {loanForecastDailyPayment}
                       </span>
                     </div>
+
+                    <button 
+                      className="apply-loan-gtn"
+                    >
+                      Оформить кредит
+                    </button>
                   </div>
                 )
                 :
                 ""
               }
 
-              <button className="btn calc-loan-btn">
+              <button 
+                className="btn calc-loan-btn"
+                onClick={fetchLoanForecst}
+              >
                 Рассчитать кредит
               </button>
               

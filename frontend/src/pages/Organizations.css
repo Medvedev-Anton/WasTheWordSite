@@ -1791,6 +1791,7 @@
   padding: 25px;
   flex-direction: column;
   align-items: start;
+  overflow-y: auto;
 }
 
 .loan-for-labels {
@@ -1844,6 +1845,28 @@
   font-weight: bold;
   text-transform: uppercase;
   background: #ff7903;
+}
+
+.calc-loan-result {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calc-loan-row {
+  display: flex;
+  gap: 5px;
+}
+
+.apply-loan-gtn {
+  background: linear-gradient(135deg, #667eea 0%, #9db74b 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s;
+  margin-top: 30px;
 }
 
 @media (max-width: 640px) {
