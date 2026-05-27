@@ -724,6 +724,7 @@ function OrganizationDetail({
   const [loanForecastSum, setLoanForecastSum] = useState(0);
   const [loanForecastDuring, setLoanForecastDuring] = useState(0);
   const [loanForecastDailyPayment, setLoanForecastDailyPayment] = useState(0);
+  const [userLoanOrgId, setUserLoanOrgId] = useState(-1);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -846,6 +847,24 @@ function OrganizationDetail({
     else if (loanForRadio === 'orgs') {
       fetchOrgsLoanForecat();
     }
+  }
+
+  const fetchApplyLoan = async () => {
+    if (loanForRadio === 'users') {
+      const result = axios.post(`/api/banks/${organization.id}/loan/users/create`, {
+        loanSum: loanValue * 100
+      });
+    }
+    else if (loanForRadio === 'orgs') {
+      const result = axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
+        loanSum: loanValue * 100,
+        orgId: userLoanOrgId
+      });
+    }    
+  }
+
+  const handleChangeUserLoanOrgId = (e: any) => {
+    setUserLoanOrgId(e.target.value);
   }
 
   return (
@@ -1613,6 +1632,8 @@ function OrganizationDetail({
                     <select 
                       name="loanOrg" 
                       id="loanOrg"
+                      value={userLoanOrgId}
+                      onChange={handleChangeUserLoanOrgId}
                     >
                       {
                         currentUserOrgs.map(org => {
@@ -1675,6 +1696,7 @@ function OrganizationDetail({
 
                     <button 
                       className="apply-loan-gtn"
+                      onClick={fetchApplyLoan}
                     >
                       Оформить кредит
                     </button>

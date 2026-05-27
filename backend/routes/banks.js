@@ -101,4 +101,16 @@ router.post('/:bankId/loan/orgs/calc', authenticateToken, (req, res) => {
     controller.calcOrgsLoanData();
 });
 
+// Создает кредит пользователя
+router.post('/:bankId/loan/users/create', authenticateToken, (req, res) => {
+    const controller = new LoansController(req, res);
+    controller.createUserLoan();
+});
+
+// Создает кредит организации
+router.post('/:bankId/loan/orgs/create', authenticateToken, (req, res) => {
+    const controller = new LoansController(req, res);
+    controller.createOrgsLoan();
+});
+
 export default router;

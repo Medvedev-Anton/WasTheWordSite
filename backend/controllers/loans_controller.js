@@ -20,7 +20,7 @@ export class LoansController extends MainController {
         }
 
         try {
-            const sum = parseInt(this.request.body.loanSum);
+            const sum = parseFloat(this.request.body.loanSum);
             const bankId = parseInt(this.request.params.bankId);
 
             const loanForecast = LoansFacade.entity('users').calcLoanData(bankId, sum);
@@ -51,7 +51,7 @@ export class LoansController extends MainController {
         }
 
         try {
-            const sum = parseInt(this.request.body.loanSum);
+            const sum = parseFloat(this.request.body.loanSum);
             const bankId = parseInt(this.request.params.bankId);
 
             const loanForecast = LoansFacade.entity('orgs').calcLoanData(bankId, sum);
@@ -62,6 +62,71 @@ export class LoansController extends MainController {
         }
         catch (e) {
             console.error('Calc user loan data error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обработчик создания кредита пользователя
+     */
+    createUserLoan() {
+        const validate = this.has([
+            'bankId',
+            'loanSum'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const userId = parseInt(this.request.user.userId);
+            const bankId = parseInt(this.request.params.bankId);
+            const sum = parseFloat(this.request.body.loanSum);
+
+            LoansFacade.entity('users').createLoan(bankId, userId, sum);
+
+            this.send(200, {
+                'message': 'success'
+            });
+        }
+        catch (e) {
+            console.error('Create user loan error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обработчик создания кредита организации
+     */
+    createOrgsLoan() {
+        const validate = this.has([
+            'bankId',
+            'loanSum',
+            'orgId'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const orgId = parseInt(this.request.body.orgId);
+            const bankId = parseInt(this.request.params.bankId);
+            const sum = parseFloat(this.request.body.loanSum);
+
+            LoansFacade.entity('orgs').createLoan(bankId, orgId, sum);
+
+            this.send(200, {
+                'message': 'success'
+            });
+        }
+        catch (e) {
+            console.error('Create user loan error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });

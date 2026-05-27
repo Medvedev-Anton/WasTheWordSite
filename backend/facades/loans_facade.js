@@ -4,9 +4,12 @@ import { LoansOrgsMapper } from "../mappers/loans/loans_orgs_mapper.js";
 import { LoansUsersMapper } from "../mappers/loans/loans_users_mapper.js";
 import { BankParamsService } from "../services/bank_params/bank_params_service.js";
 import { LoansService } from "../services/loans_service/loans_service.js";
+import { ProfitFacade } from "./profit_facade.js";
 
 export class LoansFacade {
     constructor(entity) {
+        this.entity = entity;
+
         if (entity === 'users') {
             this.service = new LoansService(
                 new LoansUsersMapper()
@@ -110,7 +113,7 @@ export class LoansFacade {
      * @param {number} borrowerId
      * @param {number} startSum
      */
-    static createLoan(creditorId, borrowerId, startSum) {
+    createLoan(creditorId, borrowerId, startSum) {
         try {
             return this.service.createLoan(creditorId, borrowerId, startSum);
         }

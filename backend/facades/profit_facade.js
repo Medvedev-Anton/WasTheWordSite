@@ -7,7 +7,7 @@ import { TaxesUsersMapper } from "../mappers/taxes/taxes_users_mapper.js";
 import { BalanceService } from "../services/balance/balance_service.js";
 import { ProfitService } from "../services/profit/profit_service.js";
 import { TaxesService } from "../services/taxes/taxes_service.js";
-import { db } from "../../database/init.js";
+import { db } from "../database/init.js";
 import { UserTaxPercentMapper } from "../mappers/user_tax_percent/user_tax_percent_mapper.js";
 import { OrgTaxPercentAdapter } from "../adapters/org_tax_percent_adapter.js";
 import { OrgTaxPercentMapper } from "../mappers/org_tax_percent/org_tax_percent_mapper.js";
