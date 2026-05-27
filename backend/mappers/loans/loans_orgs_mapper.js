@@ -59,7 +59,7 @@ export class LoansOrgsMapper extends LoansMapperInterface {
             FROM
                 orgs_loans
             WHERE
-                id = ?    
+                borrowerId = ?    
         `).get(orgId);
 
         const sum = parseFloat(result.paymentSum || 0);
