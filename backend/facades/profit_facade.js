@@ -80,7 +80,7 @@ export class ProfitFacade {
      * @param {int} incomingSum
      */
     processWithTax(entityId, incomingSum) {
-        const transation = db.transation(() => {
+        const transaction = db.transaction(() => {
             try {
                 this.balanceService.increment(entityId, incomingSum);
                 this.profitService.create(entityId, incomingSum);
@@ -98,7 +98,7 @@ export class ProfitFacade {
         });
 
         try {
-            transation();
+            transaction();
         }
         catch (e) {
             throw new Error('ошибка выполнения транзакции по обработке поступления: ' + e);
