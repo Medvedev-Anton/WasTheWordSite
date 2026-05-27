@@ -121,7 +121,7 @@ export class LoansFacade {
                 try {
                     this.service.createLoan(creditorId, borrowerId, startSum);
                     BalanceFacade.entity('orgs').decrement(creditorId, startSum);
-                    BalanceFacade.entity(this.entity).increment(startSum);
+                    BalanceFacade.entity(this.entity).increment(borrowerId, startSum);
                 }
                 catch (e) {
                     throw new Error(e.message);
