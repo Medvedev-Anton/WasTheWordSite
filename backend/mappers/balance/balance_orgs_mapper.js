@@ -60,7 +60,7 @@ export class BalanceOrgsMapper extends BalanceMapperInterface {
                 organizations
             WHERE
                 id = ?
-        `).get(entityId);
+        `).get(orgId);
 
         const balance = parseFloat(result.balance || 0);
 
