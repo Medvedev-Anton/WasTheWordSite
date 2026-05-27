@@ -647,8 +647,8 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       creditorId INTEGER NOT NULL,
       borrowerId INTEGER NOT NULL,
-      startSum INTEGER NOT NULL,
-      currentSum INTEGER NOT NULL,
+      startSum FLOAT NOT NULL,
+      currentSum FLOAT NOT NULL,
       paymentSum FLOAT NOT NULL,
       FOREIGN KEY (creditorId) REFERENCES organizations(id),
       FOREIGN KEY (borrowerId) REFERENCES users(id)
@@ -661,8 +661,8 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       creditorId INTEGER NOT NULL,
       borrowerId INTEGER NOT NULL,
-      startSum INTEGER NOT NULL,
-      currentSum INTEGER NOT NULL,
+      startSum FLOAT NOT NULL,
+      currentSum FLOAT NOT NULL,
       paymentSum FLOAT NOT NULL,
       FOREIGN KEY (creditorId) REFERENCES organizations(id),
       FOREIGN KEY (borrowerId) REFERENCES organizations(id)
