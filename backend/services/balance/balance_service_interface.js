@@ -29,4 +29,13 @@ export class BalanceServiceInterface {
     decrement(entityId, decrementValue) {
         throw new Error('decrement должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает текущий баланс
+     * @param {number} entityId
+     * @returns {nubmer}
+     */
+    getBalance(entityId) {
+        throw new Error('getBalance должен быть переопределен в наследнике');
+    }
 }

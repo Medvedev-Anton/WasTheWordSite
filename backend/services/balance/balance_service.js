@@ -22,4 +22,13 @@ export class BalanceService extends BalanceServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getBalance(entityId) {
+        try {
+            return this.mapper.getBalance(entityId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
