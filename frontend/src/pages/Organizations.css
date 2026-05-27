@@ -1869,6 +1869,10 @@
   margin-top: 30px;
 }
 
+.successLoanTitle {
+  text-align: center;
+}
+
 @media (max-width: 640px) {
   .icon-grid {
     grid-template-columns: 1fr 1fr;

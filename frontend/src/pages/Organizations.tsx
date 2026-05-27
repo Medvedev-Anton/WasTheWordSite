@@ -725,6 +725,7 @@ function OrganizationDetail({
   const [loanForecastDuring, setLoanForecastDuring] = useState(0);
   const [loanForecastDailyPayment, setLoanForecastDailyPayment] = useState(0);
   const [userLoanOrgId, setUserLoanOrgId] = useState(-1);
+  const [showSuccessLoanModal, setShowSuccessLoanModal] = useState(false);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -851,15 +852,25 @@ function OrganizationDetail({
 
   const fetchApplyLoan = async () => {
     if (loanForRadio === 'users') {
-      const result = axios.post(`/api/banks/${organization.id}/loan/users/create`, {
+      const result = await axios.post(`/api/banks/${organization.id}/loan/users/create`, {
         loanSum: loanValue * 100
       });
+
+      if (result.data.message == 'success') {
+        setShowLoanModal(false);
+        setShowSuccessLoanModal(true);
+      }
     }
     else if (loanForRadio === 'orgs') {
-      const result = axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
+      const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
         loanSum: loanValue * 100,
         orgId: userLoanOrgId
       });
+
+      if (result.data.message == 'success') {
+        setShowLoanModal(false);
+        setShowSuccessLoanModal(true);
+      }
     }    
   }
 
@@ -1716,6 +1727,19 @@ function OrganizationDetail({
             </div>
           </div>
         </div>)
+      }
+
+      {/* Success loan */}
+      {
+        showSuccessLoanModal && (
+          <div className="modal-overlay" onClick={() => setShowSuccessLoanModal(false)}>
+            <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="members-modal-header">
+                <h3 className="successLoanTitle">Оформление прошло успешно!</h3>
+              </div>
+            </div>
+          </div>
+        )
       }
     </div>
   );
