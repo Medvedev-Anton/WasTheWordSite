@@ -51,4 +51,23 @@ export class LoansOrgsMapper extends LoansMapperInterface {
                 id = ?    
         `).run(entityId);
     }
+
+    getPaymentSum(orgId) {
+        const result = db.prepare(`
+            SELECT
+                paymentSum
+            FROM
+                orgs_loans
+            WHERE
+                id = ?    
+        `).get(orgId);
+
+        const sum = parseFloat(result.paymentSum || 0);
+
+        if (isNaN(sum)) {
+            return 0;
+        }
+
+        return sum;
+    }
 }

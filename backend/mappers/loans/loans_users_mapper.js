@@ -41,7 +41,7 @@ export class LoansUsersMapper extends LoansMapperInterface {
         `).run(creditorId, borrowerId, startSum, startSum, paymentSum);
     }
 
-    decrementLoanSum(entityId) {
+    decrementLoanSum(userId) {
         db.prepare(`
             UPDATE
                 users_loans
@@ -49,6 +49,25 @@ export class LoansUsersMapper extends LoansMapperInterface {
                 currentSum = currentSum - paymentSum
             WHERE
                 id = ?    
-        `).run(entityId);
+        `).run(userId);
+    }
+
+    getPaymentSum(userId) {
+        const result = db.prepare(`
+            SELECT
+                paymentSum
+            FROM
+                users_loans
+            WHERE
+                id = ?    
+        `).get(userId);
+
+        const sum = parseFloat(result.paymentSum || 0);
+
+        if (isNaN(sum)) {
+            return 0;
+        }
+
+        return sum;
     }
 }
