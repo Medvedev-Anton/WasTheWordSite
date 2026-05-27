@@ -649,7 +649,7 @@ export async function initDatabase() {
       borrowerId INTEGER NOT NULL,
       startSum INTEGER NOT NULL,
       currentSum INTEGER NOT NULL,
-      paymentSum INTEGER NOT NULL,
+      paymentSum FLOAT NOT NULL,
       FOREIGN KEY (creditorId) REFERENCES organizations(id),
       FOREIGN KEY (borrowerId) REFERENCES users(id)
     )
@@ -663,7 +663,7 @@ export async function initDatabase() {
       borrowerId INTEGER NOT NULL,
       startSum INTEGER NOT NULL,
       currentSum INTEGER NOT NULL,
-      paymentSum INTEGER NOT NULL,
+      paymentSum FLOAT NOT NULL,
       FOREIGN KEY (creditorId) REFERENCES organizations(id),
       FOREIGN KEY (borrowerId) REFERENCES organizations(id)
     )

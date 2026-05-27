@@ -33,11 +33,11 @@ export class LoansUsersMapper extends LoansMapperInterface {
         return result;
     }
 
-    insertLoanData(creditorId, borrowerId, startSum) {
+    insertLoanData(creditorId, borrowerId, startSum, paymentSum) {
         db.prepare(`
             INSERT INTO
-                users_loans (creditorId, borrowerId, startSum, currentSum)
-            VALUES(?, ?, ?, ?)                
-        `).run(creditorId, borrowerId, startSum, startSum);
+                users_loans (creditorId, borrowerId, startSum, currentSum, paymentSum)
+            VALUES(?, ?, ?, ?, ?)                
+        `).run(creditorId, borrowerId, startSum, startSum, paymentSum);
     }
 }

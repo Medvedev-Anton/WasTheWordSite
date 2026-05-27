@@ -18,8 +18,9 @@ export class LoansMapperInterface {
      * @param {number} creditorId
      * @param {number} borrowerId
      * @param {number} startSum
+     * @param {number} paymentSum
      */
-    insertLoanData(creditorId, borrowerId, startSum) {
+    insertLoanData(creditorId, borrowerId, startSum, paymentSum) {
         throw new Error('insertLoanData должен быть переопределен в наследнике');
     }
 }

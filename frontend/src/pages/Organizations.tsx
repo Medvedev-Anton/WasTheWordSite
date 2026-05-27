@@ -786,6 +786,7 @@ function OrganizationDetail({
       setCurrentUserOrgs(orgs);
     }
 
+    setShowCalcLoanResult(false);
     setLoanForRadio(value);
   }
 
@@ -854,7 +855,8 @@ function OrganizationDetail({
   const fetchApplyLoan = async () => {
     if (loanForRadio === 'users') {
       const result = await axios.post(`/api/banks/${organization.id}/loan/users/create`, {
-        loanSum: loanValue * 100
+        loanSum: loanValue * 100,
+        paymentSum: loanForecastDailyPayment
       });
 
       if (result.data.message == 'success') {
@@ -869,7 +871,8 @@ function OrganizationDetail({
     else if (loanForRadio === 'orgs') {
       const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
         loanSum: loanValue * 100,
-        orgId: userLoanOrgId
+        orgId: userLoanOrgId,
+        paymentSum: loanForecastDailyPayment
       });
 
       if (result.data.message == 'success') {

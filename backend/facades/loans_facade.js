@@ -114,12 +114,13 @@ export class LoansFacade {
      * @param {number} creditorId
      * @param {number} borrowerId
      * @param {number} startSum
+     * @param {number} paymentSum
      */
-    createLoan(creditorId, borrowerId, startSum) {
+    createLoan(creditorId, borrowerId, startSum, paymentSum) {
         try {
             const transation = db.transaction(() => {
                 try {
-                    this.service.createLoan(creditorId, borrowerId, startSum);
+                    this.service.createLoan(creditorId, borrowerId, startSum, paymentSum);
                     BalanceFacade.entity('orgs').decrement(creditorId, startSum);
                     BalanceFacade.entity(this.entity).increment(borrowerId, startSum);
                 }
@@ -132,7 +133,7 @@ export class LoansFacade {
                 transation();
             }
             catch (e) {
-                throw new Error('ошибка выполнения транзакции по обработке поступления: ' + e);
+                throw new Error('ошибка выполнения транзакции по обработке поступления: ' + e.message);
             }
         }
         catch (e) {

@@ -75,7 +75,8 @@ export class LoansController extends MainController {
     createUserLoan() {
         const validate = this.has([
             'bankId',
-            'loanSum'
+            'loanSum',
+            'paymentSum'
         ]);
 
         if (validate === false) {
@@ -94,9 +95,10 @@ export class LoansController extends MainController {
                 });
             }
 
+            const paymentSum = parseFloat(this.request.body.paymentSum);
             const userId = parseInt(this.request.user.userId);            
 
-            LoansFacade.entity('users').createLoan(bankId, userId, sum);
+            LoansFacade.entity('users').createLoan(bankId, userId, sum, paymentSum);
 
             this.send(200, {
                 'message': 'success'
@@ -117,7 +119,8 @@ export class LoansController extends MainController {
         const validate = this.has([
             'bankId',
             'loanSum',
-            'orgId'
+            'orgId',
+            'paymentSum'
         ]);
 
         if (validate === false) {
@@ -137,8 +140,9 @@ export class LoansController extends MainController {
             }
 
             const orgId = parseInt(this.request.body.orgId);
+            const paymentSum = parseFloat(this.request.body.paymentSum);
             
-            LoansFacade.entity('orgs').createLoan(bankId, orgId, sum);
+            LoansFacade.entity('orgs').createLoan(bankId, orgId, sum, paymentSum);
 
             this.send(200, {
                 'message': 'success'

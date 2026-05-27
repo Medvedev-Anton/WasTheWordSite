@@ -46,8 +46,9 @@ export class LoansServiceInterface {
      * @param {number} creditorId
      * @param {number} borrowerId
      * @param {number} startSum
+     * @param {number} paymentSum
      */
-    createLoan(creditorId, borrowerId, startSum) {
+    createLoan(creditorId, borrowerId, startSum, paymentSum) {
         throw new Error('insertLoanData должен быть переопределен в наследнике');
     }
 }
