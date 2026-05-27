@@ -48,7 +48,7 @@ export class LoansUsersMapper extends LoansMapperInterface {
             SET
                 currentSum = currentSum - paymentSum
             WHERE
-                id = ?    
+                borrowerId = ?    
         `).run(userId);
     }
 
