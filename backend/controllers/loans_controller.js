@@ -1,3 +1,4 @@
+import { BalanceFacade } from "../facades/balance_facade.js";
 import { LoansFacade } from "../facades/loans_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -82,9 +83,18 @@ export class LoansController extends MainController {
         }
 
         try {
-            const userId = parseInt(this.request.user.userId);
             const bankId = parseInt(this.request.params.bankId);
             const sum = parseFloat(this.request.body.loanSum);
+
+            const currentBankBalance = BalanceFacade.entity('orgs').getBalance(bankId);
+
+            if (currentBankBalance < sum) {
+                return this.send(200, {
+                    'message': 'notEnoughMoney'
+                });
+            }
+
+            const userId = parseInt(this.request.user.userId);            
 
             LoansFacade.entity('users').createLoan(bankId, userId, sum);
 
@@ -115,10 +125,19 @@ export class LoansController extends MainController {
         }
 
         try {
-            const orgId = parseInt(this.request.body.orgId);
             const bankId = parseInt(this.request.params.bankId);
             const sum = parseFloat(this.request.body.loanSum);
 
+            const currentBankBalance = BalanceFacade.entity('orgs').getBalance(bankId);
+
+            if (currentBankBalance < sum) {
+                return this.send(200, {
+                    'message': 'notEnoughMoney'
+                });
+            }
+
+            const orgId = parseInt(this.request.body.orgId);
+            
             LoansFacade.entity('orgs').createLoan(bankId, orgId, sum);
 
             this.send(200, {

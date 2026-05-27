@@ -726,6 +726,7 @@ function OrganizationDetail({
   const [loanForecastDailyPayment, setLoanForecastDailyPayment] = useState(0);
   const [userLoanOrgId, setUserLoanOrgId] = useState(-1);
   const [showSuccessLoanModal, setShowSuccessLoanModal] = useState(false);
+  const [showBankNotEnoughMoneyModal, setShowBankNotEnoughMoneyModal] = useState(false);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -860,6 +861,10 @@ function OrganizationDetail({
         setShowLoanModal(false);
         setShowSuccessLoanModal(true);
       }
+      else if (result.data.message == 'notEnoughMoney') {
+        setShowLoanModal(false);
+        setShowBankNotEnoughMoneyModal(true);
+      }
     }
     else if (loanForRadio === 'orgs') {
       const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
@@ -870,6 +875,10 @@ function OrganizationDetail({
       if (result.data.message == 'success') {
         setShowLoanModal(false);
         setShowSuccessLoanModal(true);
+      }
+      else if (result.data.message == 'notEnoughMoney') {
+        setShowLoanModal(false);
+        setShowBankNotEnoughMoneyModal(true);
       }
     }    
   }
@@ -1736,6 +1745,19 @@ function OrganizationDetail({
             <div className="members-modal" onClick={(e) => e.stopPropagation()}>
               <div className="members-modal-header">
                 <h3 className="successLoanTitle">Оформление прошло успешно!</h3>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Not enough bank money loan */}
+      {
+        showBankNotEnoughMoneyModal && (
+          <div className="modal-overlay" onClick={() => setShowBankNotEnoughMoneyModal(false)}>
+            <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="members-modal-header">
+                <h3 className="successLoanTitle">У банка недостаточно средств</h3>
               </div>
             </div>
           </div>
