@@ -51,11 +51,13 @@ export class ProfitFacade {
         return new this(entity);
     }
 
-    static orgType(orgType) {
-        this.taxPercentMapper = new OrgTaxPercentAdapterercentAdapter(
+    orgType(orgType) {
+        this.taxPercentMapper = new OrgTaxPercentAdapter(
             new OrgTaxPercentMapper(),
             orgType
         );
+
+        return this;
     }
     
     /**
