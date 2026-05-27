@@ -34,4 +34,13 @@ export class LoansService extends LoansServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    decrementLoanSum(entityId) {
+        try {
+            return this.mapper.decrementLoanSum(entityId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
