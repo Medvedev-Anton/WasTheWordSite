@@ -56,4 +56,13 @@ export class OrgsServiceInterface {
     getOrgMembers(orgId) {
         throw new Error('getOrgMembers должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает тип организации
+     * @param {number} orgId
+     * @return {string}
+     */
+    getOrgType(orgId) {
+        throw new Error('getOrgType должен быть переопределен в наследнике');
+    }
 }
