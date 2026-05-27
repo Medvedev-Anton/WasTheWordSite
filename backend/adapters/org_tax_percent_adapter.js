@@ -2,6 +2,7 @@ import { UserTaxPercentMapperInterface } from "../mappers/user_tax_percent/user_
 
 export class OrgTaxPercentAdapter extends UserTaxPercentMapperInterface {
     constructor(orgMapper, orgType) {
+        super();
         this.orgMapper = orgMapper;
         this.orgType = orgType;
     }
