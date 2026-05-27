@@ -811,13 +811,13 @@ function OrganizationDetail({
   }
 
   const setForecastData = (forecast: any) => {
-    const sum = +parseFloat(forecast.finalSum || 0).toFixed(2);
+    const sum = +(parseFloat(forecast.finalSum || 0) / 100).toFixed(2);
     const during = parseInt(forecast.during || 0);
-    const dailyPayment = +parseFloat(forecast.dailyPayment || 0).toFixed(2);
+    const dailyPayment = +(parseFloat(forecast.dailyPayment || 0) / 100).toFixed(2);
 
-    setLoanForecastSum(sum / 100);
+    setLoanForecastSum(sum);
     setLoanForecastDuring(during);
-    setLoanForecastDailyPayment(dailyPayment / 100);
+    setLoanForecastDailyPayment(dailyPayment);
   }
 
   const fetchUsersLoanForecat = async () => {
@@ -1655,6 +1655,9 @@ function OrganizationDetail({
                       value={userLoanOrgId}
                       onChange={handleChangeUserLoanOrgId}
                     >
+                      <option value="">
+                        Не выбрано
+                      </option>
                       {
                         currentUserOrgs.map(org => {
                           return (
