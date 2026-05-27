@@ -4,7 +4,9 @@ import { LoansOrgsMapper } from "../mappers/loans/loans_orgs_mapper.js";
 import { LoansUsersMapper } from "../mappers/loans/loans_users_mapper.js";
 import { BankParamsService } from "../services/bank_params/bank_params_service.js";
 import { LoansService } from "../services/loans_service/loans_service.js";
+import { BalanceFacade } from "./balance_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
+import { db } from "../database/init.js";
 
 export class LoansFacade {
     constructor(entity) {
@@ -115,7 +117,23 @@ export class LoansFacade {
      */
     createLoan(creditorId, borrowerId, startSum) {
         try {
-            return this.service.createLoan(creditorId, borrowerId, startSum);
+            const transation = db.transaction(() => {
+                try {
+                    this.service.createLoan(creditorId, borrowerId, startSum);
+                    BalanceFacade.entity('orgs').decrement(creditorId, startSum);
+                    BalanceFacade.entity(this.entity).increment(startSum);
+                }
+                catch (e) {
+                    throw new Error(e.message);
+                }
+            });
+
+            try {
+                transation();
+            }
+            catch (e) {
+                throw new Error('ошибка выполнения транзакции по обработке поступления: ' + e);
+            }
         }
         catch (e) {
             throw new Error(e.message);
