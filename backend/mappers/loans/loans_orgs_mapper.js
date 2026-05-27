@@ -40,4 +40,15 @@ export class LoansOrgsMapper extends LoansMapperInterface {
             VALUES(?, ?, ?, ?, ?)                
         `).run(creditorId, borrowerId, startSum, startSum, paymentSum);
     }
+
+    decrementLoanSum(entityId) {
+        db.prepare(`
+            UPDATE
+                orgs_loans
+            SET
+                currentSum = currentSum - paymentSum
+            WHERE
+                id = ?    
+        `).run(entityId);
+    }
 }

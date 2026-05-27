@@ -23,4 +23,12 @@ export class LoansMapperInterface {
     insertLoanData(creditorId, borrowerId, startSum, paymentSum) {
         throw new Error('insertLoanData должен быть переопределен в наследнике');
     }
+
+    /**
+     * Списать платеж по кредиту у сущности
+     * @param {number} entityId
+     */
+    decrementLoanSum(entityId) {
+        throw new Error('decrementLoanSum должен быть переопределен в наследнике');
+    }
 }

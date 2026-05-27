@@ -40,4 +40,15 @@ export class LoansUsersMapper extends LoansMapperInterface {
             VALUES(?, ?, ?, ?, ?)                
         `).run(creditorId, borrowerId, startSum, startSum, paymentSum);
     }
+
+    decrementLoanSum(entityId) {
+        db.prepare(`
+            UPDATE
+                users_loans
+            SET
+                currentSum = currentSum - paymentSum
+            WHERE
+                id = ?    
+        `).run(entityId);
+    }
 }
