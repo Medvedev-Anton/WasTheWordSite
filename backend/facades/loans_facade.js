@@ -103,4 +103,19 @@ export class LoansFacade {
             dailyPayment: dailyPayment
         };
     }
+
+    /**
+     * Создать данные о кредите
+     * @param {number} creditorId
+     * @param {number} borrowerId
+     * @param {number} startSum
+     */
+    static createLoan(creditorId, borrowerId, startSum) {
+        try {
+            return this.service.createLoan(creditorId, borrowerId, startSum);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
