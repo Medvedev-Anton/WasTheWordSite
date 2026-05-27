@@ -144,14 +144,17 @@ export class LoansFacade {
     /**
      * Списать платеж по кредиту у сущности
      * @param {number} entityId
+     * @param {number} bankId
      */
-    getLoanPayment(entityId) {
+    getLoanPayment(entityId, bankId) {
         try {
             const transaction = db.transaction(() => {
                 try {
                     const paymentSum = this.service.getPaymentSum(entityId);
+
                     this.service.decrementLoanSum(entityId);
-                    ProfitFacade.entity(this.entity).processWithTax(entityId, paymentSum);
+                    BalanceFacade.entity(this.entity).decrement(entityId, paymentSum);
+                    ProfitFacade.entity('orgs').orgType('Банковская').processWithTax(bankId, paymentSum);
                 }
                 catch (e) {
                     throw new Error(e.message);
@@ -162,7 +165,7 @@ export class LoansFacade {
                 transaction();
             }
             catch (e) {
-                throw new Error('ошибка выполнения транзакции по обработке поступления: ' + e.message);
+                throw new Error('ошибка выполнения транзакции по обработке списания платежа по кредиту: ' + e.message);
             }
         }
         catch (e) {
