@@ -66,6 +66,6 @@ export class TaxesUsersMapper extends TaxesMapperInterface {
                 userId = ?
         `).get(userId);
 
-        return result.tax;
+        return result ? result.tax : null;
     }
 }

@@ -26,7 +26,7 @@ export class TaxesService extends TaxesServiceInterface {
         try {
             const userTax = this.mapper.getCurrentTax(entityId);
 
-            if (!userTax) {
+            if (userTax == null) {
                 return this.mapper.createCurrentTax(entityId, incrementValue);
             }
             else {

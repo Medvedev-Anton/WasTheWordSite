@@ -66,6 +66,6 @@ export class TaxesOrgsMapper extends TaxesMapperInterface {
                 orgId = ?
         `).get(orgId);
 
-        return result.tax;
+        return result ? result.tax : null;
     }
 }
