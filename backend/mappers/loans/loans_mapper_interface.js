@@ -7,9 +7,19 @@ export class LoansMapperInterface {
 
     /**
      * Получить данные всех заемщиков кредитора
-     * @param {int} creditorId
+     * @param {number} creditorId
      */
     getAllBorrowersByCreditor(creditorId) {
         throw new Error('getAllBorrowersByCreditor должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Создать данные о кредите
+     * @param {number} creditorId
+     * @param {number} borrowerId
+     * @param {number} startSum
+     */
+    insertLoanData(creditorId, borrowerId, startSum) {
+        throw new Error('insertLoanData должен быть переопределен в наследнике');
     }
 }

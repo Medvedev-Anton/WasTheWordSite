@@ -32,4 +32,12 @@ export class LoansOrgsMapper extends LoansMapperInterface {
 
         return result;
     }
+
+    insertLoanData(creditorId, borrowerId, startSum) {
+        db.prepare(`
+            INSERT INTO
+                orgs_loans (creditorId, borrowerId, startSum, currentSum)
+            VALUES(?, ?, ?, ?)                
+        `).run(creditorId, borrowerId, startSum, startSum);
+    }
 }
