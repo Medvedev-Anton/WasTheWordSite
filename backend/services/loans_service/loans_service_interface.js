@@ -59,4 +59,12 @@ export class LoansServiceInterface {
     decrementLoanSum(entityId) {
         throw new Error('decrementLoanSum должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает сумму платежа по кредиту
+     * @param {number} entityId
+     */
+    getPaymentSum(entityId) {
+        throw new Error('decrementLoanSum должен быть переопределен в наследнике');
+    }
 }

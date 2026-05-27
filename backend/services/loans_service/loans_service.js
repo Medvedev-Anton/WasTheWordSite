@@ -43,4 +43,13 @@ export class LoansService extends LoansServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getPaymentSum(entityId) {
+        try {
+            return this.mapper.getPaymentSum(entityId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
