@@ -20,4 +20,13 @@ export class BalanceServiceInterface {
     increment(entityId, incrementValue) {
         throw new Error('increment должен быть переопределен в наследнике');
     }
+
+    /**
+     * Уменьшает баланс сущности
+     * @param {int} entityId
+     * @param {int} decrementValue
+     */
+    decrement(entityId, decrementValue) {
+        throw new Error('decrement должен быть переопределен в наследнике');
+    }
 }

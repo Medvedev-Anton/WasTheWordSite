@@ -13,4 +13,13 @@ export class BalanceService extends BalanceServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    decrement(entityId, decrementValue) {
+        try {
+            return this.mapper.decrement(entityId, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

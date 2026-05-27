@@ -36,4 +36,18 @@ export class BalanceFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Уменьшает баланс сущности
+     * @param {int} entityId
+     * @param {int} decrementValue
+     */
+    decrement(entityId, decrementValue) {
+        try {
+            return this.service.decrement(entityId, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
