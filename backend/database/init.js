@@ -819,6 +819,18 @@ export async function initDatabase() {
       `).run(row.orgType, row.price);
     }
   });
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_salary (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      orgId INTEGER NOT NULL,
+      salary FLOAT NOT NULL,
+      payday DATE NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id),
+      FOREIGN KEY (orgId) REFERENCES organizations(id)
+    )
+  `);
   
   console.log('Database initialized successfully');
 }
