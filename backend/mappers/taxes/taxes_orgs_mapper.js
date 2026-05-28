@@ -83,7 +83,9 @@ export class TaxesOrgsMapper extends TaxesMapperInterface {
     getAll() {
         const result = db.prepare(`
             SELECT
-                *
+                id,
+                orgId as entityId,
+                tax
             FROM
                 orgs_tax    
         `).all();
