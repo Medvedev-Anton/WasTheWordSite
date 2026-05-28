@@ -91,4 +91,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает все организации по заданному типу
+     * @param {string} orgType
+     */
+    static getAllOrgsIdsByType(orgType) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getAllOrgsIdsByType(orgType);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
