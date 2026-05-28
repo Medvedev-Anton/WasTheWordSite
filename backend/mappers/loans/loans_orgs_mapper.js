@@ -89,4 +89,15 @@ export class LoansOrgsMapper extends LoansMapperInterface {
 
         return sum;
     }
+
+    delete(orgId, bankId) {
+        db.prepare(`
+            DELETE FROM
+                orgs_loans
+            WHERE
+                creditorId = ?
+                AND
+                borrowerId = ?
+        `).run(bankId, orgId);
+    }
 }

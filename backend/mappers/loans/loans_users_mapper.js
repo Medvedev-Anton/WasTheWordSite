@@ -89,4 +89,15 @@ export class LoansUsersMapper extends LoansMapperInterface {
 
         return sum;
     }
+
+    delete(userId, bankId) {
+        db.prepare(`
+            DELETE FROM
+                users_loans
+            WHERE
+                creditorId = ?
+                AND
+                borrowerId = ?
+        `).run(bankId, userId);
+    }
 }
