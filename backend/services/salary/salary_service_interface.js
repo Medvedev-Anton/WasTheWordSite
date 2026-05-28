@@ -22,7 +22,7 @@ export class SalaryServiceInterface {
     /**
      * Получает всех сотрудников с их именами
      */
-    getOrgSalariesWithNames() {
+    getOrgSalariesWithNames(orgId) {
         throw new Error('getOrgSalariesWithNames должен быть переопределен в наследнике');
     }
 

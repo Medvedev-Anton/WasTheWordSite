@@ -18,9 +18,9 @@ export class SalaryFacade {
     /**
      * Получает всех сотрудников с их именами
      */
-    static getOrgSalariesWithNames() {
+    static getOrgSalariesWithNames(orgId) {
         try {
-            return this.getService().getOrgSalariesWithNames();
+            return this.getService().getOrgSalariesWithNames(orgId);
         }
         catch (e) {
             throw new Error(e.message);

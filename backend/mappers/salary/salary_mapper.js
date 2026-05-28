@@ -17,7 +17,7 @@ export class SalaryMapper extends SalaryMapperInterface {
         return result;
     }
 
-    getOrgSalariesWithNames() {
+    getOrgSalariesWithNames(orgId) {
         const result = db.prepare(`
             SELECT
                 u.username,
@@ -27,8 +27,10 @@ export class SalaryMapper extends SalaryMapperInterface {
             JOIN
                 users u
             ON
-                s.userId = u.id                
-        `).all();
+                s.userId = u.id  
+            WHERE
+                s.orgId = ?              
+        `).all(orgId);
 
         return result;
     }
