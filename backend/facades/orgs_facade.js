@@ -143,4 +143,33 @@ export class OrgsFacade {
             throw new Error('Ошибка при обработке транзакции списания за просмотр поста: ' + e.message);
         }
     }
+
+    /**
+     * Пополняет баланс организации со счета пользователя
+     * @param {number} orgId
+     * @param {number} sum
+     */
+    static transferFromAuthorToOrgBalance(orgId, sum) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        const transaction = db.transaction(() => {
+            try {
+                const adminId = service.getAdminId(orgId);
+                BalanceFacade.entity('users').decrement(sum, adminId);
+                BalanceFacade.entity('orgs').increment(sum, orgId);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции по переводу с баланса автора организации на баланс организации: ' + e.message);
+        }
+    }
 }
