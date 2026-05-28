@@ -208,7 +208,7 @@ export default function BankDashboard() {
             </div>
             <div className="borrowers-wrapper">
                 <div className="borrowers-orgs borrowers-list">
-                    <h2>Организации взявшие кредит</h2>
+                    <h2>Организации взявшие кредит, %</h2>
 
                     {
                         orgsBorrowers.map(borrower => {
@@ -230,7 +230,7 @@ export default function BankDashboard() {
                     }
                 </div>
                 <div className="borrowers-users borrowers-list">
-                    <h2>Пользователи взявшие кредит</h2>
+                    <h2>Пользователи взявшие кредит, %</h2>
 
                     {
                         usersBorrowers.map(borrower => {
