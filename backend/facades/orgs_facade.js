@@ -1,11 +1,15 @@
 import { OrgsMapper } from "../mappers/orgs/orgs_mapper.js";
 import { OrgsService } from "../services/orgs/orgs_service.js";
+import { db } from "../database/init.js";
+import { PricesFacade } from "./prices_facade.js";
+import { BalanceFacade } from "./balance_facade.js";
+import { ProfitFacade } from "./profit_facade.js";
 
 export class OrgsFacade {
     /**
      * Возвращает количество организаций под авторством пользователя
-     * @param {int} userId 
-     * @returns {int}
+     * @param {number} userId 
+     * @returns {number}
      */
     static getTotalCountByUser(userId) {
         const service = new OrgsService(
@@ -22,8 +26,8 @@ export class OrgsFacade {
 
     /**
      * Возвращает количество организаций верхнего уровня под авторством пользователя
-     * @param {int} userId 
-     * @returns {int}
+     * @param {number} userId 
+     * @returns {number}
      */
     static getTotalTopLevelCountByUser(userId) {
         const service = new OrgsService(
@@ -40,8 +44,8 @@ export class OrgsFacade {
 
     /**
      * Возвращает максимальное кол-во подорганизаций у подорганизаций под авторством пользователя
-     * @param {int} userId
-     * @return {int}
+     * @param {number} userId
+     * @return {number}
      */
     static getTotalCountSuborgsForSuborgsByUser(userId) {
         const service = new OrgsService(
@@ -58,8 +62,8 @@ export class OrgsFacade {
 
     /**
      * Возвращает максимальное кол-во подорганизаций у организаций под авторством пользователя
-     * @param {int} userId
-     * @return {int}
+     * @param {number} userId
+     * @return {number}
      */
     static getTotalCountSuborgsForOrgsByUser(userId) {
         const service = new OrgsService(
@@ -76,8 +80,8 @@ export class OrgsFacade {
 
     /**
      * Возвращает максимальное кол-во подорганизаций у организаций под авторством пользователя
-     * @param {int} orgId
-     * @return {int}
+     * @param {number} orgId
+     * @return {number}
      */
     static getOrgMembers(orgId) {
         const service = new OrgsService(
@@ -106,6 +110,37 @@ export class OrgsFacade {
         }
         catch (e) {
             throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Списывает сумму за просмотр поста и начисляет на баланс организации
+     * @param {number} orgId
+     * @param {number} userId
+     */
+    static payPostView(orgId, userId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        const transaction = db.transaction(() => {
+            try {
+                const viewPrice = PricesFacade.getPostViewPrice();
+                BalanceFacade.entity('users').decrement(userId, viewPrice);
+
+                const orgType = service.getOrgType(orgId);
+                ProfitFacade.entity('orgs').orgType(orgType).processWithTax(orgId, viewPrice);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции списания за просмотр поста: ' + e.message);
         }
     }
 }
