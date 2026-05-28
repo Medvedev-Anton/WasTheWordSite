@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Post, Comment } from '../types';
@@ -24,6 +24,36 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [modalImage, setModalImage] = useState<string | null>(null);
+
+  const postCardRef = useRef(null);
+  const hasSentView = useRef(false);
+
+  // Запрос на оплату за просмотр поста
+  const fetchPayPostView = (orgId: number) => {
+    axios.post(`/api/organizations/${orgId}/pay-for-view-post`, {
+      userId: user?.id
+    });
+  }
+
+  useEffect(() => {
+    if (hasSentView.current || !postCardRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasSentView.current) {
+          hasSentView.current = true;
+
+          fetchPayPostView(post.organizationId || -1);
+        }
+      },
+      { threshold: 0.9 }
+    );
+
+    observer.observe(postCardRef.current);
+    return () => observer.disconnect();
+
+  }, [post]);
+  
 
   const handleLike = async () => {
     try {
@@ -101,7 +131,7 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
   const displayAvatar = isOrgPost ? post.organizationAvatar : post.authorAvatar;
 
   return (
-    <div className="post-card">
+    <div className="post-card" ref={postCardRef}>
       <div className="post-header">
         <div className="post-author">
           {displayAvatar ? (
