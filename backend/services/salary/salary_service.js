@@ -49,4 +49,13 @@ export class SalaryService extends SalaryServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    updateSalary(userId, orgId, newSalary) {
+        try {
+            return this.mapper.updateSalary(userId, orgId, newSalary);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

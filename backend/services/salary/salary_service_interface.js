@@ -53,4 +53,14 @@ export class SalaryServiceInterface {
     delete(userId, orgId) {
         throw new Error('delete должен быть переопределен в наследнике');
     }
+
+    /**
+     * Обновляет зарплату сотрудника в организации
+     * @param {number} userId
+     * @param {number} orgId
+     * @param {number} newSalary
+     */
+    updateSalary(userId, orgId, newSalary) {
+        throw new Error('updateSalary должен быть переопределен в наследнике');
+    }
 }
