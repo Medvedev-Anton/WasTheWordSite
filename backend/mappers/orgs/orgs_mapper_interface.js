@@ -58,4 +58,12 @@ export class OrgsMapperInterface {
     getOrgType(orgId) {
         throw new Error('getOrgType должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает все организации по заданному типу
+     * @param {string} orgType
+     */
+    getAllOrgsIdsByType(orgType) {
+        throw new Error('getAllOrgsIdsByType должен быть переопределен в наследнике');
+    }
 }

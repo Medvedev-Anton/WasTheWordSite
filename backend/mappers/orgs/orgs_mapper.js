@@ -151,4 +151,17 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return result ? result.orgType : '';
     }
+
+    getAllOrgsIdsByType(orgType) {
+        const result = db.prepare(`
+            SELECT
+                id
+            FROM
+                organizations
+            WHERE
+                orgType = ?
+        `).all(orgType);
+
+        return result;
+    }
 }
