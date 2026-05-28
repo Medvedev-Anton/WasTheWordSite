@@ -69,4 +69,17 @@ export class SalaryMapper extends SalaryMapperInterface {
                 orgId = ?    
         `).run(userId, orgId);
     }
+
+    updateSalary(userId, orgId, newSalary) {
+        db.prepare(`
+            UPDATE
+                users_salary
+            SET
+                salary = ?
+            WHERE
+                userId = ?
+                AND
+                orgId = ?    
+        `).run(newSalary, userId, orgId);
+    }
 }
