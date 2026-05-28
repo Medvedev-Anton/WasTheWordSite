@@ -14,9 +14,9 @@ export class SalaryService extends SalaryServiceInterface {
         }
     }
 
-    getAllWithNames() {
+    getOrgSalariesWithNames() {
         try {
-            return this.mapper.getAllWithNames();
+            return this.mapper.getOrgSalariesWithNames();
         }
         catch (e) {
             throw new Error(e.message);

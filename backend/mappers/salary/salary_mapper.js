@@ -17,7 +17,7 @@ export class SalaryMapper extends SalaryMapperInterface {
         return result;
     }
 
-    getAllWithNames() {
+    getOrgSalariesWithNames() {
         const result = db.prepare(`
             SELECT
                 u.username,

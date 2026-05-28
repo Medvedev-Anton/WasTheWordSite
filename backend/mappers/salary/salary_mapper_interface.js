@@ -15,8 +15,8 @@ export class SalaryMapperInterface {
     /**
      * Получает всех сотрудников с их именами
      */
-    getAllWithNames() {
-        throw new Error('getAllWithNames должен быть переопределен в наследнике');
+    getOrgSalariesWithNames() {
+        throw new Error('getOrgSalariesWithNames должен быть переопределен в наследнике');
     }
 
     /**
