@@ -9,6 +9,7 @@ import { UserFacade } from '../facades/user_facade.js';
 import { RangFacade } from '../facades/rang_facade.js';
 import { OrgsFacade } from '../facades/orgs_facade.js';
 import { SalaryFacade } from '../facades/salary_facade.js';
+import SalaryController from '../controllers/salary_controller.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -894,6 +895,12 @@ router.post('/:id/balance/adding', authenticateToken, (req, res, next) => {
     console.error('Addings to org balance error:', error);
     res.status(500).json({ error: 'Server error' });
   }
+});
+
+// Get salaries
+router.get('/:id/salaries', authenticateToken, (req, res) => {
+  const controller = new SalaryController(req, res);
+  controller.getEmployeesWithSalaries();
 });
 
 export default router;
