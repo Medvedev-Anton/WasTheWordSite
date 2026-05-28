@@ -825,7 +825,7 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       userId INTEGER NOT NULL,
       orgId INTEGER NOT NULL,
-      salary FLOAT NOT NULL,
+      salary FLOAT DEFAULT 0 NOT NULL,
       payday DATE NOT NULL,
       FOREIGN KEY (userId) REFERENCES users(id),
       FOREIGN KEY (orgId) REFERENCES organizations(id)
