@@ -909,5 +909,19 @@ router.post('/:id/salaries/update', authenticateToken, (req, res) => {
   controller.changeSalary();
 });
 
+// Pay for post view
+router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const orgId = req.params.id;
+
+    OrgsFacade.payPostView(orgId, userId);
+  }
+  catch (error) {
+    console.error('Pay for post view error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 
