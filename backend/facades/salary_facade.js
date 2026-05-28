@@ -20,7 +20,7 @@ export class SalaryFacade {
      */
     static getUserSalaryies(userId) {
         try {
-            return this.service.getUserSalaryies(userId);
+            return this.getService().getUserSalaryies(userId);
         }
         catch (e) {
             throw new Error(e.message);
@@ -36,7 +36,7 @@ export class SalaryFacade {
      */
     static create(userId, orgId, salary, payday) {
         try {
-            return this.service.create(userId, orgId, salary, payday);
+            return this.getService().create(userId, orgId, salary, payday);
         }
         catch (e) {
             throw new Error(e.message);
@@ -50,7 +50,7 @@ export class SalaryFacade {
      */
     static delete(userId, orgId) {
         try {
-            return this.service.delete(userId, orgId);
+            return this.getService().delete(userId, orgId);
         }
         catch (e) {
             throw new Error(e.message);
@@ -87,7 +87,7 @@ export class SalaryFacade {
      */
     static paySalaryToAllEmployees() {
         try {
-            const employees = this.service.getAll();
+            const employees = this.getService().getAll();
 
             employees.forEach(employee => {
                 this.paySalary(employee.userId, employee.orgId, employee.salary);
