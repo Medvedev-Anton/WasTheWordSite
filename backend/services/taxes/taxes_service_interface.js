@@ -57,4 +57,12 @@ export class TaxesServiceInterface {
     incrementOrCreateCurrentTax(entityId, incrementValue) {
         throw new Error('incrementOrCreateCurrentTax должен быть переопределен в наследнике');
     }
+
+    /**
+     * Зануляет текущее значение налога
+     * @param {int} entityId
+     */
+    nullifyTax(entityId) {
+        throw new Error('nullifyTax должен быть переопределен в наследнике');
+    }
 }
