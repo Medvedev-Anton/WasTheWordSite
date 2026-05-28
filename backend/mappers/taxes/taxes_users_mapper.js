@@ -69,15 +69,15 @@ export class TaxesUsersMapper extends TaxesMapperInterface {
         return result ? result.tax : null;
     }
 
-    nullifyTax(orgId) {
+    nullifyTax(id) {
         db.prepare(`
             UPDATE
                 users_tax
             SET
                 tax = 0
             WHERE
-                orgId = ?    
-        `).run(orgId);
+                id = ?    
+        `).run(id);
     }
 
     getAll() {

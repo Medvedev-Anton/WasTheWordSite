@@ -56,9 +56,9 @@ export class TaxesService extends TaxesServiceInterface {
         }
     }
 
-    nullifyTax(entityId) {
+    nullifyTax(id) {
         try {
-            return this.mapper.nullifyTax(entityId);
+            return this.mapper.nullifyTax(id);
         }
         catch (e) {
             throw new Error(e.message);

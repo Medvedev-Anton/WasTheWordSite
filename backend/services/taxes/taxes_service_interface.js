@@ -62,7 +62,7 @@ export class TaxesServiceInterface {
      * Зануляет текущее значение налога
      * @param {int} entityId
      */
-    nullifyTax(entityId) {
+    nullifyTax(id) {
         throw new Error('nullifyTax должен быть переопределен в наследнике');
     }
 
