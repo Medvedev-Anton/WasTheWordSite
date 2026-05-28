@@ -12,7 +12,19 @@ export default function OrgSalaryDashboard({orgId}) {
     // Получает всех сотрудников организации с их зарплатами
     const fetchEmployeesWithSalaries = async () => {
         const result = await axios.get(`/api/organizations/${orgId}/salaries`);
-        setSalaries(result.data.salaries);
+
+        const normalizedSalaries = Object.entries(result.data.salaries).reduce(
+            (acc, [username, data]: [string, any]) => ({
+                ...acc,
+                [username]: {
+                    ...data,
+                    salary: Number(data.salary) / 100
+                }
+            }),
+            {} as Record<string, { salary: number; userId: string }>
+        );
+
+        setSalaries(normalizedSalaries);
     }
 
     // Обрабатывает изменение зарплаты
@@ -52,7 +64,7 @@ export default function OrgSalaryDashboard({orgId}) {
 
         axios.post(`/api/organizations/${orgId}/salaries/update`, {
             userId: userId,
-            newSalary: newSalary
+            newSalary: newSalary * 100
         });
     }
 

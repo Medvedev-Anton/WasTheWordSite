@@ -83,7 +83,7 @@ export default function GovernmentDashboard() {
     const fetchPostViewPrice = async() => {
         const result = await axios.get('/api/prices/post-view');
         const price = result.data.price;
-        setPostViewPrice(price);
+        setPostViewPrice(price / 100);
     }
 
     // Обрабатывает изменение цены за просмотр поста
@@ -102,7 +102,7 @@ export default function GovernmentDashboard() {
         }
 
         axios.post('/api/prices/post-view', {
-            newPrice: newPrice
+            newPrice: newPrice * 100
         });
     }
 
@@ -145,7 +145,16 @@ export default function GovernmentDashboard() {
     const fetchAllOrgsCreationPrices = async() => {
         const result = await axios.get('/api/orgs/creation-prices/all');
         const prices = result.data.prices;
-        setOrgsCreationPrices(prices);
+
+        const normalized = Object.entries(prices).reduce(
+            (acc, [orgType, price]: [string, any]) => ({
+                ...acc,
+                [orgType]: price / 100
+            }),
+            {} as OrgFormValues
+        );
+
+        setOrgsCreationPrices(normalized);
     } 
 
     // Обрабатывает изменение цены создания организации
@@ -168,7 +177,7 @@ export default function GovernmentDashboard() {
 
         axios.post('/api/orgs/creation-prices', {
             orgType: orgType,
-            newPrice: newPrice
+            newPrice: newPrice * 100
         });
     }
 
@@ -178,7 +187,19 @@ export default function GovernmentDashboard() {
     const fetchAllOrgsWithBalances = async() => {
         const result = await axios.get('/api/organizations/all-with-balance');
         const orgs = result.data.orgs;
-        setOrgsBalances(orgs);
+
+        const normalized = Object.entries(orgs).reduce(
+            (acc, [orgName, data]: [string, any]) => ({
+                ...acc,
+                [orgName]: {
+                    ...data,
+                    balance: Number(data.balance) / 100
+                }
+            }),
+            {} as Record<string, { balance: number; id: number }>
+        );
+
+        setOrgsBalances(normalized);
     }
 
     // Обрабатывает изменение бюджета организации
@@ -219,7 +240,7 @@ export default function GovernmentDashboard() {
 
         axios.post(`/api/organizations/${id}/balance`, {
             id: id,
-            newBalance: newBalance
+            newBalance: newBalance * 100
         });
     }
 
@@ -246,7 +267,7 @@ export default function GovernmentDashboard() {
         const id = e.target.getAttribute('data-id');
 
         axios.post(`/api/organizations/${id}/balance/adding`, {
-            addingBalance: addingBalance
+            addingBalance: addingBalance * 100
         });
 
         fetchAllOrgsWithBalances();

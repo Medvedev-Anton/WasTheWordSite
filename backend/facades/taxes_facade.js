@@ -22,4 +22,6 @@ export class TaxesFacade {
     static entity(entity) {
         return new this(entity);
     }
+
+    
 }
