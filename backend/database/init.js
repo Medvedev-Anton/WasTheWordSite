@@ -649,6 +649,7 @@ export async function initDatabase() {
       borrowerId INTEGER NOT NULL,
       startSum FLOAT NOT NULL,
       currentSum FLOAT NOT NULL,
+      sumToPay FLOAT NOT NULL,
       paymentSum FLOAT NOT NULL,
       FOREIGN KEY (creditorId) REFERENCES organizations(id) ON DELETE CASCADE,
       FOREIGN KEY (borrowerId) REFERENCES users(id) ON DELETE CASCADE
@@ -663,6 +664,7 @@ export async function initDatabase() {
       borrowerId INTEGER NOT NULL,
       startSum FLOAT NOT NULL,
       currentSum FLOAT NOT NULL,
+      sumToPay FLOAT NOT NULL,
       paymentSum FLOAT NOT NULL,
       FOREIGN KEY (creditorId) REFERENCES organizations(id) ON DELETE CASCADE,
       FOREIGN KEY (borrowerId) REFERENCES organizations(id) ON DELETE CASCADE
