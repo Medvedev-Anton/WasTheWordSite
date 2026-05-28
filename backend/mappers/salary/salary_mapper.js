@@ -12,7 +12,7 @@ export class SalaryMapper extends SalaryMapperInterface {
                 *
             FROM
                 users_salary    
-        `);
+        `).all();
 
         return result;
     }

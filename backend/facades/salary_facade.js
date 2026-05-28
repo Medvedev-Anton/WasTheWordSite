@@ -2,6 +2,7 @@ import { SalaryMapper } from "../mappers/salary/salary_mapper.js";
 import { SalaryService } from "../services/salary/salary_service.js";
 import { BalanceFacade } from "./balance_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
+import { db } from "../database/init.js";
 
 export class SalaryFacade {
     static getService() {
