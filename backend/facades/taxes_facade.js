@@ -38,11 +38,13 @@ export class TaxesFacade {
 
                 taxes.forEach(tax => {
                     this.service.nullifyTax(tax.id);
-                    BalanceFacade.entity(this.entity).decrement(tax.id, tax.tax);
+                    BalanceFacade.entity(this.entity).decrement(tax.entityId, tax.tax);
 
-                    const goverId = OrgsFacade.getAllOrgsIdsByType('Правительственная')[0];
+                    const goverId = OrgsFacade.getAllOrgsIdsByType('Правительственная')[0] ?
+                                    OrgsFacade.getAllOrgsIdsByType('Правительственная')[0].id :
+                                    null;
 
-                    if (goverId != undefined) {
+                    if (goverId != null) {
                         BalanceFacade.entity('orgs').increment(goverId, tax.tax);
                     }
                 });
@@ -56,7 +58,7 @@ export class TaxesFacade {
             transaction();
         }
         catch (e) {
-            throw new Error('Ошибка при обработке транзакции по оплате налогов' + e.message);
+            throw new Error('Ошибка при обработке транзакции по оплате налогов: ' + e.message);
         }
     }
 
