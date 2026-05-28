@@ -70,4 +70,23 @@ export class LoansOrgsMapper extends LoansMapperInterface {
 
         return sum;
     }
+
+    getCurrentSum(orgId) {
+        const result = db.prepare(`
+            SELECT
+                currentSum
+            FROM
+                orgs_loans
+            WHERE
+                borrowerId = ?    
+        `).get(orgId);
+
+        const sum = parseFloat(result.currentSum || 0);
+
+        if (isNaN(sum)) {
+            return 0;
+        }
+
+        return sum;
+    }
 }
