@@ -63,7 +63,7 @@ export class SalaryFacade {
      * @param {number} orgId
      * @param {number} salary
      */
-    paySalary(userId, orgId, salary) {
+    static paySalary(userId, orgId, salary) {
         const transaction = db.transaction(() => {
             try {
                 BalanceFacade.entity('orgs').decrement(orgId, salary);
