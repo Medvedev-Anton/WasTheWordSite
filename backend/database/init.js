@@ -806,7 +806,8 @@ export async function initDatabase() {
     { orgType: "Образовательная", price: 0 },
     { orgType: "Волонтёрская", price: 0 },
     { orgType: "Спортивная", price: 0 },
-    { orgType: "Свободная", price: 0 }
+    { orgType: "Свободная", price: 0 },
+    { orgType: "Банковская", price: 0 }
   ];
 
   defaultOrgsCreationPrices.forEach(row => {
