@@ -1,5 +1,7 @@
 import { SalaryMapper } from "../mappers/salary/salary_mapper.js";
 import { SalaryService } from "../services/salary/salary_service.js";
+import { BalanceFacade } from "./balance_facade.js";
+import { ProfitFacade } from "./profit_facade.js";
 
 export class SalaryFacade {
     static getService() {
@@ -55,5 +57,44 @@ export class SalaryFacade {
         }
     }
 
+    /**
+     * Начисляет зарплату сотруднику и списывает с баланса организации
+     * @param {number} userId
+     * @param {number} orgId
+     * @param {number} salary
+     */
+    paySalary(userId, orgId, salary) {
+        const transaction = db.transaction(() => {
+            try {
+                BalanceFacade.entity('orgs').decrement(orgId, salary);
+                ProfitFacade.entity('users').processWithTax(userId, salary);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
 
+        try {
+            transaction();            
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции начисления зарплаты: ' + e.message);
+        }
+    }
+
+    /**
+     * Начисляет зарплату всем сотрудникам и списывает ее с баланса организации
+     */
+    static paySalaryToAllEmployees() {
+        try {
+            const employees = this.service.getAll();
+
+            employees.forEach(employee => {
+                this.paySalary(employee.userId, employee.orgId, employee.salary);
+            });
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
