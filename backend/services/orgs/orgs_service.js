@@ -58,4 +58,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getAllOrgsIdsByType(orgType) {
+        try {
+            return this.mapper.getAllOrgsIdsByType(orgType);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
