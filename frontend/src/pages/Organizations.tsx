@@ -727,6 +727,7 @@ function OrganizationDetail({
   const [userLoanOrgId, setUserLoanOrgId] = useState(-1);
   const [showSuccessLoanModal, setShowSuccessLoanModal] = useState(false);
   const [showBankNotEnoughMoneyModal, setShowBankNotEnoughMoneyModal] = useState(false);
+  const [showHasEnotherLoanModal, setShowHasEnotherLoanModal] = useState(false);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -856,6 +857,21 @@ function OrganizationDetail({
     }
   }
 
+  const handleApplyLoanResponse = (result: any) => {
+    if (result.data.message == 'success') {
+      setShowLoanModal(false);
+      setShowSuccessLoanModal(true);
+    }
+    else if (result.data.message == 'notEnoughMoney') {
+      setShowLoanModal(false);
+      setShowBankNotEnoughMoneyModal(true);
+    }
+    else if (result.data.message === 'anotherLoanExists') {
+      setShowLoanModal(false);
+      setShowHasEnotherLoanModal(true);
+    }
+  }
+
   const fetchApplyLoan = async () => {
     if (loanForRadio === 'users') {
       const result = await axios.post(`/api/banks/${organization.id}/loan/users/create`, {
@@ -864,14 +880,7 @@ function OrganizationDetail({
         sumToPay: loanForecastSum * 100
       });
 
-      if (result.data.message == 'success') {
-        setShowLoanModal(false);
-        setShowSuccessLoanModal(true);
-      }
-      else if (result.data.message == 'notEnoughMoney') {
-        setShowLoanModal(false);
-        setShowBankNotEnoughMoneyModal(true);
-      }
+      handleApplyLoanResponse(result);
     }
     else if (loanForRadio === 'orgs') {
       const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
@@ -881,14 +890,7 @@ function OrganizationDetail({
         sumToPay: loanForecastSum * 100
       });
 
-      if (result.data.message == 'success') {
-        setShowLoanModal(false);
-        setShowSuccessLoanModal(true);
-      }
-      else if (result.data.message == 'notEnoughMoney') {
-        setShowLoanModal(false);
-        setShowBankNotEnoughMoneyModal(true);
-      }
+      handleApplyLoanResponse(result);
     }    
   }
 
@@ -1770,6 +1772,19 @@ function OrganizationDetail({
             <div className="members-modal" onClick={(e) => e.stopPropagation()}>
               <div className="members-modal-header">
                 <h3 className="successLoanTitle">У банка недостаточно средств</h3>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Has enother loan */}
+      {
+        showHasEnotherLoanModal && (
+          <div className="modal-overlay" onClick={() => setShowHasEnotherLoanModal(false)}>
+            <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="members-modal-header">
+                <h3 className="successLoanTitle">У вас уже есть другие неоплаченные кредиты</h3>
               </div>
             </div>
           </div>
