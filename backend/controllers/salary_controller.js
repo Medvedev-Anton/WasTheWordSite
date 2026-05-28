@@ -40,7 +40,8 @@ export default class SalaryController extends MainController {
     changeSalary() {
         const validate = this.has([
             'id',
-            'userId'
+            'userId',
+            'newSalary'
         ]);
 
         if (validate === false) {
@@ -50,7 +51,9 @@ export default class SalaryController extends MainController {
         try {
             const orgId = parseInt(this.request.params.id);
             const userId = parseInt(this.request.body.userId);
+            const newSalary = parseInt(this.request.body.newSalary);
 
+            SalaryFacade.updateSalary(userId, orgId, newSalary);
         }
         catch (e) {
             console.error('Chagne employee salary error:', e.message);

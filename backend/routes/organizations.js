@@ -903,5 +903,11 @@ router.get('/:id/salaries', authenticateToken, (req, res) => {
   controller.getEmployeesWithSalaries();
 });
 
+// Update salary
+router.post('/:id/salaries/update', authenticateToken, (req, res) => {
+  const controller = new SalaryController(req, res);
+  controller.changeSalary();
+});
+
 export default router;
 
