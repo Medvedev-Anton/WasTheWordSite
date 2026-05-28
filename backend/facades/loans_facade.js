@@ -116,13 +116,14 @@ export class LoansFacade {
      * @param {number} creditorId
      * @param {number} borrowerId
      * @param {number} startSum
+     * @param {number} sumToPay
      * @param {number} paymentSum
      */
-    createLoan(creditorId, borrowerId, startSum, paymentSum) {
+    createLoan(creditorId, borrowerId, startSum, sumToPay, paymentSum) {
         try {
             const transation = db.transaction(() => {
                 try {
-                    this.service.createLoan(creditorId, borrowerId, startSum, paymentSum);
+                    this.service.createLoan(creditorId, borrowerId, startSum, sumToPay, paymentSum);
                     BanksLoansBalanceFacade.decrement(creditorId, startSum);
                     BalanceFacade.entity(this.entity).increment(borrowerId, startSum);
                 }
