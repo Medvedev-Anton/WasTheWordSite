@@ -67,4 +67,12 @@ export class LoansServiceInterface {
     getPaymentSum(entityId) {
         throw new Error('decrementLoanSum должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает текущую сумму кредита
+     * @param {number} entityId
+     */
+    getCurrentSum(entityId) {
+        throw new Error('getCurrentSum должен быть переопределен в наследнике');
+    }
 }
