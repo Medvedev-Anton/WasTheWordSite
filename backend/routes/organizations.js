@@ -11,6 +11,7 @@ import { OrgsFacade } from '../facades/orgs_facade.js';
 import { SalaryFacade } from '../facades/salary_facade.js';
 import SalaryController from '../controllers/salary_controller.js';
 import { BanksLoansBalanceFacade } from '../facades/banks_loans_balance_facade.js';
+import { BankFacade } from '../facades/bank_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -404,6 +405,7 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
 
     if (orgType == 'Банковская') {
       BanksLoansBalanceFacade.create(result.lastInsertRowid, 0);
+      BankFacade.entity('orgs').createBankRowDefault(result.lastInsertRowid);
     }
 
     try {
