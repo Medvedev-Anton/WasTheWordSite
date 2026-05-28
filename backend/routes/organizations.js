@@ -916,6 +916,10 @@ router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
     const orgId = req.params.id;
 
     OrgsFacade.payPostView(orgId, userId);
+
+    res.status(200).json({
+      message: 'success'
+    });
   }
   catch (error) {
     console.error('Pay for post view error:', error);
