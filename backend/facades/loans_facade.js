@@ -214,4 +214,17 @@ export class LoansFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Проверяет наличие кредитов у сущности
+     * @param {number} entityId
+     */
+    isEntityLoanExists(entityId) {
+        try {
+            return this.service.isEntityLoanExists(entityId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
