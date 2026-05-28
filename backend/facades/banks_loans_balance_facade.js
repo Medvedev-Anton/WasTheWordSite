@@ -27,7 +27,7 @@ export class BanksLoansBalanceFacade {
      * @param {number} bankId
      * @param {number} incrementValue
      */
-    increment(bankId, incrementValue) {
+    static increment(bankId, incrementValue) {
         try {
             return this.getService().increment(bankId, incrementValue);
         }
@@ -41,7 +41,7 @@ export class BanksLoansBalanceFacade {
      * @param {number} bankId
      * @param {number} decrementValue
      */
-    decrement(bankId, decrementValue) {
+    static decrement(bankId, decrementValue) {
         try {
             return this.getService().decrement(bankId, decrementValue);
         }
@@ -54,7 +54,7 @@ export class BanksLoansBalanceFacade {
      * Возвращает баланс
      * @param {number} bankId
      */
-    getBalance(bankId) {
+    static getBalance(bankId) {
         try {
             return this.getService().getBalance(bankId);
         }
