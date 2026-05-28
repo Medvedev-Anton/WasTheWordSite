@@ -110,4 +110,19 @@ export class SalaryFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Обновляет зарплату сотрудника в организации
+     * @param {number} userId
+     * @param {number} orgId
+     * @param {number} newSalary
+     */
+    static updateSalary(userId, orgId, newSalary) {
+        try {
+            return this.getService().updateSalary(userId, orgId, newSalary);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
