@@ -164,4 +164,17 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return result;
     }
+
+    getAdminId(orgId) {
+        const result = db.prepare(`
+            SELECT
+                adminId
+            FROM
+                organizations
+            WHERE
+                id = ?    
+        `).get(orgId);
+
+        return result.adminId || null;
+    }
 }
