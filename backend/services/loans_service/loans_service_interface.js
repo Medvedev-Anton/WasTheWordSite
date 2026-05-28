@@ -75,4 +75,13 @@ export class LoansServiceInterface {
     getCurrentSum(entityId) {
         throw new Error('getCurrentSum должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет запись о кредите
+     * @param {number} entityId
+     * @param {number} bankId
+     */
+    delete(entityId, bankId) {
+        throw new Error('delete должен быть переопределен в наследнике');
+    }
 }

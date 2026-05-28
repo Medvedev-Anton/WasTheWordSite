@@ -61,4 +61,13 @@ export class LoansService extends LoansServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    delete(entityId, bankId) {
+        try {
+            return this.mapper.delete(entityId, bankId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
