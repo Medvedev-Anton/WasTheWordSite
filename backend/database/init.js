@@ -838,9 +838,9 @@ export async function initDatabase() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS banks_loans_balances (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      orgId INTEGER NOT NULL,
+      bankId INTEGER NOT NULL,
       balance FLOAT NOT NULL,
-      FOREIGN KEY (orgId) REFERENCES organizations(id)
+      FOREIGN KEY (bankId) REFERENCES organizations(id)
     )
   `);
 
