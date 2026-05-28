@@ -86,6 +86,15 @@ export class LoansController extends MainController {
         }
 
         try {
+            const userId = parseInt(this.request.user.userId);
+            const isLoanExists = LoansFacade.entity('users').isEntityLoanExists(userId);
+
+            if (isLoanExists) {
+                return this.send(200, {
+                    message: 'anotherLoanExists'
+                });
+            }
+
             const bankId = parseInt(this.request.params.bankId);
             const sum = parseFloat(this.request.body.loanSum);
 
@@ -98,7 +107,6 @@ export class LoansController extends MainController {
             }
 
             const paymentSum = parseFloat(this.request.body.paymentSum);
-            const userId = parseInt(this.request.user.userId);     
             const sumToPay = parseInt(this.request.body.sumToPay);       
 
             LoansFacade.entity('users').createLoan(bankId, userId, sum, sumToPay, paymentSum);
@@ -131,6 +139,15 @@ export class LoansController extends MainController {
         }
 
         try {
+            const orgId = parseInt(this.request.body.orgId);
+            const isLoanExists = LoansFacade.entity('orgs').isEntityLoanExists(orgId);
+
+            if (isLoanExists) {
+                return this.send(200, {
+                    message: 'anotherLoanExists'
+                });
+            }
+
             const bankId = parseInt(this.request.params.bankId);
             const sum = parseFloat(this.request.body.loanSum);
 
@@ -142,7 +159,6 @@ export class LoansController extends MainController {
                 });
             }
 
-            const orgId = parseInt(this.request.body.orgId);
             const paymentSum = parseFloat(this.request.body.paymentSum);
             const sumToPay = parseInt(this.request.body.sumToPay);     
             
