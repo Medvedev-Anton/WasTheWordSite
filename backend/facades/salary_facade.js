@@ -32,7 +32,7 @@ export class SalaryFacade {
      * @param {number} salary
      * @param {string} payday
      */
-    create(userId, orgId, salary, payday) {
+    static create(userId, orgId, salary, payday) {
         try {
             return this.service.create(userId, orgId, salary, payday);
         }
@@ -46,7 +46,7 @@ export class SalaryFacade {
      * @param {number} userId
      * @param {number} orgId
      */
-    delete(userId, orgId) {
+    static delete(userId, orgId) {
         try {
             return this.service.delete(userId, orgId);
         }
@@ -54,4 +54,6 @@ export class SalaryFacade {
             throw new Error(e.message);
         }
     }
+
+
 }
