@@ -65,9 +65,9 @@ export class TaxesService extends TaxesServiceInterface {
         }
     }
 
-    getAll(entityId) {
+    getAll() {
         try {
-            return this.mapper.getAll(entityId);
+            return this.mapper.getAll();
         }
         catch (e) {
             throw new Error(e.message);
