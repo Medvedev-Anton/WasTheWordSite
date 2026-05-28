@@ -860,7 +860,8 @@ function OrganizationDetail({
     if (loanForRadio === 'users') {
       const result = await axios.post(`/api/banks/${organization.id}/loan/users/create`, {
         loanSum: loanValue * 100,
-        paymentSum: loanForecastDailyPayment * 100
+        paymentSum: loanForecastDailyPayment * 100,
+        sumToPay: loanForecastSum * 100
       });
 
       if (result.data.message == 'success') {
@@ -876,7 +877,8 @@ function OrganizationDetail({
       const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
         loanSum: loanValue * 100,
         orgId: userLoanOrgId,
-        paymentSum: loanForecastDailyPayment * 100
+        paymentSum: loanForecastDailyPayment * 100,
+        sumToPay: loanForecastSum * 100
       });
 
       if (result.data.message == 'success') {
