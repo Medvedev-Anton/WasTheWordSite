@@ -73,4 +73,12 @@ export class OrgsServiceInterface {
     getAllOrgsIdsByType(orgType) {
         throw new Error('getAllOrgsIdsByType должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает ID админа 
+     * @param {number} orgId
+     */
+    getAdminId(orgId) {
+        throw new Error('getAdminId должен быть переопределен в наследнике');
+    }
 }

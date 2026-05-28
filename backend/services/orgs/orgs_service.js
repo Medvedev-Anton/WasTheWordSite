@@ -67,4 +67,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getAdminId(orgId) {
+        try {
+            return this.mapper.getAdminId(orgId)
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
