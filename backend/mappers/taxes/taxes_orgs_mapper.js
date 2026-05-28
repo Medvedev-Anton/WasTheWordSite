@@ -79,4 +79,15 @@ export class TaxesOrgsMapper extends TaxesMapperInterface {
                 orgId = ?    
         `).run(orgId);
     }
+
+    getAll() {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                orgs_tax    
+        `).all();
+
+        return result;
+    }
 }

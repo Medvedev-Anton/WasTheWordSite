@@ -39,4 +39,11 @@ export class TaxesMapperInterface {
     nullifyTax(entityId) {
         throw new Error('nullifyTax должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает все записи налогов
+     */
+    getAll() {
+        throw new Error('getAll должен быть переопределен в наследнике');
+    }
 }
