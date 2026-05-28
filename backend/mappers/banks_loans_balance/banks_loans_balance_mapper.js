@@ -54,4 +54,13 @@ export class BanksLoansBalanceMapper extends BanksLoansBalanceMapperInterface {
 
         return balance;
     }
+
+    delete(bankId) {
+        db.prepare(`
+            DELETE FROM
+                banks_loans_balances
+            WHERE
+                bankId = ?
+        `).run(bankId);
+    }
 }
