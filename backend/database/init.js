@@ -821,6 +821,7 @@ export async function initDatabase() {
     }
   });
 
+  // Таблица зарплат пользователей
   db.exec(`
     CREATE TABLE IF NOT EXISTS users_salary (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -833,6 +834,16 @@ export async function initDatabase() {
     )
   `);
   
+  // Таблица кредитных балансов банков
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS banks_loans_balances (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgId INTEGER NOT NULL,
+      balance FLOAT NOT NULL,
+      FOREIGN KEY (orgId) REFERENCES organizations(id)
+    )
+  `);
+
   console.log('Database initialized successfully');
 }
 
