@@ -31,4 +31,12 @@ export class TaxesMapperInterface {
     getCurrentTax(entityId) {
         throw new Error('getCurrentTax должен быть переопределен в наследнике');
     }
+
+    /**
+     * Зануляет текущее значение налога
+     * @param {int} entityId
+     */
+    nullifyTax(entityId) {
+        throw new Error('nullifyTax должен быть переопределен в наследнике');
+    }
 }
