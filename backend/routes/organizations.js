@@ -8,6 +8,7 @@ import fs from 'fs';
 import { UserFacade } from '../facades/user_facade.js';
 import { RangFacade } from '../facades/rang_facade.js';
 import { OrgsFacade } from '../facades/orgs_facade.js';
+import { SalaryFacade } from '../facades/salary_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -520,6 +521,10 @@ router.post('/:id/join', authenticateToken, (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(orgId, userId, 'member', memberCanPost, memberCanComment, 0);
 
+    const date = new Date();
+    date.setMonth(date.getMonth() + 1)
+    SalaryFacade.create(userId, orgId, 0, date.toString());
+
     addUserToOrgGroupChat(orgId, userId);
     res.json({ message: 'Joined organization' });
   } catch (error) {
@@ -544,6 +549,9 @@ router.post('/:id/leave', authenticateToken, (req, res) => {
     }
 
     db.prepare('DELETE FROM organization_members WHERE organizationId = ? AND userId = ?').run(orgId, userId);
+
+    SalaryFacade.delete(userId, orgId);
+
     removeUserFromOrgGroupChat(orgId, userId);
     res.json({ message: 'Left organization' });
   } catch (error) {
