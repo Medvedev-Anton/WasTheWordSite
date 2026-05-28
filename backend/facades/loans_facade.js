@@ -156,6 +156,11 @@ export class LoansFacade {
                     this.service.decrementLoanSum(entityId);
                     BalanceFacade.entity(this.entity).decrement(entityId, paymentSum);
                     ProfitFacade.entity('orgs').orgType('Банковская').processWithTax(bankId, paymentSum);
+
+                    const currentLoanSum = this.service.getCurrentSum(entityId);
+                    if (currentLoanSum <= 0) {
+                        this.service.delete(entityId, bankId);
+                    }
                 }
                 catch (e) {
                     throw new Error(e.message);
