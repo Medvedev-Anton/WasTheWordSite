@@ -20,6 +20,13 @@ export class SalaryServiceInterface {
     }
 
     /**
+     * Получает всех сотрудников с их именами
+     */
+    getAllWithNames() {
+        throw new Error('getAllWithNames должен быть переопределен в наследнике');
+    }
+
+    /**
      * Получает зарплаты пользователя
      * @param {number} userId
      */

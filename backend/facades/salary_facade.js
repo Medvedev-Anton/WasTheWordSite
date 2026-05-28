@@ -16,6 +16,18 @@ export class SalaryFacade {
     }
 
     /**
+     * Получает всех сотрудников с их именами
+     */
+    static getAllWithNames() {
+        try {
+            return this.getService().getAllWithNames();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Получает зарплаты пользователя
      * @param {number} userId
      */
