@@ -10,6 +10,7 @@ import { RangFacade } from '../facades/rang_facade.js';
 import { OrgsFacade } from '../facades/orgs_facade.js';
 import { SalaryFacade } from '../facades/salary_facade.js';
 import SalaryController from '../controllers/salary_controller.js';
+import { BanksLoansBalanceFacade } from '../facades/banks_loans_balance_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -401,6 +402,10 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
 
+    if (orgType == 'Банковская') {
+      BanksLoansBalanceFacade.create(result.lastInsertRowid, 0);
+    }
+
     try {
       if (parentId) {
         UserFacade.calcAndUpdateRang(adminId, 'suborgs');
@@ -707,6 +712,10 @@ router.delete('/:id', authenticateToken, (req, res) => {
     const organization = db.prepare('SELECT * FROM organizations WHERE id = ?').get(orgId);
     if (!organization) {
       return res.status(404).json({ error: 'Organization not found' });
+    }
+
+    if (organization.orgType == 'Банковская') {
+      BanksLoansBalanceFacade.delete(orgId);
     }
 
     const currentUser = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
