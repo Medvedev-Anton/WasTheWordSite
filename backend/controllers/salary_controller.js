@@ -54,6 +54,10 @@ export default class SalaryController extends MainController {
             const newSalary = parseInt(this.request.body.newSalary);
 
             SalaryFacade.updateSalary(userId, orgId, newSalary);
+        
+            this.send(200, {
+                message: 'success'
+            });
         }
         catch (e) {
             console.error('Chagne employee salary error:', e.message);
