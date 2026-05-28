@@ -8,6 +8,7 @@ import { BalanceFacade } from "./balance_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
 import { db } from "../database/init.js";
 import { OrgsFacade } from "./orgs_facade.js";
+import { BanksLoansBalanceFacade } from "./banks_loans_balance_facade.js";
 
 export class LoansFacade {
     constructor(entity) {
@@ -122,7 +123,7 @@ export class LoansFacade {
             const transation = db.transaction(() => {
                 try {
                     this.service.createLoan(creditorId, borrowerId, startSum, paymentSum);
-                    BalanceFacade.entity('orgs').decrement(creditorId, startSum);
+                    BanksLoansBalanceFacade.decrement(creditorId, startSum);
                     BalanceFacade.entity(this.entity).increment(borrowerId, startSum);
                 }
                 catch (e) {

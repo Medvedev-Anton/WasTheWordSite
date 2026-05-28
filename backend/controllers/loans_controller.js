@@ -1,4 +1,5 @@
 import { BalanceFacade } from "../facades/balance_facade.js";
+import { BanksLoansBalanceFacade } from "../facades/banks_loans_balance_facade.js";
 import { LoansFacade } from "../facades/loans_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -87,7 +88,7 @@ export class LoansController extends MainController {
             const bankId = parseInt(this.request.params.bankId);
             const sum = parseFloat(this.request.body.loanSum);
 
-            const currentBankBalance = BalanceFacade.entity('orgs').getBalance(bankId);
+            const currentBankBalance = BanksLoansBalanceFacade.getBalance(bankId);
 
             if (currentBankBalance < sum) {
                 return this.send(200, {
@@ -131,7 +132,7 @@ export class LoansController extends MainController {
             const bankId = parseInt(this.request.params.bankId);
             const sum = parseFloat(this.request.body.loanSum);
 
-            const currentBankBalance = BalanceFacade.entity('orgs').getBalance(bankId);
+            const currentBankBalance = BanksLoansBalanceFacade.getBalance(bankId);
 
             if (currentBankBalance < sum) {
                 return this.send(200, {
