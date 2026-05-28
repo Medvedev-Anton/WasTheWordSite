@@ -5,6 +5,15 @@ export class SalaryService extends SalaryServiceInterface {
         super(mapper);
     }
 
+    getAll() {
+        try {
+            return this.mapper.getAll();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     getUserSalaryies(userId) {
         try {
             return this.mapper.getUserSalaryies(userId);
