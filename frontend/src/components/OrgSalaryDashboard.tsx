@@ -57,26 +57,30 @@ export default function OrgSalaryDashboard({orgId}) {
     }
 
     return (
-        <div className="org-salary-wrapper" id="typical-dashboard">
-            {
-                Object.entries(salaries).map(([username, salary]) => (
-                    <div className="salary-row">
-                        <div className="salary-username">
-                            {username}
+        <div className="org-salary-wrapper">
+            <h2>Зарплата сотрудникам</h2>
+
+            <div className="org-salary-rows">
+                {
+                    Object.entries(salaries).map(([username, salary]) => (
+                        <div className="salary-row">
+                            <div className="salary-username">
+                                {username}
+                            </div>
+                            <div className="salary-value">
+                                <input 
+                                    type="number" 
+                                    data-user-id={salaries[username].userId}
+                                    data-user-name={username}
+                                    value={salaries[username].salary}
+                                    onChange={handleChangeSalary}
+                                    onBlur={handleBlurSalary}
+                                />
+                            </div>
                         </div>
-                        <div className="salary-value">
-                            <input 
-                                type="number" 
-                                data-user-id={salaries[username].userId}
-                                data-user-name={username}
-                                value={salaries[username].salary}
-                                onChange={handleChangeSalary}
-                                onBlur={handleBlurSalary}
-                            />
-                        </div>
-                    </div>
-                ))
-            }
+                    ))
+                }
+            </div>
         </div>
     );
 }
