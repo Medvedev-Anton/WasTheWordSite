@@ -57,4 +57,12 @@ export class LoansMapperInterface {
     delete(entityId, bankId) {
         throw new Error('delete должен быть переопределен в наследнике');
     }
+
+    /**
+     * Проверяет наличие кредитов у сущности
+     * @param {number} entityId
+     */
+    isEntityLoanExists(entityId) {
+        throw new Error('isEntityLoanExists должен быть переопределен в наследнике');
+    }
 }

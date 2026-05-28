@@ -100,4 +100,17 @@ export class LoansOrgsMapper extends LoansMapperInterface {
                 borrowerId = ?
         `).run(bankId, orgId);
     }
+
+    isEntityLoanExists(entityId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                orgs_loans
+            WHERE
+                borrowerId = ? 
+        `).get(entityId);
+
+        return result !== undefined;
+    }
 }
