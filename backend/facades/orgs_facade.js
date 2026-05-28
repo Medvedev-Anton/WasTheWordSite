@@ -147,9 +147,10 @@ export class OrgsFacade {
     /**
      * Пополняет баланс организации со счета пользователя
      * @param {number} orgId
+     * @param {number} userId
      * @param {number} sum
      */
-    static transferFromAuthorToOrgBalance(orgId, sum) {
+    static transferFromAuthorToOrgBalance(orgId, userId, sum) {
         const service = new OrgsService(
             new OrgsMapper()
         );
@@ -157,6 +158,11 @@ export class OrgsFacade {
         const transaction = db.transaction(() => {
             try {
                 const adminId = service.getAdminId(orgId);
+
+                if (userId != adminId) {
+                    throw new Error('пользователь не явялется владельцем организации');
+                }
+
                 BalanceFacade.entity('users').decrement(sum, adminId);
                 BalanceFacade.entity('orgs').increment(sum, orgId);
             }
