@@ -32,7 +32,10 @@ export class SalaryMapper extends SalaryMapperInterface {
                 s.orgId = ?              
         `).all(orgId);
 
-        return result;
+        return Object.fromEntries(result.map(row => [row.username, {
+            salary: row.salary,
+            userId: row.userId
+        }]));
     }
 
     getUserSalaryies(userId) {
