@@ -40,4 +40,13 @@ export class BanksLoansBalanceService extends BanksLoansBalanceServiceInterface 
             throw new Error(e.message);
         }
     }
+
+    delete(bankId) {
+        try {
+            return this.mapper.delete(bankId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

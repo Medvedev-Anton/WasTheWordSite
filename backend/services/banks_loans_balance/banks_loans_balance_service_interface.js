@@ -46,4 +46,12 @@ export class BanksLoansBalanceServiceInterface {
     getBalance(bankId) {
         throw new Error('getBalance должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет запись о балансе
+     * @param {number} bankId
+     */
+    delete(bankId) {
+        throw new Error('delete должен быть переопределен в наследнике');
+    }
 }
