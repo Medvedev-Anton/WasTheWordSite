@@ -33,18 +33,23 @@ export class TaxesFacade {
      */
     payTax() {
         const transaction = db.transaction(() => {
-            const taxes = this.service.getAll();
+            try {
+                const taxes = this.service.getAll();
 
-            taxes.forEach(tax => {
-                this.service.nullifyTax(tax.id);
-                BalanceFacade.entity(this.entity).decrement(tax.id, tax.tax);
+                taxes.forEach(tax => {
+                    this.service.nullifyTax(tax.id);
+                    BalanceFacade.entity(this.entity).decrement(tax.id, tax.tax);
 
-                const goverId = OrgsFacade.getAllOrgsIdsByType('Правительственная')[0];
+                    const goverId = OrgsFacade.getAllOrgsIdsByType('Правительственная')[0];
 
-                if (goverId != undefined) {
-                    BalanceFacade.entity('orgs').increment(goverId, tax.tax);
-                }
-            });
+                    if (goverId != undefined) {
+                        BalanceFacade.entity('orgs').increment(goverId, tax.tax);
+                    }
+                });
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
         });
 
         try {
@@ -52,6 +57,25 @@ export class TaxesFacade {
         }
         catch (e) {
             throw new Error('Ошибка при обработке транзакции по оплате налогов' + e.message);
+        }
+    }
+
+    static payAllTaxes() {
+        const transaction = db.transaction(() => {
+            try {
+                TaxesFacade.entity('users').payTax();
+                TaxesFacade.entity('orgs').payTax();
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction()
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции списания всех налогов: ' + e.message);
         }
     }
 }
