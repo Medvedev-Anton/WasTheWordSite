@@ -101,7 +101,7 @@ export class LoansOrgsMapper extends LoansMapperInterface {
         `).run(bankId, orgId);
     }
 
-    isEntityLoanExists(entityId) {
+    isEntityLoanExists(orgId) {
         const result = db.prepare(`
             SELECT
                 *
@@ -109,7 +109,7 @@ export class LoansOrgsMapper extends LoansMapperInterface {
                 orgs_loans
             WHERE
                 borrowerId = ? 
-        `).get(entityId);
+        `).get(orgId);
 
         return result !== undefined;
     }

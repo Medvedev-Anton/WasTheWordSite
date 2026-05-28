@@ -101,7 +101,7 @@ export class LoansUsersMapper extends LoansMapperInterface {
         `).run(bankId, userId);
     }
 
-    isEntityLoanExists(entityId) {
+    isEntityLoanExists(userId) {
         const result = db.prepare(`
             SELECT
                 *
@@ -109,7 +109,7 @@ export class LoansUsersMapper extends LoansMapperInterface {
                 users_loans
             WHERE
                 borrowerId = ? 
-        `).get(entityId);
+        `).get(userId);
 
         return result !== undefined;
     }
