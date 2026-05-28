@@ -7,6 +7,7 @@ import { LoansService } from "../services/loans_service/loans_service.js";
 import { BalanceFacade } from "./balance_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
 import { db } from "../database/init.js";
+import { OrgsFacade } from "./orgs_facade.js";
 
 export class LoansFacade {
     constructor(entity) {
@@ -183,6 +184,23 @@ export class LoansFacade {
 
             borrowers.forEach(borrower => {
                 this.getLoanPayment(borrower.borrowerId, creditorId);
+            });
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Списывает платежи по кредиту у всех банков и всех заемщиков
+     */
+    static getAllBanksBorrowersPayments() {
+        try {
+            const allBanksIds = OrgsFacade.getAllOrgsIdsByType('Банковская');
+
+            allBanksIds.forEach(bank => {
+                LoansFacade.entity('users').getAllBorrowersPayment(bank.id);
+                LoansFacade.entity('orgs').getAllBorrowersPayment(bank.id);
             });
         }
         catch (e) {
