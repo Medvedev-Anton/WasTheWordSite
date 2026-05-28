@@ -637,7 +637,7 @@ export async function initDatabase() {
       loan_during_days_users INTEGER NOT NULL,
       loan_percent_orgs INTEGER NOT NULL,
       loan_during_days_orgs INTEGER NOT NULL,
-      FOREIGN KEY (bank_id) REFERENCES organizations(id)
+      FOREIGN KEY (bank_id) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
 
@@ -650,8 +650,8 @@ export async function initDatabase() {
       startSum FLOAT NOT NULL,
       currentSum FLOAT NOT NULL,
       paymentSum FLOAT NOT NULL,
-      FOREIGN KEY (creditorId) REFERENCES organizations(id),
-      FOREIGN KEY (borrowerId) REFERENCES users(id)
+      FOREIGN KEY (creditorId) REFERENCES organizations(id) ON DELETE CASCADE,
+      FOREIGN KEY (borrowerId) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
 
@@ -664,8 +664,8 @@ export async function initDatabase() {
       startSum FLOAT NOT NULL,
       currentSum FLOAT NOT NULL,
       paymentSum FLOAT NOT NULL,
-      FOREIGN KEY (creditorId) REFERENCES organizations(id),
-      FOREIGN KEY (borrowerId) REFERENCES organizations(id)
+      FOREIGN KEY (creditorId) REFERENCES organizations(id) ON DELETE CASCADE,
+      FOREIGN KEY (borrowerId) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
 
@@ -724,7 +724,7 @@ export async function initDatabase() {
       orgId INTEGER NOT NULL,
       incomingSum INTEGER NOT NULL,
       date DATE DEFAULT CURRENT_DATE NOT NULL,
-      FOREIGN KEY (orgId) REFERENCES organizations(id)
+      FOREIGN KEY (orgId) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
 
@@ -735,7 +735,7 @@ export async function initDatabase() {
       userId INTEGER NOT NULL,
       incomingSum INTEGER NOT NULL,
       date DATE DEFAULT CURRENT_DATE NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
 
@@ -745,7 +745,7 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       orgId INTEGER NOT NULL,
       tax INTEGER NOT NULL,
-      FOREIGN KEY (orgId) REFERENCES organizations(id)
+      FOREIGN KEY (orgId) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
 
@@ -755,7 +755,7 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       userId INTEGER NOT NULL,
       tax INTEGER NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
 
@@ -829,8 +829,8 @@ export async function initDatabase() {
       orgId INTEGER NOT NULL,
       salary FLOAT DEFAULT 0 NOT NULL,
       payday DATE NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id),
-      FOREIGN KEY (orgId) REFERENCES organizations(id)
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (orgId) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
   
@@ -840,7 +840,7 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       bankId INTEGER NOT NULL,
       balance FLOAT NOT NULL,
-      FOREIGN KEY (bankId) REFERENCES organizations(id)
+      FOREIGN KEY (bankId) REFERENCES organizations(id) ON DELETE CASCADE
     )
   `);
 
