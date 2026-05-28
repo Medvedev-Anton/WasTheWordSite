@@ -172,4 +172,21 @@ export class LoansFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Списывает платеж по кредиту у всех заемщиков
+     * @param {number} creditorId
+     */
+    getAllBorrowersPayment(creditorId) {
+        try {
+            const borrowers = this.service.getAllBorrowersByCreditor(creditorId);
+
+            borrowers.forEach(borrower => {
+                this.getLoanPayment(borrower.borrowerId, creditorId);
+            });
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
