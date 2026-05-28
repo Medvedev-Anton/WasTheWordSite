@@ -6,6 +6,13 @@ export class SalaryMapperInterface {
     }
 
     /**
+     * Получает всех сотрудников
+     */
+    getAll() {
+        throw new Error('getAll должен быть переопределен в наследнике');
+    }
+
+    /**
      * Получает зарплаты пользователя
      * @param {number} userId
      */

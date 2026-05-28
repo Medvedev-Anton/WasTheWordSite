@@ -6,6 +6,17 @@ export class SalaryMapper extends SalaryMapperInterface {
         super();
     }
 
+    getAll() {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                users_salary    
+        `);
+
+        return result;
+    }
+
     getUserSalaryies(userId) {
         const salaries = db.prepare(`
             SELECT
