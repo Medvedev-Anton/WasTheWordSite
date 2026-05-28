@@ -808,6 +808,10 @@ function OrganizationDetail({
       case "Правительственная":
         navigate(`/government/dashboard/${orgId}`);
         break;
+
+      default:
+        navigate(`/org/dashboard/${orgId}`);
+        break;
     }
   }
 

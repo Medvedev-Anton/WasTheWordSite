@@ -1,0 +1,17 @@
+#typical-dashboard input[type="number"] {
+    width: 100%;
+    text-align: center;
+    height: 30px;
+    font-size: 16px;
+}
+
+.org-salary-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.salary-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
