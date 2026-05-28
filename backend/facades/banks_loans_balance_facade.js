@@ -62,4 +62,17 @@ export class BanksLoansBalanceFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Удаляет запись о балансе
+     * @param {number} bankId
+     */
+    static delete(bankId) {
+        try {
+            return this.getService().delete(bankId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
