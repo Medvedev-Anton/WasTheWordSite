@@ -169,8 +169,8 @@ export class OrgsFacade {
                     throw new Error('недостаточно средств для перевода');
                 }
 
-                BalanceFacade.entity('users').decrement(sum, adminId);
-                BalanceFacade.entity('orgs').increment(sum, orgId);
+                BalanceFacade.entity('users').decrement(adminId, sum);
+                BalanceFacade.entity('orgs').increment(orgId, sum);
             }
             catch (e) {
                 throw new Error(e.message);
