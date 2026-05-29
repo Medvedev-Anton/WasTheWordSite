@@ -64,7 +64,7 @@ export default function TransferFromAdminToOrg({orgId}) {
                         Текущий баланс:
                     </div>
                     <input 
-                        type="text" 
+                        type="number" 
                         className="current-balance-input"
                         value={orgBalance}
                         readOnly
@@ -75,7 +75,7 @@ export default function TransferFromAdminToOrg({orgId}) {
                         Баланс админа:
                     </div>
                     <input 
-                        type="text" 
+                        type="number" 
                         className="current-admin-balance-input"
                         value={adminBalance}
                         readOnly
@@ -86,7 +86,7 @@ export default function TransferFromAdminToOrg({orgId}) {
                         Сумма для перевода:
                     </div>
                     <input 
-                        type="text" 
+                        type="number" 
                         className="transfer-sum-input"
                         value={sumToTransfer}
                         onChange={changeSumToTransfer}
