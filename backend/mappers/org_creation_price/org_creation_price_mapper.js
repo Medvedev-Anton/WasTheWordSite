@@ -20,7 +20,7 @@ export class OrgCreationPriceMapper extends OrgCreationPriceMapperInterface {
     findByOrgType(orgType) {
         const result = db.prepare(`
             SELECT
-                percent
+                price
             FROM
                 orgs_creation_prices
             WHERE
