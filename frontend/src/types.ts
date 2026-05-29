@@ -16,6 +16,7 @@ export interface User {
   photos?: Photo[];
   posts?: Post[];
   rang?: Rang;
+  balance: number;
 }
 
 export interface Rang {
