@@ -221,7 +221,7 @@ export class OrgsFacade {
                                     this.getAllOrgsIdsByType('Правительственная')[0].id :
                                     null;
 
-                                    BalanceFacade.entity('users').decrement(userId, creationPrice);
+                BalanceFacade.entity('users').decrement(userId, creationPrice);
                 BalanceFacade.entity('orgs').increment(goverId, creationPrice);
             }
             catch (e) {
