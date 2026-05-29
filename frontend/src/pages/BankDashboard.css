@@ -45,3 +45,36 @@ h1 {
     width: unset !important;
     margin-top: 0 !important;
 }
+
+.tansfer-between-bank-balances-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+    align-items: start;
+}
+
+.tansfer-between-bank-balances__bank-balance {
+    display: flex;
+    align-items: center;
+}
+
+.tansfer-between-bank-balances__bank-balance input {
+    margin-top: 0 !important;
+}
+
+.tansfer-between-bank-balances__bank-balance-title {
+    width: 250px;
+}
+
+.transfer-between-balances-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #FFF;
+    border-radius: 20px;
+    transition: all .3s;
+}
+
+.transfer-between-balances-btn:hover {
+    opacity: .5;
+}

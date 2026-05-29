@@ -23,6 +23,10 @@ export default function BankDashboard() {
     const [orgsBorrowers, setOrgsBorrowers] = useState<Borrower[]>([]);
     const [usersBorrowers, setUsersBorrowers] = useState<Borrower[]>([]);
 
+    const [mainBalance, setMainBalance] = useState<number>(0);
+    const [loanBalance, setLoanBalance] = useState<number>(0);
+    const [sumToTransfer, setSumToTransfer] = useState<number>(0);
+
     useEffect(() => {
         if (id !== undefined) {
             const ID = parseInt(id);
@@ -31,8 +35,52 @@ export default function BankDashboard() {
             fetchBankParams(ID);
             fetchOrgsBorrowers(ID);
             fetchUsersBorrowers(ID);
+            fetchMainBalance(ID);
+            fetchLoanBalance(ID);
         }
     }, [id]);
+
+    // Получает основной баланс
+    const fetchMainBalance = async (id: number) => {
+        const result = await axios.get(`/api/organizations/${id}/balance`);
+        const balance = +(parseFloat(result.data.balance || 0) / 100).toFixed(2); 
+        setMainBalance(balance);
+    }
+
+    // Получает кредитный баланс банка
+    const fetchLoanBalance = async (id: number) => {
+        const result = await axios.get(`/api/banks/${id}/loan-balance`);
+        const balance = +(parseFloat(result.data.balance || 0) / 100).toFixed(2); 
+        setLoanBalance(balance);
+    }
+
+    // Обрабатывает изменение суммы перевода между счетами
+    const handleChangeTransferSum = (e: any) => {
+        setSumToTransfer(e.target.value);
+    }
+
+    // Отправляет запрос на перевод между счетами банка
+    const fetchTransferBetweeBalances = async (id: number | undefined) => {
+        axios.post(`/api/banks/${id}/tranfer-from-main-to-loan-balance`, {
+            sum: sumToTransfer * 100
+        });
+    }
+
+    // Обрабатывает нажатие на кнопку перевода с кредитного баланса на основной баланс
+    const hangleClickTransferBetweenBalances = () => {
+        if (loanBalance > mainBalance) {
+            alert('Недостаточно средств');
+            return;
+        }
+
+        const ID = org?.id;
+
+        if (ID !== undefined) {
+            fetchTransferBetweeBalances(ID);
+            fetchMainBalance(ID);
+            fetchLoanBalance(ID);
+        }        
+    }
 
     // Устанавливает данные организации
     const fetchOrg = async (id: number) => {
@@ -160,6 +208,53 @@ export default function BankDashboard() {
     return (
         <div className="dashboard-wrapper" id="bank-dashboard">
             <h1>Управление банком</h1>
+            <div className="tansfer-between-bank-balances">
+                <h2>
+                    Перевод с основного на кредитный баланс
+                </h2>
+
+                <div className="tansfer-between-bank-balances-content">
+                    <div className="tansfer-between-bank-balances__bank-balance">
+                        <div className="tansfer-between-bank-balances__bank-balance-title">
+                            Основной баланс:
+                        </div>
+                        <input 
+                            type="number" 
+                            className="tansfer-between-bank-balances__bank-balance-input"
+                            value={mainBalance}
+                            readOnly
+                        />
+                    </div>
+                    <div className="tansfer-between-bank-balances__bank-balance">
+                        <div className="tansfer-between-bank-balances__bank-balance-title">
+                            Кредитный баланс:
+                        </div>
+                        <input 
+                            type="number" 
+                            className="tansfer-between-bank-balances__bank-balance-input"
+                            value={loanBalance}
+                            readOnly
+                        />
+                    </div>
+                    <div className="tansfer-between-bank-balances__bank-balance">
+                        <div className="tansfer-between-bank-balances__bank-balance-title">
+                            Сумма перевода:
+                        </div>
+                        <input 
+                            type="number" 
+                            className="tansfer-between-bank-balances__bank-balance-input"
+                            value={sumToTransfer}
+                            onChange={handleChangeTransferSum}
+                        />
+                    </div>
+                    <button 
+                        onClick={hangleClickTransferBetweenBalances}
+                        className="transfer-between-balances-btn"
+                    >
+                        Перевести
+                    </button>
+                </div>
+            </div>
             <div className="loan-params-wrapper">
                 <div className="loan-params-orgs loan-params-list">
                     <div className="loan-param">
