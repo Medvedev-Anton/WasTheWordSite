@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   // Отправляет запрос на получение баланса пользователя
   const fetchUserBalance = async () => {
     const result = await axios.get(`/api/users/balance`);
-    setUserBalance(result.data.balance);
+    setUserBalance(result.data.balance / 100);
   }
 
   return (
