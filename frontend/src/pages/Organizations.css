@@ -1873,6 +1873,10 @@
   text-align: center;
 }
 
+.org-balance {
+  margin-bottom: 10px;
+}
+
 @media (max-width: 640px) {
   .icon-grid {
     grid-template-columns: 1fr 1fr;
