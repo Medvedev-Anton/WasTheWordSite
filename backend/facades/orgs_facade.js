@@ -4,6 +4,7 @@ import { db } from "../database/init.js";
 import { PricesFacade } from "./prices_facade.js";
 import { BalanceFacade } from "./balance_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
+import { OrgCreationPriceFacade } from "./org_creation_price_facade.js";
 
 export class OrgsFacade {
     /**
@@ -182,6 +183,27 @@ export class OrgsFacade {
         }
         catch (e) {
             throw new Error('Ошибка при обработке транзакции по переводу с баланса автора организации на баланс организации: ' + e.message);
+        }
+    }
+
+    /**
+     * Проверяет есть ли у пользователя средства на создание организации
+     * @param {string} orgType
+     * @param {number} userId
+     */
+    static checkHasBalanceToCreate(orgType, userId) {
+        try {
+            const creationPrice = OrgCreationPriceFacade.getOrgPrice(orgType);
+            const userBalance = BalanceFacade.entity('users').getBalance(userId);
+
+            if (userBalance < creationPrice) {
+                return false;
+            }
+
+            return true;
+        }
+        catch (e) {
+            throw new Error(e.message);
         }
     }
 }

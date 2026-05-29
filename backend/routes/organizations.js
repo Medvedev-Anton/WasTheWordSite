@@ -339,6 +339,12 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
     } = req.body;
     const adminId = req.user.userId;
 
+    if (!OrgsFacade.checkHasBalanceToCreate(orgType, adminId)) {
+      return res.status(400).json({
+        error: 'Not enough money to create'
+      });
+    }
+
     const iconId = organizationIconId === null || organizationIconId === undefined || organizationIconId === "" ? 1 : organizationIconId;
     const coverId = organizationCoverId === null || organizationCoverId === undefined || organizationCoverId === "" ? null : parseInt(organizationCoverId);
 
