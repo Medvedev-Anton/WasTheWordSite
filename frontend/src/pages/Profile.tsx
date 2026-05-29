@@ -158,7 +158,7 @@ export default function Profile() {
           {
             user.balance ?
             (
-              <p className="profile-balance">Баланс: {user.balance}$</p>
+              <p className="profile-balance">Баланс: {user.balance / 100}$</p>
             )
             :
             ""
