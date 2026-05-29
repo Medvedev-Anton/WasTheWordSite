@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import './TransferFromAdminToOrg.css';
 
 export default function TransferFromAdminToOrg({orgId}) {
     const [orgBalance, setOrgBalance] = useState<number>(0);
@@ -14,7 +15,10 @@ export default function TransferFromAdminToOrg({orgId}) {
     // Получает текущий баланс организации
     const fetchOrgBalance = async (orgId: number) => {
         const result = await axios.get(`/api/organizations/${orgId}/balance`);
-        setOrgBalance(result.data.balance);
+
+        const balance = +(parseFloat(result.data.balance || 0) / 100).toFixed(2);
+
+        setOrgBalance(balance);
     }
 
     // Обрабатывает изменение суммы для перевода
@@ -26,10 +30,11 @@ export default function TransferFromAdminToOrg({orgId}) {
     // Обрабатывает запрос на перевод
     const fetchTransfer = async () => {
         const result = await axios.post(`/api/organizations/${orgId}/transfer-from-admin-to-org`, {
-            sum: sumToTransfer
+            sum: sumToTransfer * 100
         });
 
         if (result.data.message && result.data.mesage === 'success') {
+            fetchOrgBalance(orgId);
             alert('Пополнение прошло успешно');
         }
         else {
@@ -50,7 +55,10 @@ export default function TransferFromAdminToOrg({orgId}) {
     // Получает текущий баланс админа
     const fetchAdminBalance = async () => {
         const result = await axios.get(`/api/users/balance`);
-        setAdminBalance(result.data.balance);
+
+        const balance = +(parseFloat(result.data.balance || 0) / 100).toFixed(2);
+
+        setAdminBalance(balance);
     }
 
     return (
