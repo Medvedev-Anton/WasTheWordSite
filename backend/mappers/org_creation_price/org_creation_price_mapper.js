@@ -27,7 +27,7 @@ export class OrgCreationPriceMapper extends OrgCreationPriceMapperInterface {
                 orgType = ?
         `).get(orgType);
 
-        return result.percent || 0;
+        return result.price || 0;
     }
 
     updateByOrgType(orgType, newPrice) {
