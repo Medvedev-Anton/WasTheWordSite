@@ -340,8 +340,8 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
     const adminId = req.user.userId;
 
     if (!OrgsFacade.checkHasBalanceToCreate(orgType, adminId)) {
-      return res.status(400).json({
-        error: 'Not enough money to create'
+      return res.status(200).json({
+        error: 'notEnoughMoney'
       });
     }
 

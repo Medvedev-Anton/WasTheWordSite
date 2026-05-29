@@ -121,9 +121,15 @@ export default function Organizations() {
     }
 
     try {
-      await axios.post('/api/organizations', data, {
+      const creationResult = await axios.post('/api/organizations', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+
+      if (creationResult.data.error && creationResult.data.error == 'notEnoughMoney') {
+        alert('Недостаточно средств для создания');
+        return;
+      }
+
       setShowCreateModal(false);
       fetchOrganizations();
     } catch (error) {
