@@ -882,7 +882,7 @@ router.get('/:id/balance', authenticateToken, (req, res) => {
   controller.getOrgBalance();
 });
 
-router.post('/:id/transfer-from-admin-to-org', authenticateTokenm, (req, res) => {
+router.post('/:id/transfer-from-admin-to-org', authenticateToken, (req, res) => {
   const controller = new BalanceController(req, res);
   controller.transferFromAdminToOrg();
 });
