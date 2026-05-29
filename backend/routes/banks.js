@@ -17,6 +17,12 @@ router.get('/:bankId/params', authenticateToken, (req, res) => {
     }
 });
 
+// Получение кредитного баланса банка
+router.get('/:bankId/loan-balance', authenticateToken, (req, res) => {
+    const controller = new BankController(req, res);
+    controller.getLoanBalance();
+});
+
 // Обновление процента по кредиту для пользователей
 router.post('/:bankId/params/users-loan-percent', authenticateToken, (req, res) => {
     try {

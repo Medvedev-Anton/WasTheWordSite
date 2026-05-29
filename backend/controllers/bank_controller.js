@@ -1,4 +1,5 @@
 import { BankFacade } from "../facades/bank_facade.js";
+import { BanksLoansBalanceFacade } from "../facades/banks_loans_balance_facade.js";
 import { LoansFacade } from "../facades/loans_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -209,6 +210,34 @@ export class BankController extends MainController {
         }
         catch (e) {
             console.error('Get orgs borrowers error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обработчик получения значения кредитного баланса банка
+     */
+    getLoanBalance() {
+        const validate = this.has([
+            'bankId',
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const bankId = parseInt(this.request.params.bankId);
+            const balance = BanksLoansBalanceFacade.getBalance(bankId);
+
+            return this.send(200, {
+                balance: balance
+            });
+        }
+        catch (e) {
+            console.error('Get bank loan balance error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
