@@ -33,7 +33,7 @@ export default function TransferFromAdminToOrg({orgId}) {
             sum: sumToTransfer * 100
         });
 
-        if (result.data.message && result.data.mesage === 'success') {
+        if (result.data.message && result.data.message === 'success') {
             fetchOrgBalance(orgId);
             alert('Пополнение прошло успешно');
         }
