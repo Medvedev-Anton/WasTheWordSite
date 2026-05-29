@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { RangFacade } from '../facades/rang_facade.js';
+import { BalanceController } from '../controllers/balance_controller.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -226,6 +227,12 @@ router.delete('/:id/photos/:photoId', authenticateToken, (req, res) => {
     console.error('Delete photo error:', error);
     res.status(500).json({ error: 'Server error' });
   }
+});
+
+// Get balance
+router.get('/balance', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.getUserBalance();
 });
 
 export default router;
