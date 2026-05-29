@@ -163,6 +163,12 @@ export class OrgsFacade {
                     throw new Error('пользователь не явялется владельцем организации');
                 }
 
+                const currentAdminBalance = BalanceFacade.entity('users').getBalance(adminId);
+
+                if (currentAdminBalance < sum) {
+                    throw new Error('недостаточно средств для перевода');
+                }
+
                 BalanceFacade.entity('users').decrement(sum, adminId);
                 BalanceFacade.entity('orgs').increment(sum, orgId);
             }
