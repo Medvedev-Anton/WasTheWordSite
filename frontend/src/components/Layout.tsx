@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Layout.css';
+import axios from 'axios';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userBalance, setUserBalance] = useState<number>(0);
   const closeSidebar = () => setSidebarOpen(false);
+
+  useEffect(() => {
+    fetchUserBalance();
+  }, []);
+
+  // Отправляет запрос на получение баланса пользователя
+  const fetchUserBalance = async () => {
+    const result = await axios.get(`/api/users/balance`);
+    setUserBalance(result.data.balance);
+  }
 
   return (
     <div className="layout">
@@ -43,6 +55,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="user-menu">
             <span className="username">{user?.username}</span>
+            <span>Баланс: {userBalance}$</span>
             <button onClick={logout} className="logout-btn">Выход</button>
           </div>
           <button className="hamburger-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Меню">
