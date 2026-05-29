@@ -243,4 +243,35 @@ export class BankController extends MainController {
             });
         }
     }
+
+    /**
+     * Обработчик перевода с основного баланса на кредитный баланс
+     */
+    transferFromMainToLoanBalance() {
+        const validate = this.has([
+            'bankId',
+            'sum'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const bankId = parseInt(this.request.params.bankId);
+            const sum = parseFloat(this.request.body.sum);
+
+            BankFacade.transferFromMainToLoanBalance(bankId, sum);
+
+            this.send(200, {
+                message: 'success'
+            });
+        }
+        catch (e) {
+            console.error('Transfer from main to loan balances error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }

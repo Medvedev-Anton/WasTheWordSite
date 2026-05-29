@@ -23,6 +23,12 @@ router.get('/:bankId/loan-balance', authenticateToken, (req, res) => {
     controller.getLoanBalance();
 });
 
+// Перевод с основного баланса на кредитный баланс
+router.post('/:bankId/tranfer-from-main-to-loan-balance', authenticateToken, (req, res) => {
+    const controller = new BankController(req, res);
+    controller.transferFromMainToLoanBalance();
+});
+
 // Обновление процента по кредиту для пользователей
 router.post('/:bankId/params/users-loan-percent', authenticateToken, (req, res) => {
     try {
