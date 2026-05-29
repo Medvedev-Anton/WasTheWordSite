@@ -3,6 +3,7 @@ import OrgSalaryDashboard from "../components/OrgSalaryDashboard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import './TypicalOrgDashboard.css';
+import TransferFromAdminToOrg from "../components/TransferFromAdminToOrg";
 
 interface Organization {
   id: number;
@@ -33,6 +34,10 @@ export default function TypicalOrgDashboard() {
 
             <div className="org-salaries">
                 <OrgSalaryDashboard orgId={id} />
+            </div>
+
+            <div className="transfer-wrapper">
+                <TransferFromAdminToOrg orgId={id} />
             </div>
             
         </div>

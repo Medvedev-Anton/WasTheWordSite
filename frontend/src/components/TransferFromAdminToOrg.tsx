@@ -35,6 +35,7 @@ export default function TransferFromAdminToOrg({orgId}) {
 
         if (result.data.message && result.data.message === 'success') {
             fetchOrgBalance(orgId);
+            fetchAdminBalance();
             alert('Пополнение прошло успешно');
         }
         else {

@@ -1,0 +1,35 @@
+.transfer-to-org-balance-wrapper input[type="number"] {
+    width: 100%;
+    text-align: center;
+    height: 30px;
+    font-size: 16px;
+}
+
+.transfer-to-org-balance-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.transfer-to-org-balance-row {
+    display: flex;   
+    align-items: center;
+}
+
+.transfer-to-org-balance-row div {
+    width: 250px;
+}
+
+.sum-to-transfer-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #FFF;
+    margin-top: 20px;
+    transition: all .3s;
+}
+
+.sum-to-transfer-btn:hover {
+    opacity: .5;
+}
