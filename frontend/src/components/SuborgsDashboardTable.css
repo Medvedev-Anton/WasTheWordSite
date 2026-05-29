@@ -1,0 +1,30 @@
+.suborgs-table-wrapper .resources-for-org-creation {
+    margin-top: 30px;
+}
+
+.suborgs-table-wrapper .resources-for-org-creation h2 {
+    text-align: center;
+}
+
+.suborgs-table-wrapper .resources-table {
+    margin-top: 30px;
+}
+
+.suborgs-table-wrapper .resources-table-head, .resources-table-content-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.suborgs-table-wrapper .resources-table-head-ceil, .resources-table-content-ceil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.suborgs-table-wrapper .resources-table-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import './TypicalOrgDashboard.css';
 import TransferFromAdminToOrg from "../components/TransferFromAdminToOrg";
+import SuborgsDashboardTable from "../components/SuborgsDashboardTable";
 
 interface Organization {
   id: number;
@@ -38,6 +39,10 @@ export default function TypicalOrgDashboard() {
 
             <div className="transfer-wrapper">
                 <TransferFromAdminToOrg orgId={id} />
+            </div>
+
+            <div className="suborgs-resources">
+                <SuborgsDashboardTable orgType={org?.orgType} />
             </div>
             
         </div>
