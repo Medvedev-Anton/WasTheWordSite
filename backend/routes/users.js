@@ -30,6 +30,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// Get balance
+router.get('/balance', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.getUserBalance();
+});
+
 // Get all users (for chat creation)
 router.get('/', authenticateToken, (req, res) => {
   try {
@@ -227,12 +233,6 @@ router.delete('/:id/photos/:photoId', authenticateToken, (req, res) => {
     console.error('Delete photo error:', error);
     res.status(500).json({ error: 'Server error' });
   }
-});
-
-// Get balance
-router.get('/balance', authenticateToken, (req, res) => {
-  const controller = new BalanceController(req, res);
-  controller.getUserBalance();
 });
 
 export default router;
