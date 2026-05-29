@@ -36,6 +36,26 @@ export class BalanceController extends MainController {
     }
 
     /**
+     * Обрабатывает получение баланса пользователя
+     */
+    getUserBalance() {
+        try {
+            const userId = parseInt(this.request.user.userId);
+            const balance = BalanceFacade.entity('users').getBalance(userId);
+
+            this.send(200, {
+                balance: balance
+            });
+        }
+        catch (e) {
+            console.error('Transfer from admin to org balance error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
      * Обрабатывает перевод с баланса админа на баланс организации
      */
     transferFromAdminToOrg() {
