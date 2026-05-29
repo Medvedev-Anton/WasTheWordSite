@@ -103,7 +103,12 @@ export class SalaryFacade {
             const employees = this.getService().getAll();
 
             employees.forEach(employee => {
-                this.paySalary(employee.userId, employee.orgId, employee.salary);
+                const payday = new Date(employee.payday);
+                const today = new Date();
+
+                if (today >= payday) {
+                    this.paySalary(employee.userId, employee.orgId, employee.salary);
+                }                
             });
         }
         catch (e) {
