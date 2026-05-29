@@ -206,4 +206,34 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Списывает деньги со счета пользователя за создание организации
+     * @param {string} orgType
+     * @param {number} userId
+     */
+    static payForOrgCreation(orgType, userId) {
+        const transaction = db.transaction(() => {
+            try {
+                const creationPrice = OrgCreationPriceFacade.getOrgPrice(orgType);
+
+                const goverId = this.getAllOrgsIdsByType('Правительственная')[0] ?
+                                    this.getAllOrgsIdsByType('Правительственная')[0].id :
+                                    null;
+
+                                    BalanceFacade.entity('users').decrement(userId, creationPrice);
+                BalanceFacade.entity('orgs').increment(goverId, creationPrice);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции по оплате создания организации: ' + e.message);
+        }
+    }
 }
