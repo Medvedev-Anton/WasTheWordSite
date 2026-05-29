@@ -21,7 +21,7 @@ export class BalanceController extends MainController {
         
         try {
             const orgId = parseInt(this.request.params.id);
-            const balance = BalanceFacade.entity('orgs').getBalance();
+            const balance = BalanceFacade.entity('orgs').getBalance(orgId);
 
             this.send(200, {
                 balance: balance
