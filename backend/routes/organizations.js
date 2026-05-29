@@ -12,6 +12,7 @@ import { SalaryFacade } from '../facades/salary_facade.js';
 import SalaryController from '../controllers/salary_controller.js';
 import { BanksLoansBalanceFacade } from '../facades/banks_loans_balance_facade.js';
 import { BankFacade } from '../facades/bank_facade.js';
+import { BalanceController } from '../controllers/balance_controller.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -873,6 +874,17 @@ router.post('/:id/balance', authenticateToken, (req, res, next) => {
     console.error('Update org balance error:', error);
     res.status(500).json({ error: 'Server error' });
   }
+});
+
+// Get org balance
+router.get('/:id/balance', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.getOrgBalance();
+});
+
+router.post('/:id/transfer-from-admin-to-org', authenticateTokenm, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.transferFromAdminToOrg();
 });
 
 // Addings to org balance
