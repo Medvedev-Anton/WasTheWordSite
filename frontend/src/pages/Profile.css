@@ -316,6 +316,10 @@
   margin-top: 5px;
 }
 
+.profile-balance {
+  margin-bottom: 10px;
+}
+
 @media (max-width: 768px) {
   .profile-header {
     flex-direction: column;

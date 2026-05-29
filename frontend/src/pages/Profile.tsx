@@ -155,6 +155,14 @@ export default function Profile() {
             )
             : ''
           }
+          {
+            user.balance ?
+            (
+              <p className="profile-balance">Баланс: {user.balance}$</p>
+            )
+            :
+            ""
+          }
           <p className="username">@{user.username}</p>
           {!editing ? (
             <button onClick={() => setEditing(true)} className="edit-btn">
