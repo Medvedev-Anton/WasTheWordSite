@@ -29,7 +29,7 @@ export class TaxesFacade {
     }
 
     /**
-     * Списывает все платежи по налогам
+     * Списывает все платежи по налогам у конкретной сущности
      */
     payTax() {
         const transaction = db.transaction(() => {
