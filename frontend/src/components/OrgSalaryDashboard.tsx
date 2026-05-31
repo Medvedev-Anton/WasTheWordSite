@@ -82,6 +82,7 @@ export default function OrgSalaryDashboard({orgId}) {
                             <div className="salary-value">
                                 <input 
                                     type="number" 
+                                    className="input-with-dollar-back"
                                     data-user-id={salaries[username].userId}
                                     data-user-name={username}
                                     value={salaries[username].salary}
