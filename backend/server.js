@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cron from 'node-cron';
 import { initDatabase, db } from './database/init.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
@@ -17,6 +18,9 @@ import orgCreationPriceRouter from './routes/org-creation-price.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { TaxesFacade } from './facades/taxes_facade.js';
+import { SalaryFacade } from './facades/salary_facade.js';
+import { LoansFacade } from './facades/loans_facade.js';
 
 dotenv.config();
 
@@ -102,3 +106,14 @@ function cleanupOldFiles() {
 cleanupOldFiles();
 setInterval(cleanupOldFiles, 6 * 60 * 60 * 1000);
 
+// Start cron daemons
+cron.schedule('0 0 * * *', () => {
+  LoansFacade.getAllBanksBorrowersPayments();
+}, {
+  scheduled: true
+});
+
+cron.schedule('0 0 1 * *', () => {
+  TaxesFacade.payAllTaxes();
+  SalaryFacade.paySalaryToAllEmployees();
+});
