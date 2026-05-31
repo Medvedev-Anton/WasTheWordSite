@@ -74,7 +74,7 @@ export default function TransferFromAdminToOrg({orgId}) {
                     </div>
                     <input 
                         type="number" 
-                        className="current-balance-input"
+                        className="current-balance-input input-with-dollar-back"
                         value={orgBalance}
                         readOnly
                     />
@@ -85,7 +85,7 @@ export default function TransferFromAdminToOrg({orgId}) {
                     </div>
                     <input 
                         type="number" 
-                        className="current-admin-balance-input"
+                        className="current-admin-balance-input input-with-dollar-back"
                         value={adminBalance}
                         readOnly
                     />
@@ -96,7 +96,7 @@ export default function TransferFromAdminToOrg({orgId}) {
                     </div>
                     <input 
                         type="number" 
-                        className="transfer-sum-input"
+                        className="transfer-sum-input input-with-dollar-back"
                         value={sumToTransfer}
                         onChange={changeSumToTransfer}
                     />
