@@ -87,7 +87,7 @@ export default function SuborgsDashboardTable({ orgType }) {
                 </h2>
                 <div className="resources-table">
                     <div className="resources-table-head">
-                        <div className="resources-table-head-ceil resources-table-ceil">
+                        <div className="resources-table-head-ceil resources-table-ceil resources-table-ceil-first">
                             <span>Тип организации</span>
                         </div>
                         <div className="resources-table-head-ceil resources-table-ceil">
@@ -108,7 +108,7 @@ export default function SuborgsDashboardTable({ orgType }) {
                             SUBORGS_TYPES.map(type => {
                                 return (
                                     <div className="resources-table-content-row">
-                                        <div className="resources-table-content-ceil resources-table-ceil">
+                                        <div className="resources-table-content-ceil resources-table-ceil resources-table-ceil-first">
                                             <span>{type}</span>
                                         </div>
                                         <div className="resources-table-content-ceil resources-table-ceil">
