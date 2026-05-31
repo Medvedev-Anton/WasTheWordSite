@@ -62,6 +62,9 @@ export class TaxesFacade {
         }
     }
 
+    /**
+     * Списывает платежи по налогам у всех сущностей
+     */
     static payAllTaxes() {
         const transaction = db.transaction(() => {
             try {
