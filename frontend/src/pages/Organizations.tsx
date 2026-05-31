@@ -1145,7 +1145,7 @@ function OrganizationDetail({
               {
                 (isAdmin || isGlobalAdmin) ? 
                 (
-                  <p className="org-balance">Баланс: {organization.balance}$</p>
+                  <p className="org-balance">Баланс: {organization.balance / 100}$</p>
                 )
                 :
                 ""
