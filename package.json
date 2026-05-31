@@ -9,19 +9,16 @@
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
   },
-  "keywords": ["social", "network"],
+  "keywords": [
+    "social",
+    "network"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "node-cron": "^4.2.1"
   }
 }
-
-
-
-
-
-
-
-
-
