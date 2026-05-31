@@ -1214,22 +1214,22 @@ function OrganizationDetail({
         )}
       </div>
 
-      <div className="org-header get-loan-wrapper">
-        {
-          (!isAdmin && organization.orgType === 'Банковская')
-          ?
-          (
+      {
+        (!isAdmin && organization.orgType === 'Банковская')
+        ?
+        (
+          <div className="org-header get-loan-wrapper">
             <button
               className="get-loan-btn"
               onClick={() => setShowLoanModal(true)}
             >
               Взять кредит
             </button>
-          )
-          :
-          ""
-        }
-      </div>
+          </div>
+        )
+        :
+        ""
+      }
 
       {/* Sub-organizations section (visible inline, no tab) */}
       {subOrgType && (
