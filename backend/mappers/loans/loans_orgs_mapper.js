@@ -62,6 +62,10 @@ export class LoansOrgsMapper extends LoansMapperInterface {
                 borrowerId = ?    
         `).get(orgId);
 
+        if (result === undefined) {
+            return 0;
+        }
+
         const sum = parseFloat(result.paymentSum || 0);
 
         if (isNaN(sum)) {

@@ -81,6 +81,10 @@ export class LoansUsersMapper extends LoansMapperInterface {
                 borrowerId = ?    
         `).get(userId);
 
+        if (result === undefined) {
+            return 0;
+        }
+
         const sum = parseFloat(result.currentSum || 0);
 
         if (isNaN(sum)) {
