@@ -23,6 +23,8 @@ input[type="number"] {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    border: 2px solid #ff00c1;
+    padding: 20px;
 }
 
 #bank-dashboard input[type="number"] {
@@ -43,6 +45,8 @@ input[type="number"] {
 
 .borrowers-list {
     margin-top: 40px;
+    border: 2px solid #63d7a8;
+    padding: 20px;
 }
 
 .borrowers-wrapper {
@@ -67,6 +71,8 @@ input[type="number"] {
 
 .tansfer-between-bank-balances {
     margin-top: 30px;
+    border: 2px solid #7061c0;
+    padding: 20px;
 }
 
 .tansfer-between-bank-balances-content {
