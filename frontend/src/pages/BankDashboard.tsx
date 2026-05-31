@@ -220,7 +220,7 @@ export default function BankDashboard() {
                         </div>
                         <input 
                             type="number" 
-                            className="tansfer-between-bank-balances__bank-balance-input"
+                            className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
                             value={mainBalance}
                             readOnly
                         />
@@ -231,7 +231,7 @@ export default function BankDashboard() {
                         </div>
                         <input 
                             type="number" 
-                            className="tansfer-between-bank-balances__bank-balance-input"
+                            className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
                             value={loanBalance}
                             readOnly
                         />
@@ -242,7 +242,7 @@ export default function BankDashboard() {
                         </div>
                         <input 
                             type="number" 
-                            className="tansfer-between-bank-balances__bank-balance-input"
+                            className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
                             value={sumToTransfer}
                             onChange={handleChangeTransferSum}
                         />
@@ -257,6 +257,10 @@ export default function BankDashboard() {
             </div>
             <div className="loan-params-wrapper">
                 <div className="loan-params-orgs loan-params-list">
+                    <h3>
+                        Организации
+                    </h3>
+
                     <div className="loan-param">
                         <p>Процент кредита для организаций, %</p>
                         <input 
@@ -279,6 +283,10 @@ export default function BankDashboard() {
                     </div>
                 </div>
                 <div className="loan-params-users loan-params-list">
+                    <h3>
+                        Пользователи
+                    </h3>
+
                     <div className="loan-param">
                         <p>Процент кредита для пользователей, %</p>
                         <input 

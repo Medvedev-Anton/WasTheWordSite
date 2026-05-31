@@ -2,6 +2,17 @@ h1 {
     text-align: center;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 .loan-params-wrapper {
     display: flex;
     justify-content: space-between;
@@ -20,6 +31,14 @@ h1 {
     margin-top: 15px;
     height: 30px;
     font-size: 16px;
+}
+
+.input-with-dollar-back {
+    background-image: url('/image/dollar.png');
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
 }
 
 .borrowers-list {
@@ -44,6 +63,10 @@ h1 {
 .orgLoanPaymentPercent {
     width: unset !important;
     margin-top: 0 !important;
+}
+
+.tansfer-between-bank-balances {
+    margin-top: 30px;
 }
 
 .tansfer-between-bank-balances-content {
@@ -77,4 +100,27 @@ h1 {
 
 .transfer-between-balances-btn:hover {
     opacity: .5;
+}
+
+@media (max-width: 900px) {
+    .loan-params-wrapper {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .borrowers-wrapper {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .tansfer-between-bank-balances__bank-balance {
+        flex-direction: column;
+        align-items: start;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .tansfer-between-bank-balances__bank-balance-title {
+        width: unset;
+    }
 }
