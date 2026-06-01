@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { db } from '../database/init.js';
+import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
 
 const router = express.Router();
 
@@ -23,11 +24,14 @@ router.post('/register', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Initial balance
+    const initialBalance = InitialBalancesFacade.getUserInitialBalance();
+
     // Create user
     const result = db.prepare(`
-      INSERT INTO users (username, email, password, firstName, lastName, role, isBanned)
-      VALUES (?, ?, ?, ?, ?, 'user', 0)
-    `).run(username, email, hashedPassword, firstName || null, lastName || null);
+      INSERT INTO users (username, email, password, firstName, lastName, role, isBanned, balance)
+      VALUES (?, ?, ?, ?, ?, 'user', 0, ?)
+    `).run(username, email, hashedPassword, firstName || null, lastName || null, initialBalance);
 
     const user = db.prepare('SELECT id, username, email, firstName, lastName, avatar, role, isBanned FROM users WHERE id = ?').get(result.lastInsertRowid);
 
