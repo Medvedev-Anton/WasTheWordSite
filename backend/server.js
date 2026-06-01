@@ -116,4 +116,6 @@ cron.schedule('0 0 * * *', () => {
 cron.schedule('0 0 1 * *', () => {
   TaxesFacade.payAllTaxes();
   SalaryFacade.paySalaryToAllEmployees();
+}, {
+  scheduled: true
 });
