@@ -3,6 +3,8 @@ import './BankDashboard.css';
 import { useParams } from 'react-router-dom';
 import { Organization } from '../types';
 import axios from 'axios';
+import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
+import TransferFromAdminToOrg from '../components/TransferFromAdminToOrg';
 
 interface Borrower {
     borrowerId: number,
@@ -208,6 +210,7 @@ export default function BankDashboard() {
     return (
         <div className="dashboard-wrapper" id="bank-dashboard">
             <h1>Управление банком</h1>
+            <TransferFromAdminToOrg orgId={id} />
             <div className="tansfer-between-bank-balances">
                 <h2>
                     Перевод с основного на кредитный баланс
@@ -355,6 +358,7 @@ export default function BankDashboard() {
                     }
                 </div>
             </div>
+            <OrgBalanceDiagram orgId={id} />
         </div>
     );
 }
