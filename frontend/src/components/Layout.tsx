@@ -97,6 +97,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="mobile-sidebar-footer">
           <span className="mobile-sidebar-username">{user?.username}</span>
+          <p>
+            {userBalance}$
+          </p>
           <button onClick={() => { logout(); closeSidebar(); }} className="mobile-sidebar-logout">
             Выход
           </button>
