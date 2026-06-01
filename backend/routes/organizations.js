@@ -165,6 +165,20 @@ router.get('/', authenticateToken, (req, res) => {
   }
 });
 
+// Get total orgs balances
+router.get('/total-balances', authenticateToken, (req, res) => {
+  try {
+    const totalBalances = OrgsFacade.getTotalBalancesSum();
+    this.send(200, {
+      totalBalances: totalBalances
+    });
+  }
+  catch (error) {
+    console.error('Get total orgs balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/icons', authenticateToken, (req, res) => {
   try {
     const icons = db.prepare('SELECT * FROM organization_icon').all();
