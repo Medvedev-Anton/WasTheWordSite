@@ -11,6 +11,8 @@ import { db } from "../database/init.js";
 import { UserTaxPercentMapper } from "../mappers/user_tax_percent/user_tax_percent_mapper.js";
 import { OrgTaxPercentAdapter } from "../adapters/org_tax_percent_adapter.js";
 import { OrgTaxPercentMapper } from "../mappers/org_tax_percent/org_tax_percent_mapper.js";
+import { OrgsFacade } from "./orgs_facade.js";
+import NotificationsFacade from "./notifications_facade.js";
 
 export class ProfitFacade {
     constructor(entity) {
@@ -48,6 +50,7 @@ export class ProfitFacade {
     }
 
     static entity(entity) {
+        this.entity = entity;
         return new this(entity);
     }
 
@@ -92,6 +95,11 @@ export class ProfitFacade {
 
                 if (taxValue !== 0) {
                     this.taxService.incrementOrCreateCurrentTax(entityId, taxValue);
+                }
+
+                if (this.entity === 'orgs') {
+                    const adminId = OrgsFacade.getAdminId(entityId);
+                    NotificationsFacade.create(adminId, `Ваша организация получила доход в размере: ${incomingSum / 100}`);
                 }
             }
             catch (e) {
