@@ -269,4 +269,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает ID админа организации
+     * @param {number} orgId
+     */
+    static getAdminId(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+        
+        try {
+            return service.getAdminId(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
