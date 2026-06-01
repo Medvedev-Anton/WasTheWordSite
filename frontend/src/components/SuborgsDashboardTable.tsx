@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import './SuborgsDashboardTable.css';
 
 const ORG_HIERARCHY: Record<string, string> = {
     'Производственная': 'Цех',
@@ -114,6 +115,7 @@ export default function SuborgsDashboardTable({ orgType }) {
                                         <div className="resources-table-content-ceil resources-table-ceil">
                                             <input 
                                                 type="number"
+                                                className="input-with-dollar-back"
                                                 value={creationPrices[type]}
                                                 data-type={type}
                                                 onChange={handleChangeOrgCreationPrice}
