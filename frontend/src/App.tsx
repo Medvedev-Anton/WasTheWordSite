@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -16,8 +16,30 @@ import BankDashboard from './pages/BankDashboard';
 import LayoutMap from './components/LayoutMap';
 import GovernmentDashboard from './pages/GovernmentDashboard';
 import TypicalOrgDashboard from './pages/TypicalOrgDashboard';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      notifications.forEach(notify => {
+        alert(notify);
+      });
+    }
+  }, [notifications]);
+
+  // Запрос на получение всех уведомлений пользовтеля
+  const fetchNotifications = async () => {
+    const result = await axios.get('/api/notifications');
+    setNotifications(result.data.notifications);
+  }
+
   return (
     <AuthProvider>
       <Router>
