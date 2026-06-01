@@ -1,3 +1,5 @@
+import NotificationsServiceInterface from "./notifications_service_interface.js";
+
 export default class NotificationsService extends NotificationsServiceInterface {
     constructor(mapper) {
         super(mapper);

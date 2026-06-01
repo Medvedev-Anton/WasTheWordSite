@@ -1,4 +1,5 @@
 import { db } from "../../database/init.js";
+import NotificationsMapperInterface from "./notifications_mapper_interface.js";
 
 export default class NotificationsMapper extends NotificationsMapperInterface {
     constructor() {
