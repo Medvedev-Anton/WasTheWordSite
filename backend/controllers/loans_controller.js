@@ -139,8 +139,8 @@ export class LoansController extends MainController {
         }
 
         try {
-            const orgId = parseInt(this.request.body.orgId);
-            const isLoanExists = LoansFacade.isUserLoanExists(orgId);
+            const userId = parseInt(this.request.user.userId);
+            const isLoanExists = LoansFacade.isUserLoanExists(userId);
 
             if (isLoanExists) {
                 return this.send(200, {
@@ -148,6 +148,7 @@ export class LoansController extends MainController {
                 });
             }
 
+            const orgId = parseInt(this.request.body.orgId);
             const bankId = parseInt(this.request.params.bankId);
             const sum = parseFloat(this.request.body.loanSum);
 
