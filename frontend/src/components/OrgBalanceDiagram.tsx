@@ -2,6 +2,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend, ChartData } from 'chart.js';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import './OrgBalanceDiagram.css';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -56,7 +57,7 @@ export default function OrgBalanceDiagram({ orgId }) {
     }
 
     const options = {
-        responsive: true,
+        responsive: false,
         maintainAspectRatio: false,
         plugins: {
         legend: {
@@ -66,15 +67,28 @@ export default function OrgBalanceDiagram({ orgId }) {
         tooltip: {
             enabled: true,
             callbacks: {
-            label: (context) => `${context.label}: ${context.raw}%`,
+                label: (context) => {
+                    const value = context.raw as number;
+                    const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                    return `${context.label}: ${percentage}%`;
+                }
             },
         },
         },
     };
 
     return (
-        <div style={{ width: '400px', height: '400px', margin: '0 auto' }}>
+        <div 
+            className="org-balance-chart-wrapper"
+        >
+            <h2>
+                Бюджет организации
+            </h2>
             <Pie data={chartData} options={options} />
+            <p className="org-balance-chart__balance">
+                {orgBalance}$
+            </p>
         </div>
     );
 }
