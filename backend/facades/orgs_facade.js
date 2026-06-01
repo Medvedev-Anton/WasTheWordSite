@@ -236,4 +236,16 @@ export class OrgsFacade {
             throw new Error('Ошибка при обработке транзакции по оплате создания организации: ' + e.message);
         }
     }
+
+    /**
+     * Возвращает общий бюджет всех организаций
+     */
+    static getTotalBalancesSum() {
+        try {
+            return this.service.getTotalBalancesSum();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

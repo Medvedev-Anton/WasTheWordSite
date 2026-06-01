@@ -70,7 +70,16 @@ export class OrgsService extends OrgsServiceInterface {
 
     getAdminId(orgId) {
         try {
-            return this.mapper.getAdminId(orgId)
+            return this.mapper.getAdminId(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    getTotalBalancesSum() {
+        try {
+            return this.mapper.getTotalBalancesSum;
         }
         catch (e) {
             throw new Error(e.message);

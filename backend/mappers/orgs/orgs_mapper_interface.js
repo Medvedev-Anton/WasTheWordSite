@@ -74,4 +74,11 @@ export class OrgsMapperInterface {
     getAdminId(orgId) {
         throw new Error('getAdminId должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает общий бюджет всех организаций
+     */
+    getTotalBalancesSum() {
+        throw new Error('getTotalBalancesSum должен быть переопределен в наследнике');
+    }
 }

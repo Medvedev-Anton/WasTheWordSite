@@ -177,4 +177,25 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return result.adminId || null;
     }
+
+    getTotalBalancesSum() {
+        const result = db.prepare(`
+            SELECT
+                SUM(balance) as totalSum
+            FROM
+                organizations
+        `);
+
+        if (result === undefined) {
+            return 0;
+        }
+
+        const balanceSum = parseFloat(result.balance || 0);
+
+        if (isNaN(balanceSum)) {
+            return 0;
+        }
+
+        return balanceSum;
+    }
 }
