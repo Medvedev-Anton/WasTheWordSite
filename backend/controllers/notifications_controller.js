@@ -13,7 +13,10 @@ export default class NotificationsController extends MainController {
         try {
             const user = parseInt(this.request.user.userId);
             const notifications = NotificationsFacade.getAllByUser(user);
-            const notificationsMessages = notifications.map(notify => notify.message);
+            const notificationsMessages = notifications.map(notify => {
+                NotificationsFacade.delete(notify.id);
+                return notify.message;
+            });
 
             this.message(200, {
                 notifications: notificationsMessages
