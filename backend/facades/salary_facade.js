@@ -110,7 +110,7 @@ export class SalaryFacade {
                 if (today >= payday) {
                     this.paySalary(employee.userId, employee.orgId, employee.salary);
                     this.getService().changePaydayToNextMonth(employee.userId, employee.orgId, employee.payday);
-                    NotificationsFacade.create(employee.userId, `Вам начислена зарплата в размере: ${employee.salary / 100}`);
+                    NotificationsFacade.create(employee.userId, `Вам начислена зарплата в размере: ${employee.salary / 100}$`);
                 }
             });
         }
