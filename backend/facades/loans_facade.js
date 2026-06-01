@@ -210,14 +210,14 @@ export class LoansFacade {
                 LoansFacade.entity('users').getAllBorrowersPayment(bank.id);
                 const borrowersUsers = LoansFacade.entity('users').getAllBorrowersByCreditor(bank.id);
                 borrowersUsers.forEach(borrower => {
-                    NotificationsFacade.create(borrower.borrowerId, `У вас списан платеж по кредиту: ${borrower.paymentSum}`);
+                    NotificationsFacade.create(borrower.borrowerId, `У вас списан платеж по кредиту: ${borrower.paymentSum}$`);
                 });
 
                 LoansFacade.entity('orgs').getAllBorrowersPayment(bank.id);
                 const borrowersOrgs = LoansFacade.entity('orgs').getAllBorrowersByCreditor(bank.id);
                 borrowersOrgs.forEach(borrower => {
                     const adminId = OrgsFacade.getAdminId(borrower.borrowerId);
-                    NotificationsFacade.create(adminId, `У вас списан платеж по кредиту вашей организации: ${borrower.paymentSum}`);
+                    NotificationsFacade.create(adminId, `У вас списан платеж по кредиту вашей организации: ${borrower.paymentSum}$`);
                 });
             });
         }
