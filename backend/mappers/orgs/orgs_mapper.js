@@ -184,13 +184,13 @@ export class OrgsMapper extends OrgsMapperInterface {
                 SUM(balance) as totalSum
             FROM
                 organizations
-        `);
+        `).get();
 
         if (result === undefined) {
             return 0;
         }
 
-        const balanceSum = parseFloat(result.balance || 0);
+        const balanceSum = parseFloat(result.totalSum || 0);
 
         if (isNaN(balanceSum)) {
             return 0;
