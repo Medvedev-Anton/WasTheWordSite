@@ -1,3 +1,6 @@
+import { db } from "../../database/init.js";
+import { OrgsFacade } from "../../facades/orgs_facade.js";
+
 export class LoansMapperInterface {
     constructor() {
         if (new.target === 'LoansMapperInterface') {
@@ -59,10 +62,29 @@ export class LoansMapperInterface {
     }
 
     /**
-     * Проверяет наличие кредитов у сущности
-     * @param {number} entityId
+     * Проверяет наличие кредитов у пользователя
+     * @param {number} userId
      */
-    isEntityLoanExists(entityId) {
-        throw new Error('isEntityLoanExists должен быть переопределен в наследнике');
+    isEntityLoanExists(userId) {
+        const existsUserLoans = db.prepare(`
+            SELECT
+                *
+            FROM
+                users_loans
+            WHERE
+                borrowerId = ?    
+        `).all(userId);
+
+        const allUserOrgs = OrgsFacade.getAllUserOrgs(userId);
+        const allUserOrgsIds = allUserOrgs.map(org => org.id);
+
+        const query = `
+            SELECT * FROM orgs_loans 
+            WHERE borrowerId IN (SELECT value FROM json_each(?))
+        `;
+
+        const existsUserOrgsLoans = db.prepare(query).all(JSON.stringify(allUserOrgsIds));
+
+        return (existsUserLoans !== undefined) && (existsUserOrgsLoans !== undefined);
     }
 }

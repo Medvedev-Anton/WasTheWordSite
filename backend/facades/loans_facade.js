@@ -216,12 +216,12 @@ export class LoansFacade {
     }
 
     /**
-     * Проверяет наличие кредитов у сущности
-     * @param {number} entityId
+     * Проверяет наличие кредитов у пользователя
+     * @param {number} userId
      */
-    isEntityLoanExists(entityId) {
+    static isEntityLoanExists(userId) {
         try {
-            return this.service.isEntityLoanExists(entityId);
+            return this.service.isEntityLoanExists(userId);
         }
         catch (e) {
             throw new Error(e.message);

@@ -104,17 +104,4 @@ export class LoansUsersMapper extends LoansMapperInterface {
                 borrowerId = ?
         `).run(bankId, userId);
     }
-
-    isEntityLoanExists(userId) {
-        const result = db.prepare(`
-            SELECT
-                *
-            FROM
-                users_loans
-            WHERE
-                borrowerId = ? 
-        `).get(userId);
-
-        return result !== undefined;
-    }
 }

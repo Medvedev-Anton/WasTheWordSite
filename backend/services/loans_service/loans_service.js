@@ -71,9 +71,9 @@ export class LoansService extends LoansServiceInterface {
         }
     }
 
-    isEntityLoanExists(entityId) {
+    isEntityLoanExists(userId) {
         try {
-            return this.mapper.isEntityLoanExists(entityId);
+            return this.mapper.isEntityLoanExists(userId);
         }
         catch (e) {
             throw new Error(e.message);
