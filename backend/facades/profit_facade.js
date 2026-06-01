@@ -16,6 +16,7 @@ import NotificationsFacade from "./notifications_facade.js";
 
 export class ProfitFacade {
     constructor(entity) {
+        this.entity = entity;
         if (entity === 'users') {
             this.profitService = new ProfitService(
                 new ProfitUsersMapper()
@@ -50,7 +51,6 @@ export class ProfitFacade {
     }
 
     static entity(entity) {
-        this.entity = entity;
         return new this(entity);
     }
 
