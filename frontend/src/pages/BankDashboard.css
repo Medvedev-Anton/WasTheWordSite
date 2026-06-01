@@ -130,3 +130,9 @@ input[type="number"] {
         width: unset;
     }
 }
+
+@media (max-width: 540px) {
+    #bank-dashboard h2 {
+        font-size: 20px;
+    }
+}
