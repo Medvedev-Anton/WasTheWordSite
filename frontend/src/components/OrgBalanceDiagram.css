@@ -17,3 +17,9 @@
     text-align: center;
     margin-bottom: 10px;
 }
+
+@media (max-width: 380px) {
+    .org-balance-chart-wrapper canvas {
+        width: 100% !important;
+    }
+}
