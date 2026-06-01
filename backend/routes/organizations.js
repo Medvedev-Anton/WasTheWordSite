@@ -169,7 +169,7 @@ router.get('/', authenticateToken, (req, res) => {
 router.get('/total-balances', authenticateToken, (req, res) => {
   try {
     const totalBalances = OrgsFacade.getTotalBalancesSum();
-    this.send(200, {
+    res.status(200).json({
       totalBalances: totalBalances
     });
   }

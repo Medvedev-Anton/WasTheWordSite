@@ -79,7 +79,7 @@ export class OrgsService extends OrgsServiceInterface {
 
     getTotalBalancesSum() {
         try {
-            return this.mapper.getTotalBalancesSum;
+            return this.mapper.getTotalBalancesSum();
         }
         catch (e) {
             throw new Error(e.message);

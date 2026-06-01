@@ -241,8 +241,12 @@ export class OrgsFacade {
      * Возвращает общий бюджет всех организаций
      */
     static getTotalBalancesSum() {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
         try {
-            return this.service.getTotalBalancesSum();
+            return service.getTotalBalancesSum();
         }
         catch (e) {
             throw new Error(e.message);
