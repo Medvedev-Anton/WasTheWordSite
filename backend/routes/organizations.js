@@ -428,11 +428,13 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
 
-    OrgsFacade.payForOrgCreation(resolvedType, adminId);
+    if (resolvedType !== undefined) {
+      OrgsFacade.payForOrgCreation(resolvedType, adminId);
 
-    if (orgType == 'Банковская') {
-      BanksLoansBalanceFacade.create(result.lastInsertRowid, 0);
-      BankFacade.entity('orgs').createBankRowDefault(result.lastInsertRowid);
+      if (resolvedType == 'Банковская') {
+        BanksLoansBalanceFacade.create(result.lastInsertRowid, 0);
+        BankFacade.entity('orgs').createBankRowDefault(result.lastInsertRowid);
+      }
     }
 
     try {
