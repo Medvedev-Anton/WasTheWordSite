@@ -219,9 +219,9 @@ export class LoansFacade {
      * Проверяет наличие кредитов у пользователя
      * @param {number} userId
      */
-    static isEntityLoanExists(userId) {
+    static isUserLoanExists(userId) {
         try {
-            return this.service.isEntityLoanExists(userId);
+            return this.service.isUserLoanExists(userId);
         }
         catch (e) {
             throw new Error(e.message);

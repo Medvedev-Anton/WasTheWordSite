@@ -65,7 +65,7 @@ export class LoansMapperInterface {
      * Проверяет наличие кредитов у пользователя
      * @param {number} userId
      */
-    isEntityLoanExists(userId) {
+    isUserLoanExists(userId) {
         const existsUserLoans = db.prepare(`
             SELECT
                 *
