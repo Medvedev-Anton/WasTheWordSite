@@ -257,7 +257,7 @@ export class OrgsFacade {
      * Возвращает все организации под владением пользователя
      * @param {number} userId
      */
-    getAllUserOrgs(userId) {
+    static getAllUserOrgs(userId) {
         const service = new OrgsService(
             new OrgsMapper()
         );

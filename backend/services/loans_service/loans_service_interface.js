@@ -87,10 +87,10 @@ export class LoansServiceInterface {
     }
 
     /**
-     * Проверяет наличие кредитов у сущности
-     * @param {number} entityId
+     * Проверяет наличие кредитов у пользователя
+     * @param {number} userId
      */
-    isUserLoanExists(entityId) {
+    isUserLoanExists(userId) {
         throw new Error('isUserLoanExists должен быть переопределен в наследнике');
     }
 }

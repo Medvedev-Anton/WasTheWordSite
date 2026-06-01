@@ -207,7 +207,7 @@ export class OrgsMapper extends OrgsMapperInterface {
                 organizations
             WHERE
                 adminId = ?    
-        `).all();
+        `).all(userId);
 
         return result || [];
     }

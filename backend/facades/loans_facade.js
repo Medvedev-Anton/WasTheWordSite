@@ -221,7 +221,10 @@ export class LoansFacade {
      */
     static isUserLoanExists(userId) {
         try {
-            return this.service.isUserLoanExists(userId);
+            const service = new LoansService(
+                new LoansUsersMapper()
+            );
+            return service.isUserLoanExists(userId);
         }
         catch (e) {
             throw new Error(e.message);

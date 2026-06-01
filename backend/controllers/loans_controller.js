@@ -87,7 +87,7 @@ export class LoansController extends MainController {
 
         try {
             const userId = parseInt(this.request.user.userId);
-            const isLoanExists = LoansFacade.entity('users').isUserLoanExists(userId);
+            const isLoanExists = LoansFacade.isUserLoanExists(userId);
 
             if (isLoanExists) {
                 return this.send(200, {
@@ -140,7 +140,7 @@ export class LoansController extends MainController {
 
         try {
             const orgId = parseInt(this.request.body.orgId);
-            const isLoanExists = LoansFacade.entity('orgs').isUserLoanExists(orgId);
+            const isLoanExists = LoansFacade.isUserLoanExists(orgId);
 
             if (isLoanExists) {
                 return this.send(200, {
