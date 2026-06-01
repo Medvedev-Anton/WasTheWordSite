@@ -13,6 +13,7 @@ import SalaryController from '../controllers/salary_controller.js';
 import { BanksLoansBalanceFacade } from '../facades/banks_loans_balance_facade.js';
 import { BankFacade } from '../facades/bank_facade.js';
 import { BalanceController } from '../controllers/balance_controller.js';
+import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -403,10 +404,13 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       }
     }
 
+    // Initial balance
+    const initialBalance = InitialBalancesFacade.getOrgInitialBalance();
+
     const result = db.prepare(`
-      INSERT INTO organizations (name, description, avatar, coverImage, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id, organization_cover_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, description || null, avatarUrl, coverImageUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId, coverId);
+      INSERT INTO organizations (name, description, avatar, coverImage, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id, organization_cover_id, balance)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, description || null, avatarUrl, coverImageUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId, coverId, initialBalance);
 
     // Add admin as member with 'admin' role
     db.prepare(`
