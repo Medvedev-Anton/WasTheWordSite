@@ -198,4 +198,17 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return balanceSum;
     }
+
+    getAllUserOrgs(userId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                organizations
+            WHERE
+                adminId = ?    
+        `).all();
+
+        return result || [];
+    }
 }

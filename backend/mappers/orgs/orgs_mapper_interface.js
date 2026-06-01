@@ -81,4 +81,12 @@ export class OrgsMapperInterface {
     getTotalBalancesSum() {
         throw new Error('getTotalBalancesSum должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает все организации под владением пользователя
+     * @param {number} userId
+     */
+    getAllUserOrgs(userId) {
+        throw new Error('getAllUserOrgs должен быть переопределен в наследнике');
+    }
 }

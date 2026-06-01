@@ -252,4 +252,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает все организации под владением пользователя
+     * @param {number} userId
+     */
+    getAllUserOrgs(userId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getAllUserOrgs(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

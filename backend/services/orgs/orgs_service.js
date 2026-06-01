@@ -85,4 +85,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getAllUserOrgs(userId) {
+        try {
+            return this.mapper.getAllUserOrgs(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
