@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import './TypicalOrgDashboard.css';
 import TransferFromAdminToOrg from "../components/TransferFromAdminToOrg";
 import SuborgsDashboardTable from "../components/SuborgsDashboardTable";
+import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
 
 interface Organization {
   id: number;
@@ -31,6 +32,10 @@ export default function TypicalOrgDashboard() {
         <div className="typical-dashboard-wrapper" id="typical-dashboard">
             <div className="org-salary-wrapper-title">
                 <h1>Управление: {org?.orgType} организация</h1>
+            </div>
+
+            <div className="org-balance">
+                <OrgBalanceDiagram orgId={id} />
             </div>
 
             <div className="org-salaries">
