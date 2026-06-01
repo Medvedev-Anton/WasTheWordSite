@@ -27,7 +27,17 @@ export class OrgCreationPriceMapper extends OrgCreationPriceMapperInterface {
                 orgType = ?
         `).get(orgType);
 
-        return result.price || 0;
+        if (result === undefined) {
+            return 0;
+        }
+
+        const price = parseFloat(result.price || 0);
+
+        if (isNaN(price)) {
+            return 0;
+        }
+
+        return price;
     }
 
     updateByOrgType(orgType, newPrice) {
