@@ -3,6 +3,7 @@ import { SalaryService } from "../services/salary/salary_service.js";
 import { BalanceFacade } from "./balance_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
 import { db } from "../database/init.js";
+import NotificationsFacade from "./notifications_facade.js";
 
 export class SalaryFacade {
     static getService() {
@@ -109,6 +110,7 @@ export class SalaryFacade {
                 if (today >= payday) {
                     this.paySalary(employee.userId, employee.orgId, employee.salary);
                     this.getService().changePaydayToNextMonth(employee.userId, employee.orgId, employee.payday);
+                    NotificationsFacade.create(employee.userId, `Вам начислена зарплата в размере: ${employee.salary / 100}`);
                 }
             });
         }
