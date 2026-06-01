@@ -9,6 +9,7 @@ import { ProfitFacade } from "./profit_facade.js";
 import { db } from "../database/init.js";
 import { OrgsFacade } from "./orgs_facade.js";
 import { BanksLoansBalanceFacade } from "./banks_loans_balance_facade.js";
+import NotificationsFacade from "./notifications_facade.js";
 
 export class LoansFacade {
     constructor(entity) {
@@ -207,7 +208,17 @@ export class LoansFacade {
 
             allBanksIds.forEach(bank => {
                 LoansFacade.entity('users').getAllBorrowersPayment(bank.id);
+                const borrowersUsers = LoansFacade.entity('users').getAllBorrowersByCreditor(bank.id);
+                borrowersUsers.forEach(borrower => {
+                    NotificationsFacade.create(borrower.borrowerId, `У вас списан платеж по кредиту: ${borrower.paymentSum}`);
+                });
+
                 LoansFacade.entity('orgs').getAllBorrowersPayment(bank.id);
+                const borrowersOrgs = LoansFacade.entity('orgs').getAllBorrowersByCreditor(bank.id);
+                borrowersOrgs.forEach(borrower => {
+                    const adminId = OrgsFacade.getAdminId(borrower.borrowerId);
+                    NotificationsFacade.create(adminId, `У вас списан платеж по кредиту вашей организации: ${borrower.paymentSum}`);
+                });
             });
         }
         catch (e) {
