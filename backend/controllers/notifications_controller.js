@@ -18,7 +18,7 @@ export default class NotificationsController extends MainController {
                 return notify.message;
             });
 
-            this.message(200, {
+            this.send(200, {
                 notifications: notificationsMessages
             });
         }
