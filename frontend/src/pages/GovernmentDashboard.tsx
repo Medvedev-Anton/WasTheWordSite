@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import './GovernmentDashboard.css';
+import { useParams } from "react-router-dom";
+import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
 
 export default function GovernmentDashboard() {
     const ROOT_ORG_TYPES = [
@@ -15,6 +17,7 @@ export default function GovernmentDashboard() {
     ] as const;
     type OrgFormValues = Record<typeof ROOT_ORG_TYPES[number], 0>;
 
+    const { id } = useParams();
     const [usersTax, setUsersTax] = useState<number>(0);
     const [orgsTaxes, setOrgsTaxes] = useState<OrgFormValues>(() => {
         return Object.fromEntries(ROOT_ORG_TYPES.map(t => [t, 0])) as OrgFormValues
@@ -298,6 +301,7 @@ export default function GovernmentDashboard() {
                     </p>
                     <input 
                         type="number" 
+                        className="input-with-dollar-back"
                         value={postViewPrice}
                         onChange={handleChangePostViewPrice}
                         onBlur={fetchUpdatePostViewPrice}
@@ -315,7 +319,7 @@ export default function GovernmentDashboard() {
                             Правительственная организация
                         </h3>
                         <div className="gover-balance-diagram">
-
+                            <OrgBalanceDiagram orgId={id} />
                         </div>
                     </div>
                     <div className="created-orgs-wrapper">
@@ -324,7 +328,7 @@ export default function GovernmentDashboard() {
                         </h3>
                         <div className="orgs-management-table">
                             <div className="orgs-management-table-head">
-                                <div className="orgs-management-table-head-ceil orgs-management-table-ceil">
+                                <div className="orgs-management-table-head-ceil orgs-management-table-ceil orgs-management-table-ceil-first">
                                     <span>
                                         Название
                                     </span>
@@ -344,12 +348,13 @@ export default function GovernmentDashboard() {
                                 {
                                     Object.entries(orgsBalances).map(([name, org]) => (
                                             <div className="orgs-management-table-content-row" key={name}>
-                                                <div className="orgs-management-table-content-ceil orgs-management-table-ceil">
+                                                <div className="orgs-management-table-content-ceil orgs-management-table-ceil orgs-management-table-ceil-first">
                                                     <span>{name}</span>
                                                 </div>
                                                 <div className="orgs-management-table-content-ceil orgs-management-table-ceil">
                                                     <input 
                                                         type="number" 
+                                                        className="input-with-dollar-back"
                                                         value={addingOrgBalance[name]?.adding ?? 0}
                                                         data-name={name}
                                                         data-id={org.id}
@@ -360,6 +365,7 @@ export default function GovernmentDashboard() {
                                                 <div className="orgs-management-table-content-ceil orgs-management-table-ceil">
                                                     <input 
                                                         type="number" 
+                                                        className="input-with-dollar-back"
                                                         value={org.balance}
                                                         data-name={name}
                                                         data-id={org.id}
@@ -383,7 +389,7 @@ export default function GovernmentDashboard() {
                 </h2>
                 <div className="resources-table">
                     <div className="resources-table-head">
-                        <div className="resources-table-head-ceil resources-table-ceil">
+                        <div className="resources-table-head-ceil resources-table-ceil resources-table-ceil-first">
                             <span>Тип организации</span>
                         </div>
                         <div className="resources-table-head-ceil resources-table-ceil">
@@ -407,12 +413,13 @@ export default function GovernmentDashboard() {
                             ROOT_ORG_TYPES.map(type => {
                                 return (
                                     <div className="resources-table-content-row">
-                                        <div className="resources-table-content-ceil resources-table-ceil">
+                                        <div className="resources-table-content-ceil resources-table-ceil resources-table-ceil-first">
                                             <span>{type}</span>
                                         </div>
                                         <div className="resources-table-content-ceil resources-table-ceil">
                                             <input 
                                                 type="number"
+                                                className="input-with-dollar-back"
                                                 data-type={type} 
                                                 value={orgsCreationPrices[type]}
                                                 onChange={handleChangeOrgCreationPrice}
