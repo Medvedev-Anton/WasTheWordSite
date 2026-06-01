@@ -1877,6 +1877,14 @@
   margin-bottom: 10px;
 }
 
+.input-with-dollar-back {
+    background-image: url('/image/dollar.png');
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
+}
+
 @media (max-width: 640px) {
   .icon-grid {
     grid-template-columns: 1fr 1fr;

@@ -1703,6 +1703,7 @@ function OrganizationDetail({
                 <strong>Введите сумму:</strong>
                 <input 
                   type="number" 
+                  className="input-with-dollar-back"
                   step="any"
                   name="loanValue"
                   value={loanValue}
@@ -1720,7 +1721,7 @@ function OrganizationDetail({
                         Сумма для выплаты: 
                       </span>
                       <span>
-                        {loanForecastSum}
+                        {loanForecastSum}$
                       </span>
                     </div>
 
@@ -1738,7 +1739,7 @@ function OrganizationDetail({
                         Ежедневный платеж: 
                       </span>
                       <span>
-                        {loanForecastDailyPayment}
+                        {loanForecastDailyPayment}$
                       </span>
                     </div>
 
