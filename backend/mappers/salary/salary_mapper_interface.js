@@ -56,4 +56,14 @@ export class SalaryMapperInterface {
     updateSalary(userId, orgId, newSalary) {
         throw new Error('updateSalary должен быть переопределен в наследнике');
     }
+
+    /**
+     * Изменяет дату начисления зарплаты
+     * @param {number} userId
+     * @param {number} orgId
+     * @param {string} newPayday
+     */
+    chagePayday(userId, orgId, newPayday) {
+        throw new Error('changePaydayToNextMonth должен быть переопределен в наследнике');
+    }
 }

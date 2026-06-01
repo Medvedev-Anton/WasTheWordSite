@@ -108,7 +108,8 @@ export class SalaryFacade {
 
                 if (today >= payday) {
                     this.paySalary(employee.userId, employee.orgId, employee.salary);
-                }                
+                    this.getService().changePaydayToNextMonth(employee.userId, employee.orgId, employee.payday);
+                }
             });
         }
         catch (e) {

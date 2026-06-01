@@ -58,4 +58,16 @@ export class SalaryService extends SalaryServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    changePaydayToNextMonth(userId, orgId, payday) {
+        try {
+            const date = new Date(payday);
+            date.setMonth(date.getMonth() + 1);
+            
+            return this.mapper.chagePayday(userId, orgId, date.toString());
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

@@ -63,4 +63,14 @@ export class SalaryServiceInterface {
     updateSalary(userId, orgId, newSalary) {
         throw new Error('updateSalary должен быть переопределен в наследнике');
     }
+
+    /**
+     * Сдвигает дату выплаты зарплаты на месяц
+     * @param {number} userId
+     * @param {number} orgId
+     * @param {number} payday
+     */
+    changePaydayToNextMonth(userId, orgId, payday) {
+        throw new Error('changePaydayToNextMonth должен быть переопределен в наследнике');
+    }
 }
