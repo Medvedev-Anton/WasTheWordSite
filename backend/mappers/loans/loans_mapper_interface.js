@@ -85,6 +85,6 @@ export class LoansMapperInterface {
 
         const existsUserOrgsLoans = db.prepare(query).all(JSON.stringify(allUserOrgsIds));
 
-        return (existsUserLoans.length != 0) && (existsUserOrgsLoans.length != 0);
+        return (existsUserLoans.length != 0) || (existsUserOrgsLoans.length != 0);
     }
 }
