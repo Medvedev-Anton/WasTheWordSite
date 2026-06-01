@@ -19,7 +19,13 @@ export class InitialBalancesMapper extends InitialBalancesMapperInterface {
             return 0;
         }
 
-        return parseInt(result.value);
+        const balance = parseFloat(result.value || 0);
+
+        if (isNaN(balance)) {
+            return 0;
+        }
+
+        return balance;
     }
 
     updateBalanceByName(name, balance) {
