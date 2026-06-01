@@ -428,7 +428,7 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
 
-    OrgsFacade.payForOrgCreation(orgType, adminId);
+    OrgsFacade.payForOrgCreation(resolvedType, adminId);
 
     if (orgType == 'Банковская') {
       BanksLoansBalanceFacade.create(result.lastInsertRowid, 0);
