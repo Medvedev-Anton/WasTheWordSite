@@ -405,7 +405,7 @@ export default function GovernmentDashboard() {
                             <span>Предметы</span>
                         </div>
                         <div className="resources-table-head-ceil resources-table-ceil">
-                            <span>Установить налог</span>
+                            <span>Установить налог, %</span>
                         </div>
                     </div>
                     <div className="resources-table-content">
