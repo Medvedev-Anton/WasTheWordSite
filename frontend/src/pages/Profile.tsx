@@ -276,7 +276,7 @@ export default function Profile() {
               </button>
             </div>
           )}
-
+        </div>
         <div className="stat-item">
           <span className="stat-icon">⚡</span>
           <span className="stat-value">{energy}</span>
