@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cron from 'node-cron';
 import { initDatabase, db } from './database/init.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
@@ -10,10 +11,18 @@ import chatRoutes from './routes/chats.js';
 import messageRoutes from './routes/messages.js';
 import adminRoutes from './routes/admin.js';
 import rangsRouter from './routes/rangs.js';
+import banksRouter from './routes/banks.js';
+import taxesRouter from './routes/taxes.js';
+import pricesRouter from './routes/prices.js';
+import notificationsRouter from './routes/notifications.js';
+import orgCreationPriceRouter from './routes/org-creation-price.js';
 import heroesRouter from './routes/heroes.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { TaxesFacade } from './facades/taxes_facade.js';
+import { SalaryFacade } from './facades/salary_facade.js';
+import { LoansFacade } from './facades/loans_facade.js';
 
 dotenv.config();
 
@@ -52,6 +61,11 @@ app.use('/api/chats', chatRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/rangs', rangsRouter);
+app.use('/api/banks', banksRouter);
+app.use('/api/taxes', taxesRouter);
+app.use('/api/prices', pricesRouter);
+app.use('/api/orgs/creation-prices', orgCreationPriceRouter);
+app.use('/api/notifications', notificationsRouter);
 app.use('/api/heroes', heroesRouter);
 
 // Health check
@@ -96,3 +110,16 @@ function cleanupOldFiles() {
 cleanupOldFiles();
 setInterval(cleanupOldFiles, 6 * 60 * 60 * 1000);
 
+// Start cron daemons
+cron.schedule('0 0 * * *', () => {
+  LoansFacade.getAllBanksBorrowersPayments();
+}, {
+  scheduled: true
+});
+
+cron.schedule('0 0 1 * *', () => {
+  TaxesFacade.payAllTaxes();
+  SalaryFacade.paySalaryToAllEmployees();
+}, {
+  scheduled: true
+});

@@ -30,7 +30,8 @@ export async function initDatabase() {
       role TEXT NOT NULL DEFAULT 'user',
       isBanned INTEGER DEFAULT 0,
       allowMessagesFrom TEXT DEFAULT 'everyone',
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      balance BIGINT DEFAULT 0
     )
   `);
 
@@ -41,6 +42,7 @@ export async function initDatabase() {
   const hasAllowMessagesFrom = tableInfo.some(col => col.name === 'allowMessagesFrom');
   const hasRang = tableInfo.some(col => col.name === 'rangId');
   const hasCanCreateGovernmentOrganizations = tableInfo.some(col => col.name === 'canCreateGovernmentOrganizations');
+  const hasBalance = tableInfo.some(col => col.name === 'balance');
   const hasGender = tableInfo.some(col => col.name === 'gender');
 
   if (!hasRole) {
@@ -79,6 +81,14 @@ export async function initDatabase() {
       console.error('Error adding canCreateGovernmentOrganizations column:', e.message);
     }
   }
+  if (!hasBalance) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN balance BIGINT DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding balance column:', e.message);
+    }
+  }
+
   if (!hasGender) {
     try {
       db.exec(`ALTER TABLE users ADD COLUMN gender VARCHAR(1) DEFAULT 'M'`);
@@ -94,6 +104,7 @@ export async function initDatabase() {
     db.exec(`UPDATE users SET isBanned = 0 WHERE isBanned IS NULL`);
     db.exec(`UPDATE users SET allowMessagesFrom = 'everyone' WHERE allowMessagesFrom IS NULL`);
     db.exec(`UPDATE users SET canCreateGovernmentOrganizations = 0 WHERE canCreateGovernmentOrganizations IS NULL`);
+    db.exec(`UPDATE users SET balance = 0 WHERE balance IS NULL`);
   } catch (e) {
     console.error('Error updating users:', e.message);
   }
@@ -126,6 +137,7 @@ export async function initDatabase() {
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       longitude DECIMAL(9, 8) NULL,
       latitude DECIMAL(9, 8) NULL,
+      balance BIGINT DEFAULT 0,
       FOREIGN KEY (adminId) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (parentId) REFERENCES organizations(id) ON DELETE CASCADE
     )
@@ -141,6 +153,7 @@ export async function initDatabase() {
   const hasLongitude = orgTableInfo.some(col => col.name === 'longitude');
   const hasLatitude = orgTableInfo.some(col => col.name === 'latitude');
   const hasCoverImage = orgTableInfo.some(col => col.name === 'coverImage');
+  const hasOrgBalance = orgTableInfo.some(col => col.name === 'balance');
 
   if (!hasDefaultCanPost) {
     try {
@@ -198,6 +211,13 @@ export async function initDatabase() {
       db.exec(`ALTER TABLE organizations ADD COLUMN coverImage TEXT`);
     } catch (e) {
       console.error('Error adding coverImage column:', e.message);
+    }
+  }
+  if (!hasOrgBalance) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN balance BIGINT DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding balance column:', e.message);
     }
   }
 
@@ -594,6 +614,274 @@ export async function initDatabase() {
       `).run(rang.name, rang.thumbnail_url, rang.orderNumber);
     }
   });
+
+  // Таблица начальных балансов пользователей и организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS initial_balances (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value INT NOT NULL
+    )
+  `);
+
+  const defaultBalances = [
+    { name: "user", value: 0 },
+    { name: "org", value: 0 },
+  ];
+
+  defaultBalances.forEach(balance => {
+    const balanceSelect = db.prepare(`SELECT COUNT(*) as count FROM initial_balances WHERE name = ?`).get(balance.name);
+
+    if (balanceSelect.count === 0) {
+      db.prepare(`
+        INSERT INTO initial_balances (name, value) 
+        VALUES (?, ?)
+      `).run(balance.name, balance.value);
+    }
+  });
+
+  // Таблица кредитных параметров банков
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS banks_loan_params (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      bank_id INTEGER NOT NULL,
+      loan_percent_users INTEGER NOT NULL,
+      loan_during_days_users INTEGER NOT NULL,
+      loan_percent_orgs INTEGER NOT NULL,
+      loan_during_days_orgs INTEGER NOT NULL,
+      FOREIGN KEY (bank_id) REFERENCES organizations(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица кредитов пользователей
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_loans (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      creditorId INTEGER NOT NULL,
+      borrowerId INTEGER NOT NULL,
+      startSum FLOAT NOT NULL,
+      currentSum FLOAT NOT NULL,
+      sumToPay FLOAT NOT NULL,
+      paymentSum FLOAT NOT NULL,
+      FOREIGN KEY (creditorId) REFERENCES organizations(id) ON DELETE CASCADE,
+      FOREIGN KEY (borrowerId) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица кредитов организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_loans (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      creditorId INTEGER NOT NULL,
+      borrowerId INTEGER NOT NULL,
+      startSum FLOAT NOT NULL,
+      currentSum FLOAT NOT NULL,
+      sumToPay FLOAT NOT NULL,
+      paymentSum FLOAT NOT NULL,
+      FOREIGN KEY (creditorId) REFERENCES organizations(id) ON DELETE CASCADE,
+      FOREIGN KEY (borrowerId) REFERENCES organizations(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица налогов
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS taxes_percent (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value INT NOT NULL
+    )
+  `);
+
+  const defaultTaxes = [
+    { name: "user", value: 0 },
+  ];
+
+  defaultTaxes.forEach(tax => {
+    const taxSelect = db.prepare(`SELECT COUNT(*) as count FROM taxes_percent WHERE name = ?`).get(tax.name);
+
+    if (taxSelect.count === 0) {
+      db.prepare(`
+        INSERT INTO taxes_percent (name, value) 
+        VALUES (?, ?)
+      `).run(tax.name, tax.value);
+    }
+  });
+
+  // Таблица цен за определенные действия
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS action_prices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value INT NOT NULL
+    )
+  `);
+
+  const defaultPrices = [
+    { name: "postView", value: 0 },
+  ];
+
+  defaultPrices.forEach(price => {
+    const priceSelect = db.prepare(`SELECT COUNT(*) as count FROM action_prices WHERE name = ?`).get(price.name);
+
+    if (priceSelect.count === 0) {
+      db.prepare(`
+        INSERT INTO action_prices (name, value) 
+        VALUES (?, ?)
+      `).run(price.name, price.value);
+    }
+  });
+
+  // Таблица доходов организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_profit (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgId INTEGER NOT NULL,
+      incomingSum INTEGER NOT NULL,
+      date DATE DEFAULT CURRENT_DATE NOT NULL,
+      FOREIGN KEY (orgId) REFERENCES organizations(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица доходов пользователей
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_profit (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      incomingSum INTEGER NOT NULL,
+      date DATE DEFAULT CURRENT_DATE NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица налогов организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_tax (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgId INTEGER NOT NULL,
+      tax INTEGER NOT NULL,
+      FOREIGN KEY (orgId) REFERENCES organizations(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица налогов пользователей
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_tax (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      tax INTEGER NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица процентов налогов организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_tax_percent (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgType VARCHAR(255) NOT NULL,
+      percent FLOAT NOT NULL
+    )
+  `);
+
+  const defaultOrgsTaxPercents = [
+    { orgType: "Производственная", percent: 0 },
+    { orgType: "Коммерческая", percent: 0 },
+    { orgType: "Административная", percent: 0 },
+    { orgType: "Образовательная", percent: 0 },
+    { orgType: "Волонтёрская", percent: 0 },
+    { orgType: "Спортивная", percent: 0 },
+    { orgType: "Свободная", percent: 0 },
+    { orgType: "Банковская", percent: 0 },
+  ];
+
+  defaultOrgsTaxPercents.forEach(row => {
+    const orgType = db.prepare(`SELECT COUNT(*) as count FROM orgs_tax_percent WHERE orgType = ?`).get(row.orgType);
+
+    if (orgType.count === 0) {
+      db.prepare(`
+        INSERT INTO orgs_tax_percent (orgType, percent) 
+        VALUES (?, ?)
+      `).run(row.orgType, row.percent);
+    }
+  });
+
+  // Таблица цен создания организаций
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_creation_prices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgType VARCHAR(255) NOT NULL,
+      price INT NOT NULL
+    )
+  `);
+
+  const defaultOrgsCreationPrices = [
+    { orgType: "Производственная", price: 0 },
+    { orgType: "Коммерческая", price: 0 },
+    { orgType: "Административная", price: 0 },
+    { orgType: "Образовательная", price: 0 },
+    { orgType: "Волонтёрская", price: 0 },
+    { orgType: "Спортивная", price: 0 },
+    { orgType: "Свободная", price: 0 },
+    { orgType: "Банковская", price: 0 },
+    { orgType: 'Цех', price: 0 },
+    { orgType: 'Отдел', price: 0 },
+    { orgType: 'Мастерская', price: 0 },
+    { orgType: 'Магазин', price: 0 },
+    { orgType: 'Департамент', price: 0 },
+    { orgType: 'Управление', price: 0 },
+    { orgType: 'Филиал', price: 0 },
+    { orgType: 'Отделение', price: 0 },
+    { orgType: 'Отряд', price: 0 },
+    { orgType: 'Звено', price: 0 },
+    { orgType: 'Факультет', price: 0 },
+    { orgType: 'Кафедра', price: 0 },
+    { orgType: 'Сектор', price: 0 },
+    { orgType: 'Группа', price: 0 },
+    { orgType: 'Раздел', price: 0 },
+  ];
+
+  defaultOrgsCreationPrices.forEach(row => {
+    const orgType = db.prepare(`SELECT COUNT(*) as count FROM orgs_creation_prices WHERE orgType = ?`).get(row.orgType);
+
+    if (orgType.count === 0) {
+      db.prepare(`
+        INSERT INTO orgs_creation_prices (orgType, price) 
+        VALUES (?, ?)
+      `).run(row.orgType, row.price);
+    }
+  });
+
+  // Таблица зарплат пользователей
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_salary (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      orgId INTEGER NOT NULL,
+      salary FLOAT DEFAULT 0 NOT NULL,
+      payday DATE NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (orgId) REFERENCES organizations(id) ON DELETE CASCADE
+    )
+  `);
+  
+  // Таблица кредитных балансов банков
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS banks_loans_balances (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      bankId INTEGER NOT NULL,
+      balance FLOAT NOT NULL,
+      FOREIGN KEY (bankId) REFERENCES organizations(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Таблица уведомлений пользователей
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      message TEXT NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
 
   // Create table heroes
   db.exec(`

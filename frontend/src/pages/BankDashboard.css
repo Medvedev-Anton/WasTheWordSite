@@ -1,0 +1,138 @@
+h1 {
+    text-align: center;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.loan-params-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+
+.loan-params-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    border: 2px solid #ff00c1;
+    padding: 20px;
+}
+
+#bank-dashboard input[type="number"] {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    height: 30px;
+    font-size: 16px;
+}
+
+.input-with-dollar-back {
+    background-image: url('/image/dollar.png');
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
+}
+
+.borrowers-list {
+    margin-top: 40px;
+    border: 2px solid #63d7a8;
+    padding: 20px;
+}
+
+.borrowers-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.borrower-elem {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.borrower-name {
+    width: 100%;
+}
+
+.orgLoanPaymentPercent {
+    width: unset !important;
+    margin-top: 0 !important;
+}
+
+.tansfer-between-bank-balances {
+    margin-top: 30px;
+    border: 2px solid #7061c0;
+    padding: 20px;
+}
+
+.tansfer-between-bank-balances-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+    align-items: start;
+}
+
+.tansfer-between-bank-balances__bank-balance {
+    display: flex;
+    align-items: center;
+}
+
+.tansfer-between-bank-balances__bank-balance input {
+    margin-top: 0 !important;
+}
+
+.tansfer-between-bank-balances__bank-balance-title {
+    width: 250px;
+}
+
+.transfer-between-balances-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #FFF;
+    border-radius: 20px;
+    transition: all .3s;
+}
+
+.transfer-between-balances-btn:hover {
+    opacity: .5;
+}
+
+@media (max-width: 900px) {
+    .loan-params-wrapper {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .borrowers-wrapper {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .tansfer-between-bank-balances__bank-balance {
+        flex-direction: column;
+        align-items: start;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .tansfer-between-bank-balances__bank-balance-title {
+        width: unset;
+    }
+}
+
+@media (max-width: 540px) {
+    #bank-dashboard h2 {
+        font-size: 20px;
+    }
+}

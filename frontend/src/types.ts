@@ -16,6 +16,7 @@ export interface User {
   photos?: Photo[];
   posts?: Post[];
   rang?: Rang;
+  balance: number;
 }
 
 export interface Rang {
@@ -98,7 +99,8 @@ export interface Organization {
   members?: OrganizationMember[];
   posts?: Post[],
   longitude: string,
-  latitude: string
+  latitude: string,
+  balance: number
 }
 
 export interface OrganizationMember {

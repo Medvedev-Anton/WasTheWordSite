@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { RangFacade } from '../facades/rang_facade.js';
+import { BalanceController } from '../controllers/balance_controller.js';
 import { error } from 'console';
 
 const router = express.Router();
@@ -29,6 +30,12 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+// Get balance
+router.get('/balance', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.getUserBalance();
+});
 
 // Get all users (for chat creation)
 router.get('/', authenticateToken, (req, res) => {
@@ -88,6 +95,7 @@ router.get('/', authenticateToken, (req, res) => {
 router.get('/:id', authenticateToken, (req, res) => {
   try {
     const userId = parseInt(req.params.id);
+
     const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, allowMessagesFrom, heroId, gender FROM users WHERE id = ?').get(userId);
 
     if (!user) {

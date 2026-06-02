@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { InitialBalancesController } from '../controllers/initial_balances_controller.js';
 import { error } from 'console';
 
 const router = express.Router();
@@ -478,6 +479,20 @@ router.delete('/covers/:id', requireAdmin, (req, res) => {
   }
 });
 
+// ── Initial users and orgs balances ───────────────────────────────────────────────────────
+
+// Получить начальный баланс пользователей
+router.get('/initial-balances/user', requireAdmin, (req, res) => {
+  try {
+    const controller = new InitialBalancesController(req, res);
+    controller.getUserBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/heroes/:id/states', requireAdmin, (req, res) => {
   try {
     const heroId = req.params.id;
@@ -493,6 +508,18 @@ router.get('/heroes/:id/states', requireAdmin, (req, res) => {
     res.json(states);
   } catch (error) {
     console.error('Error get states:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Получить начальный баланс организаций
+router.get('/initial-balances/org', requireAdmin, (req, res) => {
+  try {
+    const controller = new InitialBalancesController(req, res);
+    controller.getOrgBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -531,6 +558,20 @@ router.post('/heroes/:id/states', requireAdmin, uploadHero.single('image'), (req
     });
   } catch (error) {
     console.error('Create state error:', error);
+
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+// Обновить начальный баланс пользователя
+router.post('/initial-balances/user', requireAdmin, (req, res) => {
+  try {
+    const controller = new InitialBalancesController(req, res);
+    controller.updateUserBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -583,6 +624,19 @@ router.put('/heroes/states/:stateId', requireAdmin, uploadHero.single('image'), 
   }
 });
 
+
+// Обновить начальный баланс организаций
+router.post('/initial-balances/org', requireAdmin, (req, res) => {
+  try {
+    const controller = new InitialBalancesController(req, res);
+    controller.updateOrgBalance();
+  }
+  catch (error) {
+    console.error('Initial balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // DELETE /admin/heroes/states/:stateId
 router.delete('/heroes/states/:stateId', requireAdmin, (req, res) => {
   try {
@@ -609,6 +663,7 @@ router.delete('/heroes/states/:stateId', requireAdmin, (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // GET /admin/heroes
 router.get('/heroes', requireAdmin, (req, res) => {
@@ -780,6 +835,3 @@ router.put('/heroes/:id', requireAdmin, uploadHero.single('defaultImage'), (req,
 });
 
 export default router;
-
-
-

@@ -1,0 +1,52 @@
+.input-with-dollar-back {
+    background-image: url('/image/dollar.png');
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
+}
+
+.suborgs-resources {
+    border: 2px solid #63d7a8;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.suborgs-table-wrapper .resources-for-org-creation {
+    margin-top: 0px;
+}
+
+.suborgs-table-wrapper .resources-for-org-creation h2 {
+    text-align: center;
+}
+
+.suborgs-table-wrapper .resources-table {
+    margin-top: 30px;
+}
+
+.suborgs-table-wrapper .resources-table-head, .resources-table-content-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.suborgs-table-wrapper .resources-table-head-ceil, .suborgs-table-wrapper .resources-table-content-ceil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.suborgs-table-wrapper .resources-table-ceil span {
+    text-align: center;
+}
+
+.suborgs-table-wrapper .resources-table-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.suborgs-table-wrapper .resources-table-ceil-first {
+    justify-content: start;
+}

@@ -56,4 +56,44 @@ export class OrgsServiceInterface {
     getOrgMembers(orgId) {
         throw new Error('getOrgMembers должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает тип организации
+     * @param {number} orgId
+     * @return {string}
+     */
+    getOrgType(orgId) {
+        throw new Error('getOrgType должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Возвращает все организации по заданному типу
+     * @param {string} orgType
+     */
+    getAllOrgsIdsByType(orgType) {
+        throw new Error('getAllOrgsIdsByType должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Возвращает ID админа 
+     * @param {number} orgId
+     */
+    getAdminId(orgId) {
+        throw new Error('getAdminId должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Возвращает общий бюджет всех организаций
+     */
+    getTotalBalancesSum() {
+        throw new Error('getTotalBalancesSum должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Возвращает все организации под владением пользователя
+     * @param {number} userId
+     */
+    getAllUserOrgs(userId) {
+        throw new Error('getAllUserOrgs должен быть переопределен в наследнике');
+    }
 }

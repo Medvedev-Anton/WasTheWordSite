@@ -1806,6 +1806,116 @@
   overflow-y: auto;
 }
 
+.org-dashboard-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #99117c 0%, #ef3847 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.loan-modal-body {
+  padding: 25px;
+  flex-direction: column;
+  align-items: start;
+  overflow-y: auto;
+}
+
+.loan-for-labels {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+}
+
+.loan-org-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.loan-sum-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.loan-sum-wrapper input {
+  margin-top: 0 !important;
+}
+
+.calc-loan-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s;
+  margin-top: 30px;
+}
+
+.get-loan-wrapper {
+  display: flex;  
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.get-loan-btn {
+  width: 70%;
+  height: 100px;
+  border-radius: 10px;
+  color: #000;
+  font-size: 60px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: #ff7903;
+}
+
+.calc-loan-result {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calc-loan-row {
+  display: flex;
+  gap: 5px;
+}
+
+.apply-loan-gtn {
+  background: linear-gradient(135deg, #667eea 0%, #9db74b 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s;
+  margin-top: 30px;
+}
+
+.successLoanTitle {
+  text-align: center;
+}
+
+.org-balance {
+  margin-bottom: 10px;
+}
+
+.input-with-dollar-back {
+    background-image: url('/image/dollar.png');
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
+}
+
 @media (max-width: 640px) {
   .icon-grid {
     grid-template-columns: 1fr 1fr;

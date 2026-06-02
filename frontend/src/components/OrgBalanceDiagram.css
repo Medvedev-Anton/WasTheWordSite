@@ -1,0 +1,25 @@
+.org-balance-chart-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid #20b24d;
+    margin-top: 30px;
+}
+
+.org-balance-chart__balance {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.org-balance-chart-wrapper h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 380px) {
+    .org-balance-chart-wrapper canvas {
+        width: 100% !important;
+    }
+}

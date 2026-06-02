@@ -1,0 +1,29 @@
+.org-salaries {
+    border: 2px solid #5222ba;
+    padding: 20px;
+}
+
+.org-salary-rows {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.salary-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.salary-username {
+    width: 100px;
+}
+
+.input-with-dollar-back {
+    background-image: url('/image/dollar.png');
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
+}

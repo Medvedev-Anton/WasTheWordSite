@@ -11,11 +11,37 @@ import Users from './pages/Users';
 import Admin from './pages/Admin';
 import Layout from './components/Layout';
 import Map from './pages/Map';
-import Rangs from './pages/Rangs';
+import BankDashboard from './pages/BankDashboard';
+// import LayoutMap from './components/LayoutMap';
+import GovernmentDashboard from './pages/GovernmentDashboard';
+import TypicalOrgDashboard from './pages/TypicalOrgDashboard';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+// import Rangs from './pages/Rangs';
 import FullWidthLayout from './components/FullWidthLayout';
 import UserProfile from './pages/UserProfile';
 
 function App() {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      notifications.forEach(notify => {
+        alert(notify);
+      });
+    }
+  }, [notifications]);
+
+  // Запрос на получение всех уведомлений пользовтеля
+  const fetchNotifications = async () => {
+    const result = await axios.get('/api/notifications');
+    setNotifications(result.data.notifications);
+  }
+
   return (
     <AuthProvider>
       <Router>
@@ -36,7 +62,9 @@ function App() {
                     <Route path="/chat" element={<Chat />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="/admin" element={<Admin />} />
-                    <Route path="/rangs" element={<Rangs />} />
+                    <Route path="/banks/dashboard/:id" element={<BankDashboard />} />
+                    <Route path="/government/dashboard/:id" element={<GovernmentDashboard />} />
+                    <Route path="/org/dashboard/:id" element={<TypicalOrgDashboard />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Layout>

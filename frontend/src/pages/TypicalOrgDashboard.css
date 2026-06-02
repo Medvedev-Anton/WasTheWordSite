@@ -1,0 +1,14 @@
+#typical-dashboard input[type="number"] {
+    width: 100%;
+    text-align: center;
+    height: 30px;
+    font-size: 16px;
+}
+
+.org-salaries {
+    margin-top: 30px;
+}
+
+#typical-dashboard h2 {
+    font-size: 20px;
+}

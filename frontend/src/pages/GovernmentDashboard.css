@@ -1,0 +1,149 @@
+body {
+    overflow-x: hidden;
+}
+
+input[type="number"] {
+    width: 100%;
+    text-align: center;
+    height: 30px;
+    font-size: 16px;
+}
+
+.input-with-dollar-back {
+    background-image: url('/image/dollar.png');
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
+}
+
+.general-params-wrapper {
+    display: flex;
+    gap: 50px;
+    margin-top: 30px;
+}
+
+#government-dashboard .general-params-wrapper input[type="number"] {
+    max-width: 250px;
+    margin-top: 15px;
+}
+
+#government-dashboard span, #government-dashboard p {
+    color: #000;
+}
+
+.resources-for-org-creation {
+    margin-top: 30px;
+}
+
+.resources-for-org-creation h2 {
+    text-align: center;
+}
+
+.resources-table {
+    margin-top: 30px;
+}
+
+.resources-table-head, .resources-table-content-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+
+.resources-table-head-ceil, .resources-table-content-ceil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resources-table-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.orgs-management {
+    margin-top: 30px;
+}
+
+.orgs-management h2, .orgs-management h3 {
+    text-align: center;
+}
+
+.orgs-management-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 30px;
+    gap: 50px;
+}
+
+.orgs-management-table {
+    margin-top: 25px;
+}
+
+.orgs-management-table-head, .orgs-management-table-content-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.orgs-management-table-ceil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orgs-management-table-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.orgs-management-table-ceil-first {
+    display: flex;
+    justify-content: start;
+}
+
+#government-dashboard .resources-table-ceil-first {
+    display: flex;
+    justify-content: start;
+}
+
+@media (max-width: 1024px) {
+    .orgs-management-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .resources-table {
+        width: 1000px;
+    }
+
+    .resources-for-org-creation {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 540px) {
+    .general-params-wrapper {
+        flex-direction: column;
+    }
+
+    .general-params-wrapper input {
+        width: 100%;
+        max-width: unset !important;
+    }
+
+    .orgs-management-table {
+        width: 450px;
+    }
+
+    .created-orgs-wrapper {
+        overflow-x: auto;
+    }
+
+    #government-dashboard h2 {
+        font-size: 20px;
+    }
+}

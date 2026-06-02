@@ -25,6 +25,26 @@ export default function Profile() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      notifications.forEach(notify => {
+        alert(notify);
+      });
+    }
+  }, [notifications]);
+
+  // Запрос на получение всех уведомлений пользовтеля
+  const fetchNotifications = async () => {
+    const result = await axios.get('/api/notifications');
+    setNotifications(result.data.notifications);
+  }
+
   const [showSkinModal, setShowSkinModal] = useState<boolean>(false);
   const [organizations, setOrganizations] = useState<[]>([]);
   const [skins, setSkins] = useState<[]>([]);
@@ -216,6 +236,46 @@ export default function Profile() {
           <span className="stat-icon">🪙</span>
           <span className="stat-value">{money}</span>
           <span className="stat-label">Деньги</span>
+        </div>
+
+        <div className="profile-info">
+          <h1>{fullName}</h1>
+          {
+            user.rang ? 
+            (
+              <div className="rang-image-wrapper">
+                <img src={user.rang.thumbnailUrl} />
+                <p>{user.rang.name}</p>
+              </div>
+            )
+            : ''
+          }
+          {
+            user.balance ?
+            (
+              <p className="profile-balance">Баланс: {user.balance / 100}$</p>
+            )
+            :
+            ""
+          }
+          <p className="username">@{user.username}</p>
+          {!editing ? (
+            <button onClick={() => setEditing(true)} className="edit-btn">
+              Редактировать профиль
+            </button>
+          ) : (
+            <div className="edit-actions">
+              <button onClick={handleSave} className="save-btn">
+                Сохранить
+              </button>
+              <button onClick={() => {
+                setEditing(false);
+                fetchProfile();
+              }} className="cancel-btn">
+                Отмена
+              </button>
+            </div>
+          )}
         </div>
         <div className="stat-item">
           <span className="stat-icon">⚡</span>

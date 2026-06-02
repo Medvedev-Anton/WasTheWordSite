@@ -138,4 +138,77 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return results;
     }
+
+    getOrgType(orgId) {
+        const result = db.prepare(`
+            SELECT
+                orgType
+            FROM
+                organizations
+            WHERE
+                id = ?    
+        `).get(orgId);
+
+        return result ? result.orgType : '';
+    }
+
+    getAllOrgsIdsByType(orgType) {
+        const result = db.prepare(`
+            SELECT
+                id
+            FROM
+                organizations
+            WHERE
+                orgType = ?
+        `).all(orgType);
+
+        return result;
+    }
+
+    getAdminId(orgId) {
+        const result = db.prepare(`
+            SELECT
+                adminId
+            FROM
+                organizations
+            WHERE
+                id = ?    
+        `).get(orgId);
+
+        return result.adminId || null;
+    }
+
+    getTotalBalancesSum() {
+        const result = db.prepare(`
+            SELECT
+                SUM(balance) as totalSum
+            FROM
+                organizations
+        `).get();
+
+        if (result === undefined) {
+            return 0;
+        }
+
+        const balanceSum = parseFloat(result.totalSum || 0);
+
+        if (isNaN(balanceSum)) {
+            return 0;
+        }
+
+        return balanceSum;
+    }
+
+    getAllUserOrgs(userId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                organizations
+            WHERE
+                adminId = ?    
+        `).all(userId);
+
+        return result || [];
+    }
 }

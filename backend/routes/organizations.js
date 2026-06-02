@@ -8,6 +8,12 @@ import fs from 'fs';
 import { UserFacade } from '../facades/user_facade.js';
 import { RangFacade } from '../facades/rang_facade.js';
 import { OrgsFacade } from '../facades/orgs_facade.js';
+import { SalaryFacade } from '../facades/salary_facade.js';
+import SalaryController from '../controllers/salary_controller.js';
+import { BanksLoansBalanceFacade } from '../facades/banks_loans_balance_facade.js';
+import { BankFacade } from '../facades/bank_facade.js';
+import { BalanceController } from '../controllers/balance_controller.js';
+import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -160,6 +166,20 @@ router.get('/', authenticateToken, (req, res) => {
   }
 });
 
+// Get total orgs balances
+router.get('/total-balances', authenticateToken, (req, res) => {
+  try {
+    const totalBalances = OrgsFacade.getTotalBalancesSum();
+    res.status(200).json({
+      totalBalances: totalBalances
+    });
+  }
+  catch (error) {
+    console.error('Get total orgs balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/icons', authenticateToken, (req, res) => {
   try {
     const icons = db.prepare('SELECT * FROM organization_icon').all();
@@ -186,9 +206,14 @@ router.get('/covers', authenticateToken, (req, res) => {
 });
 
 // Get organization by ID
-router.get('/:id', authenticateToken, (req, res) => {
+router.get('/:id', authenticateToken, (req, res, next) => {
   try {
     const orgId = parseInt(req.params.id);
+
+    if (isNaN(orgId)) {
+      return next();
+    }
+
     const organization = db.prepare(`
       SELECT 
         o.*,
@@ -351,6 +376,12 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
     } = req.body;
     const adminId = req.user.userId;
 
+    if (!OrgsFacade.checkHasBalanceToCreate(orgType, adminId)) {
+      return res.status(200).json({
+        error: 'notEnoughMoney'
+      });
+    }
+
     const iconId = organizationIconId === null || organizationIconId === undefined || organizationIconId === "" ? 1 : organizationIconId;
     const coverId = organizationCoverId === null || organizationCoverId === undefined || organizationCoverId === "" ? null : parseInt(organizationCoverId);
 
@@ -395,10 +426,13 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       }
     }
 
+    // Initial balance
+    const initialBalance = InitialBalancesFacade.getOrgInitialBalance();
+
     const result = db.prepare(`
-      INSERT INTO organizations (name, description, avatar, coverImage, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id, organization_cover_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, description || null, avatarUrl, coverImageUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId, coverId);
+      INSERT INTO organizations (name, description, avatar, coverImage, adminId, defaultCanPost, defaultCanComment, isPrivate, orgType, parentId, longitude, latitude, organization_icon_id, organization_cover_id, balance)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, description || null, avatarUrl, coverImageUrl, adminId, canPost, canComment, isPrivateFlag, resolvedType, resolvedParentId, longitude, latitude, iconId, coverId, initialBalance);
 
     // Add admin as member with 'admin' role
     db.prepare(`
@@ -415,6 +449,15 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       JOIN users u ON o.adminId = u.id
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
+
+    if (resolvedType !== undefined) {
+      OrgsFacade.payForOrgCreation(resolvedType, adminId);
+
+      if (resolvedType == 'Банковская') {
+        BanksLoansBalanceFacade.create(result.lastInsertRowid, 0);
+        BankFacade.entity('orgs').createBankRowDefault(result.lastInsertRowid);
+      }
+    }
 
     try {
       if (parentId) {
@@ -537,6 +580,10 @@ router.post('/:id/join', authenticateToken, (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(orgId, userId, 'member', memberCanPost, memberCanComment, 0);
 
+    const date = new Date();
+    date.setMonth(date.getMonth() + 1)
+    SalaryFacade.create(userId, orgId, 0, date.toString());
+
     addUserToOrgGroupChat(orgId, userId);
     res.json({ message: 'Joined organization' });
   } catch (error) {
@@ -561,6 +608,9 @@ router.post('/:id/leave', authenticateToken, (req, res) => {
     }
 
     db.prepare('DELETE FROM organization_members WHERE organizationId = ? AND userId = ?').run(orgId, userId);
+
+    SalaryFacade.delete(userId, orgId);
+
     removeUserFromOrgGroupChat(orgId, userId);
     res.json({ message: 'Left organization' });
   } catch (error) {
@@ -717,6 +767,10 @@ router.delete('/:id', authenticateToken, (req, res) => {
       return res.status(404).json({ error: 'Organization not found' });
     }
 
+    if (organization.orgType == 'Банковская') {
+      BanksLoansBalanceFacade.delete(orgId);
+    }
+
     const currentUser = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
     const isGlobalAdmin = currentUser?.role === 'admin';
 
@@ -782,6 +836,166 @@ router.put('/:id/members/:targetUserId/permissions', authenticateToken, (req, re
     res.json({ message: 'Permissions updated' });
   } catch (error) {
     console.error('Update permissions error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get all orgs by author id
+router.get('/all-by-author/:authorId', authenticateToken, (req, res) => {
+  try {
+    const authorId = parseInt(req.params.authorId);
+    const orgs = db.prepare(`
+      SELECT
+        id,
+        name
+      FROM
+        organizations
+      WHERE 
+        adminId = ?  
+    `).all(authorId);
+
+    res.json({
+      orgs: orgs
+    });
+  }
+  catch (error) {
+    console.error('Get all user orgs error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get all orgs with balances
+router.get('/all-with-balance', authenticateToken, (req, res) => {
+  try {
+    const orgs = db.prepare(`
+      SELECT
+        id,
+        name,
+        balance
+      FROM
+        organizations
+      WHERE
+        orgType != 'Правительственная'
+    `).all();
+
+    const orgsObj = Object.fromEntries(orgs.map(o => [o.name, {
+      id: o.id,
+      balance: o.balance
+    }]));
+
+    res.json({
+      orgs: orgsObj
+    });
+  }
+  catch (error) {
+    console.error('Get all orgs with balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update org balance
+router.post('/:id/balance', authenticateToken, (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    const newBalance = parseInt(req.body.newBalance);
+
+    if (isNaN(id)) {
+      next();
+    }
+
+    if (isNaN(newBalance)) {
+      next();
+    }
+
+    db.prepare(`
+      UPDATE
+        organizations
+      SET
+        balance = ?
+      WHERE
+        id = ?  
+    `).run(newBalance, id);
+
+    res.json({
+      message: 'Update success'
+    });
+  }
+  catch (error) {
+    console.error('Update org balance error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get org balance
+router.get('/:id/balance', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.getOrgBalance();
+});
+
+router.post('/:id/transfer-from-admin-to-org', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.transferFromAdminToOrg();
+});
+
+// Addings to org balance
+router.post('/:id/balance/adding', authenticateToken, (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    const addingBalance = parseInt(req.body.addingBalance);
+
+    if (isNaN(id)) {
+      next();
+    }
+
+    if (isNaN(addingBalance)) {
+      next();
+    }
+
+    db.prepare(`
+      UPDATE
+        organizations
+      SET
+        balance = balance + ?
+      WHERE
+        id = ?  
+    `).run(addingBalance, id);
+
+    res.json({
+      message: 'Update success'
+    });
+  }
+  catch (error) {
+    console.error('Addings to org balance error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get salaries
+router.get('/:id/salaries', authenticateToken, (req, res) => {
+  const controller = new SalaryController(req, res);
+  controller.getEmployeesWithSalaries();
+});
+
+// Update salary
+router.post('/:id/salaries/update', authenticateToken, (req, res) => {
+  const controller = new SalaryController(req, res);
+  controller.changeSalary();
+});
+
+// Pay for post view
+router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const orgId = req.params.id;
+
+    OrgsFacade.payPostView(orgId, userId);
+
+    res.status(200).json({
+      message: 'success'
+    });
+  }
+  catch (error) {
+    console.error('Pay for post view error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

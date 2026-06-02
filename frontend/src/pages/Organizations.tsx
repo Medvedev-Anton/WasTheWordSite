@@ -121,9 +121,15 @@ export default function Organizations() {
     }
 
     try {
-      await axios.post('/api/organizations', data, {
+      const creationResult = await axios.post('/api/organizations', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+
+      if (creationResult.data.error && creationResult.data.error == 'notEnoughMoney') {
+        alert('Недостаточно средств для создания');
+        return;
+      }
+
       setShowCreateModal(false);
       fetchOrganizations();
     } catch (error) {
@@ -442,6 +448,11 @@ export default function Organizations() {
   );
 }
 
+interface UserOrg {
+  id: number,
+  name: string
+}
+
 function OrganizationDetail({
   organization,
   onBack,
@@ -481,6 +492,10 @@ function OrganizationDetail({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any | null>(null);
+  const [showLoanModal, setShowLoanModal] = useState(false);
+  const [currentUserOrgs, setCurrentUserOrgs] = useState<UserOrg[]>([]);
+  const [loanValue, setLoanValue] = useState<number>(0);
+  const [showCalcLoanResult, setShowCalcLoanResult] = useState<boolean>(false);
 
 
   const navigate = useNavigate();
@@ -712,6 +727,14 @@ function OrganizationDetail({
   const [longitude, setLongitude] = useState(organization.longitude);
   const [latitude, setLatitude] = useState(organization.latitude);
   const [creatingGroupChat, setCreatingGroupChat] = useState(false);
+  const [loanForRadio, setLoanForRadio] = useState('');
+  const [loanForecastSum, setLoanForecastSum] = useState(0);
+  const [loanForecastDuring, setLoanForecastDuring] = useState(0);
+  const [loanForecastDailyPayment, setLoanForecastDailyPayment] = useState(0);
+  const [userLoanOrgId, setUserLoanOrgId] = useState(-1);
+  const [showSuccessLoanModal, setShowSuccessLoanModal] = useState(false);
+  const [showBankNotEnoughMoneyModal, setShowBankNotEnoughMoneyModal] = useState(false);
+  const [showHasEnotherLoanModal, setShowHasEnotherLoanModal] = useState(false);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -757,6 +780,130 @@ function OrganizationDetail({
       : organization.typeDefaultCoverUrl
         ? getMediaUrl(organization.typeDefaultCoverUrl)
         : '';
+
+  const fetchUserOrgs = async (userId: number) => {
+    return axios.get(`/api/organizations/all-by-author/${userId}`);
+  }
+
+  const handleChangeLoanForInput = async (e: any) => {
+    const value = e.target.value;
+
+    if (value === 'orgs' && user !== null) {
+      const result = await fetchUserOrgs(user.id);
+      const orgs = result.data.orgs;
+      setCurrentUserOrgs(orgs);
+    }
+
+    setShowCalcLoanResult(false);
+    setLoanForRadio(value);
+  }
+
+  const handleChangeLoanValue = (e: any) => {
+    const value = e.target.value;
+
+    setLoanValue(value);
+  }
+
+  const handleGoToDashboard = () => {
+    const orgId = organization.id;
+    const orgType = organization.orgType;
+
+    switch (orgType) {
+      case "Банковская":
+        navigate(`/banks/dashboard/${orgId}`);
+        break;
+
+      case "Правительственная":
+        navigate(`/government/dashboard/${orgId}`);
+        break;
+
+      default:
+        navigate(`/org/dashboard/${orgId}`);
+        break;
+    }
+  }
+
+  const setForecastData = (forecast: any) => {
+    const sum = +(parseFloat(forecast.finalSum || 0) / 100).toFixed(2);
+    const during = parseInt(forecast.during || 0);
+    const dailyPayment = +(parseFloat(forecast.dailyPayment || 0) / 100).toFixed(2);
+
+    setLoanForecastSum(sum);
+    setLoanForecastDuring(during);
+    setLoanForecastDailyPayment(dailyPayment);
+  }
+
+  const fetchUsersLoanForecat = async () => {
+    const result = await axios.post(`/api/banks/${organization.id}/loan/users/calc`, {
+      loanSum: loanValue * 100
+    });
+
+    const forecast = result.data.forecast;
+
+    setForecastData(forecast);
+    setShowCalcLoanResult(true);
+  }
+
+  const fetchOrgsLoanForecat = async () => {
+    const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/calc`, {
+      loanSum: loanValue * 100
+    });
+
+    const forecast = result.data.forecast;
+
+    setForecastData(forecast);
+    setShowCalcLoanResult(true);
+  }
+
+  const fetchLoanForecst = () => {
+    if (loanForRadio === 'users') {
+      fetchUsersLoanForecat();
+    }
+    else if (loanForRadio === 'orgs') {
+      fetchOrgsLoanForecat();
+    }
+  }
+
+  const handleApplyLoanResponse = (result: any) => {
+    if (result.data.message == 'success') {
+      setShowLoanModal(false);
+      setShowSuccessLoanModal(true);
+    }
+    else if (result.data.message == 'notEnoughMoney') {
+      setShowLoanModal(false);
+      setShowBankNotEnoughMoneyModal(true);
+    }
+    else if (result.data.message === 'anotherLoanExists') {
+      setShowLoanModal(false);
+      setShowHasEnotherLoanModal(true);
+    }
+  }
+
+  const fetchApplyLoan = async () => {
+    if (loanForRadio === 'users') {
+      const result = await axios.post(`/api/banks/${organization.id}/loan/users/create`, {
+        loanSum: loanValue * 100,
+        paymentSum: loanForecastDailyPayment * 100,
+        sumToPay: loanForecastSum * 100
+      });
+
+      handleApplyLoanResponse(result);
+    }
+    else if (loanForRadio === 'orgs') {
+      const result = await axios.post(`/api/banks/${organization.id}/loan/orgs/create`, {
+        loanSum: loanValue * 100,
+        orgId: userLoanOrgId,
+        paymentSum: loanForecastDailyPayment * 100,
+        sumToPay: loanForecastSum * 100
+      });
+
+      handleApplyLoanResponse(result);
+    }    
+  }
+
+  const handleChangeUserLoanOrgId = (e: any) => {
+    setUserLoanOrgId(e.target.value);
+  }
 
   return (
     <div className="organization-detail">
@@ -996,6 +1143,14 @@ function OrganizationDetail({
               <div className="org-type-label">{organization.orgType || 'Организация'}</div>
               <h2>{organization.name}</h2>
               <p>{organization.description || 'Нет описания'}</p>
+              {
+                (isAdmin || isGlobalAdmin) ? 
+                (
+                  <p className="org-balance">Баланс: {(organization.balance / 100).toFixed(2)}$</p>
+                )
+                :
+                ""
+              }
               <div className="org-stats">
                 <span>👥 {organization.membersCount} сотрудников</span>
                 <span>👤 Руководитель: {organization.adminUsername}</span>
@@ -1035,6 +1190,20 @@ function OrganizationDetail({
                   💬 {creatingGroupChat ? 'Создание...' : 'Создать групповой чат'}
                 </button>
               ) : null}
+              {
+                isAdmin
+                ?
+                (
+                  <button
+                    className="org-dashboard-btn"
+                    onClick={handleGoToDashboard}
+                  >
+                    Панель управления
+                  </button>
+                )
+                :
+                ""
+              }              
               {!isMember && !organization.isPrivate && !isAdmin && (
                 <button onClick={handleJoin} className="join-btn">Вступить</button>
               )}
@@ -1045,6 +1214,23 @@ function OrganizationDetail({
           </>
         )}
       </div>
+
+      {
+        (!isAdmin && organization.orgType === 'Банковская')
+        ?
+        (
+          <div className="org-header get-loan-wrapper">
+            <button
+              className="get-loan-btn"
+              onClick={() => setShowLoanModal(true)}
+            >
+              Взять кредит
+            </button>
+          </div>
+        )
+        :
+        ""
+      }
 
       {/* Sub-organizations section (visible inline, no tab) */}
       {subOrgType && (
@@ -1456,6 +1642,182 @@ function OrganizationDetail({
           </div>
         </div>
       )}
+
+      {/* Get loan modal */}
+      {
+        showLoanModal && (
+        <div className="modal-overlay" onClick={() => setShowLoanModal(false)}>
+          <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="members-modal-header">
+              <h3>Взять кредит</h3>
+            </div>
+            <div className="members-modal-body loan-modal-body">
+              
+              <div className="loan-for-wrapper">
+                <strong>Для кого?</strong>
+
+                <div className="loan-for-labels">
+                  <label>
+                    <input 
+                      type="radio"
+                      name="loanFor" 
+                      value="orgs"
+                      checked={loanForRadio === 'orgs'}
+                      onChange={(e) => handleChangeLoanForInput(e)}
+                    />
+                    Для организации
+                  </label>
+
+                  <label>
+                    <input 
+                      type="radio"
+                      name="loanFor" 
+                      value="users"
+                      checked={loanForRadio === 'users'}
+                      onChange={(e) => handleChangeLoanForInput(e)}
+                    />
+                    Для себя
+                  </label>
+                </div>
+              </div>
+
+              {
+                loanForRadio === 'orgs'
+                ?
+                (
+                  <div className="loan-org-wrapper">
+                    <strong>Выберите организацию:</strong>
+                    <select 
+                      name="loanOrg" 
+                      id="loanOrg"
+                      value={userLoanOrgId}
+                      onChange={handleChangeUserLoanOrgId}
+                    >
+                      <option value="">
+                        Не выбрано
+                      </option>
+                      {
+                        currentUserOrgs.map(org => {
+                          return (
+                            <option key={org.id} value={org.id}>
+                              {org.name}
+                            </option>
+                          )
+                        })
+                      }
+                    </select>
+                  </div>
+                )
+                :
+                ""
+              }
+
+              <div className="loan-sum-wrapper">
+                <strong>Введите сумму:</strong>
+                <input 
+                  type="number" 
+                  className="input-with-dollar-back"
+                  step="any"
+                  name="loanValue"
+                  value={loanValue}
+                  onChange={(e) => handleChangeLoanValue(e)}
+                />
+              </div>
+
+              {
+                showCalcLoanResult
+                ?
+                (
+                  <div className="calc-loan-result">
+                    <div className="calc-loan-row">
+                      <span>
+                        Сумма для выплаты: 
+                      </span>
+                      <span>
+                        {loanForecastSum}$
+                      </span>
+                    </div>
+
+                    <div className="calc-loan-row">
+                      <span>
+                        Срок, дни: 
+                      </span>
+                      <span>
+                        {loanForecastDuring}
+                      </span>
+                    </div>
+
+                    <div className="calc-loan-row">
+                      <span>
+                        Ежедневный платеж: 
+                      </span>
+                      <span>
+                        {loanForecastDailyPayment}$
+                      </span>
+                    </div>
+
+                    <button 
+                      className="apply-loan-gtn"
+                      onClick={fetchApplyLoan}
+                    >
+                      Оформить кредит
+                    </button>
+                  </div>
+                )
+                :
+                ""
+              }
+
+              <button 
+                className="btn calc-loan-btn"
+                onClick={fetchLoanForecst}
+              >
+                Рассчитать кредит
+              </button>
+              
+            </div>
+          </div>
+        </div>)
+      }
+
+      {/* Success loan */}
+      {
+        showSuccessLoanModal && (
+          <div className="modal-overlay" onClick={() => setShowSuccessLoanModal(false)}>
+            <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="members-modal-header">
+                <h3 className="successLoanTitle">Оформление прошло успешно!</h3>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Not enough bank money loan */}
+      {
+        showBankNotEnoughMoneyModal && (
+          <div className="modal-overlay" onClick={() => setShowBankNotEnoughMoneyModal(false)}>
+            <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="members-modal-header">
+                <h3 className="successLoanTitle">У банка недостаточно средств</h3>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {/* Has enother loan */}
+      {
+        showHasEnotherLoanModal && (
+          <div className="modal-overlay" onClick={() => setShowHasEnotherLoanModal(false)}>
+            <div className="members-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="members-modal-header">
+                <h3 className="successLoanTitle">У вас уже есть другие неоплаченные кредиты</h3>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 }
