@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (username: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string, firstName?: string, lastName?: string) => Promise<void>;
+  register: (username: string, email: string, password: string, firstName?: string, lastName?: string, gender?: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
 }
@@ -55,13 +55,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   };
 
-  const register = async (username: string, email: string, password: string, firstName?: string, lastName?: string) => {
+  const register = async (username: string, email: string, password: string, firstName?: string, lastName?: string, gender?: string) => {
     const response = await axios.post('/api/auth/register', {
       username,
       email,
       password,
       firstName,
       lastName,
+      gender
     });
     const { user, token } = response.data;
     setUser(user);

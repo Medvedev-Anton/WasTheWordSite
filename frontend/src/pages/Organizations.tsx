@@ -419,27 +419,27 @@ export default function Organizations() {
                   ? getMediaUrl(org.typeDefaultCoverUrl)
                   : null;
             return (
-            <div key={org.id} className="organization-card" onClick={() => handleSelectOrg(org.id)}>
-              <div
-                className={`org-card-cover ${orgCoverSrc ? 'has-cover' : ''}`}
-                style={orgCoverSrc ? { backgroundImage: `url(${orgCoverSrc})` } : undefined}
-              >
-                {!orgCoverSrc && <span>Обложка организации</span>}
+              <div key={org.id} className="organization-card" onClick={() => handleSelectOrg(org.id)}>
+                <div
+                  className={`org-card-cover ${orgCoverSrc ? 'has-cover' : ''}`}
+                  style={orgCoverSrc ? { backgroundImage: `url(${orgCoverSrc})` } : undefined}
+                >
+                  {!orgCoverSrc && <span>Обложка организации</span>}
+                </div>
+                {org.avatar ? (
+                  <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
+                ) : (
+                  <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[org.orgType || ''] || '🏢'}</div>
+                )}
+                <div className="org-card-type-badge">{org.orgType || 'Организация'}</div>
+                <h3>{org.name}</h3>
+                <p>{org.description || 'Нет описания'}</p>
+                <div className="org-info">
+                  <span>👥 {org.membersCount} сотрудников</span>
+                  <span>👤 Руководитель: {org.adminUsername}</span>
+                  {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
+                </div>
               </div>
-              {org.avatar ? (
-                <img src={getMediaUrl(org.avatar)} alt={org.name} className="org-avatar" />
-              ) : (
-                <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[org.orgType || ''] || '🏢'}</div>
-              )}
-              <div className="org-card-type-badge">{org.orgType || 'Организация'}</div>
-              <h3>{org.name}</h3>
-              <p>{org.description || 'Нет описания'}</p>
-              <div className="org-info">
-                <span>👥 {org.membersCount} сотрудников</span>
-                <span>👤 Руководитель: {org.adminUsername}</span>
-                {org.isPrivate ? <span className="org-private-badge">🔒 Закрытая</span> : null}
-              </div>
-            </div>
             );
           })
         )}
@@ -496,6 +496,7 @@ function OrganizationDetail({
   const [currentUserOrgs, setCurrentUserOrgs] = useState<UserOrg[]>([]);
   const [loanValue, setLoanValue] = useState<number>(0);
   const [showCalcLoanResult, setShowCalcLoanResult] = useState<boolean>(false);
+
 
   const navigate = useNavigate();
 
@@ -773,12 +774,12 @@ function OrganizationDetail({
 
   const roleLabels: Record<string, string> = { admin: 'Руководитель', moderator: 'Модератор', member: 'Сотрудник' };
   const orgCoverPreview = organization.coverImage
-      ? getMediaUrl(organization.coverImage)
-      : organization.presetCoverUrl
-        ? getMediaUrl(organization.presetCoverUrl)
-        : organization.typeDefaultCoverUrl
-          ? getMediaUrl(organization.typeDefaultCoverUrl)
-          : '';
+    ? getMediaUrl(organization.coverImage)
+    : organization.presetCoverUrl
+      ? getMediaUrl(organization.presetCoverUrl)
+      : organization.typeDefaultCoverUrl
+        ? getMediaUrl(organization.typeDefaultCoverUrl)
+        : '';
 
   const fetchUserOrgs = async (userId: number) => {
     return axios.get(`/api/organizations/all-by-author/${userId}`);
@@ -1308,25 +1309,25 @@ function OrganizationDetail({
                       ? getMediaUrl((sub as any).typeDefaultCoverUrl)
                       : null;
                 return (
-                <div key={sub.id} className="organization-card suborg-card" onClick={() => onNavigateToOrg(sub.id)}>
-                  <div
-                    className={`org-card-cover ${subCoverSrc ? 'has-cover' : ''}`}
-                    style={subCoverSrc ? { backgroundImage: `url(${subCoverSrc})` } : undefined}
-                  >
-                    {!subCoverSrc && <span>Обложка подразделения</span>}
+                  <div key={sub.id} className="organization-card suborg-card" onClick={() => onNavigateToOrg(sub.id)}>
+                    <div
+                      className={`org-card-cover ${subCoverSrc ? 'has-cover' : ''}`}
+                      style={subCoverSrc ? { backgroundImage: `url(${subCoverSrc})` } : undefined}
+                    >
+                      {!subCoverSrc && <span>Обложка подразделения</span>}
+                    </div>
+                    {sub.avatar ? (
+                      <img src={getMediaUrl(sub.avatar)} alt={sub.name} className="org-avatar" />
+                    ) : (
+                      <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[sub.orgType || ''] || '🏗️'}</div>
+                    )}
+                    <div className="org-card-type-badge">{sub.orgType}</div>
+                    <h3>{sub.name}</h3>
+                    <p>{sub.description || 'Нет описания'}</p>
+                    <div className="org-info">
+                      <span>👥 {sub.membersCount} сотрудников</span>
+                    </div>
                   </div>
-                  {sub.avatar ? (
-                    <img src={getMediaUrl(sub.avatar)} alt={sub.name} className="org-avatar" />
-                  ) : (
-                    <div className="org-avatar-placeholder">{ORG_TYPE_ICONS[sub.orgType || ''] || '🏗️'}</div>
-                  )}
-                  <div className="org-card-type-badge">{sub.orgType}</div>
-                  <h3>{sub.name}</h3>
-                  <p>{sub.description || 'Нет описания'}</p>
-                  <div className="org-info">
-                    <span>👥 {sub.membersCount} сотрудников</span>
-                  </div>
-                </div>
                 );
               })
             ) : (
@@ -1570,13 +1571,13 @@ function OrganizationDetail({
                       <div className="members-modal-list-role">{roleLabels[m.role] || m.role}</div>
                       {
                         m.rang ?
-                        (
-                          <div className="org-member-rang-wrapper">
-                            <img src={m.rang.thumbnailUrl} alt={m.username} />
-                            <p>{m.rang.name}</p>
-                          </div>
-                        )
-                        : ''
+                          (
+                            <div className="org-member-rang-wrapper">
+                              <img src={m.rang.thumbnailUrl} alt={m.username} />
+                              <p>{m.rang.name}</p>
+                            </div>
+                          )
+                          : ''
                       }
                     </div>
                   </div>
@@ -1586,24 +1587,36 @@ function OrganizationDetail({
               {/* Right: detail */}
               {selectedMember && (
                 <div className="members-modal-detail">
-                  {selectedMember.avatar
-                    ? <img src={getMediaUrl(selectedMember.avatar)} alt={selectedMember.username} className="members-modal-detail-avatar" />
-                    : <div className="members-modal-detail-avatar-ph">{(selectedMember.firstName || selectedMember.username)[0].toUpperCase()}</div>
-                  }
-                  <div className="members-modal-detail-name">
-                    {selectedMember.firstName && selectedMember.lastName
-                      ? `${selectedMember.firstName} ${selectedMember.lastName}`
-                      : selectedMember.username}
-                  </div>
-                  <div className="members-modal-detail-role">{roleLabels[selectedMember.role] || selectedMember.role}</div>
-                  {selectedMember.isBlocked && <div className="member-blocked-label">Заблокирован</div>}
+                  {selectedMember.isBlocked === 1 ? <div className="member-blocked-label">Заблокирован</div> : ""}
 
-                  <button
-                    className="members-modal-profile-btn"
-                    onClick={() => { setShowMembersModal(false); navigate(`/users/${selectedMember.userId}`); }}
-                  >
-                    👤 Открыть профиль
-                  </button>
+                  <div className="member-hero-section">
+                    <div className="member-hero-content">
+                      <div className='member-hero-user'>
+                        {selectedMember.username}
+                      </div>
+                      {selectedMember.hero?.imagePath ? (
+                        <img
+                          src={getMediaUrl(selectedMember.hero.imagePath)}
+                          alt={selectedMember.hero?.name || 'Герой'}
+                          className="member-hero-image"
+                        />
+                      ) : (
+                        <img
+                          src={selectedMember.gender === 'M' ? '/image/hero/default_male_hero.png' : '/image/hero/default_female_hero.png'}
+                          alt="Default hero"
+                          className="member-hero-image default-hero"
+                        />
+                      )}
+                      <span className="member-hero-name">{roleLabels[selectedMember.role] || selectedMember.role}</span>
+
+                      <button
+                        className="members-modal-profile-btn"
+                        onClick={() => { setShowMembersModal(false); navigate(`/users/${selectedMember.userId}`); }}
+                      >
+                        👤 Открыть профиль
+                      </button>
+                    </div>
+                  </div>
 
                   {(isAdmin || isModerator) && selectedMember.userId !== currentUserId && selectedMember.role !== 'admin' && (
                     <div className="members-modal-actions">

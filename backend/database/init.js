@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { userInfo } from 'os';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,6 +43,7 @@ export async function initDatabase() {
   const hasRang = tableInfo.some(col => col.name === 'rangId');
   const hasCanCreateGovernmentOrganizations = tableInfo.some(col => col.name === 'canCreateGovernmentOrganizations');
   const hasBalance = tableInfo.some(col => col.name === 'balance');
+  const hasGender = tableInfo.some(col => col.name === 'gender');
 
   if (!hasRole) {
     try {
@@ -86,6 +88,16 @@ export async function initDatabase() {
       console.error('Error adding balance column:', e.message);
     }
   }
+
+  if (!hasGender) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN gender VARCHAR(1) DEFAULT 'M'`);
+    }
+    catch (e) {
+      console.error('Error adding gender column:', e.message);
+    }
+  }
+
   // Update existing users
   try {
     db.exec(`UPDATE users SET role = 'user' WHERE role IS NULL OR role = ''`);
@@ -870,6 +882,46 @@ export async function initDatabase() {
       FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     )
   `);
+
+  // Create table heroes
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS heroes(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      defaultImagePath TEXT NOT NULL
+    );
+  `);
+
+  const heroTableInfo = db.prepare("PRAGMA table_info(heroes)").all();
+  const hasHeroGender = heroTableInfo.some(col => (col.name === 'gender'));
+  if (!hasHeroGender) {
+    try {
+      db.exec(`ALTER TABLE heroes ADD COLUMN gender VARCHAR(1) DEFAULT 'M'`);
+    } catch (e) {
+      console.error('Error adding gender to users:', e.message);
+    }
+  }
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS hero_states(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      heroId INTEGER NOT NULL,
+      minRangId INTEGER NOT NULL,
+      imagePath TEXT NOT NULL,
+      FOREIGN KEY (heroId) REFERENCES heroes(id) ON DELETE CASCADE,
+      FOREIGN KEY (minRangId) REFERENCES rangs(id) ON DELETE CASCADE,
+      UNIQUE(heroId, minRangId)
+    );
+  `);
+
+  const hasUserHeroId = tableInfo.some(col => (col.name === 'heroId'));
+  if (!hasUserHeroId) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN heroId INTEGER DEFAULT NULL`);
+    } catch (e) {
+      console.error('Error adding heroId to users:', e.message);
+    }
+  }
 
   console.log('Database initialized successfully');
 }

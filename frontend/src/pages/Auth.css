@@ -78,6 +78,27 @@
   color: #666;
 }
 
+.gender-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  margin-bottom: 15px;
+}
+
+.gender-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.gender-select option {
+  padding: 10px;
+}
+
 @media (max-width: 480px) {
   .auth-container {
     padding: 1rem;

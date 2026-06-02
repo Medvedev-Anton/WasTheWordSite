@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { RangFacade } from '../facades/rang_facade.js';
 import { BalanceController } from '../controllers/balance_controller.js';
+import { error } from 'console';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -42,7 +43,7 @@ router.get('/', authenticateToken, (req, res) => {
     const currentUserId = req.user.userId;
     const users = db.prepare(`
       SELECT 
-        id, username, email, firstName, lastName, avatar, allowMessagesFrom, rangId
+        id, username, email, firstName, lastName, avatar, allowMessagesFrom, rangId, heroId, gender
       FROM users
       WHERE id != ? AND isBanned = 0
       ORDER BY username ASC
@@ -57,10 +58,30 @@ router.get('/', authenticateToken, (req, res) => {
           user['rang'] = rang;
         }
         else {
-            const rang = RangFacade.findById(rangId);
-            user['rang'] = rang;
+          const rang = RangFacade.findById(rangId);
+          user['rang'] = rang;
         }
-      }      
+      }
+    });
+
+    users.map(user => {
+      const hero = db.prepare(`
+      SELECT 
+        COALESCE(
+          (SELECT imagePath FROM hero_states
+          JOIN rangs ON hero_states.minRangId = rangs.id
+          WHERE rangs.orderNumber <= (SELECT orderNumber FROM rangs WHERE id = ?) AND hero_states.heroId = ?
+          ORDER BY rangs.orderNumber DESC
+          LIMIT 1),
+          defaultImagePath
+        ) as imagePath,
+        name,
+        id
+      FROM heroes
+      WHERE heroes.id = ?;
+  `).get(user?.rang?.id ?? null, user.heroId ?? null, user.heroId ?? null) || null;
+
+      user['hero'] = hero;
     });
 
     res.json(users);
@@ -74,7 +95,8 @@ router.get('/', authenticateToken, (req, res) => {
 router.get('/:id', authenticateToken, (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-    const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, allowMessagesFrom, balance FROM users WHERE id = ?').get(userId);
+
+    const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, allowMessagesFrom, heroId, gender FROM users WHERE id = ?').get(userId);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -111,7 +133,7 @@ router.get('/:id', authenticateToken, (req, res) => {
         WHERE postId IN (${placeholders})
         ORDER BY postId, id ASC
       `).all(...postIds);
-      
+
       const filesByPostId = {};
       files.forEach(file => {
         if (!filesByPostId[file.postId]) {
@@ -124,7 +146,7 @@ router.get('/:id', authenticateToken, (req, res) => {
           fileType: file.fileType
         });
       });
-      
+
       posts.forEach(post => {
         post.files = filesByPostId[post.id] || [];
       });
@@ -133,7 +155,22 @@ router.get('/:id', authenticateToken, (req, res) => {
     const rangId = RangFacade.getUserRangId(userId);
     const rang = RangFacade.findById(rangId);
 
-    res.json({ ...user, photos, posts, rang });
+    const hero = db.prepare(`
+     SELECT 
+      COALESCE(
+        (SELECT imagePath FROM hero_states
+        JOIN rangs ON hero_states.minRangId = rangs.id
+        WHERE rangs.orderNumber <= (SELECT orderNumber FROM rangs WHERE id = ?) AND hero_states.heroId = ?
+        ORDER BY rangs.orderNumber DESC
+        LIMIT 1),
+        defaultImagePath
+      ) as imagePath,
+      name,
+      id
+    FROM heroes
+    WHERE heroes.id = ?;
+  `).get(rangId ?? null, user.heroId ?? null, user.heroId ?? null) || null;
+    res.json({ ...user, photos, posts, rang, hero: hero });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ error: 'Server error' });
@@ -150,13 +187,17 @@ router.put('/:id', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const { firstName, lastName, age, work, about, allowMessagesFrom } = req.body;
+    const { firstName, lastName, age, work, about, allowMessagesFrom, gender } = req.body;
+
+    if (gender != 'M' && gender != 'F') {
+      return res.status(400).json({ error: 'gender must be either male or female' });
+    }
 
     db.prepare(`
       UPDATE users 
-      SET firstName = ?, lastName = ?, age = ?, work = ?, about = ?, allowMessagesFrom = ?
+      SET firstName = ?, lastName = ?, age = ?, work = ?, about = ?, allowMessagesFrom = ?, gender = ?
       WHERE id = ?
-    `).run(firstName || null, lastName || null, age || null, work || null, about || null, allowMessagesFrom || 'everyone', userId);
+    `).run(firstName || null, lastName || null, age || null, work || null, about || null, allowMessagesFrom || 'everyone', gender || 'M', userId);
 
     const user = db.prepare('SELECT id, username, email, firstName, lastName, age, work, about, avatar, role, isBanned, allowMessagesFrom FROM users WHERE id = ?').get(userId);
 
@@ -231,6 +272,80 @@ router.delete('/:id/photos/:photoId', authenticateToken, (req, res) => {
     res.json({ message: 'Photo deleted' });
   } catch (error) {
     console.error('Delete photo error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/:id/organizations', authenticateToken, (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    const organizations = db.prepare(`
+      SELECT organizations.* FROM organization_members 
+        INNER JOIN organizations ON organizations.id = organization_members.organizationId
+        WHERE userId = ?
+      `).all(userId);
+
+    res.json({ organizations: organizations });
+  } catch (error) {
+    console.log('Get organizations error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Patch user hero
+router.patch('/:id/heroes', authenticateToken, (req, res) => {
+  try {
+    const userId = req.params.id;
+    const currentUserId = req.user.userId;
+    const { heroId } = req.body;
+
+    if (userId != currentUserId) {
+      return res.status(403).json({ message: '' });
+    }
+
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const newHero = db.prepare(`
+      SELECT * FROM heroes WHERE id = ?
+      `).get(heroId);
+    if (!newHero) {
+      return res.status(404).json({ error: 'Hero not found' });
+    }
+
+    if (user.gender !== newHero.gender) {
+      return res.status(400).json({
+        error: 'Gender mismatch',
+      });
+    }
+
+    db.prepare(`
+      UPDATE users SET heroId = ? WHERE id = ?
+    `).run(heroId, userId);
+
+    const hero = db.prepare(`
+     SELECT 
+      COALESCE(
+        (SELECT imagePath FROM hero_states
+        JOIN rangs ON hero_states.minRangId = rangs.id
+        WHERE rangs.orderNumber <= (SELECT orderNumber FROM rangs WHERE id = ?) AND hero_states.heroId = ?
+        ORDER BY rangs.orderNumber DESC
+        LIMIT 1),
+        defaultImagePath
+      ) as imagePath,
+      name,
+      id
+    FROM heroes
+    WHERE heroes.id = ?;
+  `).get(user.rangId, heroId, heroId) || null;
+
+    res.json({ hero: hero });
+  }
+  catch (error) {
+    console.log('Update hero error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

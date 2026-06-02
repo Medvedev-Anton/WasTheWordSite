@@ -16,6 +16,7 @@ import taxesRouter from './routes/taxes.js';
 import pricesRouter from './routes/prices.js';
 import notificationsRouter from './routes/notifications.js';
 import orgCreationPriceRouter from './routes/org-creation-price.js';
+import heroesRouter from './routes/heroes.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -65,6 +66,7 @@ app.use('/api/taxes', taxesRouter);
 app.use('/api/prices', pricesRouter);
 app.use('/api/orgs/creation-prices', orgCreationPriceRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/heroes', heroesRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {

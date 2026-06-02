@@ -7,17 +7,19 @@ import Main from './pages/Main';
 import Organizations from './pages/Organizations';
 import Chat from './pages/Chat';
 import Profile from './pages/Profile';
-import UserProfile from './pages/UserProfile';
 import Users from './pages/Users';
 import Admin from './pages/Admin';
 import Layout from './components/Layout';
 import Map from './pages/Map';
 import BankDashboard from './pages/BankDashboard';
-import LayoutMap from './components/LayoutMap';
+// import LayoutMap from './components/LayoutMap';
 import GovernmentDashboard from './pages/GovernmentDashboard';
 import TypicalOrgDashboard from './pages/TypicalOrgDashboard';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+// import Rangs from './pages/Rangs';
+import FullWidthLayout from './components/FullWidthLayout';
+import UserProfile from './pages/UserProfile';
 
 function App() {
   const [notifications, setNotifications] = useState([]);
@@ -46,7 +48,9 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/map" element={<PrivateRoute><LayoutMap><Map /></LayoutMap></PrivateRoute>} />
+          <Route path="/map" element={<PrivateRoute><FullWidthLayout><Map /></FullWidthLayout></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute><FullWidthLayout><Profile /></FullWidthLayout></PrivateRoute>} />
+          <Route path="/users/:id" element={<PrivateRoute><FullWidthLayout><UserProfile /></FullWidthLayout></PrivateRoute>} />
           <Route
             path="/*"
             element={
@@ -56,8 +60,6 @@ function App() {
                     <Route path="/" element={<Main />} />
                     <Route path="/organizations" element={<Organizations />} />
                     <Route path="/chat" element={<Chat />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/users/:id" element={<UserProfile />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/banks/dashboard/:id" element={<BankDashboard />} />
