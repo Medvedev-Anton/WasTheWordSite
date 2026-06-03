@@ -949,9 +949,16 @@ router.get('/:id/balance', authenticateToken, (req, res) => {
   controller.getOrgBalance();
 });
 
+// Transfer money from admin balance to org balance
 router.post('/:id/transfer-from-admin-to-org', authenticateToken, (req, res) => {
   const controller = new BalanceController(req, res);
   controller.transferFromAdminToOrg();
+});
+
+// Transfer money from org balance to admin balance
+router.post('/:id/transfer-from-org-to-admin', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.transferFromOrgToAdmin();
 });
 
 // Addings to org balance

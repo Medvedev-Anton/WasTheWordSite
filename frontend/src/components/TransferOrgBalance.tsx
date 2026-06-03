@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import './TransferFromAdminToOrg.css';
+import './TransferOrgBalance.css';
 
-export default function TransferFromAdminToOrg({orgId}) {
+export default function TransferOrgBalance({orgId}) {
     const [orgBalance, setOrgBalance] = useState<number>(0);
     const [sumToTransfer, setSumToTransfer] = useState<number>(0);
     const [adminBalance, setAdminBalance] = useState<number>(0);
@@ -27,8 +27,8 @@ export default function TransferFromAdminToOrg({orgId}) {
         setSumToTransfer(value);
     }
 
-    // Обрабатывает запрос на перевод
-    const fetchTransfer = async () => {
+    // Обрабатывает запрос на перевод с баланса админа на баланс организации
+    const fetchTransferFromAdminToOrg = async () => {
         const result = await axios.post(`/api/organizations/${orgId}/transfer-from-admin-to-org`, {
             sum: sumToTransfer * 100
         });
@@ -43,14 +43,40 @@ export default function TransferFromAdminToOrg({orgId}) {
         }
     }
 
-    // Обрабатывает нажатие на кнопку перевода
-    const handleClickTransferBtn = () => {
+    // Обрабатывает запрос на перевод с баланса организации на баланс админа
+    const fetchTransferFromOrgToAdmin = async () => {
+        const result = await axios.post(`/api/organizations/${orgId}/transfer-from-org-to-admin`, {
+            sum: sumToTransfer * 100
+        });
+
+        if (result.data.message && result.data.message === 'success') {
+            fetchOrgBalance(orgId);
+            fetchAdminBalance();
+            alert('Пополнение прошло успешно');
+        }
+        else {
+            alert('Ошибка при пополнении баланса');
+        }
+    }
+
+    // Обрабатывает нажатие на кнопку перевода с баланса админа на баланс организации
+    const handleClickTransferFromAdminToOrgBtn = () => {
         if (adminBalance < sumToTransfer) {
             alert('Недостаточно средств для перевода');
             return;
         }
 
-        fetchTransfer();
+        fetchTransferFromAdminToOrg();
+    }
+
+    // Обрабатывает нажатие на кнопку перевода с баланса организации на баланс admin
+    const handleClickTransferFromOrgToAdminBtn = () => {
+        if (adminBalance < sumToTransfer) {
+            alert('Недостаточно средств для перевода');
+            return;
+        }
+
+        fetchTransferFromOrgToAdmin();
     }
 
     // Получает текущий баланс админа
@@ -65,7 +91,7 @@ export default function TransferFromAdminToOrg({orgId}) {
     return (
         <div className="transfer-to-org-balance-wrapper">
             <h2>
-                Пополнение баланса организации
+                Переводы
             </h2>
             <div className="transfer-to-org-balance-content">
                 <div className="transfer-to-org-balance-row">
@@ -104,9 +130,16 @@ export default function TransferFromAdminToOrg({orgId}) {
             </div>
             <button
                 className="sum-to-transfer-btn"
-                onClick={handleClickTransferBtn}
+                onClick={handleClickTransferFromAdminToOrgBtn}
             >
-                Перевести
+                Перевести в организацию
+            </button>
+
+            <button
+                className="sum-to-transfer-btn sum-to-transfer-btn-to-admin"
+                onClick={handleClickTransferFromOrgToAdminBtn}
+            >
+                Вывести с организации
             </button>
         </div>
     );

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Organization } from '../types';
 import axios from 'axios';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
-import TransferFromAdminToOrg from '../components/TransferFromAdminToOrg';
+import TransferOrgBalance from '../components/TransferOrgBalance';
 import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
 
 interface Borrower {
@@ -213,7 +213,7 @@ export default function BankDashboard() {
             <h1>Управление банком</h1>
             <OrgBalanceDiagram orgId={id} />
             <TransferFromOrgToSuborg orgId={id} />
-            <TransferFromAdminToOrg orgId={id} />
+            <TransferOrgBalance orgId={id} />
             <div className="tansfer-between-bank-balances">
                 <h2>
                     Перевод с основного на кредитный баланс

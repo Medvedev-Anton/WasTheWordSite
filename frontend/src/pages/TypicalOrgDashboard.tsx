@@ -3,7 +3,7 @@ import OrgSalaryDashboard from "../components/OrgSalaryDashboard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import './TypicalOrgDashboard.css';
-import TransferFromAdminToOrg from "../components/TransferFromAdminToOrg";
+import TransferOrgBalance from "../components/TransferOrgBalance";
 import SuborgsDashboardTable from "../components/SuborgsDashboardTable";
 import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
 import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
@@ -46,7 +46,7 @@ export default function TypicalOrgDashboard() {
             <TransferFromOrgToSuborg orgId={id} />
 
             <div className="transfer-wrapper">
-                <TransferFromAdminToOrg orgId={id} />
+                <TransferOrgBalance orgId={id} />
             </div>
 
             <div className="suborgs-resources">
