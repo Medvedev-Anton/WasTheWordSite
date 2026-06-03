@@ -211,4 +211,28 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return result || [];
     }
+
+    getSuborgsBalancesByOrg(orgId) {
+        const orgs = db.prepare(`
+            SELECT
+                id,
+                name,
+                balance
+            FROM
+                organizations
+            WHERE
+                parentId = ?
+        `).all(orgId);
+
+        if (result.length === 0) {
+            return [];
+        }
+
+        const orgsObj = Object.fromEntries(orgs.map(o => [o.name, {
+            id: o.id,
+            balance: o.balance
+        }]));
+
+        return orgsObj;
+    }
 }
