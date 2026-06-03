@@ -14,6 +14,7 @@ import { BanksLoansBalanceFacade } from '../facades/banks_loans_balance_facade.j
 import { BankFacade } from '../facades/bank_facade.js';
 import { BalanceController } from '../controllers/balance_controller.js';
 import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
+import { BalanceFacade } from '../facades/balance_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -581,7 +582,7 @@ router.post('/:id/join', authenticateToken, (req, res) => {
     `).run(orgId, userId, 'member', memberCanPost, memberCanComment, 0);
 
     const date = new Date();
-    date.setMonth(date.getMonth() + 1)
+    date.setDate(date.getDate() + 1)
     SalaryFacade.create(userId, orgId, 0, date.toString());
 
     addUserToOrgGroupChat(orgId, userId);
@@ -876,6 +877,8 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
         organizations
       WHERE
         orgType != 'Правительственная'
+        AND
+        parentId IS NULL
     `).all();
 
     const orgsObj = Object.fromEntries(orgs.map(o => [o.name, {
@@ -889,6 +892,22 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
   }
   catch (error) {
     console.error('Get all orgs with balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get all suborgs by org with balances
+router.get('/:id/suborgs-with-balances', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const suborgs = OrgsFacade.getSuborgsBalancesByOrg(orgId);
+
+    res.status(200).json({
+      suborgs: suborgs
+    });
+  }
+  catch (error) {
+    console.error('Get suborgs by org with balances error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -932,9 +951,16 @@ router.get('/:id/balance', authenticateToken, (req, res) => {
   controller.getOrgBalance();
 });
 
+// Transfer money from admin balance to org balance
 router.post('/:id/transfer-from-admin-to-org', authenticateToken, (req, res) => {
   const controller = new BalanceController(req, res);
   controller.transferFromAdminToOrg();
+});
+
+// Transfer money from org balance to admin balance
+router.post('/:id/transfer-from-org-to-admin', authenticateToken, (req, res) => {
+  const controller = new BalanceController(req, res);
+  controller.transferFromOrgToAdmin();
 });
 
 // Addings to org balance
@@ -989,6 +1015,31 @@ router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
     const orgId = req.params.id;
 
     OrgsFacade.payPostView(orgId, userId);
+
+    res.status(200).json({
+      message: 'success'
+    });
+  }
+  catch (error) {
+    console.error('Pay for post view error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.post('/:id/transfer-to-suborg', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const suborgId = parseInt(req.body.suborgId);
+    const sum = parseFloat(req.body.sum);
+    const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+
+    if (orgBalance < sum) {
+      res.status(200).json({
+        message: 'notEnoughMoney'
+      });
+    }
+
+    OrgsFacade.transferFromOrgToSuborgBalance(orgId, suborgId, sum);
 
     res.status(200).json({
       message: 'success'

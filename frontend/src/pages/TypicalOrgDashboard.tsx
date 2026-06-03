@@ -3,9 +3,10 @@ import OrgSalaryDashboard from "../components/OrgSalaryDashboard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import './TypicalOrgDashboard.css';
-import TransferFromAdminToOrg from "../components/TransferFromAdminToOrg";
+import TransferOrgBalance from "../components/TransferOrgBalance";
 import SuborgsDashboardTable from "../components/SuborgsDashboardTable";
 import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
+import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
 
 interface Organization {
   id: number;
@@ -34,7 +35,7 @@ export default function TypicalOrgDashboard() {
                 <h1>Управление: {org?.orgType} организация</h1>
             </div>
 
-            <div className="org-balance">
+            <div className="typical-org-balance">
                 <OrgBalanceDiagram orgId={id} />
             </div>
 
@@ -42,8 +43,10 @@ export default function TypicalOrgDashboard() {
                 <OrgSalaryDashboard orgId={id} />
             </div>
 
+            <TransferFromOrgToSuborg orgId={id} />
+
             <div className="transfer-wrapper">
-                <TransferFromAdminToOrg orgId={id} />
+                <TransferOrgBalance orgId={id} />
             </div>
 
             <div className="suborgs-resources">

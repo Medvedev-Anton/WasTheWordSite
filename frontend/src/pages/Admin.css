@@ -243,7 +243,8 @@
 
 .author-name {
   font-weight: 600;
-  color: #333;
+  /* color: #333; */
+  color: #FFF;
   margin-bottom: 0.25rem;
 }
 
@@ -255,7 +256,8 @@
 
 .post-date {
   font-size: 0.85rem;
-  color: #999;
+  /* color: #999; */
+  color: #D6D6D6;
 }
 
 .btn-delete {
@@ -278,7 +280,7 @@
 
 .post-content p {
   line-height: 1.6;
-  color: #333;
+  color: #FFF;
   margin-bottom: 1rem;
 }
 

@@ -1,0 +1,58 @@
+.suborgs-management {
+    margin-top: 30px;
+}
+
+.suborgs-management h2, .suborgs-management h3 {
+    text-align: center;
+}
+
+.suborgs-management-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 30px;
+    gap: 50px;
+}
+
+.suborgs-management-table {
+    margin-top: 25px;
+}
+
+.suborgs-management-table-head, .suborgs-management-table-content-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.suborgs-management-table-ceil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.suborgs-management-table-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.suborgs-management-table-ceil-first {
+    display: flex;
+    justify-content: start;
+}
+
+@media (max-width: 1024px) {
+    .suborgs-management-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 540px) {
+    .suborgs-management-table {
+        width: 450px;
+    }
+
+    .suborgs-management {
+        overflow-x: auto;
+    }
+}

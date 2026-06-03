@@ -209,7 +209,6 @@ export default function Profile() {
   }
 
   const rating = 0;
-  const money = 0;
   const energy = 0;
 
   const skills = [
@@ -234,7 +233,7 @@ export default function Profile() {
       <div className="top-stats">
         <div className="stat-item">
           <span className="stat-icon">🪙</span>
-          <span className="stat-value">{money}</span>
+          <span className="stat-value">{parseFloat(user.balance / 100).toFixed(2)}</span>
           <span className="stat-label">Деньги</span>
         </div>
 

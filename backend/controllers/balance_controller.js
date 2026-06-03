@@ -86,4 +86,36 @@ export class BalanceController extends MainController {
             });
         }
     }
+
+    /**
+     * Обрабатывает перевод с баланса организации на баланс админа
+     */
+    transferFromOrgToAdmin() {
+        const validate = this.has([
+            'id',
+            'sum'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const orgId = parseInt(this.request.params.id);
+            const userId = parseInt(this.request.user.userId);
+            const sum = parseFloat(this.request.body.sum);
+
+            OrgsFacade.transferFromOrgToAuthorBalance(orgId, userId, sum);
+
+            this.send(200, {
+                message: 'success'
+            });
+        }
+        catch (e) {
+            console.error('Transfer from admin to org balance error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
