@@ -1143,14 +1143,7 @@ function OrganizationDetail({
               <div className="org-type-label">{organization.orgType || 'Организация'}</div>
               <h2>{organization.name}</h2>
               <p>{organization.description || 'Нет описания'}</p>
-              {
-                (isAdmin || isGlobalAdmin) ? 
-                (
-                  <p className="org-balance">Баланс: {(organization.balance / 100).toFixed(2)}$</p>
-                )
-                :
-                ""
-              }
+              <p className="org-balance">Баланс: {(organization.balance / 100).toFixed(2)}$</p>
               <div className="org-stats">
                 <span>👥 {organization.membersCount} сотрудников</span>
                 <span>👤 Руководитель: {organization.adminUsername}</span>
