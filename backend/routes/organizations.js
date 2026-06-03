@@ -893,6 +893,22 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
   }
 });
 
+// Get all suborgs by org with balances
+router.get('/:id/suborgs-with-balances', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const suborgs = OrgsFacade.getSuborgsBalancesByOrg(orgId);
+
+    res.status(200).json({
+      suborgs: suborgs
+    });
+  }
+  catch (error) {
+    console.error('Get suborgs by org with balances error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Update org balance
 router.post('/:id/balance', authenticateToken, (req, res, next) => {
   try {
