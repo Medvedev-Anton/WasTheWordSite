@@ -808,19 +808,24 @@ function OrganizationDetail({
     const orgId = organization.id;
     const orgType = organization.orgType;
 
-    switch (orgType) {
-      case "Банковская":
-        navigate(`/banks/dashboard/${orgId}`);
-        break;
-
-      case "Правительственная":
-        navigate(`/government/dashboard/${orgId}`);
-        break;
-
-      default:
-        navigate(`/org/dashboard/${orgId}`);
-        break;
+    if (organization.parentId != null) {
+      navigate(`/suborg/dashboard/${orgId}`);
     }
+    else {
+      switch (orgType) {
+        case "Банковская":
+          navigate(`/banks/dashboard/${orgId}`);
+          break;
+
+        case "Правительственная":
+          navigate(`/government/dashboard/${orgId}`);
+          break;
+
+        default:
+          navigate(`/org/dashboard/${orgId}`);
+          break;
+      }
+    }    
   }
 
   const setForecastData = (forecast: any) => {

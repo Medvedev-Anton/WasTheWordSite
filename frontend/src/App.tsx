@@ -20,6 +20,7 @@ import axios from 'axios';
 // import Rangs from './pages/Rangs';
 import FullWidthLayout from './components/FullWidthLayout';
 import UserProfile from './pages/UserProfile';
+import TypicalSuborgDashboard from './pages/TypicalSuborgDashboard';
 
 function App() {
   const [notifications, setNotifications] = useState([]);
@@ -65,6 +66,7 @@ function App() {
                     <Route path="/banks/dashboard/:id" element={<BankDashboard />} />
                     <Route path="/government/dashboard/:id" element={<GovernmentDashboard />} />
                     <Route path="/org/dashboard/:id" element={<TypicalOrgDashboard />} />
+                    <Route path="/suborg/dashboard/:id" element={<TypicalSuborgDashboard />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Layout>
