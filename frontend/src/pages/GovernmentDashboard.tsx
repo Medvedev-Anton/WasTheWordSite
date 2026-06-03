@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import './GovernmentDashboard.css';
 import { useParams } from "react-router-dom";
 import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
+import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
 
 export default function GovernmentDashboard() {
     const ROOT_ORG_TYPES = [
@@ -308,6 +309,8 @@ export default function GovernmentDashboard() {
                     />
                 </div>
             </div>
+
+            <TransferFromOrgToSuborg orgId={id} />
 
             <div className="orgs-management">
                 <h2>

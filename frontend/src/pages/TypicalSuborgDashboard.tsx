@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import './TypicalSuborgDashboard.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
 
 interface Organization {
   id: number;
@@ -29,6 +30,8 @@ export default function TypicalSuborgDashboard() {
             <div className="org-wrapper-title">
                 <h1>Управление: {org?.orgType}</h1>
             </div>
+
+            <TransferFromOrgToSuborg orgId={id} />
         </div>
     );
 }

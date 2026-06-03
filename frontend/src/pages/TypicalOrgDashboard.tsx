@@ -6,6 +6,7 @@ import './TypicalOrgDashboard.css';
 import TransferFromAdminToOrg from "../components/TransferFromAdminToOrg";
 import SuborgsDashboardTable from "../components/SuborgsDashboardTable";
 import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
+import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
 
 interface Organization {
   id: number;
@@ -41,6 +42,8 @@ export default function TypicalOrgDashboard() {
             <div className="org-salaries">
                 <OrgSalaryDashboard orgId={id} />
             </div>
+
+            <TransferFromOrgToSuborg orgId={id} />
 
             <div className="transfer-wrapper">
                 <TransferFromAdminToOrg orgId={id} />

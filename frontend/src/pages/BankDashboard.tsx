@@ -5,6 +5,7 @@ import { Organization } from '../types';
 import axios from 'axios';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
 import TransferFromAdminToOrg from '../components/TransferFromAdminToOrg';
+import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
 
 interface Borrower {
     borrowerId: number,
@@ -210,6 +211,8 @@ export default function BankDashboard() {
     return (
         <div className="dashboard-wrapper" id="bank-dashboard">
             <h1>Управление банком</h1>
+            <OrgBalanceDiagram orgId={id} />
+            <TransferFromOrgToSuborg orgId={id} />
             <TransferFromAdminToOrg orgId={id} />
             <div className="tansfer-between-bank-balances">
                 <h2>
@@ -358,7 +361,7 @@ export default function BankDashboard() {
                     }
                 </div>
             </div>
-            <OrgBalanceDiagram orgId={id} />
+            
         </div>
     );
 }

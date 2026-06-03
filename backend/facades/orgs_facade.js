@@ -320,7 +320,7 @@ export class OrgsFacade {
                 }
 
                 BalanceFacade.entity('orgs').decrement(orgId, sum);
-                BalanceFacade.entity('orgs').decrement(orgId, sum);
+                BalanceFacade.entity('orgs').increment(suborgId, sum);
             }
             catch (e) {
                 throw new Error(e.message);

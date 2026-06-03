@@ -14,6 +14,7 @@ import { BanksLoansBalanceFacade } from '../facades/banks_loans_balance_facade.j
 import { BankFacade } from '../facades/bank_facade.js';
 import { BalanceController } from '../controllers/balance_controller.js';
 import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
+import { BalanceFacade } from '../facades/balance_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -1005,6 +1006,31 @@ router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
     const orgId = req.params.id;
 
     OrgsFacade.payPostView(orgId, userId);
+
+    res.status(200).json({
+      message: 'success'
+    });
+  }
+  catch (error) {
+    console.error('Pay for post view error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.post('/:id/transfer-to-suborg', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const suborgId = parseInt(req.body.suborgId);
+    const sum = parseFloat(req.body.sum);
+    const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+
+    if (orgBalance < sum) {
+      res.status(200).json({
+        message: 'notEnoughMoney'
+      });
+    }
+
+    OrgsFacade.transferFromOrgToSuborgBalance(orgId, suborgId, sum);
 
     res.status(200).json({
       message: 'success'
