@@ -286,4 +286,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает бюджет всех подорганизаций у организации
+     * @param {number} orgId
+     */
+    static getSuborgsBalancesByOrg(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+        
+        try {
+            return service.getSuborgsBalancesByOrg(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
