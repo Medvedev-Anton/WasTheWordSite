@@ -877,6 +877,8 @@ router.get('/all-with-balance', authenticateToken, (req, res) => {
         organizations
       WHERE
         orgType != 'Правительственная'
+        AND
+        parentId IS NULL
     `).all();
 
     const orgsObj = Object.fromEntries(orgs.map(o => [o.name, {
