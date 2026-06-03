@@ -48,6 +48,10 @@
     opacity: .5;
 }
 
+.sum-to-transfer-btn-to-admin {
+    margin-left: 20px;
+}
+
 @media (max-width: 600px) {
     .transfer-to-org-balance-row {
         flex-direction: column;

@@ -113,13 +113,8 @@ setInterval(cleanupOldFiles, 6 * 60 * 60 * 1000);
 // Start cron daemons
 cron.schedule('0 0 * * *', () => {
   LoansFacade.getAllBanksBorrowersPayments();
-}, {
-  scheduled: true
-});
-
-cron.schedule('0 0 1 * *', () => {
-  TaxesFacade.payAllTaxes();
   SalaryFacade.paySalaryToAllEmployees();
+  TaxesFacade.payAllTaxes();
 }, {
   scheduled: true
 });

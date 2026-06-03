@@ -108,6 +108,10 @@ input[type="number"] {
     opacity: .5;
 }
 
+.bank-org-diagram {
+    margin-top: 30px;
+}
+
 @media (max-width: 900px) {
     .loan-params-wrapper {
         flex-direction: column;

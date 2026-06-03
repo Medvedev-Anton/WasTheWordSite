@@ -70,7 +70,7 @@ export class SalaryServiceInterface {
      * @param {number} orgId
      * @param {number} payday
      */
-    changePaydayToNextMonth(userId, orgId, payday) {
-        throw new Error('changePaydayToNextMonth должен быть переопределен в наследнике');
+    changePaydayToNextDay(userId, orgId, payday) {
+        throw new Error('changePaydayToNextDay должен быть переопределен в наследнике');
     }
 }

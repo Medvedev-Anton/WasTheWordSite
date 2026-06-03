@@ -9,6 +9,7 @@ import { getMediaUrl } from '../config';
 
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
+import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
 
@@ -808,19 +809,24 @@ function OrganizationDetail({
     const orgId = organization.id;
     const orgType = organization.orgType;
 
-    switch (orgType) {
-      case "Банковская":
-        navigate(`/banks/dashboard/${orgId}`);
-        break;
-
-      case "Правительственная":
-        navigate(`/government/dashboard/${orgId}`);
-        break;
-
-      default:
-        navigate(`/org/dashboard/${orgId}`);
-        break;
+    if (organization.parentId != null) {
+      navigate(`/suborg/dashboard/${orgId}`);
     }
+    else {
+      switch (orgType) {
+        case "Банковская":
+          navigate(`/banks/dashboard/${orgId}`);
+          break;
+
+        case "Правительственная":
+          navigate(`/government/dashboard/${orgId}`);
+          break;
+
+        default:
+          navigate(`/org/dashboard/${orgId}`);
+          break;
+      }
+    }    
   }
 
   const setForecastData = (forecast: any) => {
@@ -928,6 +934,10 @@ function OrganizationDetail({
         style={orgCoverPreview ? { backgroundImage: `url(${orgCoverPreview})` } : undefined}
       >
         {!orgCoverPreview && <span>Добавьте обложку, чтобы выделить организацию</span>}
+      </div>
+
+      <div>
+        <OrgBalanceDiagram orgId={organization.id} />
       </div>
 
       <div className="org-header">
@@ -1143,14 +1153,7 @@ function OrganizationDetail({
               <div className="org-type-label">{organization.orgType || 'Организация'}</div>
               <h2>{organization.name}</h2>
               <p>{organization.description || 'Нет описания'}</p>
-              {
-                (isAdmin || isGlobalAdmin) ? 
-                (
-                  <p className="org-balance">Баланс: {(organization.balance / 100).toFixed(2)}$</p>
-                )
-                :
-                ""
-              }
+              <p className="org-balance">Баланс: {(organization.balance / 100).toFixed(2)}$</p>
               <div className="org-stats">
                 <span>👥 {organization.membersCount} сотрудников</span>
                 <span>👤 Руководитель: {organization.adminUsername}</span>

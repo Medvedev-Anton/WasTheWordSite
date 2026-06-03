@@ -286,4 +286,93 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает бюджет всех подорганизаций у организации
+     * @param {number} orgId
+     */
+    static getSuborgsBalancesByOrg(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+        
+        try {
+            return service.getSuborgsBalancesByOrg(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Переводит с баланса организации на баланс подорганизации
+     * @param {number} orgId
+     * @param {number} suborgId
+     * @param {number} sum
+     */
+    static transferFromOrgToSuborgBalance(orgId, suborgId, sum) {
+        const transaction = db.transaction(() => {
+            try {
+                const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+
+                if (orgBalance < sum) {
+                    throw new Error('Недостаточно средств');
+                }
+
+                BalanceFacade.entity('orgs').decrement(orgId, sum);
+                BalanceFacade.entity('orgs').increment(suborgId, sum);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции перевода с организации в подорганизацию: ' + e.message);
+        }
+    }
+
+    /**
+     * Пополняет баланс админа со счета организации
+     * @param {number} orgId
+     * @param {number} userId
+     * @param {number} sum
+     */
+    static transferFromOrgToAuthorBalance(orgId, userId, sum) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        const transaction = db.transaction(() => {
+            try {
+                const adminId = service.getAdminId(orgId);
+
+                if (userId != adminId) {
+                    throw new Error('пользователь не явялется владельцем организации');
+                }
+
+                const currentOrgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+
+                if (currentOrgBalance < sum) {
+                    throw new Error('недостаточно средств для перевода');
+                }
+
+                BalanceFacade.entity('orgs').decrement(orgId, sum);
+                BalanceFacade.entity('users').increment(adminId, sum);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции по переводу с баланса автора организации на баланс организации: ' + e.message);
+        }
+    }
 }

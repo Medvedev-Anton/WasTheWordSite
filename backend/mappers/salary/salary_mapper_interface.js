@@ -63,7 +63,7 @@ export class SalaryMapperInterface {
      * @param {number} orgId
      * @param {string} newPayday
      */
-    chagePayday(userId, orgId, newPayday) {
+    changePayday(userId, orgId, newPayday) {
         throw new Error('changePaydayToNextMonth должен быть переопределен в наследнике');
     }
 }

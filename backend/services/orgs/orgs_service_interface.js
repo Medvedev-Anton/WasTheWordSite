@@ -96,4 +96,12 @@ export class OrgsServiceInterface {
     getAllUserOrgs(userId) {
         throw new Error('getAllUserOrgs должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает бюджет всех подорганизаций у организации
+     * @param {number} orgId
+     */
+    getSuborgsBalancesByOrg(orgId) {
+        throw new Error('getSuborgsBalancesByOrg должен быть переопределен в наследнике');
+    }
 }

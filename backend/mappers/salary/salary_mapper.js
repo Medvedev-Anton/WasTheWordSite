@@ -83,7 +83,7 @@ export class SalaryMapper extends SalaryMapperInterface {
         `).run(newSalary, userId, orgId);
     }
 
-    chagePayday(userId, orgId, newPayday) {
+    changePayday(userId, orgId, newPayday) {
         db.prepare(`
             UPDATE
                 users_salary
