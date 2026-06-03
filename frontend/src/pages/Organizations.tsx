@@ -9,6 +9,7 @@ import { getMediaUrl } from '../config';
 
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
+import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
 
@@ -933,6 +934,10 @@ function OrganizationDetail({
         style={orgCoverPreview ? { backgroundImage: `url(${orgCoverPreview})` } : undefined}
       >
         {!orgCoverPreview && <span>Добавьте обложку, чтобы выделить организацию</span>}
+      </div>
+
+      <div>
+        <OrgBalanceDiagram orgId={organization.id} />
       </div>
 
       <div className="org-header">

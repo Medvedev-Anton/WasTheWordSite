@@ -35,7 +35,7 @@ export default function TypicalOrgDashboard() {
                 <h1>Управление: {org?.orgType} организация</h1>
             </div>
 
-            <div className="org-balance">
+            <div className="typical-org-balance">
                 <OrgBalanceDiagram orgId={id} />
             </div>
 

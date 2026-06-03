@@ -211,7 +211,10 @@ export default function BankDashboard() {
     return (
         <div className="dashboard-wrapper" id="bank-dashboard">
             <h1>Управление банком</h1>
-            <OrgBalanceDiagram orgId={id} />
+            <div className="bank-org-diagram">
+                <OrgBalanceDiagram orgId={id} />
+            </div>
+            
             <TransferFromOrgToSuborg orgId={id} />
             <TransferOrgBalance orgId={id} />
             <div className="tansfer-between-bank-balances">
