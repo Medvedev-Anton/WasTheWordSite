@@ -94,4 +94,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getSuborgsBalancesByOrg(orgId) {
+        try {
+            return this.mapper.getSuborgsBalancesByOrg(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
