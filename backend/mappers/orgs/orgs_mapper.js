@@ -224,7 +224,7 @@ export class OrgsMapper extends OrgsMapperInterface {
                 parentId = ?
         `).all(orgId);
 
-        if (result.length === 0) {
+        if (orgs.length === 0) {
             return [];
         }
 
