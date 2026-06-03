@@ -581,7 +581,7 @@ router.post('/:id/join', authenticateToken, (req, res) => {
     `).run(orgId, userId, 'member', memberCanPost, memberCanComment, 0);
 
     const date = new Date();
-    date.setMonth(date.getMonth() + 1)
+    date.setDate(date.getDate() + 1)
     SalaryFacade.create(userId, orgId, 0, date.toString());
 
     addUserToOrgGroupChat(orgId, userId);
