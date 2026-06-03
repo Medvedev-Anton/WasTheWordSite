@@ -303,4 +303,35 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Переводит с баланса организации на баланс подорганизации
+     * @param {number} orgId
+     * @param {number} suborgId
+     * @param {number} sum
+     */
+    static transferFromOrgToSuborgBalance(orgId, suborgId, sum) {
+        const transaction = db.transaction(() => {
+            try {
+                const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+
+                if (orgBalance < sum) {
+                    throw new Error('Недостаточно средств');
+                }
+
+                BalanceFacade.entity('orgs').decrement(orgId, sum);
+                BalanceFacade.entity('orgs').decrement(orgId, sum);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции перевода с организации в подорганизацию: ' + e.message);
+        }
+    }
 }
