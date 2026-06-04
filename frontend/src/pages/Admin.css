@@ -6,7 +6,7 @@
 
 .admin-page h1 {
   font-size: 2rem;
-  color: #333;
+  color: #FFF;
   margin-bottom: 1rem;
 }
 
@@ -20,7 +20,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid #D6D6D6;
 }
 
 .admin-subtabs button {
@@ -29,15 +29,15 @@
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 0.95rem;
-  color: #64748b;
+  color: #D6D6D6;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: all 0.2s;
 }
 
 .admin-subtabs button.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: #D6D6D6;
+  border-bottom-color: #8C5C5C;
   font-weight: 600;
 }
 
@@ -53,7 +53,7 @@
   padding: 1rem 1.5rem;
   font-size: 1rem;
   font-weight: 500;
-  color: #666;
+  color: #D6D6D6;
   cursor: pointer;
   border-bottom: 3px solid transparent;
   margin-bottom: -2px;
@@ -61,12 +61,12 @@
 }
 
 .admin-tabs button:hover {
-  color: #667eea;
+  color: #8C5C5C;
 }
 
 .admin-tabs button.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: #8C5C5C;
+  border-bottom-color: #8C5C5C;
 }
 
 .admin-content {
@@ -74,6 +74,8 @@
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(211, 211, 211, 0.22);
+  background: rgba(61,62,64, .5);
 }
 
 .stats-grid {
@@ -83,19 +85,20 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
+  background: rgba(61,62,64, .5);
+  border: 1px solid rgba(211, 211, 211, 0.22);
 }
 
 .stat-card.warning {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: rgba(61,62,64, .5);
 }
 
 .stat-card.admin {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: rgba(61,62,64, .5);
 }
 
 .stat-card h3 {
@@ -120,17 +123,18 @@
 }
 
 .users-table th {
-  background: #f5f5f5;
+  background: #8C5C5C;
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #333;
+  color: #D6D6D6;
   border-bottom: 2px solid #e0e0e0;
 }
 
 .users-table td {
   padding: 1rem;
   border-bottom: 1px solid #e0e0e0;
+  color: #D6D6D6;
 }
 
 .users-table tr.banned {
@@ -139,7 +143,7 @@
 }
 
 .users-table tr:hover {
-  background-color: #f9f9f9;
+  background-color: #8C5C5C;
 }
 
 .role-badge {
@@ -166,7 +170,7 @@
 }
 
 .status-active {
-  color: #2e7d32;
+  color: #44c24a;
   font-weight: 600;
 }
 
@@ -215,10 +219,10 @@
 }
 
 .admin-post-card {
-  background: #f9f9f9;
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(211, 211, 211, 0.22);
+  background: rgba(61,62,64, .5);
 }
 
 .post-header {
@@ -261,8 +265,8 @@
 }
 
 .btn-delete {
-  background: #fee;
-  color: #c33;
+  background: #8C5C5C;
+  color: #FFF;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: 500;
@@ -324,7 +328,7 @@
 
 .admin-images-section h2 {
   font-size: 1.5rem;
-  color: #333;
+  color: #D6D6D6;
   margin-bottom: 24px;
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 12px;
@@ -335,11 +339,12 @@
   background: #f5f5f5;
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid #e0e0e0;
+  background: rgba(61,62,64, .5);
+  border: 1px solid rgba(211, 211, 211, 0.22);
 }
 
 .default-image-section h3 {
-  color: #667eea;
+  color: #D6D6D6;
   margin: 0 0 16px 0;
   font-size: 1.1rem;
 }
@@ -353,6 +358,8 @@
   padding: 16px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: rgba(61,62,64, .5);
+  border: 1px solid rgba(211, 211, 211, 0.22);
 }
 
 .default-image-card .image-preview {
@@ -378,10 +385,10 @@
 }
 
 .org-type-group {
-  background: #f9f9f9;
   border-radius: 12px;
   padding: 20px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid rgba(211, 211, 211, 0.22);
+  background: rgba(61,62,64, .5);
 }
 
 .org-type-header {
@@ -394,12 +401,16 @@
 }
 
 .org-type-header h3 {
-  color: #333;
+  color: #D6D6D6;
   font-size: 1.2rem;
   margin: 0;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.empty-icons {
+  color: #B0B0B0;
 }
 
 .btn-add-image {
@@ -488,7 +499,7 @@
   padding: 10px;
   display: flex;
   gap: 4px;
-  background: white;
+  background: transparent;
 }
 
 .image-actions button {
@@ -498,9 +509,8 @@
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s;
-  background: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
+  background: #8C5C5C;
+  color: #FFF;
   flex: 1;
   display: flex;
   align-items: center;
@@ -509,7 +519,9 @@
 }
 
 .image-actions button:hover {
-  background: #e0e0e0;
+  opacity: .9;
+  background: #8C5C5C !important;
+  color: #FFF !important;
 }
 
 .btn-set-default {
@@ -541,14 +553,14 @@
 }
 
 .upload-section {
-  background: #f5f5f5;
   border-radius: 12px;
   padding: 24px;
-  border: 1px solid #e0e0e0;
+  background: rgba(61,62,64, .5);
+  border: 1px solid rgba(211, 211, 211, 0.22);
 }
 
 .upload-section h3 {
-  color: #667eea;
+  color: #D6D6D6;
   margin: 0 0 20px 0;
   font-size: 1.1rem;
 }
@@ -572,27 +584,27 @@
 }
 
 .form-group label {
-  color: #333;
+  color: #B0B0B0;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 .org-type-select,
 .org-name-input {
-  background: white;
-  color: #333;
-  border: 1px solid #ddd;
+  color: #FFF;
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 0.9rem;
   transition: all 0.2s;
+  border: 1px solid rgba(211, 211, 211, 0.22);
+  background: rgba(61,62,64, .5);
 }
 
 .org-type-select:hover,
 .org-name-input:hover,
 .org-type-select:focus,
 .org-name-input:focus {
-  border-color: #667eea;
+  border-color: #8C5C5C;
   outline: none;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
@@ -601,8 +613,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: white;
-  border: 1px solid #ddd;
+  background: rgba(61,62,64, .5);
+  border: 1px solid rgba(211, 211, 211, 0.22);
   border-radius: 6px;
   padding: 4px;
 }
@@ -612,7 +624,7 @@
 }
 
 .btn-upload {
-  background: #667eea;
+  background: #8C5C5C;
   color: white;
   border: none;
   padding: 10px 16px;
@@ -630,7 +642,7 @@
 }
 
 .file-name {
-  color: #666;
+  color: #B0B0B0;
   font-size: 0.85rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -638,7 +650,7 @@
 }
 
 .input-hint {
-  color: #888;
+  color: #B0B0B0;
   font-size: 0.8rem;
   margin-top: 4px;
 }
@@ -650,7 +662,7 @@
 }
 
 .btn-primary {
-  background: #667eea;
+  background: #8C5C5C;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -663,7 +675,7 @@
 }
 
 .btn-primary:hover {
-  background: #5a67d8;
+  background: #8C5C5C;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
@@ -727,17 +739,21 @@ input[name="initial-user-balance"] {
   border-bottom: 1px solid #000;
   padding: 0 0 5px 10px;
   font-size: 16px;
+  background: #888888;
+  color: #FFF;
 }
 
 .initial-balance-label {
   min-width: 110px;
+  color: #B0B0B0;
 }
 
 /* Tab Heroes */
 .heroes-simple {
   padding: 20px;
-  background: white;
+  background: rgba(61,62,64, .5);
   border-radius: 16px;
+  border: 1px solid rgba(211, 211, 211, 0.22);
 }
 
 .heroes-actions {
@@ -747,13 +763,18 @@ input[name="initial-user-balance"] {
 }
 
 .btn-add-hero {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #8C5C5C;
   color: white;
   border: none;
   padding: 8px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
+  transition: all .3s;
+}
+
+.btn-add-hero:hover {
+  opacity: .9;
 }
 
 .heroes-two-columns {
@@ -764,7 +785,7 @@ input[name="initial-user-balance"] {
 
 .heroes-list-col {
   width: 280px;
-  background: #f8f9fa;
+  background: #525252;
   border-radius: 12px;
   overflow: hidden;
   flex-shrink: 0;
@@ -837,7 +858,7 @@ input[name="initial-user-balance"] {
 
 .hero-editor-col {
   flex: 1;
-  background: white;
+  background: #525252;
   border-radius: 12px;
   border: 1px solid #e9ecef;
   padding: 20px;
@@ -855,7 +876,7 @@ input[name="initial-user-balance"] {
 .editor-header h2 {
   margin: 0;
   font-size: 20px;
-  color: #333;
+  color: #D6D6D6;
 }
 
 .editor-avatar {
@@ -886,7 +907,7 @@ input[name="initial-user-balance"] {
 
 .editor-section h3 {
   font-size: 16px;
-  color: #555;
+  color: #B0B0B0;
   margin-bottom: 16px;
 }
 
@@ -902,8 +923,8 @@ input[name="initial-user-balance"] {
 }
 
 .btn-add-state-simple {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: #8C5C5C;
+  color: #FFF;
   border: none;
   padding: 6px 14px;
   border-radius: 8px;
@@ -922,7 +943,8 @@ input[name="initial-user-balance"] {
   height: 80px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #dee2e6;
+  border: 1px solid rgba(211, 211, 211, 0.22);
+  background: rgba(61,62,64, .5);
 }
 
 .default-preview img {
@@ -945,8 +967,8 @@ input[name="initial-user-balance"] {
 }
 
 .btn-upload-default {
-  background: #e3f2fd;
-  color: #1976d2;
+  background: #8C5C5C;
+  color: #FFF;
   border: none;
 }
 
@@ -1215,7 +1237,7 @@ input[name="initial-user-balance"] {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #555;
+  color: #B0B0B0;
   font-size: 14px;
 }
 
@@ -1246,7 +1268,7 @@ input[name="initial-user-balance"] {
 }
 
 .btn-upload {
-  background: #f0f0f0;
+  background: #8C5C5C;
   border: 1px solid #ddd;
   padding: 8px 16px;
   border-radius: 8px;
@@ -1256,7 +1278,8 @@ input[name="initial-user-balance"] {
 }
 
 .btn-upload:hover {
-  background: #e0e0e0;
+  opacity: .9;
+  background: #8C5C5C;
 }
 
 .file-hint {
@@ -1639,6 +1662,10 @@ input[name="initial-user-balance"] {
 .rzz-admin-hero-header-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.initial-balances-params h2 {
+  color: #D6D6D6;
 }
 
 @media (max-width: 768px) {

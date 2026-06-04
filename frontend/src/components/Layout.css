@@ -6,7 +6,7 @@
 
 .header {
   /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-  background: #525252;
+  background: #434242;
   color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
@@ -50,13 +50,16 @@
 }
 
 .nav a.active {
-  background-color: rgba(255, 255, 255, 0.2);
+  /* background-color: rgba(255, 255, 255, 0.2); */
+  background: #8C5C5C;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .user-menu {
   display: flex;
   align-items: center;
   gap: 1rem;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .username {
@@ -64,7 +67,8 @@
 }
 
 .logout-btn {
-  background-color: rgba(255, 255, 255, 0.2);
+  /* background-color: rgba(255, 255, 255, 0.2); */
+  background: #8C5C5C;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -108,6 +112,9 @@
 
 .nav-overlay {
   display: none;
+}
+.header-balance-span {
+  width: max-content;
 }
 
 @media (max-width: 768px) {

@@ -1,5 +1,6 @@
-h1 {
+#bank-dashboard h1 {
     text-align: center;
+    color: #D6D6D6;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -25,6 +26,17 @@ input[type="number"] {
     gap: 30px;
     border: 2px solid #ff00c1;
     padding: 20px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    background: rgba(61,62,64, .5);
+    border-radius: 12px;
+}
+
+.loan-params-list h3 {
+    color: #D6D6D6;
+}
+
+.loan-param p {
+    color: #B0B0B0;
 }
 
 #bank-dashboard input[type="number"] {
@@ -33,10 +45,16 @@ input[type="number"] {
     margin-top: 15px;
     height: 30px;
     font-size: 16px;
+    color: #FFF;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+}
+
+#bank-dashboard input[type="number"]:not(.input-with-dollar-back) {
+    background: #888888;
 }
 
 .input-with-dollar-back {
-    background-image: url('/image/dollar.png');
+    background: url('/image/dollar.png'), #888888;
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: center right;
@@ -45,8 +63,14 @@ input[type="number"] {
 
 .borrowers-list {
     margin-top: 40px;
-    border: 2px solid #63d7a8;
     padding: 20px;
+    background: rgba(61,62,64, .5);
+    order: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
+}
+
+.borrowers-list h2 {
+    color: #D6D6D6;
 }
 
 .borrowers-wrapper {
@@ -62,6 +86,7 @@ input[type="number"] {
 
 .borrower-name {
     width: 100%;
+    color: #B0B0B0;
 }
 
 .orgLoanPaymentPercent {
@@ -71,8 +96,15 @@ input[type="number"] {
 
 .tansfer-between-bank-balances {
     margin-top: 30px;
-    border: 2px solid #7061c0;
     padding: 20px;
+    background: rgba(61,62,64, .5);
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
+}
+
+.tansfer-between-bank-balances h2 {
+    text-align: center;
+    color: #D6D6D6;
 }
 
 .tansfer-between-bank-balances-content {
@@ -94,11 +126,12 @@ input[type="number"] {
 
 .tansfer-between-bank-balances__bank-balance-title {
     width: 250px;
+    color: #B0B0B0;
 }
 
 .transfer-between-balances-btn {
     padding: 10px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #8C5C5C;
     color: #FFF;
     border-radius: 20px;
     transition: all .3s;
@@ -110,6 +143,22 @@ input[type="number"] {
 
 .bank-org-diagram {
     margin-top: 30px;
+}
+
+.transfers-block-wrapper {
+    display: flex;
+    gap: 40px;
+}
+
+.transfer-to-org-balance-row input {
+    margin-top: 0 !important;
+}
+
+@media (max-width: 1200px) {
+    .transfers-block-wrapper {
+        flex-direction: column;
+        gap: 0px;
+    }
 }
 
 @media (max-width: 900px) {
@@ -138,5 +187,15 @@ input[type="number"] {
 @media (max-width: 540px) {
     #bank-dashboard h2 {
         font-size: 20px;
+    }
+
+    .borrower-elem {
+        flex-direction: column;
+        align-items: start;
+        gap: 5px;
+    }
+
+    .borrower-name {
+        width: auto;
     }
 }

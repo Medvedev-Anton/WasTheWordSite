@@ -1,8 +1,23 @@
 #typical-dashboard input[type="number"] {
     width: 100%;
     text-align: center;
+    margin-top: 15px;
     height: 30px;
     font-size: 16px;
+    color: #FFF;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+}
+
+#typical-dashboard input[type="number"]:not(.input-with-dollar-back) {
+    background: #888888;
+}
+
+.input-with-dollar-back {
+    background: url('/image/dollar.png'), #888888;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    border: 1px solid #000;
 }
 
 .org-salaries {
@@ -15,4 +30,9 @@
 
 .typical-org-balance {
     margin-top: 30px;
+}
+
+.typical-org-wrapper-title h1 {
+    text-align: center;
+    color: #D6D6D6;
 }

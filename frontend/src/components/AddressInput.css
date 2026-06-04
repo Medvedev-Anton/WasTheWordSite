@@ -6,15 +6,21 @@
 .address-input {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 14px;
   transition: border-color 0.2s;
+  background: #888888;
+  color: #FFF;
+  border: 1px solid rgba(211, 211, 211, 0.22);
+}
+
+.address-input::placeholder {
+  color: #FFF;
 }
 
 .address-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #8C5C5C;
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 

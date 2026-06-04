@@ -2,15 +2,26 @@ body {
     overflow-x: hidden;
 }
 
-input[type="number"] {
+#government-dashboard h1 {
+    text-align: center;
+    color: #D6D6D6;
+}
+
+#government-dashboard input[type="number"] {
     width: 100%;
     text-align: center;
     height: 30px;
     font-size: 16px;
+    color: #FFF;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+}
+
+#government-dashboard input[type="number"]:not(.input-with-dollar-back) {
+    background: #888888;
 }
 
 .input-with-dollar-back {
-    background-image: url('/image/dollar.png');
+    background: url('/image/dollar.png'), #888888;
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: center right;
@@ -21,6 +32,10 @@ input[type="number"] {
     display: flex;
     gap: 50px;
     margin-top: 30px;
+    padding: 20px;
+    background: rgba(61,62,64, .5);
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
 }
 
 #government-dashboard .general-params-wrapper input[type="number"] {
@@ -29,15 +44,20 @@ input[type="number"] {
 }
 
 #government-dashboard span, #government-dashboard p {
-    color: #000;
+    color: #B0B0B0;
 }
 
 .resources-for-org-creation {
     margin-top: 30px;
+    padding: 20px;
+    background: rgba(61,62,64, .5);
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
 }
 
 .resources-for-org-creation h2 {
     text-align: center;
+    color: #D6D6D6;
 }
 
 .resources-table {
@@ -65,10 +85,15 @@ input[type="number"] {
 
 .orgs-management {
     margin-top: 30px;
+    padding: 20px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    background: rgba(61,62,64, .5);
+    border-radius: 12px;
 }
 
 .orgs-management h2, .orgs-management h3 {
     text-align: center;
+    color: #D6D6D6;
 }
 
 .orgs-management-wrapper {

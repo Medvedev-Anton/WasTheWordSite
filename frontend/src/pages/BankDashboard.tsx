@@ -216,54 +216,59 @@ export default function BankDashboard() {
             </div>
             
             <TransferFromOrgToSuborg orgId={id} />
-            <TransferOrgBalance orgId={id} />
-            <div className="tansfer-between-bank-balances">
-                <h2>
-                    Перевод с основного на кредитный баланс
-                </h2>
 
-                <div className="tansfer-between-bank-balances-content">
-                    <div className="tansfer-between-bank-balances__bank-balance">
-                        <div className="tansfer-between-bank-balances__bank-balance-title">
-                            Основной баланс:
+            <div className="transfers-block-wrapper">
+                <TransferOrgBalance orgId={id} />
+                <div className="tansfer-between-bank-balances">
+                    <h2>
+                        Перевод с основного на кредитный баланс
+                    </h2>
+
+                    <div className="tansfer-between-bank-balances-content">
+                        <div className="tansfer-between-bank-balances__bank-balance">
+                            <div className="tansfer-between-bank-balances__bank-balance-title">
+                                Основной баланс:
+                            </div>
+                            <input 
+                                type="number" 
+                                className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
+                                value={mainBalance}
+                                readOnly
+                            />
                         </div>
-                        <input 
-                            type="number" 
-                            className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
-                            value={mainBalance}
-                            readOnly
-                        />
-                    </div>
-                    <div className="tansfer-between-bank-balances__bank-balance">
-                        <div className="tansfer-between-bank-balances__bank-balance-title">
-                            Кредитный баланс:
+                        <div className="tansfer-between-bank-balances__bank-balance">
+                            <div className="tansfer-between-bank-balances__bank-balance-title">
+                                Кредитный баланс:
+                            </div>
+                            <input 
+                                type="number" 
+                                className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
+                                value={loanBalance}
+                                readOnly
+                            />
                         </div>
-                        <input 
-                            type="number" 
-                            className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
-                            value={loanBalance}
-                            readOnly
-                        />
-                    </div>
-                    <div className="tansfer-between-bank-balances__bank-balance">
-                        <div className="tansfer-between-bank-balances__bank-balance-title">
-                            Сумма перевода:
+                        <div className="tansfer-between-bank-balances__bank-balance">
+                            <div className="tansfer-between-bank-balances__bank-balance-title">
+                                Сумма перевода:
+                            </div>
+                            <input 
+                                type="number" 
+                                className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
+                                value={sumToTransfer}
+                                onChange={handleChangeTransferSum}
+                            />
                         </div>
-                        <input 
-                            type="number" 
-                            className="tansfer-between-bank-balances__bank-balance-input input-with-dollar-back"
-                            value={sumToTransfer}
-                            onChange={handleChangeTransferSum}
-                        />
+                        <button 
+                            onClick={hangleClickTransferBetweenBalances}
+                            className="transfer-between-balances-btn"
+                        >
+                            Перевести
+                        </button>
                     </div>
-                    <button 
-                        onClick={hangleClickTransferBetweenBalances}
-                        className="transfer-between-balances-btn"
-                    >
-                        Перевести
-                    </button>
                 </div>
             </div>
+
+            
             <div className="loan-params-wrapper">
                 <div className="loan-params-orgs loan-params-list">
                     <h3>

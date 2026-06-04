@@ -55,7 +55,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="user-menu">
             <span className="username">{user?.username}</span>
-            <span>Баланс: {userBalance}$</span>
+            <span className="header-balance-span">Баланс: <br/> {userBalance} BFB</span>
             <button onClick={logout} className="logout-btn">Выход</button>
           </div>
           <button className="hamburger-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Меню">
@@ -98,7 +98,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="mobile-sidebar-footer">
           <span className="mobile-sidebar-username">{user?.username}</span>
           <p>
-            {userBalance}$
+            {userBalance} BFB
           </p>
           <button onClick={() => { logout(); closeSidebar(); }} className="mobile-sidebar-logout">
             Выход

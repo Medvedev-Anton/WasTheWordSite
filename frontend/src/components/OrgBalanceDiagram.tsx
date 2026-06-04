@@ -34,7 +34,7 @@ export default function OrgBalanceDiagram({ orgId }) {
                 {
                     label: 'Бюджет',
                     data: [orgBalance, totalOrgsBalance - orgBalance],
-                    backgroundColor: ['#20b24d', '#3f49cb'],
+                    backgroundColor: ['#D6D6D6', '#8C5C5C'],
                     hoverOffset: 10,
                 },
             ],
@@ -87,7 +87,7 @@ export default function OrgBalanceDiagram({ orgId }) {
             </h2>
             <Pie data={chartData} options={options} />
             <p className="org-balance-chart__balance">
-                {orgBalance}$
+                {orgBalance} BFB
             </p>
         </div>
     );

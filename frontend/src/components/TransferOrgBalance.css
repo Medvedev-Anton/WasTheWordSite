@@ -1,3 +1,8 @@
+.transfer-to-org-balance-wrapper h2 {
+    text-align: center;
+    color: #D6D6D6;
+}
+
 .input-with-dollar-back {
     background-image: url('/image/dollar.png');
     background-size: 20px;
@@ -7,9 +12,11 @@
 }
 
 .transfer-to-org-balance-wrapper {
-    border: 2px solid #6974dd;
     padding: 20px;
     margin-top: 30px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    background: rgba(61,62,64, .5);
+    border-radius: 12px;
 }
 
 .transfer-to-org-balance-wrapper input[type="number"] {
@@ -22,8 +29,9 @@
 .transfer-to-org-balance-content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 20px;
+    margin-top: 30px;
+    align-items: start;
 }
 
 .transfer-to-org-balance-row {
@@ -38,7 +46,7 @@
 .sum-to-transfer-btn {
     padding: 10px 20px;
     border-radius: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #8C5C5C;
     color: #FFF;
     margin-top: 20px;
     transition: all .3s;
@@ -52,10 +60,27 @@
     margin-left: 20px;
 }
 
+.transfer-to-org-balance-row__current-balance,
+.transfer-to-org-balance-row__current-admin-balance,
+.transfer-to-org-balance-row__money-to-transfer {
+    color: #B0B0B0;
+}
+
 @media (max-width: 600px) {
     .transfer-to-org-balance-row {
         flex-direction: column;
         align-items: start;
         gap: 10px;
+    }
+}
+
+@media (max-width: 500px) {
+    .sum-to-transfer-btn {
+        width: 100%;
+    }
+
+    .sum-to-transfer-btn-to-admin {
+        width: 100%;
+        margin-left: 0;
     }
 }

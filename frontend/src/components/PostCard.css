@@ -1,14 +1,15 @@
 .post-card {
   /* background: white; */
-  background: #8C5C5C;
+  background: rgba(61,62,64, .5);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
   transition: box-shadow 0.2s;
+  border: 1px solid rgba(211, 211, 211, 0.22);
 }
 
 .post-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); */
 }
 
 .post-header {
@@ -322,13 +323,20 @@
 .comment-input input {
   flex: 1;
   padding: 0.75rem;
-  border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 0.9rem;
+  background: #888888;
+  color: #FFF;
+  border: 1px solid rgba(211, 211, 211, 0.22);
+}
+
+.comment-input input::placeholder {
+  color: #FFF;
 }
 
 .comment-input button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  background: #8C5C5C;
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;

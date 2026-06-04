@@ -1,9 +1,18 @@
 .suborgs-management {
     margin-top: 30px;
+    background: rgba(61,62,64, .5);
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.suborgs-management:empty {
+    display: none;
 }
 
 .suborgs-management h2, .suborgs-management h3 {
     text-align: center;
+    color: #D6D6D6;
 }
 
 .suborgs-management-wrapper {
@@ -27,6 +36,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.suborgs-management-table-ceil span {
+    color: #B0B0B0;
 }
 
 .suborgs-management-table-content {
