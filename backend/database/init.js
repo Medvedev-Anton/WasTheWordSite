@@ -109,17 +109,6 @@ export async function initDatabase() {
     console.error('Error updating users:', e.message);
   }
 
-  // Add repostOfId to posts if not exists
-  const postsTableInfo = db.prepare("PRAGMA table_info(posts)").all();
-  const hasRepostOfId = postsTableInfo.some(col => col.name === 'repostOfId');
-  if (!hasRepostOfId) {
-    try {
-      db.exec(`ALTER TABLE posts ADD COLUMN repostOfId INTEGER`);
-    } catch (e) {
-      console.error('Error adding repostOfId column:', e.message);
-    }
-  }
-
   // Create organizations table
   db.exec(`
     CREATE TABLE IF NOT EXISTS organizations (
@@ -319,6 +308,17 @@ export async function initDatabase() {
     // For existing tables, we'll handle it in the application code
   } catch (e) {
     console.error('Error checking posts table structure:', e.message);
+  }
+
+  // Add repostOfId to posts if not exists
+  const postsTableInfo = db.prepare("PRAGMA table_info(posts)").all();
+  const hasRepostOfId = postsTableInfo.some(col => col.name === 'repostOfId');
+  if (!hasRepostOfId) {
+    try {
+      db.exec(`ALTER TABLE posts ADD COLUMN repostOfId INTEGER`);
+    } catch (e) {
+      console.error('Error adding repostOfId column:', e.message);
+    }
   }
 
   // Create post_files table for multiple files per post
