@@ -194,6 +194,11 @@ export class OrgsFacade {
     static checkHasBalanceToCreate(orgType, userId) {
         try {
             const creationPrice = OrgCreationPriceFacade.getOrgPrice(orgType);
+
+            if (creationPrice == 0) {
+                return true;
+            }
+
             const userBalance = BalanceFacade.entity('users').getBalance(userId);
 
             if (userBalance < creationPrice) {
@@ -216,6 +221,10 @@ export class OrgsFacade {
         const transaction = db.transaction(() => {
             try {
                 const creationPrice = OrgCreationPriceFacade.getOrgPrice(orgType);
+
+                if (creationPrice == 0) {
+                    return;
+                }
 
                 const goverId = this.getAllOrgsIdsByType('Правительственная')[0] ?
                                     this.getAllOrgsIdsByType('Правительственная')[0].id :
