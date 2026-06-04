@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
     // Create user
     const result = db.prepare(`
       INSERT INTO users (username, email, password, firstName, lastName, role, isBanned, balance, gender)
-      VALUES (?, ?, ?, ?, ?, 'user', 0, ?)
+      VALUES (?, ?, ?, ?, ?, 'user', 0, ?, ?)
     `).run(username, email, hashedPassword, firstName || null, lastName || null, initialBalance, gender);
 
     const user = db.prepare('SELECT id, username, email, firstName, lastName, avatar, role, isBanned FROM users WHERE id = ?').get(result.lastInsertRowid);
