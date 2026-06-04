@@ -21,7 +21,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: #D6D6D6;
 }
 
 .chat-sidebar-header h2 {
@@ -30,7 +30,8 @@
 }
 
 .new-chat-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  background: #8C5C5C;
   color: white;
   width: 32px;
   height: 32px;
@@ -49,6 +50,7 @@
 .chats-list {
   flex: 1;
   overflow-y: auto;
+  background: #888888;
 }
 
 .chat-item {
@@ -62,11 +64,11 @@
 }
 
 .chat-item:hover {
-  background-color: #f0f0f0;
+  background-color: #8C5C5C;
 }
 
 .chat-item.active {
-  background-color: #e8eaf6;
+  background-color: #8C5C5C;
 }
 
 .chat-item-info {
@@ -82,7 +84,7 @@
 
 .chat-item-name {
   font-weight: 600;
-  color: #333;
+  color: #FFF;
 }
 
 .chat-type-badge {
@@ -104,7 +106,7 @@
 
 .chat-item-preview {
   font-size: 0.9rem;
-  color: #666;
+  color: #D6D6D6;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -113,7 +115,7 @@
 
 .chat-item-time {
   font-size: 0.8rem;
-  color: #999;
+  color: #B0B0B0;
   white-space: nowrap;
 }
 
@@ -129,6 +131,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  background: #D6D6D6;
 }
 
 .chat-header h3 {
@@ -138,8 +141,8 @@
 
 .chat-type {
   font-size: 0.9rem;
-  color: #999;
-  background: #f0f0f0;
+  color: #FFF;
+  background: #8C5C5C;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
 }
@@ -151,7 +154,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background: #f9f9f9;
+  background: #B0B0B0;
 }
 
 .message {
@@ -192,7 +195,8 @@
 }
 
 .message.own .message-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  background: #8C5C5C;
   color: white;
 }
 
@@ -228,7 +232,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: white;
+  background: #D6D6D6;
 }
 
 .file-preview-container {
@@ -313,10 +317,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all .3s;
 }
 
 .voice-record-btn:hover {
-  background-color: #f5f5f5;
+  opacity: .9;
 }
 
 .voice-record-btn.active {
@@ -413,7 +418,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: #FFF;
+  background: #B0B0B0;
 }
 
 .chat-type-selector {

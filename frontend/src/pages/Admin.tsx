@@ -888,7 +888,7 @@ export default function Admin() {
               <div className="admin-images-section">
                 <div className="section-header">
                   <h2>🖼️ Обложки организаций</h2>
-                  <p style={{ color: '#64748b', marginTop: 4 }}>Обложки по типам — показываются по умолчанию. Общие пресеты — организации могут выбрать сами.</p>
+                  <p style={{ color: '#B0B0B0', marginTop: 4 }}>Обложки по типам — показываются по умолчанию. Общие пресеты — организации могут выбрать сами.</p>
                 </div>
 
                 {/* Type-based default covers */}
@@ -979,7 +979,7 @@ export default function Admin() {
         )}
 
         {activeTab === 'finance' && (
-          <div>
+          <div className="initial-balances-params">
             <h2>Начальные балансы</h2>
 
             <div className="intial-balance-wrapper">

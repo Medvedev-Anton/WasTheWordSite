@@ -234,7 +234,7 @@ export default function Profile() {
         <div className="stat-item">
           <span className="stat-icon">🪙</span>
           <span className="stat-value">{parseFloat(user.balance / 100).toFixed(2)}</span>
-          <span className="stat-label">Деньги</span>
+          <span className="stat-label">BFB Coin</span>
         </div>
 
         <div className="profile-info">

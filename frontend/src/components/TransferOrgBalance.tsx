@@ -118,7 +118,7 @@ export default function TransferOrgBalance({orgId}) {
                 </div>
                 <div className="transfer-to-org-balance-row">
                     <div className="transfer-to-org-balance-row__money-to-transfer">
-                        Сумма для перевода:
+                        Сумма перевода:
                     </div>
                     <input 
                         type="number" 

@@ -3,18 +3,22 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    border: 2px solid #20b24d;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    background: rgba(61,62,64, .5);
+    border-radius: 12px;
 }
 
 .org-balance-chart__balance {
     text-align: center;
     font-weight: bold;
     font-size: 24px;
+    color: #D6D6D6;
 }
 
 .org-balance-chart-wrapper h2 {
     text-align: center;
     margin-bottom: 10px;
+    color: #D6D6D6;
 }
 
 @media (max-width: 380px) {

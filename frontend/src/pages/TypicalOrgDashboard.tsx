@@ -31,7 +31,7 @@ export default function TypicalOrgDashboard() {
 
     return (
         <div className="typical-dashboard-wrapper" id="typical-dashboard">
-            <div className="org-salary-wrapper-title">
+            <div className="typical-org-wrapper-title">
                 <h1>Управление: {org?.orgType} организация</h1>
             </div>
 

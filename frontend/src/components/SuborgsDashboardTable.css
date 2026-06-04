@@ -7,8 +7,6 @@
 }
 
 .suborgs-resources {
-    border: 2px solid #63d7a8;
-    padding: 20px;
     margin-top: 30px;
 }
 
@@ -38,6 +36,7 @@
 
 .suborgs-table-wrapper .resources-table-ceil span {
     text-align: center;
+    color: #B0B0B0;
 }
 
 .suborgs-table-wrapper .resources-table-content {
