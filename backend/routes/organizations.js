@@ -1031,6 +1031,7 @@ router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
   }
 });
 
+// Transfer from org to suborg
 router.post('/:id/transfer-to-suborg', authenticateToken, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
@@ -1052,6 +1053,35 @@ router.post('/:id/transfer-to-suborg', authenticateToken, (req, res) => {
   }
   catch (error) {
     console.error('Pay for post view error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Transfer from gover to org
+router.post('/:id/transfer-from-gover', authenticateToken, (req, res) => {
+  try {
+    const userId = parseInt(req.user.userId);
+
+    const currentUser = db.prepare('SELECT role FROM users WHERE id = ?').get(userId);
+    const hasAccessToGovernmentOrgs = currentUser?.role === 'admin';
+
+    if (!hasAccessToGovernmentOrgs) {
+      req.status(401).json({
+        error: 'Not allowed'
+      });
+    }
+
+    const orgId = parseInt(req.params.id);
+    const sum = parseInt(req.body.sum);
+
+    OrgsFacade.transferFromGoverToOrg(orgId, sum);
+
+    req.status(200).json({
+      message: 'Success'
+    });
+  }
+  catch (error) {
+    console.error('Transfer from gover to org error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
