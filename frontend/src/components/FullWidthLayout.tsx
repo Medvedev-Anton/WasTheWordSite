@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Layout.css';
 import './FullWidthLayout.css';
+import Notifications from './Notifications';
 
 export default function FullWidthLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -46,6 +47,7 @@ export default function FullWidthLayout({ children }: { children: React.ReactNod
             <span className="username">{user?.username}</span>
             <button onClick={logout} className="logout-btn">Выход</button>
           </div>
+          <Notifications />
           <button className="hamburger-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Меню">
             ☰
           </button>
