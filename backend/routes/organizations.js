@@ -480,6 +480,21 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
   }
 });
 
+// Get gover balance
+router.get('/governement/balance', authenticateToken, (req, res) => {
+  try {
+    const goverBalance = OrgsFacade.getGoverBalance();
+
+    res.status(200).json({
+      balance: goverBalance
+    });
+  }
+  catch (error) {
+    console.error('Get gover balance error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Update organization
 router.put('/:id', authenticateToken, orgMediaUpload, (req, res) => {
   try {
