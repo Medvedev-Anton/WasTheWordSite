@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
+import GoBackFromOrgDashboard from '../components/GoBackFromOrgDashboard';
 
 interface Organization {
   id: number;
@@ -30,6 +31,10 @@ export default function TypicalSuborgDashboard() {
         <div className="typical-suborg-dashboard-wrapper" id="typical-suborg-dashboard">
             <div className="org-wrapper-title">
                 <h1>Управление: {org?.orgType}</h1>
+            </div>
+
+            <div className="go-back-wrapper">
+                <GoBackFromOrgDashboard orgId={id} />
             </div>
 
             <div className="typical-suborg-balance">

@@ -4,6 +4,7 @@ import './GovernmentDashboard.css';
 import { useParams } from "react-router-dom";
 import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
 import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
+import GoBackFromOrgDashboard from "../components/GoBackFromOrgDashboard";
 
 export default function GovernmentDashboard() {
     const ROOT_ORG_TYPES = [
@@ -282,6 +283,10 @@ export default function GovernmentDashboard() {
             <h1>
                 Правительство
             </h1>
+
+            <div className="go-back-wrapper">
+                <GoBackFromOrgDashboard orgId={id} />
+            </div>
 
             <div className="general-params-wrapper">
                 <div className="general-param">

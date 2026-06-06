@@ -7,6 +7,7 @@ import TransferOrgBalance from "../components/TransferOrgBalance";
 import SuborgsDashboardTable from "../components/SuborgsDashboardTable";
 import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
 import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
+import GoBackFromOrgDashboard from "../components/GoBackFromOrgDashboard";
 
 interface Organization {
   id: number;
@@ -33,6 +34,10 @@ export default function TypicalOrgDashboard() {
         <div className="typical-dashboard-wrapper" id="typical-dashboard">
             <div className="typical-org-wrapper-title">
                 <h1>Управление: {org?.orgType} организация</h1>
+            </div>
+
+            <div className="go-back-wrapper">
+                <GoBackFromOrgDashboard orgId={id} />
             </div>
 
             <div className="typical-org-balance">

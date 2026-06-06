@@ -6,6 +6,7 @@ import axios from 'axios';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
 import TransferOrgBalance from '../components/TransferOrgBalance';
 import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
+import GoBackFromOrgDashboard from '../components/GoBackFromOrgDashboard';
 
 interface Borrower {
     borrowerId: number,
@@ -211,6 +212,11 @@ export default function BankDashboard() {
     return (
         <div className="dashboard-wrapper" id="bank-dashboard">
             <h1>Управление банком</h1>
+
+            <div className="go-back-wrapper">
+                <GoBackFromOrgDashboard orgId={id} />
+            </div>
+
             <div className="bank-org-diagram">
                 <OrgBalanceDiagram orgId={id} />
             </div>
