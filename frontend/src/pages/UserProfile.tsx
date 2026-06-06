@@ -148,7 +148,7 @@ export default function UserProfile() {
             <div className="top-stats">
                 <div className="stat-item">
                     <span className="stat-icon">🪙</span>
-                    <span className="stat-value">{money}</span>
+                    <span className="stat-value">{(user.balance / 100).toFixed(2)} BFB</span>
                     <span className="stat-label">Деньги</span>
                 </div>
                 <div className="stat-item">
