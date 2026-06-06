@@ -454,4 +454,44 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Проверяет является ли пользователь участником организации
+     * @param {number} userId
+     * @param {number} orgId
+     */
+    static isUserMember(userId, orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            const membersIds = service.getOrgMembers(orgId);
+
+            return membersIds.includes(userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Проверяет является ли пользователь админом организации
+     * @param {number} userId
+     * @param {number} orgId
+     */
+    static isUserAdmin(userId, orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            const adminId = service.getAdminId(orgId);
+
+            return adminId == userId;
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
