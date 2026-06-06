@@ -902,6 +902,7 @@ export async function initDatabase() {
     }
   }
 
+  // Create hero states table
   db.exec(`
     CREATE TABLE IF NOT EXISTS hero_states(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -922,6 +923,17 @@ export async function initDatabase() {
       console.error('Error adding heroId to users:', e.message);
     }
   }
+
+  // Create users posts views table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_posts_views(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      postId INTEGER NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id),
+      FOREIGN KEY (postId) REFERENCES posts(id) 
+    )
+  `);
 
   console.log('Database initialized successfully');
 }
