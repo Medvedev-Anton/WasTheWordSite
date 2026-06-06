@@ -15,34 +15,12 @@ import BankDashboard from './pages/BankDashboard';
 // import LayoutMap from './components/LayoutMap';
 import GovernmentDashboard from './pages/GovernmentDashboard';
 import TypicalOrgDashboard from './pages/TypicalOrgDashboard';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 // import Rangs from './pages/Rangs';
 import FullWidthLayout from './components/FullWidthLayout';
 import UserProfile from './pages/UserProfile';
 import TypicalSuborgDashboard from './pages/TypicalSuborgDashboard';
 
 function App() {
-  const [notifications, setNotifications] = useState([]);
-
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
-
-  useEffect(() => {
-    if (notifications.length > 0) {
-      notifications.forEach(notify => {
-        alert(notify);
-      });
-    }
-  }, [notifications]);
-
-  // Запрос на получение всех уведомлений пользовтеля
-  const fetchNotifications = async () => {
-    const result = await axios.get('/api/notifications');
-    setNotifications(result.data.notifications);
-  }
-
   return (
     <AuthProvider>
       <Router>

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Layout.css';
 import axios from 'axios';
+import Notifications from './Notifications';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -58,6 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <span className="header-balance-span">Баланс: <br/> {userBalance} BFB</span>
             <button onClick={logout} className="logout-btn">Выход</button>
           </div>
+          <Notifications />
           <button className="hamburger-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Меню">
             ☰
           </button>
@@ -97,7 +99,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="mobile-sidebar-footer">
           <span className="mobile-sidebar-username">{user?.username}</span>
-          <p>
+          <p className="mobile-balance">
             {userBalance} BFB
           </p>
           <button onClick={() => { logout(); closeSidebar(); }} className="mobile-sidebar-logout">
