@@ -23,6 +23,7 @@
   display: flex;
   gap: 1rem;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .avatar {
@@ -39,6 +40,8 @@
   font-size: 1.4rem;
   background: #e9ecef;
   flex-shrink: 0;
+  width: 100px !important;
+  height: 100px !important;
 }
 .author-name {
   font-weight: 600;
