@@ -384,4 +384,20 @@ export class OrgsFacade {
             throw new Error('Ошибка при обработке транзакции по переводу с баланса автора организации на баланс организации: ' + e.message);
         }
     }
+
+    /**
+     * Возвращает ID правительственной организации
+     */
+    static getGoverId() {
+        try {
+            const goverId = this.getAllOrgsIdsByType('Правительственная')[0] ?
+                                    this.getAllOrgsIdsByType('Правительственная')[0].id :
+                                    null;
+
+            return goverId;
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
