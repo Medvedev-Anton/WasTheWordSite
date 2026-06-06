@@ -600,7 +600,7 @@ export async function initDatabase() {
     { name: 'Старший  Суб- Координатор', thumbnail_url: '/uploads/rangs/16.png', orderNumber: 16 },
     { name: 'Штаб – Координатор III ранга', thumbnail_url: '/uploads/rangs/17.png', orderNumber: 17 },
     { name: 'Штаб – Координатор II ранга', thumbnail_url: '/uploads/rangs/18.png', orderNumber: 18 },
-    { name: 'Штаб – Координатор I ранга', thumbnail_url: '/uploads/rangs/189.png', orderNumber: 19 },
+    { name: 'Штаб – Координатор I ранга', thumbnail_url: '/uploads/rangs/19.png', orderNumber: 19 },
     { name: 'Арт - Координатор', thumbnail_url: '/uploads/rangs/20.png', orderNumber: 20 },
   ];
 
