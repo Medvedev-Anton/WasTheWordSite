@@ -31,7 +31,7 @@ export default function PostCard({ post, onPostDeleted, onPostUpdated }: PostCar
   // Запрос на оплату за просмотр поста
   const fetchPayPostView = (orgId: number) => {
     axios.post(`/api/organizations/${orgId}/pay-for-view-post`, {
-      userId: user?.id
+      postId: post.id,
     });
   }
 

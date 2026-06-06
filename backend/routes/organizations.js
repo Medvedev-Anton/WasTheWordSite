@@ -15,6 +15,7 @@ import { BankFacade } from '../facades/bank_facade.js';
 import { BalanceController } from '../controllers/balance_controller.js';
 import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
 import { BalanceFacade } from '../facades/balance_facade.js';
+import PostsViewsFacade from '../facades/posts_views.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -1011,10 +1012,14 @@ router.post('/:id/salaries/update', authenticateToken, (req, res) => {
 // Pay for post view
 router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
   try {
-    const userId = req.user.userId;
-    const orgId = req.params.id;
+    const userId = parseInt(req.user.userId);
+    const orgId = parseInt(req.params.id);
+    const postId = parseInt(req.body.postId); 
 
-    OrgsFacade.payPostView(orgId, userId);
+    if (!PostsViewsFacade.wasAlreadyViewed(userId, postId)) {
+      OrgsFacade.payPostView(orgId, userId);
+      PostsViewsFacade.create(userId, postId);
+    }
 
     res.status(200).json({
       message: 'success'
