@@ -267,13 +267,18 @@ export default function GovernmentDashboard() {
     }
 
     // Отправляет запрос на добавление суммы к текущему балансу организации
-    const fetchAddingToOrgBalance = (e: any) => {
+    const fetchAddingToOrgBalance = async (e: any) => {
         const addingBalance = e.target.value;
         const id = e.target.getAttribute('data-id');
 
-        axios.post(`/api/organizations/${id}/balance/adding`, {
-            addingBalance: addingBalance * 100
+        const result = await axios.post(`/api/organizations/${id}/transfer-from-gover`, {
+            sum: addingBalance * 100
         });
+
+        if (result.data.message == 'NotEnoughMoney') {
+            alert('Недостаточно средств для перевода');
+            return;
+        }
 
         fetchAllOrgsWithBalances();
     }
