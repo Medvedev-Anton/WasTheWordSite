@@ -25,25 +25,6 @@ export default function Profile() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
-  const [notifications, setNotifications] = useState([]);
-
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
-
-  useEffect(() => {
-    if (notifications.length > 0) {
-      notifications.forEach(notify => {
-        alert(notify);
-      });
-    }
-  }, [notifications]);
-
-  // Запрос на получение всех уведомлений пользовтеля
-  const fetchNotifications = async () => {
-    const result = await axios.get('/api/notifications');
-    setNotifications(result.data.notifications);
-  }
 
   const [showSkinModal, setShowSkinModal] = useState<boolean>(false);
   const [organizations, setOrganizations] = useState<[]>([]);
