@@ -1074,6 +1074,16 @@ router.post('/:id/transfer-from-gover', authenticateToken, (req, res) => {
     const orgId = parseInt(req.params.id);
     const sum = parseInt(req.body.sum);
 
+    const goverBalance = OrgsFacade.getGoverBalance();
+
+    if (goverBalance < sum) {
+      res.status(200).json(
+        {
+          message: 'NotEnoughMoney'
+        }
+      );
+    }
+
     OrgsFacade.transferFromGoverToOrg(orgId, sum);
 
     res.status(200).json({
