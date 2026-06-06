@@ -1066,7 +1066,7 @@ router.post('/:id/transfer-from-gover', authenticateToken, (req, res) => {
     const hasAccessToGovernmentOrgs = currentUser?.role === 'admin';
 
     if (!hasAccessToGovernmentOrgs) {
-      req.status(401).json({
+      res.status(401).json({
         error: 'Not allowed'
       });
     }
@@ -1076,7 +1076,7 @@ router.post('/:id/transfer-from-gover', authenticateToken, (req, res) => {
 
     OrgsFacade.transferFromGoverToOrg(orgId, sum);
 
-    req.status(200).json({
+    res.status(200).json({
       message: 'Success'
     });
   }
