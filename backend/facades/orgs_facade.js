@@ -445,7 +445,7 @@ export class OrgsFacade {
             const goverId = this.getGoverId();
 
             if (goverId == null) {
-                0;
+                return 0;
             }
 
             return BalanceFacade.entity('orgs').getBalance(goverId);
