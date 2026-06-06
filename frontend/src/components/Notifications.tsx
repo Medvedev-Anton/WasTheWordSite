@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Notifications.css';
 import axios from 'axios';
 import { Bell } from 'lucide-react';
@@ -8,9 +8,27 @@ export default function Notifications() {
     const [countTotalNotifies, setCountTotalNotifies] = useState<number>(0);
     const [notifications, setNotifications] = useState([]);
 
+    const notifyRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         fetchNotifications();
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (showNotifyModal && notifyRef.current && !notifyRef.current.contains(event.target as Node)) {
+                setShowNotifyModal(false);
+            }
+        };
+
+        if (showNotifyModal) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showNotifyModal]);
 
     // Запрос на получение всех уведомлений пользователя
     const fetchNotifications = async () => {
@@ -37,6 +55,7 @@ export default function Notifications() {
     return (
         <div 
             className="notify-wrapper"
+            ref={notifyRef}
         >
             <Bell 
                 size={24} 
