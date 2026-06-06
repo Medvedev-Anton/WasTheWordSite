@@ -258,7 +258,7 @@ export default function Profile() {
             ""
           }
           <p className="username">@{user.username}</p>
-          {!editing ? (
+          {/* {!editing ? (
             <button onClick={() => setEditing(true)} className="edit-btn">
               Редактировать профиль
             </button>
@@ -274,7 +274,7 @@ export default function Profile() {
                 Отмена
               </button>
             </div>
-          )}
+          )} */}
         </div>
         <div className="stat-item">
           <span className="stat-icon">⚡</span>
