@@ -13,7 +13,7 @@ export default class PostsViewsFacade {
      * @param {number} userId
      * @param {number} postId
      */
-    create(userId, postId) {
+    static create(userId, postId) {
         try {
             return this.getService().create(userId, postId);
         }
@@ -27,9 +27,27 @@ export default class PostsViewsFacade {
      * @param {number} userId
      * @param {number} postId
      */
-    get(userId, postId) {
+    static get(userId, postId) {
         try {
             return this.getService().get(userId, postId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Проверяет был ли уже просмотрен пост пользователем
+     * @param {number} userId
+     * @param {number} postId
+     */
+    static wasAlreadyViewed(userId, postId) {
+        try {
+            if (this.get(userId, postId)) {
+                return true;
+            }
+
+            return false;
         }
         catch (e) {
             throw new Error(e.message);
