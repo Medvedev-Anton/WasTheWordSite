@@ -33,6 +33,10 @@ export class OrgTaxPercentMapper extends OrgTaxPercentMapperInterface {
                 orgType = ?    
         `).get(orgType);
 
+        if (result === undefined) {
+            return 0;
+        }
+
         return result.percent || 0;
     }
 
