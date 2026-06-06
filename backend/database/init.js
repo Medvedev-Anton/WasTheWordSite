@@ -930,8 +930,8 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       userId INTEGER NOT NULL,
       postId INTEGER NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id),
-      FOREIGN KEY (postId) REFERENCES posts(id) 
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
     )
   `);
 
