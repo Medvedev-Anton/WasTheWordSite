@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { Organization } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -62,6 +62,7 @@ export default function Organizations() {
   const [address, setAddress] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
+  const [searchParams, setSeachParams] = useSearchParams();
 
   const location = useLocation();
   useEffect(() => {
@@ -74,6 +75,11 @@ export default function Organizations() {
 
   useEffect(() => {
     fetchOrganizations();
+
+    if (searchParams.get('id') != null) {
+      const orgId = parseInt(searchParams.get('id') || '0');
+      handleSelectOrg(orgId);
+    }
   }, []);
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
