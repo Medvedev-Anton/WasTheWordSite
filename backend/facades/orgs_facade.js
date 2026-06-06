@@ -436,4 +436,22 @@ export class OrgsFacade {
             throw new Error('Ошибка при обработке транзакции перевода с баланса правительства на баланс организации: ' + e.message);
         }
     }
+
+    /**
+     * Возвращает баланс правительства
+     */
+    static getGoverBalance() {
+        try {
+            const goverId = this.getGoverId();
+
+            if (goverId == null) {
+                0;
+            }
+
+            return BalanceFacade.entity('orgs').getBalance(goverId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
