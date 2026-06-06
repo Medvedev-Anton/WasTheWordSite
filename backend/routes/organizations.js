@@ -495,6 +495,28 @@ router.get('/governement/balance', authenticateToken, (req, res) => {
   }
 });
 
+// Set gover balance
+router.post('/governement/balance/adding', authenticateToken, (req, res) => {
+  try {
+    const newBalance = parseFloat(req.body.newBalance);
+
+    const goverId = OrgsFacade.getGoverId();
+
+    if (goverId != null) {
+      const adding = parseInt(req.body.adding);
+      BalanceFacade.entity('orgs').increment(goverId, adding);
+
+      res.status(200).json({
+        message: 'success'
+      });
+    }
+  }
+  catch (error) {
+    console.error('Set gover balance error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Update organization
 router.put('/:id', authenticateToken, orgMediaUpload, (req, res) => {
   try {
