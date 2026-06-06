@@ -1,4 +1,4 @@
-export default class PostsViewsInterface {
+export default class PostsViewsMapperInterface {
     constructor() {
         if (new.target === 'PostsViewsInterface') {
             throw new Error('Нельзя создать экземпляр класса PostsViewsInterface');

@@ -1,7 +1,7 @@
-import PostsViewsInterface from "./posts_views_mapper_interface.js";
+import PostsViewsMapperInterface from "./posts_views_mapper_interface.js";
 import { db } from "../../database/init.js";
 
-export default class PostsViewsMapper extends PostsViewsInterface {
+export default class PostsViewsMapper extends PostsViewsMapperInterface {
     constructor() {
         super();
     }
