@@ -452,6 +452,10 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
 
+    const date = new Date();
+    date.setDate(date.getDate() + 1)
+    SalaryFacade.create(adminId, result.lastInsertRowid, 0, date.toString());
+
     if (resolvedType !== undefined) {
       OrgsFacade.payForOrgCreation(resolvedType, adminId);
 
