@@ -400,4 +400,40 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Переводит деньги с баланса правительства на баланс организации
+     * @param {number} orgId
+     * @param {number} sum
+     */
+    static transferFromGoverToOrg(orgId, sum) {
+        const goverId = this.getGoverId();
+
+        if (goverId == null) {
+            return;
+        }
+
+        const transaction = db.transaction(() => {
+            try {
+                const goverBalance = BalanceFacade.entity('orgs').getBalance(goverId);
+
+                if (goverBalance < sum) {
+                    throw new Error('недостаточно средств для перевода');
+                }
+
+                BalanceFacade.entity('orgs').decrement(goverId, sum);
+                BalanceFacade.entity('orgs').increment(orgId, sum);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+    
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции перевода с баланса правительства на баланс организации: ' + e.message);
+        }
+    }
 }
