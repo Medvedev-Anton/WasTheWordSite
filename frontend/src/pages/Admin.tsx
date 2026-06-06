@@ -69,6 +69,12 @@ export default function Admin() {
   const [initialUserBalance, setInitialUserBalance] = useState<number>(0);
   const [initialOrgBalance, setInitialOrgBalance] = useState<number>(0);
 
+  // Значение баланса правительства
+  const [goverBalance, setGoverBalance] = useState<number>(0);
+
+  // Значение суммы прибавки к балансу правительства
+  const [addingGoverBalance, setAddingGoverBalance] = useState<number>(0);
+
   const [selectedRangId, setSelectedRangId] = useState<number | null>(null);
   const [isDefault, setIsDefault] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -341,6 +347,9 @@ export default function Admin() {
 
           const responseOrg = await axios.get('/api/admin/initial-balances/org');
           setInitialOrgBalance(parseInt(responseOrg.data.balance) / 100);
+
+          const responseGoverBalance = await axios.get('/api/organizations/governement/balance');
+          setGoverBalance(parseInt(responseGoverBalance.data.balance) / 100);
       }
 
       else if (activeTab === 'heroes') {
@@ -548,6 +557,24 @@ export default function Admin() {
     const newBalance = e.target.value;
 
     setInitialOrgBalance(newBalance);
+  }
+
+  const handleChangeAddingGoverBalance = (e: any) => {
+    const adding = e.target.value;
+    setAddingGoverBalance(adding);
+  }
+
+  const handleFetchAddingGoverBalance = async (e: any) => {
+    const adding = e.target.value * 100;
+
+    axios.post('/api/organizations/governement/balance/adding', {
+      adding: adding
+    });
+
+    const responseGoverBalance = await axios.get('/api/organizations/governement/balance');
+    setGoverBalance(parseInt(responseGoverBalance.data.balance) / 100);
+
+    setAddingGoverBalance(0);
   }
 
   return (
@@ -1015,8 +1042,43 @@ export default function Admin() {
                 onBlur={requestInitialOrgBalanceUpdate}
               />
             </div>
-            
-          </div>
+
+            <h2 style={{marginTop: '30px'}}>Правительство</h2>
+            <div className="adding-to-gover-balance-wrapper">
+              <div className="intial-balance-wrapper">
+                <label 
+                  htmlFor="initial-balance-label"
+                  className="initial-balance-label"
+                >
+                  Текущий баланс: 
+                </label>
+                <input 
+                  type="number" 
+                  step="any"
+                  name="initial-user-balance"
+                  value={goverBalance}
+                  readOnly
+                />
+              </div>
+
+              <div className="intial-balance-wrapper">
+                <label 
+                  htmlFor="initial-balance-label"
+                  className="initial-balance-label"
+                >
+                  Начислить: 
+                </label>
+                <input 
+                  type="number" 
+                  step="any"
+                  name="initial-user-balance"
+                  value={addingGoverBalance}
+                  onChange={handleChangeAddingGoverBalance}
+                  onBlur={handleFetchAddingGoverBalance}
+                />
+              </div>
+            </div>
+          </div>          
         )}
 
         {activeTab === 'heroes' && (
@@ -1435,6 +1497,8 @@ export default function Admin() {
             </div>
           </div>
         )}
+
+        
       </div>
     </div>
   );
