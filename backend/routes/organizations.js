@@ -1057,7 +1057,11 @@ router.post('/:id/pay-for-view-post', authenticateToken, (req, res) => {
     const orgId = parseInt(req.params.id);
     const postId = parseInt(req.body.postId); 
 
-    if (!PostsViewsFacade.wasAlreadyViewed(userId, postId)) {
+    if (
+      !PostsViewsFacade.wasAlreadyViewed(userId, postId) &&
+      !OrgsFacade.isUserMember(userId, postId) &&
+      !OrgsFacade.isUserAdmin(userId, orgId)
+    ) {
       OrgsFacade.payPostView(orgId, userId);
       PostsViewsFacade.create(userId, postId);
     }
