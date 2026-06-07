@@ -218,9 +218,9 @@ export default function Profile() {
           <span className="stat-label">BFB Coin</span>
         </div>
 
-        <div className="profile-info">
+        {/* <div className="profile-info">
           <h1>{fullName}</h1>
-        </div>
+        </div> */}
         <div className="stat-item">
           <span className="stat-icon">⚡</span>
           <span className="stat-value">{energy}</span>
@@ -290,7 +290,7 @@ export default function Profile() {
             <h3>Основная информация</h3>
             {!editing ? (
               <div className="info-grid">
-                {user.firstName && (
+                {/* {user.firstName && (
                   <div className="info-item">
                     <span className="info-label">Имя:</span>
                     <span className="info-value">{user.firstName}</span>
@@ -302,7 +302,7 @@ export default function Profile() {
                     <span className="info-label">Фамилия:</span>
                     <span className="info-value">{user.lastName}</span>
                   </div>
-                )}
+                )} */}
                 {user.gender && (
                   <div className="info-item">
                     <span className="info-label">Пол:</span>
