@@ -220,42 +220,6 @@ export default function Profile() {
 
         <div className="profile-info">
           <h1>{fullName}</h1>
-          {
-            user.rang ? 
-            (
-              <div className="rang-image-wrapper">
-                <img src={user.rang.thumbnailUrl} />
-                <p>{user.rang.name}</p>
-              </div>
-            )
-            : ''
-          }
-          {
-            user.balance ?
-            (
-              <p className="profile-balance">Баланс: {user.balance / 100}$</p>
-            )
-            :
-            ""
-          }
-          <p className="username">@{user.username}</p>
-          {/* {!editing ? (
-            <button onClick={() => setEditing(true)} className="edit-btn">
-              Редактировать профиль
-            </button>
-          ) : (
-            <div className="edit-actions">
-              <button onClick={handleSave} className="save-btn">
-                Сохранить
-              </button>
-              <button onClick={() => {
-                setEditing(false);
-                fetchProfile();
-              }} className="cancel-btn">
-                Отмена
-              </button>
-            </div>
-          )} */}
         </div>
         <div className="stat-item">
           <span className="stat-icon">⚡</span>
