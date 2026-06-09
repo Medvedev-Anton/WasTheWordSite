@@ -37,4 +37,12 @@ export default class ChatsServiceInterface {
     getChatByOrg(orgId) {
         throw new Error('getChatByOrg должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает данные чата по id
+     * @param {number} id
+     */
+    getById(id) {
+        throw new Error('getById должен быть переопределен в наследнике');
+    }
 }
