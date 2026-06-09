@@ -85,4 +85,11 @@ export default class ChatsServiceInterface {
     isMessageExpired(messageCreatedAt, liveDuringDays) {
         throw new Error('isMessageExpired должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет все истекшие сообщения
+     */
+    deleteAllExpiredMessages() {
+        throw new Error('deleteAllExpiredMessages должен быть переопределен в наследнике');
+    }
 }

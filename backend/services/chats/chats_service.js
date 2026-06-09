@@ -90,4 +90,13 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    deleteAllExpiredMessages() {
+        try {
+            return this.mapper.deleteAllExpiredMessages();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
