@@ -43,7 +43,7 @@ export default class ChatsMapperInterface {
      * Удаляет все сообщения диалога
      * @param {number} chatId
      */
-    deleteAllDialogMessages(chatId) {
+    deleteAllByChatId(chatId) {
         throw new Error('deleteAllDialogMessages должен быть переопределен в наследнике');
     }
 }

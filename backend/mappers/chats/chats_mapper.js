@@ -55,7 +55,7 @@ export default class ChatsMapper extends ChatsMapperInterface {
         return result;
     }
 
-    deleteAllDialogMessages(chatId) {
+    deleteAllByChatId(chatId) {
         const filesToDelete = db.prepare(`
             SELECT
                 fileUrl
