@@ -408,6 +408,7 @@ export async function initDatabase() {
   const hasFileUrl = messagesTableInfo.some(col => col.name === 'fileUrl');
   const hasFileName = messagesTableInfo.some(col => col.name === 'fileName');
   const hasFileType = messagesTableInfo.some(col => col.name === 'fileType');
+  const hasExpiredAt = messagesTableInfo.some(col => col.name === 'expiredAt');
 
   if (!hasFileUrl) {
     try {
@@ -426,6 +427,13 @@ export async function initDatabase() {
   if (!hasFileType) {
     try {
       db.exec(`ALTER TABLE messages ADD COLUMN fileType TEXT`);
+    } catch (e) {
+      console.error('Error adding fileType column:', e.message);
+    }
+  }
+  if (!hasExpiredAt) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN expiredAt DATETIME NULL`);
     } catch (e) {
       console.error('Error adding fileType column:', e.message);
     }
