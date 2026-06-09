@@ -106,4 +106,17 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Удаляет сообщение
+     * @param {number} messageId
+     */
+    static deleteMessageById(messageId) {
+        try {
+            return this.getService().deleteMessageById(messageId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
