@@ -7,7 +7,7 @@ export default class ChatsController extends MainController {
     }
 
     /**
-     * Обработчик запроса на добавление участника в чат
+     * Обработчик добавления участника в чат
      */
     addUserToChat() {
         const validate = this.has([
