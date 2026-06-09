@@ -1,6 +1,8 @@
 import ChatsMapperInterface from "./chats_mapper_interface.js";
 import { db } from "../../database/init.js";
 import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 export default class ChatsMapper extends ChatsMapperInterface {
     constructor() {
@@ -73,7 +75,8 @@ export default class ChatsMapper extends ChatsMapperInterface {
 
         filesToDelete.forEach(file => {
             if (file.fileUrl) {
-                const filePath = path.join(__dirname, '..', file.fileUrl.replace(/^\//, ''));
+                const filePath = path.join(__dirname, '../..', file.fileUrl.replace(/^\//, ''));
+
                 if (fs.existsSync(filePath)) {
                     try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
                 }
