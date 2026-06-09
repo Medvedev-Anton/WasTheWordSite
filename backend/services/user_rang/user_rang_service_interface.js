@@ -28,12 +28,4 @@ export class UserRangServiceInterface {
     setRang(rangId, userId) {
         throw new Error('setRang должен быть переопределен в наследнике');
     }
-
-    /**
-     * Возвращает ранг пользователя с определенным порядком
-     * @param {number}
-     */
-    findByOrderNumber(orderNumber) {
-        throw new Error('findByOrderNumber должен быть переопределен в наследнике');
-    }
 }

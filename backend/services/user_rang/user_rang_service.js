@@ -1,3 +1,4 @@
+import { RangFacade } from "../../facades/rang_facade.js";
 import { UserRangServiceInterface } from "./user_rang_service_interface.js";
 
 export class UserRangService extends UserRangServiceInterface {
@@ -5,21 +6,12 @@ export class UserRangService extends UserRangServiceInterface {
         super(mapper);
     }
 
-    findByOrderNumber(orderNumber) {
-        try {
-            return this.mapper.findByOrderNumber(orderNumber);
-        }
-        catch (e) {
-            throw new Error(e.message);
-        }
-    }
-
     getRang(userId) {
         try {
             const rangId = this.mapper.getRang(userId);
 
             if (isNaN(rangId)) {
-                return this.findByOrderNumber(0).getId();
+                return RangFacade.findByOrderNumber(0).getId();
             }
 
             return rangId;
