@@ -129,7 +129,7 @@ export default class ChatsMapper extends ChatsMapperInterface {
             SELECT
                 *
             FROM
-                messages    
+                messages
         `).all();
 
         return result;
@@ -139,8 +139,8 @@ export default class ChatsMapper extends ChatsMapperInterface {
         db.prepare(`
             DELETE FROM
                 messages
-            WHERER
-                expiredAt <= NOW()    
+            WHERE
+                expiredAt <= datetime('now')
         `).run();
     }
 }
