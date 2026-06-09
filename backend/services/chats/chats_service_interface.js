@@ -53,4 +53,12 @@ export default class ChatsServiceInterface {
     deleteAllChatMessages(chatId) {
         throw new Error('deleteAllChatMessages должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет чат
+     * @param {number} chatId
+     */
+    deleteById(chatId) {
+        throw new Error('deleteById должен быть переопределен в наследнике');
+    }
 }

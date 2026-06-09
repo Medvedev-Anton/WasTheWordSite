@@ -41,13 +41,18 @@ export default class ChatsService extends ChatsServiceInterface {
         }
     }
 
-    /**
-     * Удаляет все сообщения диалога
-     * @param {number} chatId
-     */
     deleteAllChatMessages(chatId) {
         try {
             return this.mapper.deleteAllByChatId(chatId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    deleteById(chatId) {
+        try {
+            return this.mapper.deleteById(chatId);
         }
         catch (e) {
             throw new Error(e.message);
