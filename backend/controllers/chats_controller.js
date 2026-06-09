@@ -39,17 +39,9 @@ export default class ChatsController extends MainController {
      * Обработчик проверки есть ли пользователь в чате организации
      */
     isUserInOrgChat() {
-        const validate = this.has([
-            'orgId'
-        ]);
-
-        if (validate === false) {
-            return;
-        }
-
         try {
             const userId = parseInt(this.request.user.userId);
-            const orgId = parseInt(this.request.body.orgId);
+            const orgId = parseInt(this.request.params.id);
 
             const result = ChatsFacade.isUserInOrgChat(userId, orgId);
 
