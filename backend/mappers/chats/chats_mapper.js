@@ -57,6 +57,8 @@ export default class ChatsMapper extends ChatsMapperInterface {
     }
 
     deleteAllByChatId(chatId) {
+        const __dirname = path.dirname(__filename);
+
         const filesToDelete = db.prepare(`
             SELECT
                 fileUrl
