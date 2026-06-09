@@ -58,6 +58,6 @@ export class PostsMapper extends PostsMapperInterface {
                 posts
             WHERE
                 organizationId = ?    
-        `).all(orgId);
+        `).run(orgId);
     }
 }
