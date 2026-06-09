@@ -1,5 +1,6 @@
 import ChatsMapperInterface from "./chats_mapper_interface.js";
 import { db } from "../../database/init.js";
+import path from 'path';
 
 export default class ChatsMapper extends ChatsMapperInterface {
     constructor() {
