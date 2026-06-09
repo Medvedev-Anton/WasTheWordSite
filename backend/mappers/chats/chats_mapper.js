@@ -123,4 +123,15 @@ export default class ChatsMapper extends ChatsMapperInterface {
                 id = ?
         `).run(messageId);
     }
+
+    getAllMessages() {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                messages    
+        `).all();
+
+        return result;
+    }
 }
