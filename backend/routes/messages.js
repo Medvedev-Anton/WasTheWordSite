@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import MessagesParamsController from '../controllers/messages_params_controller.js';
+import MessagesParamsFacade from '../facades/messages_params_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -115,10 +116,14 @@ router.post('/', authenticateToken, upload.single('file'), (req, res) => {
     }
     const fileType = req.file ? req.file.mimetype : null;
 
+    const messageLiveDuring = parseInt(MessagesParamsFacade.getByName('liveDuringDays'));
+    const expiredAt = new Date();
+    expiredAt.setDate(expiredAt.getDate() + messageLiveDuring);
+
     const result = db.prepare(`
-      INSERT INTO messages (chatId, userId, content, fileUrl, fileName, fileType)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(chatId, userId, content || '', fileUrl, fileName, fileType);
+      INSERT INTO messages (chatId, userId, content, fileUrl, fileName, fileType, expiredAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(chatId, userId, content || '', fileUrl, fileName, fileType, expiredAt.toISOString());
 
     const message = db.prepare(`
       SELECT 
