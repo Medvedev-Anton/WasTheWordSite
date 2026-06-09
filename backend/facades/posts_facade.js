@@ -19,4 +19,21 @@ export class PostsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Удаление всех постов организации
+     * @param {number} orgId
+     */
+    deleteAllOrgPosts(orgId) {
+        const service = new PostsService(
+            new PostsMapper()
+        );
+
+        try {
+            return service.deleteAllOrgPosts(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
