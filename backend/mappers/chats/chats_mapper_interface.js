@@ -69,4 +69,11 @@ export default class ChatsMapperInterface {
     getAllMessages() {
         throw new Error('getAllMessages должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет все истекшие сообщения
+     */
+    deleteAllExpiredMessages() {
+        throw new Error('deleteAllExpiredMessages должен быть переопределен в наследнике');
+    }
 }

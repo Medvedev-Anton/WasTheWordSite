@@ -134,4 +134,13 @@ export default class ChatsMapper extends ChatsMapperInterface {
 
         return result;
     }
+
+    deleteAllExpiredMessages() {
+        db.prepare(`
+            DELETE FROM
+                messages
+            WHERER
+                expiredAt <= NOW()    
+        `).run();
+    }
 }
