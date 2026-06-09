@@ -29,4 +29,12 @@ export default class ChatsServiceInterface {
     isUserInChat(chatId, userId) {
         throw new Error('isUserInChat должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает данные чата организации
+     * @param {number} orgId
+     */
+    getChatByOrg(orgId) {
+        throw new Error('getChatByOrg должен быть переопределен в наследнике');
+    }
 }

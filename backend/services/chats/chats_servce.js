@@ -22,4 +22,13 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getChatByOrg(chatId, userId) {
+        try {
+            return this.mapper.findChatByOrg(chatId, userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
