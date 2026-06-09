@@ -935,6 +935,30 @@ export async function initDatabase() {
     )
   `);
 
+  // Create messages params table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS messages_params(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      value INT NOT NULL
+    )  
+  `);
+
+  const defaultMessagesParams = [
+    { name: "liveDuringDays", value: 30 },
+  ];
+
+  defaultMessagesParams.forEach(row => {
+    const count = db.prepare(`SELECT COUNT(*) as count FROM messages_params WHERE name = ?`).get(row.name);
+
+    if (count.count === 0) {
+      db.prepare(`
+        INSERT INTO messages_params (name, value) 
+        VALUES (?, ?)
+      `).run(row.name, row.value);
+    }
+  });
+
   console.log('Database initialized successfully');
 }
 
