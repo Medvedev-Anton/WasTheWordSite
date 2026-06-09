@@ -13,4 +13,19 @@ export default class ChatsMapper extends ChatsMapperInterface {
             VALUES(?, ?)    
         `).run(chatId, userId);
     }
+
+    isUserInChat(chatId, userId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                chat_participants
+            WHERE
+                chatId = ?
+                AND
+                userId = ?
+        `).get(chatId, userId);
+
+        return result !== undefined;
+    }
 }
