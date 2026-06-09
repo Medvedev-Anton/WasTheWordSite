@@ -16,6 +16,7 @@ import { BalanceController } from '../controllers/balance_controller.js';
 import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
 import { BalanceFacade } from '../facades/balance_facade.js';
 import PostsViewsFacade from '../facades/posts_views.js';
+import ChatsController from '../controllers/chats_controller.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -1139,6 +1140,11 @@ router.post('/:id/transfer-from-gover', authenticateToken, (req, res) => {
     console.error('Transfer from gover to org error:', error);
     res.status(500).json({ error: 'Server error' });
   }
+});
+
+router.get('/:id/chat/is-user-in-chat', authenticateToken, (req, res) => {
+  const controller = new ChatsController(req, res);
+  controller.isUserInOrgChat();
 });
 
 export default router;
