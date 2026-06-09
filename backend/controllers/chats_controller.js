@@ -1,4 +1,5 @@
 import ChatsFacade from "../facades/chats_facade.js";
+import { MainController } from "./main_controller.js";
 
 export default class ChatsController extends MainController {
     constructor(request, response) {
