@@ -23,9 +23,9 @@ export default class ChatsService extends ChatsServiceInterface {
         }
     }
 
-    getChatByOrg(chatId, userId) {
+    getChatByOrg(orgId) {
         try {
-            return this.mapper.findChatByOrg(chatId, userId);
+            return this.mapper.findChatByOrg(orgId);
         }
         catch (e) {
             throw new Error(e.message);
