@@ -1148,5 +1148,20 @@ router.get('/:id/chat/is-user-in-chat', authenticateToken, (req, res) => {
   controller.isUserInOrgChat();
 });
 
+router.get('/:id/admin', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const adminId = OrgsFacade.getAdminId(orgId);
+
+    res.status(200).json({
+      adminId: adminId
+    });
+  }
+  catch (error) {
+    console.error('Get org admin id error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 
