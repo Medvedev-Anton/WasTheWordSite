@@ -43,7 +43,7 @@ export default class ChatsFacade {
      */
     static isUserInOrgChat(userId, orgId) {
         try {
-            const chatId = this.getService().getChatByOrg(orgId);
+            const chatId = this.getService().getChatByOrg(orgId)?.id;
 
             if (chatId === undefined) {
                 return false;
