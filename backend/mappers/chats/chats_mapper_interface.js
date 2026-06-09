@@ -38,4 +38,12 @@ export default class ChatsMapperInterface {
     findById(id) {
         throw new Error('findById должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет все сообщения диалога
+     * @param {number} chatId
+     */
+    deleteAllDialogMessages(chatId) {
+        throw new Error('deleteAllDialogMessages должен быть переопределен в наследнике');
+    }
 }
