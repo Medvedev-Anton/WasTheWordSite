@@ -13,7 +13,7 @@ export default class ChatsFacade {
      * @param {number} chatId
      * @param {number} userId
      */
-    addUserToChat(chatId, userId) {
+    static addUserToChat(chatId, userId) {
         try {
             return this.getService().addUserToChat(chatId, userId);
         }
@@ -27,7 +27,7 @@ export default class ChatsFacade {
      * @param {number} chatId
      * @param {number} userId
      */
-    isUserInChat(chatId, userId) {
+    static isUserInChat(chatId, userId) {
         try {
             return this.getService().isUserInChat(chatId, userId);
         }
@@ -41,7 +41,7 @@ export default class ChatsFacade {
      * @param {number} userId
      * @param {number} orgId
      */
-    isUserInOrgChat(userId, orgId) {
+    static isUserInOrgChat(userId, orgId) {
         try {
             const chatId = this.getService().getChatByOrg(orgId);
 
