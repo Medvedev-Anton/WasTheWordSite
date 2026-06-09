@@ -27,7 +27,10 @@ export default function ChatPage() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(true);
+  const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
+
   const lastMsgIdRef = useRef<number | null>(null);
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -41,6 +44,7 @@ export default function ChatPage() {
     if (selectedChat) {
       setShouldAutoScroll(true);
       fetchMessages(selectedChat.id);
+      fetchOrgAdmin(selectedChat);
       const interval = setInterval(() => {
         fetchMessages(selectedChat.id);
       }, 2000);
@@ -57,6 +61,26 @@ export default function ChatPage() {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  const fetchOrgAdmin = async (chat: Chat) => {
+    const result = await axios.get(`/api/organizations/${chat.organizationId}/admin`);
+
+    if (result.data.adminId == user?.id) {
+      setIsUserAdmin(true);
+    }
+    else {
+      setIsUserAdmin(false);
+    }
+  }
+
+  const fetchDeleteChat = async () => {
+    const result = await axios.delete(`/api/chats/${selectedChat?.id}`);
+
+    if (result.data.message == 'Success') {
+      fetchChats();
+      setSelectedChat(null);
+    }
+  }
 
   // Check if user is at bottom of messages container
   const handleScroll = () => {
@@ -323,6 +347,16 @@ export default function ChatPage() {
               {selectedChat.type === 'group' && (
                 <span className="chat-type">Групповой чат</span>
               )}
+              {
+                isUserAdmin && (
+                  <span
+                    className="delete-chat"
+                    onClick={fetchDeleteChat}
+                  >
+                    Удалить чат
+                  </span>
+                )
+              }
             </div>
             <div className="messages-container" ref={messagesContainerRef} onScroll={handleScroll}>
               {messages.map(message => {

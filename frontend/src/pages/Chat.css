@@ -555,6 +555,21 @@
   background: #f0f0f0;
 }
 
+.delete-chat {
+  font-size: 0.9rem;
+  color: #FFF;
+  background: #8C5C5C;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  margin-left: auto;
+  cursor: pointer;
+  transition: all .3s;
+}
+
+.delete-chat:hover {
+  opacity: .9;
+}
+
 @media (max-width: 768px) {
   .chat-page {
     height: calc(100dvh - 130px);
