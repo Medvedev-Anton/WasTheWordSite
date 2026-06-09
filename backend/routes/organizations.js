@@ -17,6 +17,8 @@ import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
 import { BalanceFacade } from '../facades/balance_facade.js';
 import PostsViewsFacade from '../facades/posts_views.js';
 import ChatsController from '../controllers/chats_controller.js';
+import { PostsFacade } from '../facades/posts_facade.js';
+import ChatsFacade from '../facades/chats_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -810,6 +812,9 @@ router.delete('/:id', authenticateToken, (req, res) => {
     if (!organization) {
       return res.status(404).json({ error: 'Organization not found' });
     }
+
+    PostsFacade.deleteAllOrgPosts(orgId);
+    ChatsFacade.deleteByOrgId(orgId);
 
     if (organization.orgType == 'Банковская') {
       BanksLoansBalanceFacade.delete(orgId);
