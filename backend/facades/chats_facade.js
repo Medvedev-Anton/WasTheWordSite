@@ -119,4 +119,16 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает все сообщения
+     */
+    static getAllMessages() {
+        try {
+            return this.getService().getAllMessages();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
