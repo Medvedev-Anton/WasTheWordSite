@@ -1142,6 +1142,7 @@ router.post('/:id/transfer-from-gover', authenticateToken, (req, res) => {
   }
 });
 
+// Check is user in org chat
 router.get('/:id/chat/is-user-in-chat', authenticateToken, (req, res) => {
   const controller = new ChatsController(req, res);
   controller.isUserInOrgChat();
