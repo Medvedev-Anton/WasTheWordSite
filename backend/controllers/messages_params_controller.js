@@ -13,7 +13,7 @@ export default class MessagesParamsController extends MainController {
         try {
             const liveDuringDays = MessagesParamsFacade.getByName('liveDuringDays');
             this.send(200, {
-                liveDuringDays: liveDuring
+                liveDuringDays: liveDuringDays
             });
         }
         catch (e) {
