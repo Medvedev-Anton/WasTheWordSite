@@ -5,6 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import MessagesParamsController from '../controllers/messages_params_controller.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -177,6 +178,19 @@ router.delete('/:id', authenticateToken, (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+// Get message live during days
+router.get('/live-during', authenticateToken, (req, res) => {
+  const controller = new MessagesParamsController(req, res);
+  controller.getMessageLiveDuring();
+});
+
+// Update message live during days
+router.get('/live-during', authenticateToken, (req, res) => {
+  const controller = new MessagesParamsController(req, res);
+  controller.updateMessageLiveDuring();
+});
+
 
 export default router;
 
