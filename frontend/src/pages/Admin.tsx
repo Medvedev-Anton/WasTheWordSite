@@ -42,7 +42,7 @@ const ORG_TO_ICON: Record<string, string> = {
 export default function Admin() {
 
 
-  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations' | 'heroes' | 'finance'>('stats');
+  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations' | 'heroes' | 'finance' | 'chats'>('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -64,6 +64,8 @@ export default function Admin() {
   const [newCoverType, setNewCoverType] = useState<string>('');
   const [imagesSubTab, setImagesSubTab] = useState<'icons' | 'covers'>('icons');
 
+  // Длительность жизни сообщения
+  const [messageLiveDuring, setMessageLiveDuring] = useState<number>(30);
 
   // Значения начальный балансов
   const [initialUserBalance, setInitialUserBalance] = useState<number>(0);
@@ -366,6 +368,12 @@ export default function Admin() {
         setHeroes(heroesResult.data.heroes);
 
       }
+
+      else if (activeTab === 'chats') {
+        const response = await axios.get('/api/messages/live-during');
+        setMessageLiveDuring(response.data.liveDuringDays);
+      }
+
       else {
         const response = await axios.get('/api/admin/stats');
         setStats(response.data);
@@ -577,6 +585,19 @@ export default function Admin() {
     setAddingGoverBalance(0);
   }
 
+  const handleChangeNewMessageLiveDuring = (e: any) => {
+    const newValue = e.target.value;
+    setMessageLiveDuring(newValue);
+  }
+
+  const handleFetchNewMessageLiveDuring = async (e: any) => {
+    const newDuring = e.target.value;
+
+    axios.post('/api/messages/live-during', {
+      newDuring: newDuring
+    });
+  }
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
@@ -625,6 +646,13 @@ export default function Admin() {
           onClick={() => setActiveTab('heroes')}
         >
           Герои
+        </button>
+
+        <button
+          className={activeTab === 'chats' ? 'active' : ''}
+          onClick={() => setActiveTab('chats')}
+        >
+          Чаты
         </button>
       </div>
 
@@ -1078,7 +1106,7 @@ export default function Admin() {
                 />
               </div>
             </div>
-          </div>          
+          </div>
         )}
 
         {activeTab === 'heroes' && (
@@ -1180,6 +1208,29 @@ export default function Admin() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'chats' && (
+          <div className="initial-balances-params">
+            <h2>Чаты</h2>
+
+            <div className="intial-balance-wrapper">
+              <label 
+                htmlFor="initial-balance-label"
+                className="initial-balance-label"
+              >
+                Срок жизни сообщения, дни: 
+              </label>
+              <input 
+                type="number" 
+                step="any"
+                name="initial-user-balance"
+                value={messageLiveDuring}
+                onChange={handleChangeNewMessageLiveDuring}
+                onBlur={handleFetchNewMessageLiveDuring}
+              />
             </div>
           </div>
         )}
