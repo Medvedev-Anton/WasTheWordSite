@@ -99,4 +99,28 @@ export default class ChatsMapper extends ChatsMapperInterface {
                 id = ?    
         `).run(chatId);
     }
+
+    deleteMessageById(messageId) {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+    
+        const message = db.prepare('SELECT * FROM messages WHERE id = ?').get(messageId);
+        if (!message) {
+            return false;
+        }
+    
+        if (message.fileUrl && !message.fileDeleted) {
+            const filePath = path.join(__dirname, '..', message.fileUrl.replace(/^\//, ''));
+            if (fs.existsSync(filePath)) {
+                try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+            }
+        }
+    
+        db.prepare(`
+            DELETE FROM
+                messages
+            WHERE
+                id = ?
+        `).run(messageId);
+    }
 }
