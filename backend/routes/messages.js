@@ -186,7 +186,7 @@ router.get('/live-during', authenticateToken, (req, res) => {
 });
 
 // Update message live during days
-router.get('/live-during', authenticateToken, (req, res) => {
+router.post('/live-during', authenticateToken, (req, res) => {
   const controller = new MessagesParamsController(req, res);
   controller.updateMessageLiveDuring();
 });
