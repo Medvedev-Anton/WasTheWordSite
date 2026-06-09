@@ -92,4 +92,18 @@ export default class ChatsFacade {
             throw new Error('Ошибка при обработке транзакции удаления диалога: ' + e.message);
         }
     }
+
+    /**
+     * Удаляет чат по ID организации
+     * @param {number} orgId
+     */
+    static deleteByOrgId(orgId) {
+        try {
+            const chatId = this.getService().getChatByOrg(orgId)?.id;
+            this.deleteById(chatId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
