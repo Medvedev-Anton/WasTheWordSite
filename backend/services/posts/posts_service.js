@@ -13,4 +13,13 @@ export class PostsService extends PostsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    deleteAllOrgPosts(orgId) {
+        try {
+            return this.mapper.deleteAllOrgPosts(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
