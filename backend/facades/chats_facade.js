@@ -1,5 +1,6 @@
 import ChatsMapper from "../mappers/chats/chats_mapper.js";
-import ChatsService from "../services/chats/chats_servce.js";
+import ChatsService from "../services/chats/chats_service.js";
+import { db } from "../database/init.js";
 
 export default class ChatsFacade {
     static getService() {
@@ -66,6 +67,29 @@ export default class ChatsFacade {
         }
         catch (e) {
             throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Удаляет чат
+     * @param {number} chatId
+     */
+    static deleteById(chatId) {
+        const transaction = db.transaction(() => {
+            try {
+                this.getService().deleteAllChatMessages(chatId);
+                this.getService().deleteById(chatId);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+        
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции удаления диалога: ' + e.message);
         }
     }
 }
