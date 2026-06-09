@@ -55,4 +55,17 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получает данные чата по id
+     * @param {number} id
+     */
+    static getById(id) {
+        try {
+            return this.getService().getById(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
