@@ -131,4 +131,16 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Удаляет все просроченные сообщения
+     */
+    static deleteAllExpiredMessages() {
+        try {
+            return this.getService().deleteAllExpiredMessages();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
