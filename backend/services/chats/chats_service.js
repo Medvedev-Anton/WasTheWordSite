@@ -58,4 +58,13 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    deleteMessageById(messageId) {
+        try {
+            return this.mapper.deleteMessageById(messageId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
