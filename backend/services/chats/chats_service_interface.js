@@ -69,4 +69,11 @@ export default class ChatsServiceInterface {
     deleteMessageById(messageId) {
         throw new Error('deleteMessageById должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает все сообщения
+     */
+    getAllMessages() {
+        throw new Error('getAllMessages должен быть переопределен в наследнике');
+    }
 }

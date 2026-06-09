@@ -67,4 +67,13 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getAllMessages() {
+        try {
+            return this.mapper.getAllMessages();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
