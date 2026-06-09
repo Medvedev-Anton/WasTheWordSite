@@ -57,4 +57,24 @@ export default class ChatsController extends MainController {
             });
         }
     }
+
+    /**
+     * Обработчик удаления чата
+     */
+    deleteChat() {
+        try {
+            const chatId = parseInt(this.request.params.id);
+            ChatsFacade.deleteById(chatId);
+
+            this.send(200, {
+                message: 'Success'
+            });
+        }
+        catch (e) {
+            console.error('Delete chat error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
