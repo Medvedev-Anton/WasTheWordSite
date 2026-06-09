@@ -21,4 +21,18 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Проверяет является ли пользователь участником чата
+     * @param {number} chatId
+     * @param {number} userId
+     */
+    isUserInChat(chatId, userId) {
+        try {
+            return this.getService().isUserInChat(chatId, userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
