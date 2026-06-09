@@ -40,4 +40,17 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Удаляет все сообщения диалога
+     * @param {number} chatId
+     */
+    deleteAllChatMessages(chatId) {
+        try {
+            return this.mapper.deleteAllByChatId(chatId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

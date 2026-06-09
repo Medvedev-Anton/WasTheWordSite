@@ -45,4 +45,12 @@ export default class ChatsServiceInterface {
     getById(id) {
         throw new Error('getById должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет все сообщения диалога
+     * @param {number} chatId
+     */
+    deleteAllChatMessages(chatId) {
+        throw new Error('deleteAllChatMessages должен быть переопределен в наследнике');
+    }
 }
