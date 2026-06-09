@@ -24,7 +24,7 @@ export class PostsFacade {
      * Удаление всех постов организации
      * @param {number} orgId
      */
-    deleteAllOrgPosts(orgId) {
+    static deleteAllOrgPosts(orgId) {
         const service = new PostsService(
             new PostsMapper()
         );
