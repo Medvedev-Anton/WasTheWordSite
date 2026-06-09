@@ -13,4 +13,13 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    isUserInChat(chatId, userId) {
+        try {
+            return this.mapper.isUserInChat(chatId, userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
