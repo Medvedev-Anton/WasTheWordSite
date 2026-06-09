@@ -5,12 +5,21 @@ export class UserRangService extends UserRangServiceInterface {
         super(mapper);
     }
 
+    findByOrderNumber(orderNumber) {
+        try {
+            return this.mapper.findByOrderNumber(orderNumber);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     getRang(userId) {
         try {
             const rangId = this.mapper.getRang(userId);
 
             if (isNaN(rangId)) {
-                return 0;
+                return this.findByOrderNumber(0).getId();
             }
 
             return rangId;
