@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { db } from '../database/init.js';
+import ChatsController from '../controllers/chats_controller.js';
 
 const router = express.Router();
 
@@ -74,6 +75,12 @@ router.get('/:id', authenticateToken, (req, res) => {
     console.error('Get chat error:', error);
     res.status(500).json({ error: 'Server error' });
   }
+});
+
+// Delete chat
+router.delete('/:id', authenticateToken, (req, res) => {
+  const controller = new ChatsController(req, res);
+  controller.deleteChat();
 });
 
 // Create personal chat
