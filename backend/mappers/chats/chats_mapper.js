@@ -28,4 +28,17 @@ export default class ChatsMapper extends ChatsMapperInterface {
 
         return result !== undefined;
     }
+
+    findChatByOrg(orgId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                chats
+            WHERE
+                organizationId = ?    
+        `).get(orgId);
+
+        return result;
+    }
 }

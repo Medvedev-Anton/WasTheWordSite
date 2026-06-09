@@ -22,4 +22,12 @@ export default class ChatsMapperInterface {
     isUserInChat(chatId, userId) {
         throw new Error('isUserInChat должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает данные чата организации
+     * @param {number} orgId
+     */
+    findChatByOrg(orgId) {
+        throw new Error('findChatByOrg должен быть переопределен в наследнике');
+    }
 }
