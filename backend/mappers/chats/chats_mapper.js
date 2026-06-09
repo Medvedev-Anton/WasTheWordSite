@@ -83,4 +83,13 @@ export default class ChatsMapper extends ChatsMapperInterface {
                 chatId = ?    
         `).run(chatId);
     }
+
+    deleteById(chatId) {
+        db.prepare(`
+            DELETE FROM
+                chats
+            WHERE
+                id = ?    
+        `).run(chatId);
+    }
 }

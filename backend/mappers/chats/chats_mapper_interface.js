@@ -46,4 +46,12 @@ export default class ChatsMapperInterface {
     deleteAllByChatId(chatId) {
         throw new Error('deleteAllDialogMessages должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаляет чат
+     * @param {number} chatId
+     */
+    deleteById(chatId) {
+        throw new Error('deleteById должен быть переопределен в наследнике');
+    }
 }
