@@ -504,7 +504,6 @@ function OrganizationDetail({
   const [loanValue, setLoanValue] = useState<number>(0);
   const [showCalcLoanResult, setShowCalcLoanResult] = useState<boolean>(false);
 
-
   const navigate = useNavigate();
 
   const ORG_HIERARCHY: Record<string, string> = {
@@ -727,6 +726,7 @@ function OrganizationDetail({
   useEffect(() => {
     fetchIcons();
     fetchCovers();
+    fetchIsUserInOrgChat();
   }, [organization.id]);
 
   const [inputMode, setInputMode] = useState("address");
@@ -742,6 +742,12 @@ function OrganizationDetail({
   const [showSuccessLoanModal, setShowSuccessLoanModal] = useState(false);
   const [showBankNotEnoughMoneyModal, setShowBankNotEnoughMoneyModal] = useState(false);
   const [showHasEnotherLoanModal, setShowHasEnotherLoanModal] = useState(false);
+  const [isUserInOrgChat, setIsUserInOrgChat] = useState<boolean>(false);
+
+  const fetchIsUserInOrgChat = async () => {
+    const result = await axios.get(`/api/organizations/${organization.id}/chat/is-user-in-chat`);
+    setIsUserInOrgChat(result.data.inChat);
+  }
 
   const onSelectAddress = (address: string, coordinate: [number, number]) => {
     setAddress(address);
@@ -915,6 +921,16 @@ function OrganizationDetail({
 
   const handleChangeUserLoanOrgId = (e: any) => {
     setUserLoanOrgId(e.target.value);
+  }
+
+  const handleClickToJoinChat = async (e: any) => {
+    const result = await axios.post(`/api/chats/${organization.groupChatId}/participants`, {
+      participantId: user?.id
+    });
+
+    if (result.data.message == 'Participant added') {
+      navigate('/chats');
+    }    
   }
 
   return (
