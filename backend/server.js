@@ -23,6 +23,7 @@ import { fileURLToPath } from 'url';
 import { TaxesFacade } from './facades/taxes_facade.js';
 import { SalaryFacade } from './facades/salary_facade.js';
 import { LoansFacade } from './facades/loans_facade.js';
+import ChatsFacade from './facades/chats_facade.js';
 
 dotenv.config();
 
@@ -115,6 +116,7 @@ cron.schedule('0 0 * * *', () => {
   LoansFacade.getAllBanksBorrowersPayments();
   SalaryFacade.paySalaryToAllEmployees();
   TaxesFacade.payAllTaxes();
+  ChatsFacade.deleteAllExpiredMessages();
 }, {
   scheduled: true
 });
