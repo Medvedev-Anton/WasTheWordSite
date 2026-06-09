@@ -35,4 +35,24 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Проверяет является ли пользователь участником чата организации
+     * @param {number} userId
+     * @param {number} orgId
+     */
+    isUserInOrgChat(userId, orgId) {
+        try {
+            const chatId = this.getService().getChatByOrg(orgId);
+
+            if (chatId === undefined) {
+                return false;
+            }
+
+            return this.getService().isUserInChat(chatId, userId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
