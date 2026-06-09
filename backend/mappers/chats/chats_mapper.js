@@ -41,4 +41,17 @@ export default class ChatsMapper extends ChatsMapperInterface {
 
         return result;
     }
+
+    findById(id) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                chats
+            WHERE
+                id = ?    
+        `).get(id);
+
+        return result;
+    }
 }

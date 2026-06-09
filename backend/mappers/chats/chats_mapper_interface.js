@@ -30,4 +30,12 @@ export default class ChatsMapperInterface {
     findChatByOrg(orgId) {
         throw new Error('findChatByOrg должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает данные чата по id
+     * @param {number} id
+     */
+    findById(id) {
+        throw new Error('findById должен быть переопределен в наследнике');
+    }
 }
