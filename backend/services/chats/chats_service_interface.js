@@ -76,4 +76,13 @@ export default class ChatsServiceInterface {
     getAllMessages() {
         throw new Error('getAllMessages должен быть переопределен в наследнике');
     }
+
+    /**
+     * Проверяет не истек ли срок жизни сообщения
+     * @param {string} messageCreatedAt
+     * @param {number} liveDuringDays
+     */
+    isMessageExpired(messageCreatedAt, liveDuringDays) {
+        throw new Error('isMessageExpired должен быть переопределен в наследнике');
+    }
 }

@@ -76,4 +76,18 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    isMessageNotExpired(messageCreatedAt, liveDuringDays) {
+        try {
+            const creation = new Date(messageCreatedAt);
+            const now = new Date();
+            
+            const expirationTime = creation.getTime() + (liveDuringDays * 24 * 60 * 60 * 1000);
+            
+            return now.getTime() <= expirationTime;
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
