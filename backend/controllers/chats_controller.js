@@ -34,4 +34,34 @@ export default class ChatsController extends MainController {
             });
         }
     }
+
+    /**
+     * Обработчик проверки есть ли пользователь в чате организации
+     */
+    isUserInOrgChat() {
+        const validate = this.has([
+            'orgId'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const userId = parseInt(this.request.user.userId);
+            const orgId = parseInt(this.request.body.orgId);
+
+            const result = ChatsFacade.isUserInOrgChat(userId, orgId);
+
+            this.send(200, {
+                inChat: result
+            });
+        }
+        catch (e) {
+            console.error('Is user in org chat error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
