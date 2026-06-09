@@ -13,4 +13,12 @@ export class PostsMapperInterface {
     getTotalCountByUser(userId) {
         throw new Error('getTotalCountByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаление всех постов организации
+     * @param {number} orgId
+     */
+    deleteAllOrgPosts(orgId) {
+        throw new Error('deleteAllOrgPosts должен быть переопределен в наследнике');
+    }
 }

@@ -1,5 +1,8 @@
 import { PostsMapperInterface } from "./posts_mapper_interface.js";
 import { db } from "../../database/init.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 export class PostsMapper extends PostsMapperInterface {
     constructor() {
@@ -21,5 +24,40 @@ export class PostsMapper extends PostsMapperInterface {
         `).get(userId);
 
         return parseInt(result.cnt);
+    }
+
+    deleteAllOrgPosts(orgId) {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        const filesToDelete = db.prepare(`
+            SELECT
+                f.fileUrl
+            FROM
+                posts p
+            JOIN
+                post_files f
+            ON 
+                p.id = f.postId
+            WHERE
+                p.organizationId = ?
+        `).all(orgId);
+
+        filesToDelete.forEach(file => {
+            if (file.fileUrl) {
+                const filePath = path.join(__dirname, '../..', file.fileUrl.replace(/^\//, ''));
+
+                if (fs.existsSync(filePath)) {
+                    try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+                }
+            }
+        });
+
+        db.prepare(`
+            DELETE FROM
+                posts
+            WHERE
+                organizationId = ?    
+        `).all(orgId);
     }
 }
