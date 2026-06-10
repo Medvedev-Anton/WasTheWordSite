@@ -7046,7 +7046,7 @@ export default function Map({
 
     return (
         <div {...props}>
-            <YMapComponentsProvider apiKey={import.meta.env.VITE_YMAP_KEY}>
+            <YMapComponentsProvider apiKey="261c32e8-bc36-439e-82a8-b39d4b959a2f">
                 <YMap
                     location={location}
                     zoomRange={zoomRange}
