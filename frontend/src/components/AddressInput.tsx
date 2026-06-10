@@ -29,7 +29,7 @@ export default function AddressInput({
   
   const timeoutRef = useRef<NodeJS.Timeout>();
   const containerRef = useRef<HTMLDivElement>(null);
-  const apiKey = import.meta.env.VITE_YMAP_KEY;
+  const apiKey = '261c32e8-bc36-439e-82a8-b39d4b959a2f';
 
   const searchAddress = async (query: string) => {
     if (query.length < 3) {
