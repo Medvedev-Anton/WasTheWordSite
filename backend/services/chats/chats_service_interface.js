@@ -102,4 +102,12 @@ export default class ChatsServiceInterface {
     updateOrCreateLastUserMessageView(userId, chatId, lastReadedMessageId) {
         throw new Error('updateOrCreateLastUserMessageView должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает ID последнего прочитанного сообщения в чате
+     * @param {number} chatId
+     */
+    getLastReadedMessageIdInChat(chatId) {
+        throw new Error('getLastReadedMessageIdInChat должен быть переопределен в наследнике');
+    }
 }
