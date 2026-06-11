@@ -128,4 +128,12 @@ export default class ChatsServiceInterface {
     getLastReadedMessageReceivedByUser(userId, chatId) {
         throw new Error('getLastReadedMessageReceivedByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает данные организации по id чата
+     * @param {number} chatId
+     */
+    getOrgByChat(chatId) {
+        throw new Error('getOrgByChat должен быть переопределен в наследнике');
+    }
 }
