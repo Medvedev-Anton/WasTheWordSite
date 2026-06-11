@@ -465,13 +465,13 @@ export default function ChatPage() {
                 const isOwn = message.userId === user?.id;
                 return (
                   <div key={message.id} className={`message ${isOwn ? 'own' : ''} ${message.isDeleted ? 'deleted' : ''}`}>
-                    {!isOwn && (
+                    {
                       getMediaUrl(message.avatar)
                         ? <img src={getMediaUrl(message.avatar)} alt={message.username} className="message-avatar" />
                         : <div className="message-avatar message-avatar-placeholder">
                             {(message.firstName || message.username || '?')[0].toUpperCase()}
                           </div>
-                    )}
+                    }
                     <div 
                       className="message-content"
                       data-is-readed={message.isReaded}
