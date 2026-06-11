@@ -35,6 +35,7 @@ export default function ChatPage() {
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(true);
   const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
+  const [chatOrgNameAndType, setChatOrgNameAndType] = useState<string>('');
 
   const lastMsgIdRef = useRef<number | null>(null);
 
@@ -55,6 +56,11 @@ export default function ChatPage() {
       setShouldAutoScroll(true);
       fetchMessages(selectedChat.id);
       fetchOrgAdmin(selectedChat);
+
+      if (selectedChat.type === 'group') {
+        fetchChatOrgData(selectedChat.id);
+      }
+
       const interval = setInterval(() => {
         fetchMessages(selectedChat.id);
       }, 2000);
@@ -155,6 +161,14 @@ export default function ChatPage() {
     else {
       setIsUserAdmin(false);
     }
+  }
+
+  const fetchChatOrgData = async (chatId: number) => {
+    const result = await axios.get(`/api/chats/${chatId}/org`);
+    const org = result.data.org;
+    const orgName = org.name;
+    const orgType = org.orgType;
+    setChatOrgNameAndType(`${orgName} - ${orgType}`);
   }
 
   const fetchDeleteChat = async () => {
@@ -431,7 +445,9 @@ export default function ChatPage() {
               <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
               <h3>{getChatName(selectedChat)}</h3>
               {selectedChat.type === 'group' && (
-                <span className="chat-type">Групповой чат</span>
+                <span className="chat-type">
+                  {chatOrgNameAndType}
+                </span>
               )}
               {
                 isUserAdmin && (
