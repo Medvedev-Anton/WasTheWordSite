@@ -110,4 +110,13 @@ export default class ChatsServiceInterface {
     getLastReadedMessageIdInChat(chatId) {
         throw new Error('getLastReadedMessageIdInChat должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает ID последнего прочитанного сообщения, которое отправил переданный пользователь
+     * @param {number} senderId
+     * @param {number} chatId
+     */
+    getLastReadedMessageSendedByUser(senderId, chatId) {
+        throw new Error('getLastReadedMessageSendedByUser должен быть переопределен в наследнике');
+    }
 }

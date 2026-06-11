@@ -123,4 +123,13 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getLastReadedMessageSendedByUser(senderId, chatId) {
+        try {
+            return this.mapper.findLastReadedMessageSendedByUser(chatId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
