@@ -14,12 +14,33 @@ router.get('/', authenticateToken, (req, res) => {
       SELECT DISTINCT
         c.*,
         (SELECT content FROM messages WHERE chatId = c.id ORDER BY createdAt DESC LIMIT 1) as lastMessage,
-        (SELECT createdAt FROM messages WHERE chatId = c.id ORDER BY createdAt DESC LIMIT 1) as lastMessageTime
+        (SELECT createdAt FROM messages WHERE chatId = c.id ORDER BY createdAt DESC LIMIT 1) as lastMessageTime,
+        (
+          SELECT
+            COUNT(*)
+          FROM
+            messages
+          WHERE 
+            chatId = c.id
+            AND
+            id > (
+              SELECT 
+                lastReadedMessageId
+              FROM
+                user_chat_view_cursor
+              WHERE
+                userId = ?
+                AND
+                chatId = c.id
+            )
+            AND
+            userId != ?
+        ) as countNotReaded
       FROM chats c
       JOIN chat_participants cp ON c.id = cp.chatId
       WHERE cp.userId = ?
       ORDER BY lastMessageTime DESC
-    `).all(userId);
+    `).all(userId, userId, userId);
 
     // For personal chats, get the other participant's info
     const chatsWithParticipants = chats.map(chat => {
