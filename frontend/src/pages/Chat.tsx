@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { Chat, Message, User } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -38,6 +38,9 @@ export default function ChatPage() {
 
   const lastMsgIdRef = useRef<number | null>(null);
 
+  const observer = useRef<IntersectionObserver | null>(null);
+  const readMessagesRef = useRef<Set<number>>(new Set());
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -68,6 +71,80 @@ export default function ChatPage() {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  useEffect(() => {
+    readMessagesRef.current.clear();
+
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const messageId = Number(entry.target.getAttribute('data-message-id'));
+            
+            if (messageId && !readMessagesRef.current.has(messageId)) {
+              readMessagesRef.current.add(messageId);
+              markMessageAsRead(messageId);
+              observer.current?.unobserve(entry.target);
+            }
+          }
+        });
+      },
+      {
+        root: messagesContainerRef.current,
+        threshold: 0.1,
+      }
+    );
+
+    const existingMessages = messagesContainerRef.current?.querySelectorAll('[data-message-id]');
+    
+    existingMessages?.forEach((node) => {
+      const messageId = Number(node.getAttribute('data-message-id'));
+      const isReaded = node.getAttribute('data-is-readed');
+      const isOwn = node.getAttribute('data-is-own');
+      
+      const isReadedBool = isReaded === '1' || isReaded === 'true';
+      const isOwnBool = isOwn === 'true';
+      
+      if (!isReadedBool && !isOwnBool && !readMessagesRef.current.has(messageId)) {
+        observer.current?.observe(node);
+      }
+    });
+
+    return () => {
+      observer.current?.disconnect();
+    };
+  }, [selectedChat]);
+
+  const markMessageAsRead = async (messageId: number) => {
+    try {
+      await axios.post(`/api/messages/${messageId}/read`, {
+        chatId: selectedChat?.id
+      }); 
+      console.log(messageId);
+      
+      setMessages(prev => prev.map(msg => 
+        msg.id === messageId ? { ...msg, isReaded: 1 } : msg
+      ));
+    } catch (error) {
+      console.error('Failed to mark message as read:', error);
+      readMessagesRef.current.delete(messageId);
+    }
+  };
+
+  const messageRefCallback = useCallback((node: HTMLDivElement | null) => {
+    if (node && observer.current) {
+      const messageId = Number(node.getAttribute('data-message-id'));
+      const isReaded = node.getAttribute('data-is-readed');
+      const isOwn = node.getAttribute('data-is-own');
+      
+      const isReadedBool = isReaded === '1' || isReaded === 'true';
+      const isOwnBool = isOwn === 'true';
+      
+      if (!isReadedBool && !isOwnBool && !readMessagesRef.current.has(messageId)) {
+        observer.current.observe(node);
+      }
+    }
+  }, []);
 
   const fetchOrgAdmin = async (chat: Chat) => {
     const result = await axios.get(`/api/organizations/${chat.organizationId}/admin`);
@@ -122,9 +199,11 @@ export default function ChatPage() {
       const response = await axios.get(`/api/messages/chat/${chatId}`);
       setMessages(prev => {
         if (prev.length > 0) {
-          const prevLastId = prev[prev.length - 1]?.id;
-          const newLastId = response.data[response.data.length - 1]?.id;
-          if (prevLastId === newLastId) return prev; // no change – skip re-render
+          const prevLast = prev[prev.length - 1];
+          const newLast = response.data[response.data.length - 1];
+          if (prevLast.id === newLast.id && prevLast.isReaded === newLast.isReaded) {
+            return prev; // Ничего не изменилось — пропускаем ре-рендер
+          }
         }
         return response.data;
       });
@@ -377,7 +456,13 @@ export default function ChatPage() {
                             {(message.firstName || message.username || '?')[0].toUpperCase()}
                           </div>
                     )}
-                    <div className="message-content">
+                    <div 
+                      className="message-content"
+                      data-is-readed={message.isReaded}
+                      data-is-own={String(isOwn)}
+                      data-message-id={message.id}
+                      ref={messageRefCallback} 
+                    >
                       {!isOwn && (
                         <div className="message-author">
                           {message.firstName && message.lastName
@@ -458,8 +543,18 @@ export default function ChatPage() {
                         </div>
 
                         {
-                          message.isReaded == 1 && (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          message.isReaded == 1 && isOwn && (
+                            <svg 
+                              xmlns="http://www.w3.org/2000/svg" 
+                              width="24" 
+                              height="24" 
+                              viewBox="0 0 24 24" 
+                              fill="none" 
+                              stroke="currentColor" 
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
                               <polyline points="2 12 6 16 16 6" />
                               <polyline points="8 12 12 16 22 6" />
                             </svg>
