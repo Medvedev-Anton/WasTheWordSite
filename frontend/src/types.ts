@@ -129,6 +129,7 @@ export interface Chat {
   lastMessageTime?: string;
   otherParticipant?: User;
   participants?: ChatParticipant[];
+  countNotReaded: number;
 }
 
 export interface ChatParticipant {

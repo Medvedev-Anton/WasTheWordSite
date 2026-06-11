@@ -402,7 +402,11 @@ export default function ChatPage() {
               <div
                 key={chat.id}
                 className={`chat-item ${selectedChat?.id === chat.id ? 'active' : ''}`}
-                onClick={() => { setSelectedChat(chat); setShowSidebarOnMobile(false); }}
+                onClick={() => { 
+                  chat.countNotReaded = 0;
+                  setSelectedChat(chat); 
+                  setShowSidebarOnMobile(false); 
+                }}
               >
                 <div className="chat-item-avatar">
                   {getChatAvatar(chat) ? (
@@ -424,14 +428,22 @@ export default function ChatPage() {
                     <div className="chat-item-preview">{chat.lastMessage}</div>
                   )}
                 </div>
-                {chat.lastMessageTime && (
-                  <div className="chat-item-time">
-                    {new Date(chat.lastMessageTime).toLocaleTimeString('ru-RU', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </div>
-                )}
+                <div className="chat-right-block">
+                  {chat.countNotReaded !== 0 && (
+                    <div className="chat-count-not-readed">
+                      {chat.countNotReaded}
+                    </div>
+                  )}
+
+                  {chat.lastMessageTime && (
+                    <div className="chat-item-time">
+                      {new Date(chat.lastMessageTime).toLocaleTimeString('ru-RU', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </div>
+                  )}
+                </div>                
               </div>
             ))
           )}

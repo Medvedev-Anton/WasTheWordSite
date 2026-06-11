@@ -768,6 +768,25 @@
   border-color: rgba(255,255,255,0.3);
 }
 
+.chat-right-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.chat-count-not-readed {
+  background: #D6D6D6;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8C5C5C;
+  font-size: 12px;
+}
+
 @media (max-width: 440px) {
   .chat-header {
     flex-wrap: wrap;
