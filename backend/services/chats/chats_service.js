@@ -104,7 +104,7 @@ export default class ChatsService extends ChatsServiceInterface {
         try {
             const lastMessageView = this.mapper.findLastUserMessageView(userId, chatId);
 
-            if (lastMessageView === null) {
+            if (lastMessageView !== null) {
                 return this.mapper.updateLastUserMessageView(userId, chatId, lastReadedMessageId);
             }
 
