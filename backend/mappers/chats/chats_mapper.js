@@ -206,4 +206,34 @@ export default class ChatsMapper extends ChatsMapperInterface {
 
         return lastReadedMessageId;
     }
+
+    findLastReadedMessageSendedByUser(senderId, chatId) {
+        const result = db.prepare(`
+            SELECT
+                lastReadedMessageId
+            FROM
+                user_chat_view_cursor
+            WHERE
+                userId != ?
+                AND
+                chatId = ?
+            ORDER BY
+                lastReadedMessageId
+            DESC
+            LIMIT
+                1
+        `).get(senderId, chatId);
+
+        if (result === undefined) {
+            return null;
+        }
+
+        const lastReadedMessageId = parseInt(result.lastReadedMessageId);
+
+        if (isNaN(lastReadedMessageId)) {
+            return null;
+        }
+
+        return lastReadedMessageId;
+    }
 }
