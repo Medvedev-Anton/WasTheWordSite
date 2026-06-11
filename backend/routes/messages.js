@@ -8,6 +8,7 @@ import fs from 'fs';
 import MessagesParamsController from '../controllers/messages_params_controller.js';
 import MessagesParamsFacade from '../facades/messages_params_facade.js';
 import ChatsFacade from '../facades/chats_facade.js';
+import ChatsController from '../controllers/chats_controller.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -194,6 +195,11 @@ router.delete('/:id', authenticateToken, (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+router.post('/:id/read', authenticateToken, (req, res) => {
+  const controller = new ChatsController(req, res);
+  controller.updateLastReadedMessageInChat();
+})
 
 // Get message live during days
 router.get('/live-during', authenticateToken, (req, res) => {
