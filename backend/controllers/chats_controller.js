@@ -102,7 +102,28 @@ export default class ChatsController extends MainController {
             });
         }
         catch (e) {
-            console.error('Delete chat error:', e.message);
+            console.error('Update last readed message in chat error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обработчик получения данных организации чата
+     */
+    getOrgDataByChat() {
+        try {
+            const chatId = parseInt(this.request.params.id);
+
+            const org = ChatsFacade.getOrgByChat(chatId);
+
+            this.send(200, {
+                org: org
+            });
+        }
+        catch (e) {
+            console.error('Get org data by chat error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
