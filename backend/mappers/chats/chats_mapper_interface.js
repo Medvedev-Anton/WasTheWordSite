@@ -131,4 +131,12 @@ export default class ChatsMapperInterface {
     findLastReadedMessageReceivedByUser(userId, chatId) {
         throw new Error('findLastReadedMessageReceivedByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает данные организации по id чата
+     * @param {number} chatId
+     */
+    findOrgByChat(chatId) {
+        throw new Error('findOrgByChat должен быть переопределен в наследнике');
+    }
 }

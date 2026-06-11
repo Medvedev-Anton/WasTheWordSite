@@ -266,4 +266,24 @@ export default class ChatsMapper extends ChatsMapperInterface {
 
         return lastReadedMessageId;
     }
+
+    findOrgByChat(chatId) {
+        const result = db.prepare(`
+            SELECT
+                o.*
+            FROM
+                chats c
+            JOIN
+                orgs o
+                ON o.id = c.organizationId
+            WHERE
+                c.id = ?    
+        `).get(chatId);
+
+        if (result === undefined) {
+            return null;
+        }
+
+        return result;
+    }
 }
