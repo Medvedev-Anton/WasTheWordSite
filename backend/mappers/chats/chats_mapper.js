@@ -143,4 +143,12 @@ export default class ChatsMapper extends ChatsMapperInterface {
                 expiredAt <= datetime('now')
         `).run();
     }
+
+    createLastUserMessageView(userId, chatId, lastReadedMessageId) {
+        db.prepare(`
+            INSERT INTO
+                user_chat_view_cursor(userId, chatId, lastReadedMessageId)
+            VALUES (?, ?, ?)    
+        `).run(userId, chatId, lastReadedMessageId);
+    }
 }

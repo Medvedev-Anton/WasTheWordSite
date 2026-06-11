@@ -76,4 +76,14 @@ export default class ChatsMapperInterface {
     deleteAllExpiredMessages() {
         throw new Error('deleteAllExpiredMessages должен быть переопределен в наследнике');
     }
+
+    /**
+     * Создает запись о просмотре последнего сообщения
+     * @param {number} userId
+     * @param {number} chatId
+     * @param {number} lastReadedMessageId
+     */
+    createLastUserMessageView(userId, chatId, lastReadedMessageId) {
+        throw new Error('createLastUserMessageView должен быть переопределен в наследнике');
+    }
 }
