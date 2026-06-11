@@ -92,4 +92,14 @@ export default class ChatsServiceInterface {
     deleteAllExpiredMessages() {
         throw new Error('deleteAllExpiredMessages должен быть переопределен в наследнике');
     }
+
+    /**
+     * Обновляет или создает запись о последнем просмотренном сообщении пользователя в чате
+     * @param {number} userId
+     * @param {number} chatId
+     * @param {number} lastReadedMessageId
+     */
+    updateOrCreateLastUserMessageView(userId, chatId, lastReadedMessageId) {
+        throw new Error('updateOrCreateLastUserMessageView должен быть переопределен в наследнике');
+    }
 }

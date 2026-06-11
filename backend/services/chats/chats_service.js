@@ -99,4 +99,19 @@ export default class ChatsService extends ChatsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    updateOrCreateLastUserMessageView(userId, chatId, lastReadedMessageId) {
+        try {
+            const lastMessageView = this.mapper.findLastUserMessageView(userId, chatId);
+
+            if (lastMessageView === null) {
+                return this.mapper.updateLastUserMessageView(userId, chatId, lastReadedMessageId);
+            }
+
+            return this.mapper.createLastUserMessageView(userId, chatId, lastReadedMessageId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
