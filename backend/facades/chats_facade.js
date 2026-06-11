@@ -185,4 +185,18 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получает ID последнего прочитанного сообщения, которое доставлено переданному пользователю
+     * @param {number} userId
+     * @param {number} chatId
+     */
+    static getLastReadedMessageReceivedByUser(userId, chatId) {
+        try {
+            return this.getService().getLastReadedMessageReceivedByUser(userId, chatId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
