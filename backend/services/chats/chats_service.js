@@ -126,7 +126,13 @@ export default class ChatsService extends ChatsServiceInterface {
 
     getLastReadedMessageSendedByUser(senderId, chatId) {
         try {
-            return this.mapper.findLastReadedMessageSendedByUser(senderId, chatId);
+            const lastMessageId = this.mapper.findLastReadedMessageSendedByUser(senderId, chatId);
+
+            if (lastMessageId === null) {
+                return -1;
+            }
+
+            return lastMessageId
         }
         catch (e) {
             throw new Error(e.message);
@@ -135,7 +141,13 @@ export default class ChatsService extends ChatsServiceInterface {
 
     getLastReadedMessageReceivedByUser(userId, chatId) {
         try {
-            return this.mapper.findLastReadedMessageReceivedByUser(userId, chatId);
+            const lastMessageId = this.mapper.findLastReadedMessageReceivedByUser(userId, chatId);
+
+            if (lastMessageId === null) {
+                return -1;
+            }
+
+            return lastMessageId
         }
         catch (e) {
             throw new Error(e.message);
