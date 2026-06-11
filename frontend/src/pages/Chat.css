@@ -570,6 +570,14 @@
   opacity: .9;
 }
 
+.custom-link-class {
+  transition: all .3s;
+}
+
+.custom-link-class:hover {
+  opacity: .6;
+}
+
 @media (max-width: 768px) {
   .chat-page {
     height: calc(100dvh - 130px);

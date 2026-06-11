@@ -7,8 +7,15 @@ import AudioPlayer from '../components/AudioPlayer';
 import ReactPlayer from 'react-player';
 import { getMediaUrl } from '../config';
 import './Chat.css';
+import Linkify from 'linkify-react';
 
 export default function ChatPage() {
+  const linkifyOptions = {
+    target: '_blank',
+    rel: 'noopener noreferrer',
+    className: 'custom-link-class',
+  };
+
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -384,7 +391,12 @@ export default function ChatPage() {
                         </div>
                       ) : (
                         <>
-                          {message.content && <div className="message-text">{message.content}</div>}
+                          {message.content && 
+                          <div className="message-text">
+                            <Linkify options={linkifyOptions}>
+                              {message.content}
+                            </Linkify>
+                          </div>}
                           {message.fileUrl && (
                             <div className="message-file">
                               {message.fileDeleted ? (
