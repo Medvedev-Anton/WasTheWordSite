@@ -47,7 +47,8 @@ router.get('/chat/:chatId', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    const lastReadedMessageId = ChatsFacade.getLastReadedMessageIdInChat(chatId);
+    const lastReadedMessageSendedByUser = ChatsFacade.getLastReadedMessageSendedByUser(userId, chatId);
+    const lastReadedMessageReceivedByUser = ChatsFacade.getLastReadedMessageSendedByUser(userId, chatId);
 
     const messages = db.prepare(`
       SELECT 
@@ -57,17 +58,27 @@ router.get('/chat/:chatId', authenticateToken, (req, res) => {
         u.firstName,
         u.lastName,
         CASE
-          WHEN m.id <= ?
-            THEN 1
+          WHEN m.userId = ? THEN
+            CASE 
+              WHEN m.id <= ? THEN
+                1
+              ELSE
+                0
+            END
           ELSE
-            0
-        END AS isReaded
+            CASE 
+              WHEN m.id <= ? THEN
+                1
+              ELSE
+                0
+            END
+        END as isReaded
 
       FROM messages m
       JOIN users u ON m.userId = u.id
       WHERE m.chatId = ?
       ORDER BY m.createdAt ASC
-    `).all(lastReadedMessageId, chatId);
+    `).all(userId, lastReadedMessageSendedByUser, lastReadedMessageReceivedByUser, chatId);
 
     res.json(messages);
   } catch (error) {
