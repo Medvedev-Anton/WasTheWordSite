@@ -143,4 +143,19 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Обновляет или создает запись о последнем просмотренном сообщении пользователя в чате
+     * @param {number} userId
+     * @param {number} chatId
+     * @param {number} lastReadedMessageId
+     */
+    static updateOrCreateLastUserMessageView(userId, chatId, lastReadedMessageId) {
+        try {
+            return this.getService().updateOrCreateLastUserMessageView(userId, chatId, lastReadedMessageId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
