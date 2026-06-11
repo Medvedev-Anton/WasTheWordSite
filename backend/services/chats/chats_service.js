@@ -154,7 +154,6 @@ export default class ChatsService extends ChatsServiceInterface {
         }
     }
 
-
     getOrgByChat(chatId) {
         try {
             return this.mapper.findOrgByChat(chatId);
