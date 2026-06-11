@@ -83,6 +83,12 @@ router.delete('/:id', authenticateToken, (req, res) => {
   controller.deleteChat();
 });
 
+// Get org data by chat
+router.get('/:id/org', authenticateToken, (req, res) => {
+  const contorller = new ChatsController(req, res);
+  contorller.getOrgDataByChat();
+});
+
 // Create personal chat
 router.post('/personal', authenticateToken, (req, res) => {
   try {
