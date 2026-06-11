@@ -199,4 +199,17 @@ export default class ChatsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получает данные организации по id чата
+     * @param {number} chatId
+     */
+    getOrgByChat(chatId) {
+        try {
+            return this.getService().getOrgByChat(chatId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
