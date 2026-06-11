@@ -449,12 +449,24 @@ export default function ChatPage() {
                           )}
                         </>
                       )}
-                      <div className="message-time">
-                        {new Date(message.createdAt).toLocaleTimeString('ru-RU', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </div>
+                      <div className="message-bottom">
+                        <div className="message-time">
+                          {new Date(message.createdAt).toLocaleTimeString('ru-RU', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </div>
+
+                        {
+                          message.isReaded == 1 && (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="2 12 6 16 16 6" />
+                              <polyline points="8 12 12 16 22 6" />
+                            </svg>
+                          )
+                        }
+                        
+                      </div>                      
                       {isOwn && !message.isDeleted && (
                         <button
                           className="message-delete-btn"

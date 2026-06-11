@@ -158,5 +158,6 @@ export interface Message {
   firstName?: string;
   lastName?: string;
   createdAt: string;
+  isReaded: number;
 }
 

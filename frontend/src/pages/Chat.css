@@ -581,6 +581,11 @@
   opacity: .6;
 }
 
+.message-bottom {
+  display: flex; 
+  justify-content: space-between;
+}
+
 @media (max-width: 768px) {
   .chat-page {
     height: calc(100dvh - 130px);
