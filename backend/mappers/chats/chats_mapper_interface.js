@@ -122,4 +122,13 @@ export default class ChatsMapperInterface {
     findLastReadedMessageSendedByUser(senderId, chatId) {
         throw new Error('findLastReadedMessageSendedByUser должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получает ID последнего прочитанного сообщения, которое доставлено переданному пользователю
+     * @param {number} userId
+     * @param {number} chatId
+     */
+    findLastReadedMessageReceivedByUser(userId, chatId) {
+        throw new Error('findLastReadedMessageReceivedByUser должен быть переопределен в наследнике');
+    }
 }
