@@ -52,7 +52,6 @@ router.get('/chat/:chatId', authenticateToken, (req, res) => {
     const messages = db.prepare(`
       SELECT 
         m.*,
-        u.id,
         u.username,
         u.avatar,
         u.firstName,
