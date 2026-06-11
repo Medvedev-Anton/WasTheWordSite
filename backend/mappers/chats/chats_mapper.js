@@ -274,7 +274,7 @@ export default class ChatsMapper extends ChatsMapperInterface {
             FROM
                 chats c
             JOIN
-                orgs o
+                organizations o
                 ON o.id = c.organizationId
             WHERE
                 c.id = ?    
