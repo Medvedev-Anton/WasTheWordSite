@@ -77,4 +77,35 @@ export default class ChatsController extends MainController {
             });
         }
     }
+
+    /**
+     * Обработчик обновления последнего прочитанного сообщения в чате для пользователя
+     */
+    updateLastReadedMessageInChat() {
+        const validate = this.has([
+            'chatId'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const chatId = parseInt(this.request.body.chatId);
+            const userId = parseInt(this.request.user.userId);
+            const messageId = parseInt(this.request.params.id);
+
+            ChatsFacade.updateOrCreateLastUserMessageView(userId, chatId, messageId);
+
+            this.send(200, {
+                message: 'Success'
+            });
+        }
+        catch (e) {
+            console.error('Delete chat error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
