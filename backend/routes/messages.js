@@ -48,7 +48,7 @@ router.get('/chat/:chatId', authenticateToken, (req, res) => {
     }
 
     const lastReadedMessageSendedByUser = ChatsFacade.getLastReadedMessageSendedByUser(userId, chatId);
-    const lastReadedMessageReceivedByUser = ChatsFacade.getLastReadedMessageSendedByUser(userId, chatId);
+    const lastReadedMessageReceivedByUser = ChatsFacade.getLastReadedMessageReceivedByUser(userId, chatId);
 
     const messages = db.prepare(`
       SELECT 
