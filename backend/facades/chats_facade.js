@@ -204,7 +204,7 @@ export default class ChatsFacade {
      * Получает данные организации по id чата
      * @param {number} chatId
      */
-    getOrgByChat(chatId) {
+    static getOrgByChat(chatId) {
         try {
             return this.getService().getOrgByChat(chatId);
         }
