@@ -86,4 +86,14 @@ export default class ChatsMapperInterface {
     createLastUserMessageView(userId, chatId, lastReadedMessageId) {
         throw new Error('createLastUserMessageView должен быть переопределен в наследнике');
     }
+
+    /**
+     * Обновляет запись о просмотре последнего сообщения
+     * @param {number} userId
+     * @param {number} chatId
+     * @param {number} lastReadedMessageId
+     */
+    updateLastUserMessageView(userId, chatId, lastReadedMessageId) {
+        throw new Error('updateLastUserMessageView должен быть переопределен в наследнике');
+    }
 }

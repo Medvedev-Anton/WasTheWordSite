@@ -151,4 +151,17 @@ export default class ChatsMapper extends ChatsMapperInterface {
             VALUES (?, ?, ?)    
         `).run(userId, chatId, lastReadedMessageId);
     }
+
+    updateLastUserMessageView(userId, chatId, lastReadedMessageId) {
+        db.prepare(`
+            UPDATE
+                user_chat_view_cursor
+            SET
+                lastReadedMessageId = ?
+            WHERE
+                userId = ?
+                AND
+                chatId = ?
+        `).run(lastReadedMessageId, userId, chatId);
+    }
 }
