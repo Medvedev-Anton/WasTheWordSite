@@ -348,9 +348,12 @@
 .message-file-image {
   max-width: 300px;
   max-height: 300px;
+  min-width: 200px;
+  min-height: 200px;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s;
+  object-fit: scale-down;
 }
 
 .message-file-image:hover {
