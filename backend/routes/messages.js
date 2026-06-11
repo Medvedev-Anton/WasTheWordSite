@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import MessagesParamsController from '../controllers/messages_params_controller.js';
 import MessagesParamsFacade from '../facades/messages_params_facade.js';
+import ChatsFacade from '../facades/chats_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -45,18 +46,28 @@ router.get('/chat/:chatId', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
+    const lastReadedMessageId = ChatsFacade.getLastReadedMessageIdInChat(chatId);
+
     const messages = db.prepare(`
       SELECT 
         m.*,
+        u.id,
         u.username,
         u.avatar,
         u.firstName,
-        u.lastName
+        u.lastName,
+        CASE
+          WHEN m.id <= ?
+            THEN 1
+          ELSE
+            0
+        END AS isReaded
+
       FROM messages m
       JOIN users u ON m.userId = u.id
       WHERE m.chatId = ?
       ORDER BY m.createdAt ASC
-    `).all(chatId);
+    `).all(lastReadedMessageId, chatId);
 
     res.json(messages);
   } catch (error) {
