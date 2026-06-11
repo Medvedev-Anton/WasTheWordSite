@@ -967,6 +967,19 @@ export async function initDatabase() {
     }
   });
 
+  // Create user chat view cursor table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS user_chat_view_cursor(
+      ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      chatId INTEGER NOT NULL,
+      lastReadedMessageId INT NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (chatId) REFERENCES chats(id) ON DELETE CASCADE,
+      FOREIGN KEY (lastReadedMessageId) REFERENCES messages(id) ON DELETE CASCADE
+    )
+  `);
+
   console.log('Database initialized successfully');
 }
 
