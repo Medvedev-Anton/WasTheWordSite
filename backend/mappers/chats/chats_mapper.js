@@ -164,4 +164,23 @@ export default class ChatsMapper extends ChatsMapperInterface {
                 chatId = ?
         `).run(lastReadedMessageId, userId, chatId);
     }
+
+    findLastUserMessageView(userId, chatId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                user_chat_view_cursor
+            WHERE
+                userId = ?
+                AND
+                chatId = ?
+        `).get(userId, chatId);
+
+        if (result === undefined) {
+            return null;
+        }
+
+        return result;
+    }
 }
