@@ -8,6 +8,7 @@ import ReactPlayer from 'react-player';
 import { getMediaUrl } from '../config';
 import './Chat.css';
 import Linkify from 'linkify-react';
+import { useLongPress } from '../components/UseLongPress';
 
 export default function ChatPage() {
   const linkifyOptions = {
@@ -36,12 +37,29 @@ export default function ChatPage() {
   const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(true);
   const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
   const [chatOrgNameAndType, setChatOrgNameAndType] = useState<string>('');
+  const [showMessageContextMobile, setShowMessageContextMobile] = useState<boolean>(false);
+  const [checkedMessageIds, setCheckedMessageIds] = useState<number[]>([]);
 
   const [messageMenuState, setMessageMenuState] = useState({
     isVisible: false,
     x: 0,
     y: 0,
   });
+
+  const messageLongPressCallback = (e: any) => {
+    const messageEl = e.currentTarget.closest('[data-message-id]') 
+      ?? e.currentTarget;
+    const messageId = Number(messageEl.getAttribute('data-message-id'));
+    
+    if (!messageId) return;
+    
+    setShowMessageContextMobile(true);
+    setCheckedMessageIds(prev => 
+      prev.includes(messageId) ? prev : [...prev, messageId]
+    );
+  };
+
+  const messageLongPressHandlers = useLongPress(messageLongPressCallback, 500);
 
   const lastMsgIdRef = useRef<number | null>(null);
 
@@ -86,6 +104,8 @@ export default function ChatPage() {
 
   useEffect(() => {
     readMessagesRef.current.clear();
+    setCheckedMessageIds([]);
+    setShowMessageContextMobile(false);
 
     observer.current = new IntersectionObserver(
       (entries) => {
@@ -153,7 +173,7 @@ export default function ChatPage() {
     });
   };
 
-   const closeMessageMenu = () => {
+  const closeMessageMenu = () => {
     setMessageMenuState({ ...messageMenuState, isVisible: false });
   };
 
@@ -489,25 +509,44 @@ export default function ChatPage() {
       <div className={`chat-main ${showSidebarOnMobile ? 'mobile-hidden' : ''}`}>
         {selectedChat ? (
           <>
-            <div className="chat-header">
-              <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
-              <h3>{getChatName(selectedChat)}</h3>
-              {selectedChat.type === 'group' && (
-                <span className="chat-type">
-                  {chatOrgNameAndType}
+            {
+              showMessageContextMobile
+              ?
+              <div className="chat-header">
+                <div 
+                  className="close-message-context-icon"
+                  onClick={e => {
+                    setShowMessageContextMobile(false);
+                    setCheckedMessageIds([]);
+                  }}
+                >
+                </div>
+                <span className="count-checked-messages">
+                  1 сообщение
                 </span>
-              )}
-              {
-                isUserAdmin && (
-                  <span
-                    className="delete-chat"
-                    onClick={fetchDeleteChat}
-                  >
-                    Удалить чат
+              </div>
+              :
+              <div className="chat-header">
+                <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
+                <h3>{getChatName(selectedChat)}</h3>
+                {selectedChat.type === 'group' && (
+                  <span className="chat-type">
+                    {chatOrgNameAndType}
                   </span>
-                )
-              }
-            </div>
+                )}
+                {
+                  isUserAdmin && (
+                    <span
+                      className="delete-chat"
+                      onClick={fetchDeleteChat}
+                    >
+                      Удалить чат
+                    </span>
+                  )
+                }
+              </div>
+            }
+            
 
               {messageMenuState.isVisible && (
               <div
@@ -535,12 +574,24 @@ export default function ChatPage() {
             <div className="messages-container" ref={messagesContainerRef} onScroll={handleScroll}>
               {messages.map(message => {
                 const isOwn = message.userId === user?.id;
+                const isChecked = checkedMessageIds.includes(message.id);
                 return (
                   <div 
+                    {...messageLongPressHandlers}
                     key={message.id} 
+                    data-message-id={message.id}
                     className={`message ${isOwn ? 'own' : ''} ${message.isDeleted ? 'deleted' : ''}`}
                     onContextMenu={handleContextMessageMenu}
-                    >
+                  >
+                    {
+                      showMessageContextMobile && (
+                        <div className="message-checked-wrapper">
+                          <div className={`message-checked-border ${isChecked ? 'checked' : ''}`}>
+
+                          </div>
+                        </div>
+                      )
+                    }
                     {
                       getMediaUrl(message.avatar)
                         ? <img src={getMediaUrl(message.avatar)} alt={message.username} className="message-avatar" />
@@ -691,37 +742,55 @@ export default function ChatPage() {
                   )}
                 </div>
               )}
-              <div className="message-input-wrapper">
-                <label className="file-attach-btn" title="Прикрепить файл">
-                  📎
+
+              {
+                showMessageContextMobile
+                ?
+                <div className="message-input-wrapper">
+                  <div className="message-menu-content-buttons">
+                    <button>
+                      Ответить
+                    </button>
+
+                    <button>
+                      Переслать
+                    </button>
+                  </div>                  
+                </div>
+                :
+                <div className="message-input-wrapper">
+                  <label className="file-attach-btn" title="Прикрепить файл">
+                    📎
+                    <input
+                      type="file"
+                      onChange={handleFileSelect}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
                   <input
-                    type="file"
-                    onChange={handleFileSelect}
-                    style={{ display: 'none' }}
+                    type="text"
+                    placeholder="Написать сообщение..."
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+                    className="message-input"
                   />
-                </label>
-                <input
-                  type="text"
-                  placeholder="Написать сообщение..."
-                  value={messageText}
-                  onChange={(e) => setMessageText(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                  className="message-input"
-                />
-                {messageText.trim() || selectedFile ? (
-                  <button onClick={handleSendMessage} className="send-btn">
-                    ➤
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setShowVoiceRecorder(!showVoiceRecorder)}
-                    className={`voice-record-btn${showVoiceRecorder ? ' active' : ''}`}
-                    title="Голосовое сообщение"
-                  >
-                    🎤
-                  </button>
-                )}
-              </div>
+                  {messageText.trim() || selectedFile ? (
+                    <button onClick={handleSendMessage} className="send-btn">
+                      ➤
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setShowVoiceRecorder(!showVoiceRecorder)}
+                      className={`voice-record-btn${showVoiceRecorder ? ' active' : ''}`}
+                      title="Голосовое сообщение"
+                    >
+                      🎤
+                    </button>
+                  )}
+                </div>
+              }
+              
             </div>
           </>
         ) : (

@@ -814,6 +814,74 @@
   background: #D6D6D6;
 }
 
+.close-message-context-icon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .3s;
+}
+
+.close-message-context-icon:hover {
+  opacity: .4;
+}
+
+.close-message-context-icon::before {
+  content: '';
+  width: 15px;
+  height: 2px;
+  position: absolute;
+  background: #000;
+  transform: rotate(45deg);
+}
+
+.close-message-context-icon::after {
+  content: '';
+  width: 15px;
+  height: 2px;
+  background: #000;
+  position: absolute;
+  transform: rotate(-45deg);
+}
+
+.message-menu-content-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.message-menu-content-buttons button {
+  padding: 10px 20px;
+  background: #8C5C5C;
+  color: #FFF;
+  transition: all .3s;
+  border-radius: 6px;
+}
+
+.message-menu-content-buttons button:hover {
+  opacity: .6;
+}
+
+.message-checked-wrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.message-checked-border {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #FFF;
+  border-radius: 100px;
+}
+
+.message-checked-border.checked {
+  background: #8C5C5C;
+}
+
 @media (max-width: 440px) {
   .chat-header {
     flex-wrap: wrap;
