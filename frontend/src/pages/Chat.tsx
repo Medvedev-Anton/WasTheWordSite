@@ -703,28 +703,37 @@ export default function ChatPage() {
               </div>
               :
               <div className="chat-header">
-                <div className="chat-header-top">
-                  <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
-                  <h3>{getChatName(selectedChat)}</h3>
-                  {selectedChat.type === 'group' && (
-                    <span className="chat-type">
-                      {chatOrgNameAndType}
-                    </span>
-                  )}
-                  {
-                    isUserAdmin && (
-                      <span
-                        className="delete-chat"
-                        onClick={fetchDeleteChat}
-                      >
-                        Удалить чат
+                <div className="chat-header-left">
+                  <div className="chat-header-avatar-wrapper">
+                    <img src={selectedChat.avatar} alt="chat-avatar" />
+                  </div>
+                </div>
+                <div className="chat-header-right">
+                    <div className="chat-header-top">
+                    <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
+
+                    <h3>{getChatName(selectedChat)}</h3>
+                    {selectedChat.type === 'group' && (
+                      <span className="chat-type">
+                        {chatOrgNameAndType}
                       </span>
-                    )
-                  }
+                    )}
+                    {
+                      isUserAdmin && (
+                        <span
+                          className="delete-chat"
+                          onClick={fetchDeleteChat}
+                        >
+                          Удалить чат
+                        </span>
+                      )
+                    }
+                  </div>
+                  <div className="chat-header-bottom">
+                    {declensionMemberWord(selectedChat.countParticipants)}
+                  </div>
                 </div>
-                <div className="chat-header-bottom">
-                  {declensionMemberWord(selectedChat.countParticipants)}
-                </div>
+                
               </div>
             }
             
