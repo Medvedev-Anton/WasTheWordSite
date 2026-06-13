@@ -37,6 +37,12 @@ export default function ChatPage() {
   const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
   const [chatOrgNameAndType, setChatOrgNameAndType] = useState<string>('');
 
+  const [messageMenuState, setMessageMenuState] = useState({
+    isVisible: false,
+    x: 0,
+    y: 0,
+  });
+
   const lastMsgIdRef = useRef<number | null>(null);
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -120,6 +126,36 @@ export default function ChatPage() {
       observer.current?.disconnect();
     };
   }, [selectedChat]);
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (messageMenuState.isVisible) {
+        closeMessageMenu();
+      }
+    };
+
+    if (messageMenuState.isVisible) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [messageMenuState.isVisible]);
+
+  const handleContextMessageMenu = (e: any) => {
+    e.preventDefault();
+    
+    setMessageMenuState({
+      isVisible: true,
+      x: e.clientX,
+      y: e.clientY,
+    });
+  };
+
+   const closeMessageMenu = () => {
+    setMessageMenuState({ ...messageMenuState, isVisible: false });
+  };
 
   const markMessageAsRead = async (messageId: number) => {
     try {
@@ -472,11 +508,39 @@ export default function ChatPage() {
                 )
               }
             </div>
+
+              {messageMenuState.isVisible && (
+              <div
+                className="message-menu-wrapper"
+                style={{
+                  top: messageMenuState.y,
+                  left: messageMenuState.x,
+                }}
+              >
+                <ul className="message-menu-list">
+                  <li 
+                    onClick={() => { console.log('Действие 1'); closeMessageMenu(); }}
+                  >
+                    Ответить
+                  </li>
+                  <li 
+                    onClick={() => { console.log('Действие 2'); closeMessageMenu(); }}
+                  >
+                    Переслать
+                  </li>
+                </ul>
+              </div>
+            )}
+
             <div className="messages-container" ref={messagesContainerRef} onScroll={handleScroll}>
               {messages.map(message => {
                 const isOwn = message.userId === user?.id;
                 return (
-                  <div key={message.id} className={`message ${isOwn ? 'own' : ''} ${message.isDeleted ? 'deleted' : ''}`}>
+                  <div 
+                    key={message.id} 
+                    className={`message ${isOwn ? 'own' : ''} ${message.isDeleted ? 'deleted' : ''}`}
+                    onContextMenu={handleContextMessageMenu}
+                    >
                     {
                       getMediaUrl(message.avatar)
                         ? <img src={getMediaUrl(message.avatar)} alt={message.username} className="message-avatar" />
