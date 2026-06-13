@@ -165,5 +165,6 @@ export interface Message {
   responseFromMessageText: string | null;
   responseFromMessageAuthor: string | null;
   responseFromMessageId: string | null;
+  rangImageUrl: string | null;
 }
 

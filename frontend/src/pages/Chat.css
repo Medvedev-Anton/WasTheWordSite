@@ -977,6 +977,17 @@
   width: 100%;
 }
 
+.message-rang-wrapper {
+  width: 50px;
+  margin-top: 5px;
+}
+
+.message-rang-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 @media (max-width: 440px) {
   .chat-header {
     flex-wrap: wrap;
