@@ -411,6 +411,7 @@ export async function initDatabase() {
   const hasExpiredAt = messagesTableInfo.some(col => col.name === 'expiredAt');
   const hasIsResponse = messagesTableInfo.some(col => col.name === 'isResponse');
   const hasResponseFromMessageText = messagesTableInfo.some(col => col.name === 'responseFromMessageText');
+  const hasResponseFromMessageAuthor = messagesTableInfo.some(col => col.name === 'responseFromMessageAuthor');
 
   if (!hasFileUrl) {
     try {
@@ -450,6 +451,14 @@ export async function initDatabase() {
   if (!hasResponseFromMessageText) {
     try {
       db.exec(`ALTER TABLE messages ADD COLUMN responseFromMessageText TEXT NULL`);
+    } catch (e) {
+      console.error('Error adding fileType column:', e.message);
+    }
+  }
+
+  if (!hasResponseFromMessageAuthor) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN responseFromMessageAuthor TEXT NULL`);
     } catch (e) {
       console.error('Error adding fileType column:', e.message);
     }
