@@ -447,7 +447,6 @@ export async function initDatabase() {
       console.error('Error adding fileType column:', e.message);
     }
   }
-
   if (!hasResponseFromMessageText) {
     try {
       db.exec(`ALTER TABLE messages ADD COLUMN responseFromMessageText TEXT NULL`);
