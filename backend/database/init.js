@@ -413,6 +413,7 @@ export async function initDatabase() {
   const hasResponseFromMessageText = messagesTableInfo.some(col => col.name === 'responseFromMessageText');
   const hasResponseFromMessageAuthor = messagesTableInfo.some(col => col.name === 'responseFromMessageAuthor');
   const hasResponseFromMessageId = messagesTableInfo.some(col => col.name === 'responseFromMessageId');
+  const hasIsForward = messagesTableInfo.some(col => col.name === 'isForward');
 
   if (!hasFileUrl) {
     try {
@@ -466,6 +467,13 @@ export async function initDatabase() {
   if (!hasResponseFromMessageId) {
     try {
       db.exec(`ALTER TABLE messages ADD COLUMN responseFromMessageId INT NULL`);
+    } catch (e) {
+      console.error('Error adding fileType column:', e.message);
+    }
+  }
+  if (!hasIsForward) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN isForward TINYINT(1) DEFAULT 0`);
     } catch (e) {
       console.error('Error adding fileType column:', e.message);
     }
