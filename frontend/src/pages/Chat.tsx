@@ -54,9 +54,10 @@ export default function ChatPage() {
     if (!messageId) return;
     
     setShowMessageContextMobile(true);
-    setCheckedMessageIds(prev => 
-      prev.includes(messageId) ? prev : [...prev, messageId]
-    );
+    // setCheckedMessageIds(prev => 
+    //   prev.includes(messageId) ? prev : [...prev, messageId]
+    // );
+    setCheckedMessageIds([messageId]);
   };
 
   const messageLongPressHandlers = useLongPress(messageLongPressCallback, 500);
