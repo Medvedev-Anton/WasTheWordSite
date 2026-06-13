@@ -39,7 +39,13 @@ export default function ChatPage() {
   const [chatOrgNameAndType, setChatOrgNameAndType] = useState<string>('');
   const [showMessageContextMobile, setShowMessageContextMobile] = useState<boolean>(false);
   const [checkedMessageIds, setCheckedMessageIds] = useState<number[]>([]);
+  const [currentContextMessageId, setCurrentContextMessageId] = useState<number | null>();
 
+  // Стейты ответа на сообщение
+  const [responseMessageText, setResponseMessageText] = useState<string | null>();
+  const [responseMessageAuthor, setResponseMessageAuthor] = useState<string | null>();
+  const [isMessageResponse, setIsMessageResponse] = useState<boolean>(false);
+  
   const [messageMenuState, setMessageMenuState] = useState({
     isVisible: false,
     x: 0,
@@ -59,6 +65,42 @@ export default function ChatPage() {
     // );
     setCheckedMessageIds([messageId]);
   };
+
+  // Клик на кнопку ответа на сообщение
+  const handleResponseMessageClick = () => {
+    const message = getMessageById(checkedMessageIds[0]);
+
+    if (message === null) {
+      return;
+    }
+
+    closeMessageMenu();
+    setIsMessageResponse(true);
+
+    const messageText = message.content;
+    const messageAuthor = message.username
+
+    setResponseMessageText(messageText);
+    setResponseMessageAuthor(messageAuthor);
+  }
+
+  // Клик на кнопку отмена ответа на сообщение
+  const handleResponseCancelClick = () => {
+    setIsMessageResponse(false);
+    setResponseMessageText(null);
+    setResponseMessageAuthor(null);
+  }
+
+  // Возвращает данные сообщения по id
+  const getMessageById = (messageId: number) => {
+    for (let i = 0; i < messages.length; i++) {
+      if (messages[i].id == messageId) {
+        return messages[i];
+      }
+    }
+
+    return null;
+  }
 
   const messageLongPressHandlers = useLongPress(messageLongPressCallback, 500);
 
@@ -164,8 +206,17 @@ export default function ChatPage() {
     };
   }, [messageMenuState.isVisible]);
 
+  useEffect(() => {
+    if (currentContextMessageId !== null && currentContextMessageId !== undefined) {
+      setCheckedMessageIds([currentContextMessageId]);
+    }
+    
+  }, [currentContextMessageId]);
+
   const handleContextMessageMenu = (e: any) => {
     e.preventDefault();
+
+    setCurrentContextMessageId(e.currentTarget.getAttribute('data-message-id'));
     
     setMessageMenuState({
       isVisible: true,
@@ -176,6 +227,27 @@ export default function ChatPage() {
 
   const closeMessageMenu = () => {
     setMessageMenuState({ ...messageMenuState, isVisible: false });
+    setShowMessageContextMobile(false);
+    setCurrentContextMessageId(null);
+  };
+
+  const scrollToMessage = (messageId: number, offset = 20) => {
+    const container = messagesContainerRef.current;
+    const el = container?.querySelector(`[data-message-id="${messageId}"]`);
+    if (!container || !el) return;
+
+    setShouldAutoScroll(false);
+
+    const containerRect = container.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+
+    container.scrollTo({
+      top: elRect.top - containerRect.top + container.scrollTop - offset,
+      behavior: 'smooth',
+    });
+
+    el.classList.add('message-highlight');
+    setTimeout(() => el.classList.remove('message-highlight'), 1500);
   };
 
   const markMessageAsRead = async (messageId: number) => {
@@ -295,11 +367,29 @@ export default function ChatPage() {
         formData.append('file', selectedFile, selectedFile.name);
       }
 
-      const response = await axios.post('/api/messages', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      let response;
+
+      if (isMessageResponse && checkedMessageIds.length > 0) {
+        formData.append('responseMessageText', responseMessageText || '');
+        formData.append('responseMessageAuthor', responseMessageAuthor || '');
+        formData.append('responseMessageId', checkedMessageIds[0].toString() || '');
+
+        response = await axios.post('/api/messages/response', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        handleResponseCancelClick();
+      }
+      else {
+        response = await axios.post('/api/messages', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }
+      
       setMessages([...messages, response.data]);
       setMessageText('');
       setSelectedFile(null);
@@ -559,7 +649,10 @@ export default function ChatPage() {
               >
                 <ul className="message-menu-list">
                   <li 
-                    onClick={() => { console.log('Действие 1'); closeMessageMenu(); }}
+                    onClick={e => {                     
+                      handleResponseMessageClick();
+                    }
+                  }
                   >
                     Ответить
                   </li>
@@ -620,6 +713,23 @@ export default function ChatPage() {
                         </div>
                       ) : (
                         <>
+                          {message.isResponse != 0 && (
+                            <div 
+                              className="message-response-content"
+                              onClick={e => {
+                                scrollToMessage(parseInt(message.responseFromMessageId || ''));
+                              }}
+                            >
+                              <div className="message-response-author">
+                                {message.responseFromMessageAuthor}
+                              </div>
+                              <div className="message-response-text">
+                                <span>
+                                  {message.responseFromMessageText}
+                                </span>
+                              </div>
+                            </div>
+                          )}
                           {message.content && 
                           <div className="message-text">
                             <Linkify options={linkifyOptions}>
@@ -721,6 +831,28 @@ export default function ChatPage() {
               })}
               <div ref={messagesEndRef} />
             </div>
+            
+            {
+              isMessageResponse && !showMessageContextMobile && (
+                <div className="message-response-data-wrapper">
+                  <div className="message-response-data-content">
+                    <p className="message-response-data-author">
+                      {responseMessageAuthor}
+                    </p>
+                    <p className="message-response-data-text">
+                      {responseMessageText}
+                    </p>
+                  </div>
+                  <div 
+                    className="message-response-data-close"
+                    onClick={e => handleResponseCancelClick()}
+                  >
+
+                  </div>
+                </div>
+              )
+            }
+
             <div className="message-input-container">
               {showVoiceRecorder && (
                 <VoiceRecorder
@@ -749,7 +881,9 @@ export default function ChatPage() {
                 ?
                 <div className="message-input-wrapper">
                   <div className="message-menu-content-buttons">
-                    <button>
+                    <button
+                      onClick={handleResponseMessageClick}
+                    >
                       Ответить
                     </button>
 

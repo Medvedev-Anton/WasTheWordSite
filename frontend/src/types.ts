@@ -160,5 +160,9 @@ export interface Message {
   lastName?: string;
   createdAt: string;
   isReaded: number;
+  isResponse: number;
+  responseFromMessageText: string | null;
+  responseFromMessageAuthor: string | null;
+  responseFromMessageId: string | null;
 }
 
