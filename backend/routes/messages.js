@@ -236,9 +236,10 @@ router.post('/response', authenticateToken, upload.single('file'), (req, res) =>
         expiredAt, 
         responseFromMessageText, 
         responseFromMessageAuthor,
-        responseFromMessageId
+        responseFromMessageId,
+        isResponse
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
     `).run(
       chatId, 
       userId, 
