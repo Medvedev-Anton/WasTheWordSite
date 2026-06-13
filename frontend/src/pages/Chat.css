@@ -988,6 +988,11 @@
   object-fit: cover;
 }
 
+.close-message-context-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
 @media (max-width: 440px) {
   .chat-header {
     flex-wrap: wrap;

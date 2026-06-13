@@ -626,17 +626,19 @@ export default function ChatPage() {
               showMessageContextMobile
               ?
               <div className="chat-header">
-                <div 
-                  className="close-message-context-icon"
-                  onClick={e => {
-                    setShowMessageContextMobile(false);
-                    setCheckedMessageIds([]);
-                  }}
-                >
-                </div>
-                <span className="count-checked-messages">
-                  1 сообщение
-                </span>
+                <div className="close-message-context-wrapper">
+                  <div 
+                    className="close-message-context-icon"
+                    onClick={e => {
+                      setShowMessageContextMobile(false);
+                      setCheckedMessageIds([]);
+                    }}
+                  >
+                  </div>
+                  <span className="count-checked-messages">
+                    1 сообщение
+                  </span>
+                </div>                
               </div>
               :
               <div className="chat-header">
