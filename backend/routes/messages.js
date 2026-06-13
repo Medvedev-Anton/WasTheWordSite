@@ -166,6 +166,111 @@ router.post('/', authenticateToken, upload.single('file'), (req, res) => {
   }
 });
 
+// Send message as response to another message
+router.post('/response', authenticateToken, upload.single('file'), (req, res) => {
+  try {
+    const { chatId, content, responseMessageText, responseMessageAuthor, responseMessageId } = req.body;
+    const userId = req.user.userId;
+
+    if (!chatId) {
+      return res.status(400).json({ error: 'Chat ID is required' });
+    }
+
+    if (!content && !req.file) {
+      return res.status(400).json({ error: 'Content or file is required' });
+    }
+
+    if (!responseMessageText || !responseMessageAuthor || !responseMessageId) {
+      return res.status(400).json({ error: 'Response message params is required' });
+    }
+
+    // Check if user is participant
+    const participant = db.prepare('SELECT * FROM chat_participants WHERE chatId = ? AND userId = ?').get(chatId, userId);
+    if (!participant) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const fileUrl = req.file ? `/uploads/messages/${req.file.filename}` : null;
+    // Properly decode filename to handle Cyrillic characters
+    let fileName = null;
+    if (req.file) {
+      try {
+        // Try multiple decoding strategies for Cyrillic characters
+        let decoded = req.file.originalname;
+        
+        // First, try URL decoding
+        try {
+          decoded = decodeURIComponent(decoded);
+        } catch (e) {
+          // If URL decoding fails, try Buffer conversion
+          try {
+            // If the name appears to be in wrong encoding (like ISO-8859-1), convert from Buffer
+            const buffer = Buffer.from(decoded, 'latin1');
+            decoded = buffer.toString('utf8');
+          } catch (e2) {
+            // If all fails, use original
+            decoded = req.file.originalname;
+          }
+        }
+        
+        fileName = decoded;
+      } catch (e) {
+        // If all decoding fails, use original name
+        fileName = req.file.originalname;
+      }
+    }
+    const fileType = req.file ? req.file.mimetype : null;
+
+    const messageLiveDuring = parseInt(MessagesParamsFacade.getByName('liveDuringDays'));
+    const expiredAt = new Date();
+    expiredAt.setDate(expiredAt.getDate() + messageLiveDuring);
+
+    const result = db.prepare(`
+      INSERT INTO messages (
+        chatId, 
+        userId, 
+        content, 
+        fileUrl, 
+        fileName, 
+        fileType, 
+        expiredAt, 
+        responseFromMessageText, 
+        responseFromMessageAuthor,
+        responseFromMessageId
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      chatId, 
+      userId, 
+      content || '', 
+      fileUrl, 
+      fileName, 
+      fileType, 
+      expiredAt.toISOString(), 
+      responseMessageText, 
+      responseMessageAuthor,
+      responseMessageId
+    );
+
+    const message = db.prepare(`
+      SELECT 
+        m.*,
+        u.username,
+        u.avatar,
+        u.firstName,
+        u.lastName
+      FROM messages m
+      JOIN users u ON m.userId = u.id
+      WHERE m.id = ?
+    `).get(result.lastInsertRowid);
+
+    res.status(201).json(message);
+  } catch (error) {
+    console.error('Send message error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Delete message (soft delete)
 router.delete('/:id', authenticateToken, (req, res) => {
   try {
