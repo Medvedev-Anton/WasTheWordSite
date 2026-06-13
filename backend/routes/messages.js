@@ -238,7 +238,7 @@ router.post('/response', authenticateToken, upload.single('file'), (req, res) =>
         responseFromMessageAuthor,
         responseFromMessageId
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       chatId, 
       userId, 
