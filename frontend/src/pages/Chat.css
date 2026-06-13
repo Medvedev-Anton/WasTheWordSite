@@ -61,6 +61,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  background: #434242;
 }
 
 .chat-item:hover {
@@ -80,6 +81,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.25rem;
+  flex-wrap: wrap;
 }
 
 .chat-item-name {
@@ -187,7 +189,9 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background: #B0B0B0;
+  background: url(/image/chats/bg/9.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .message {
@@ -243,12 +247,12 @@
 }
 
 .message.own .message-content {
-  background: #8C5C5C;
+  background: #888888;
   color: white;
 }
 
 .message.own .message-content::before {
-  border-bottom: 20px solid #8C5C5C;
+  border-bottom: 20px solid #888888;
 }
 
 .message-author {
@@ -709,8 +713,8 @@
 }
 
 .chat-item-avatar-img {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
 }
