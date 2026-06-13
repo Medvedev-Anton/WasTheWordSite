@@ -35,7 +35,15 @@ router.get('/', authenticateToken, (req, res) => {
             )
             AND
             userId != ?
-        ) as countNotReaded
+        ) as countNotReaded,
+        (
+          SELECT
+            COUNT(*)
+          FROM
+            chat_participants
+          WHERE
+            chatId = c.id
+        ) as countParticipants
       FROM chats c
       JOIN chat_participants cp ON c.id = cp.chatId
       WHERE cp.userId = ?
