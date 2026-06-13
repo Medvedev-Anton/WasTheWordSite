@@ -412,6 +412,7 @@ export async function initDatabase() {
   const hasIsResponse = messagesTableInfo.some(col => col.name === 'isResponse');
   const hasResponseFromMessageText = messagesTableInfo.some(col => col.name === 'responseFromMessageText');
   const hasResponseFromMessageAuthor = messagesTableInfo.some(col => col.name === 'responseFromMessageAuthor');
+  const hasResponseFromMessageId = messagesTableInfo.some(col => col.name === 'responseFromMessageId');
 
   if (!hasFileUrl) {
     try {
@@ -455,10 +456,16 @@ export async function initDatabase() {
       console.error('Error adding fileType column:', e.message);
     }
   }
-
   if (!hasResponseFromMessageAuthor) {
     try {
       db.exec(`ALTER TABLE messages ADD COLUMN responseFromMessageAuthor TEXT NULL`);
+    } catch (e) {
+      console.error('Error adding fileType column:', e.message);
+    }
+  }
+  if (!hasResponseFromMessageId) {
+    try {
+      db.exec(`ALTER TABLE messages ADD COLUMN responseFromMessageId INT NULL`);
     } catch (e) {
       console.error('Error adding fileType column:', e.message);
     }
