@@ -175,6 +175,10 @@ export class OrgsMapper extends OrgsMapperInterface {
                 id = ?    
         `).get(orgId);
 
+        if (result === undefined) {
+            return null;
+        }
+
         return result.adminId || null;
     }
 
