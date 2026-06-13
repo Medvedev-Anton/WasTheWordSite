@@ -287,18 +287,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    // Delete the file from disk if exists
-    if (message.fileUrl && !message.fileDeleted) {
-      const filePath = path.join(__dirname, '..', message.fileUrl.replace(/^\//, ''));
-      if (fs.existsSync(filePath)) {
-        try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
-      }
-    }
-
-    const now = new Date().toISOString();
-    db.prepare(
-      `UPDATE messages SET isDeleted = 1, deletedAt = ?, content = '', fileUrl = NULL, fileName = NULL, fileType = NULL, fileDeleted = 1, fileDeletedAt = ? WHERE id = ?`
-    ).run(now, message.fileUrl ? now : null, messageId);
+    ChatsFacade.deleteMessageById(messageId);
 
     const updated = db.prepare(`
       SELECT m.*, u.username, u.avatar, u.firstName, u.lastName
