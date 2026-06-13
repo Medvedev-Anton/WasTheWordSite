@@ -213,6 +213,28 @@ export default function ChatPage() {
     
   }, [currentContextMessageId]);
 
+  // Склонение слова "участник"
+  function declensionMemberWord(count: number) {
+    const n = Math.abs(Math.floor(Number(count)));
+    
+    const lastDigit = n % 10;
+    const lastTwoDigits = n % 100;
+
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+      return count + ' участников';
+    }
+    
+    if (lastDigit === 1) {
+      return count + ' участник';
+    }
+    
+    if (lastDigit >= 2 && lastDigit <= 4) {
+      return count + ' участника';
+    }
+    
+    return count + ' участников';
+  }
+
   const handleContextMessageMenu = (e: any) => {
     e.preventDefault();
 
@@ -344,7 +366,7 @@ export default function ChatPage() {
         if (prev.length > 0) {
           const prevLast = prev[prev.length - 1];
           const newLast = response.data[response.data.length - 1];
-          if (prevLast.id === newLast.id && prevLast.isReaded === newLast.isReaded) {
+          if (newLast !== undefined && prevLast.id === newLast.id && prevLast.isReaded === newLast.isReaded) {
             return prev; // Ничего не изменилось — пропускаем ре-рендер
           }
         }
@@ -618,23 +640,28 @@ export default function ChatPage() {
               </div>
               :
               <div className="chat-header">
-                <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
-                <h3>{getChatName(selectedChat)}</h3>
-                {selectedChat.type === 'group' && (
-                  <span className="chat-type">
-                    {chatOrgNameAndType}
-                  </span>
-                )}
-                {
-                  isUserAdmin && (
-                    <span
-                      className="delete-chat"
-                      onClick={fetchDeleteChat}
-                    >
-                      Удалить чат
+                <div className="chat-header-top">
+                  <button className="chat-back-btn" onClick={() => setShowSidebarOnMobile(true)}>←</button>
+                  <h3>{getChatName(selectedChat)}</h3>
+                  {selectedChat.type === 'group' && (
+                    <span className="chat-type">
+                      {chatOrgNameAndType}
                     </span>
-                  )
-                }
+                  )}
+                  {
+                    isUserAdmin && (
+                      <span
+                        className="delete-chat"
+                        onClick={fetchDeleteChat}
+                      >
+                        Удалить чат
+                      </span>
+                    )
+                  }
+                </div>
+                <div className="chat-header-bottom">
+                  {declensionMemberWord(selectedChat.countParticipants)}
+                </div>
               </div>
             }
             

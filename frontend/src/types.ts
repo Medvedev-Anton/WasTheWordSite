@@ -130,6 +130,7 @@ export interface Chat {
   otherParticipant?: User;
   participants?: ChatParticipant[];
   countNotReaded: number;
+  countParticipants: number;
 }
 
 export interface ChatParticipant {
