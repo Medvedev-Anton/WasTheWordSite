@@ -72,10 +72,12 @@ router.get('/chat/:chatId', authenticateToken, (req, res) => {
               ELSE
                 0
             END
-        END as isReaded
+        END as isReaded,
+      r.thumbnail_url as rangImageUrl
 
       FROM messages m
       JOIN users u ON m.userId = u.id
+      JOIN rangs r ON u.rangId = r.id
       WHERE m.chatId = ?
       ORDER BY m.createdAt ASC
     `).all(userId, lastReadedMessageSendedByUser, lastReadedMessageReceivedByUser, chatId);
