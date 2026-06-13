@@ -125,6 +125,29 @@
   flex-direction: column;
 }
 
+.chat-main.forward {
+  position: relative;
+}
+
+.chat-main.forward * {
+  opacity: .5;
+  pointer-events: none;
+}
+
+.chat-main.forward::before {
+  content: 'Выберите чат';
+  position: absolute;
+  z-index: 9999;
+  /* left: 50%; */
+  top: 50%;
+  transform: translate(0%, -50%);
+  padding: 10px 20px;
+  background: #8C5C5C;
+  color: #FFF;
+  width: 100%;
+  text-align: center;
+}
+
 .chat-header {
   padding: 1rem;
   border-bottom: 1px solid #e0e0e0;
@@ -977,6 +1000,31 @@
   width: 100%;
 }
 
+.message-forward-content {
+  padding-left: 10px;
+  border-left: 3px solid #FFF;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.message-forward-author {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.message-forward-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-forward-text span {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
 .message-rang-wrapper {
   width: 50px;
   margin-top: 5px;
@@ -991,6 +1039,38 @@
 .close-message-context-wrapper {
   display: flex;
   gap: 10px;
+}
+
+.forward-message-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.forward-message-modal {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  min-width: 300px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.2s ease-out;
+}
+
+.forward-message-modal-content {
+  display: flex;
+  flex-direction: column;
+  border-left: 3px solid #8C5C5C;
+  padding-left: 10px;
+  gap: 5px;
 }
 
 @media (max-width: 440px) {

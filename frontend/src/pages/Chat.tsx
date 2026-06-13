@@ -40,11 +40,18 @@ export default function ChatPage() {
   const [showMessageContextMobile, setShowMessageContextMobile] = useState<boolean>(false);
   const [checkedMessageIds, setCheckedMessageIds] = useState<number[]>([]);
   const [currentContextMessageId, setCurrentContextMessageId] = useState<number | null>();
+  const [showForwardMessageModal, setShowForwardMessageModal] = useState<boolean>(false);
+  const [openedForwardMessageAuthor, setOpenedForwardMessageAuthor] = useState<string>();
+  const [openedForwardMessageText, setOpenedForwardMessageText] = useState<string>();
 
   // Стейты ответа на сообщение
   const [responseMessageText, setResponseMessageText] = useState<string | null>();
   const [responseMessageAuthor, setResponseMessageAuthor] = useState<string | null>();
   const [isMessageResponse, setIsMessageResponse] = useState<boolean>(false);
+
+  // Стейт пересылки сообщения
+  const [isMessageForward, setIsMessageForward] = useState<boolean>(false);
+  const [isMessageForwardStart, setIsMessageForwardStart] = useState<boolean>(false);
   
   const [messageMenuState, setMessageMenuState] = useState({
     isVisible: false,
@@ -87,8 +94,30 @@ export default function ChatPage() {
   // Клик на кнопку отмена ответа на сообщение
   const handleResponseCancelClick = () => {
     setIsMessageResponse(false);
+    setIsMessageForward(false);
     setResponseMessageText(null);
     setResponseMessageAuthor(null);
+  }
+
+  // Клик на кнопку пересылки сообщения
+  const handleForwardMessageClick = () => {
+    const message = getMessageById(checkedMessageIds[0]);
+
+    if (message === null) {
+      return;
+    }
+
+    closeMessageMenu();
+    setIsMessageForward(true);
+    setIsMessageForwardStart(true);
+    setSelectedChat(null);
+    setShowSidebarOnMobile(true);
+
+    const messageText = message.content;
+    const messageAuthor = message.username
+
+    setResponseMessageText(messageText);
+    setResponseMessageAuthor(messageAuthor);
   }
 
   // Возвращает данные сообщения по id
@@ -100,6 +129,17 @@ export default function ChatPage() {
     }
 
     return null;
+  }
+
+  // Открытие модального окна пересланного сообщения
+  const handleForwardMessageDataClick = (e: any) => {
+    const author = e.currentTarget.getAttribute('data-message-author');
+    const text = e.currentTarget.getAttribute('data-message-text');
+
+    setOpenedForwardMessageAuthor(author);
+    setOpenedForwardMessageText(text);
+
+    setShowForwardMessageModal(true);
   }
 
   const messageLongPressHandlers = useLongPress(messageLongPressCallback, 500);
@@ -128,6 +168,10 @@ export default function ChatPage() {
         fetchChatOrgData(selectedChat.id);
       }
 
+      if (isMessageForwardStart) {
+        setIsMessageForwardStart(false);
+      }
+
       const interval = setInterval(() => {
         fetchMessages(selectedChat.id);
       }, 2000);
@@ -147,7 +191,11 @@ export default function ChatPage() {
 
   useEffect(() => {
     readMessagesRef.current.clear();
-    setCheckedMessageIds([]);
+    
+    if (!isMessageForward) {
+      setCheckedMessageIds([]);
+    }
+
     setShowMessageContextMobile(false);
 
     observer.current = new IntersectionObserver(
@@ -404,6 +452,19 @@ export default function ChatPage() {
 
         handleResponseCancelClick();
       }
+      else if (isMessageForward && checkedMessageIds.length > 0) {
+        formData.append('responseMessageText', responseMessageText || '');
+        formData.append('responseMessageAuthor', responseMessageAuthor || '');
+        formData.append('responseMessageId', checkedMessageIds[0].toString() || '');
+
+        response = await axios.post('/api/messages/forward', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        handleResponseCancelClick();
+      }
       else {
         response = await axios.post('/api/messages', formData, {
           headers: {
@@ -619,7 +680,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <div className={`chat-main ${showSidebarOnMobile ? 'mobile-hidden' : ''}`}>
+      <div className={`chat-main ${showSidebarOnMobile ? 'mobile-hidden' : ''} ${isMessageForwardStart ? 'forward' : ''}`}>
         {selectedChat ? (
           <>
             {
@@ -686,7 +747,9 @@ export default function ChatPage() {
                     Ответить
                   </li>
                   <li 
-                    onClick={() => { console.log('Действие 2'); closeMessageMenu(); }}
+                    onClick={e => {
+                      handleForwardMessageClick();
+                    }}
                   >
                     Переслать
                   </li>
@@ -694,7 +757,11 @@ export default function ChatPage() {
               </div>
             )}
 
-            <div className="messages-container" ref={messagesContainerRef} onScroll={handleScroll}>
+            <div 
+              className={`messages-container`} 
+              ref={messagesContainerRef} 
+              onScroll={handleScroll}
+            >
               {messages.map(message => {
                 const isOwn = message.userId === user?.id;
                 const isChecked = checkedMessageIds.includes(message.id);
@@ -765,6 +832,25 @@ export default function ChatPage() {
                               </div>
                             </div>
                           )}
+
+                          {message.isForward != 0 && (
+                            <div 
+                              className="message-forward-content"
+                              data-message-author={message.responseFromMessageAuthor}
+                              data-message-text={message.responseFromMessageText}
+                              onClick={handleForwardMessageDataClick}
+                            >
+                              <div className="message-forward-author">
+                                {message.responseFromMessageAuthor}
+                              </div>
+                              <div className="message-forward-text">
+                                <span>
+                                  {message.responseFromMessageText}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
                           {message.content && 
                           <div className="message-text">
                             <Linkify options={linkifyOptions}>
@@ -868,7 +954,7 @@ export default function ChatPage() {
             </div>
             
             {
-              isMessageResponse && !showMessageContextMobile && (
+              (isMessageResponse || isMessageForward) && !showMessageContextMobile && (
                 <div className="message-response-data-wrapper">
                   <div className="message-response-data-content">
                     <p className="message-response-data-author">
@@ -922,7 +1008,9 @@ export default function ChatPage() {
                       Ответить
                     </button>
 
-                    <button>
+                    <button
+                      onClick={handleForwardMessageClick}
+                    >
                       Переслать
                     </button>
                   </div>                  
@@ -966,6 +1054,21 @@ export default function ChatPage() {
         ) : (
           <div className="no-chat-selected">
             <p>Выберите чат или создайте новый</p>
+          </div>
+        )}
+
+        {showForwardMessageModal && (
+          <div className="forward-message-modal-overlay" onClick={() => setShowForwardMessageModal(false)}>
+            <div className="forward-message-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="forward-message-modal-content">
+                  <div className="forward-message-modal-auhtor">
+                    {openedForwardMessageAuthor}
+                  </div>
+                  <div className="forward-message-modal-text">
+                    {openedForwardMessageText}
+                  </div>
+                </div>
+            </div>
           </div>
         )}
       </div>

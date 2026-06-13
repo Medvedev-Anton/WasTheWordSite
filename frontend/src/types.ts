@@ -162,6 +162,7 @@ export interface Message {
   createdAt: string;
   isReaded: number;
   isResponse: number;
+  isForward: number;
   responseFromMessageText: string | null;
   responseFromMessageAuthor: string | null;
   responseFromMessageId: string | null;
