@@ -705,7 +705,7 @@ export default function ChatPage() {
               <div className="chat-header">
                 <div className="chat-header-left">
                   <div className="chat-header-avatar-wrapper">
-                    <img src={selectedChat.avatar} alt="chat-avatar" />
+                    <img src={getChatAvatar(selectedChat)!} alt="chat-avatar" />
                   </div>
                 </div>
                 <div className="chat-header-right">
