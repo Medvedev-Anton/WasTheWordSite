@@ -529,7 +529,7 @@ export default function ChatPage() {
     if (!confirm('Удалить это сообщение?')) return;
     try {
       const response = await axios.delete(`/api/messages/${messageId}`);
-      setMessages(prev => prev.map(m => m.id === messageId ? response.data : m));
+      setMessages(prev => prev.filter(m => m.id !== messageId));
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка при удалении сообщения');
     }
