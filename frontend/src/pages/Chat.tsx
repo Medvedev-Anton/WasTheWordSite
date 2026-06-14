@@ -43,6 +43,7 @@ export default function ChatPage() {
   const [showForwardMessageModal, setShowForwardMessageModal] = useState<boolean>(false);
   const [openedForwardMessageAuthor, setOpenedForwardMessageAuthor] = useState<string>();
   const [openedForwardMessageText, setOpenedForwardMessageText] = useState<string>();
+  const [isCheckedMessageOwn, setIsCheckedMessageOwn] = useState<boolean>(false);
 
   // Стейты ответа на сообщение
   const [responseMessageText, setResponseMessageText] = useState<string | null>();
@@ -67,10 +68,8 @@ export default function ChatPage() {
     if (!messageId) return;
     
     setShowMessageContextMobile(true);
-    // setCheckedMessageIds(prev => 
-    //   prev.includes(messageId) ? prev : [...prev, messageId]
-    // );
     setCheckedMessageIds([messageId]);
+    setIsCheckedMessageOwn(getMessageById(messageId)?.username == user?.username)
   };
 
   // Клик на кнопку ответа на сообщение
@@ -257,6 +256,9 @@ export default function ChatPage() {
   useEffect(() => {
     if (currentContextMessageId !== null && currentContextMessageId !== undefined) {
       setCheckedMessageIds([currentContextMessageId]);
+
+      const message = getMessageById(currentContextMessageId);
+      setIsCheckedMessageOwn(message?.username === user?.username);
     }
     
   }, [currentContextMessageId]);
@@ -586,11 +588,12 @@ export default function ChatPage() {
     }
   };
 
-  const handleDeleteMessage = async (messageId: number) => {
+  const handleDeleteMessage = async () => {
+    const messageId = checkedMessageIds[0];
     if (!confirm('Удалить это сообщение?')) return;
     try {
       const response = await axios.delete(`/api/messages/${messageId}`);
-      setMessages(prev => prev.filter(m => m.id !== messageId));
+      setMessages(prev => prev.filter(m => m.id != messageId));
     } catch (error: any) {
       alert(error.response?.data?.error || 'Ошибка при удалении сообщения');
     }
@@ -762,6 +765,16 @@ export default function ChatPage() {
                   >
                     Переслать
                   </li>
+
+
+                  {isCheckedMessageOwn && (
+                    <li
+                      onClick={handleDeleteMessage}
+                    >
+                      Удалить
+                    </li>
+                  )}
+                  
                 </ul>
               </div>
             )}
@@ -946,7 +959,7 @@ export default function ChatPage() {
                         }
                         
                       </div>                      
-                      {isOwn && !message.isDeleted && (
+                      {/* {isOwn && !message.isDeleted && (
                         <button
                           className="message-delete-btn"
                           title="Удалить сообщение"
@@ -954,7 +967,7 @@ export default function ChatPage() {
                         >
                           🗑️
                         </button>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 );
@@ -1016,6 +1029,14 @@ export default function ChatPage() {
                     >
                       Ответить
                     </button>
+
+                    {isCheckedMessageOwn && (
+                      <button
+                        onClick={handleDeleteMessage}
+                      >
+                        Удалить
+                      </button>
+                    )}
 
                     <button
                       onClick={handleForwardMessageClick}
