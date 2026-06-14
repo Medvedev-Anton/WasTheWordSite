@@ -876,7 +876,9 @@ export default function ChatPage() {
                           {message.content && 
                           <div className="message-text">
                             <Linkify options={linkifyOptions}>
-                              {message.content}
+                              <p>
+                                {message.content}
+                              </p>
                             </Linkify>
                           </div>}
                           {message.fileUrl && (
