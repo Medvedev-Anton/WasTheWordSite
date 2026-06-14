@@ -204,7 +204,8 @@
 }
 
 .message.own {
-  align-self: flex-start;
+  align-self: flex-end;
+  flex-flow: row-reverse;
 }
 
 .message-avatar {
@@ -251,10 +252,15 @@
 .message.own .message-content {
   background: #888888;
   color: white;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 0;
 }
 
 .message.own .message-content::before {
   border-bottom: 20px solid #888888;
+  left: unset;
+  right: 0;
+  transform: scaleX(-1) translateX(-50%);
 }
 
 .message-author {
@@ -1133,11 +1139,34 @@
   .chat-header {
     justify-content: start;
   }
+
+  .message-author {
+    font-size: 14px;
+  }
+
+  .message-text {
+    font-size: 12px;
+    padding-right: 60px;
+  }
+
+  .message-time {
+    font-size: 11px;
+  }
+
+  .message-file-image {
+    min-width: 100%;
+    min-height: 100%;
+  }
 }
 
 @media (max-width: 410px) {
   .message-content {
     min-width: 150px;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .message-menu-content-buttons button {
+    padding: 5px 10px;
   }
 }
 
