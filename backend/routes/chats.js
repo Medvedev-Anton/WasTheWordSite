@@ -43,7 +43,13 @@ router.get('/', authenticateToken, (req, res) => {
             chat_participants
           WHERE
             chatId = c.id
-        ) as countParticipants
+        ) as countParticipants,
+        CASE
+          WHEN c.type = 'group' THEN
+            (
+              SELECT orgType FROM organizations WHERE id = c.organizationId
+            )
+        END as orgType
       FROM chats c
       JOIN chat_participants cp ON c.id = cp.chatId
       WHERE cp.userId = ?
