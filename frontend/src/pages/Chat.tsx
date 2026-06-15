@@ -10,6 +10,33 @@ import './Chat.css';
 import Linkify from 'linkify-react';
 import { useLongPress } from '../components/UseLongPress';
 
+const ORG_TYPE_ICONS: Record<string, string> = {
+  'Производственная': '🏭',
+  'Коммерческая': '🏢',
+  'Административная': '🏛️',
+  'Образовательная': '🎓',
+  'Правительственная': '🏛️',
+  'Банковская': '🏦',
+  'Волонтёрская': '🤝',
+  'Спортивная': '🏆',
+  'Свободная': '🌐',
+  'Цех': '⚙️',
+  'Отдел': '📋',
+  'Мастерская': '🔧',
+  'Магазин': '🛒',
+  'Департамент': '🏛️',
+  'Управление': '📑',
+  'Филиал': '🏦',
+  'Отделение': '💳',
+  'Отряд': '👥',
+  'Звено': '👤',
+  'Факультет': '📚',
+  'Кафедра': '🔬',
+  'Сектор': '🔗',
+  'Группа': '👫',
+  'Раздел': '📌',
+};
+
 export default function ChatPage() {
   const linkifyOptions = {
     target: '_blank',
@@ -36,7 +63,7 @@ export default function ChatPage() {
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(true);
   const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
-  const [chatOrgNameAndType, setChatOrgNameAndType] = useState<string>('');
+  const [chatOrgType, setChatOrgType] = useState<string>('');
   const [showMessageContextMobile, setShowMessageContextMobile] = useState<boolean>(false);
   const [checkedMessageIds, setCheckedMessageIds] = useState<number[]>([]);
   const [currentContextMessageId, setCurrentContextMessageId] = useState<number | null>();
@@ -44,6 +71,7 @@ export default function ChatPage() {
   const [openedForwardMessageAuthor, setOpenedForwardMessageAuthor] = useState<string>();
   const [openedForwardMessageText, setOpenedForwardMessageText] = useState<string>();
   const [isCheckedMessageOwn, setIsCheckedMessageOwn] = useState<boolean>(false);
+  const [showChatMenuModal, setShowChatMenuModal] = useState<boolean>(false);
 
   // Стейты ответа на сообщение
   const [responseMessageText, setResponseMessageText] = useState<string | null>();
@@ -59,6 +87,8 @@ export default function ChatPage() {
     x: 0,
     y: 0,
   });
+
+  const chatMenuModalRef = useRef<HTMLDivElement>(null);
 
   const messageLongPressCallback = (e: any) => {
     const messageEl = e.currentTarget.closest('[data-message-id]') 
@@ -263,6 +293,22 @@ export default function ChatPage() {
     
   }, [currentContextMessageId]);
 
+  useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+          if (showChatMenuModal && chatMenuModalRef.current && !chatMenuModalRef.current.contains(event.target as Node)) {
+              setShowChatMenuModal(false);
+          }
+      };
+
+      if (showChatMenuModal) {
+          document.addEventListener('mousedown', handleClickOutside);
+      }
+
+      return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+      };
+  }, [showChatMenuModal]);
+
   // Склонение слова "участник"
   function declensionMemberWord(count: number) {
     const n = Math.abs(Math.floor(Number(count)));
@@ -367,9 +413,8 @@ export default function ChatPage() {
   const fetchChatOrgData = async (chatId: number) => {
     const result = await axios.get(`/api/chats/${chatId}/org`);
     const org = result.data.org;
-    const orgName = org.name;
     const orgType = org.orgType;
-    setChatOrgNameAndType(`${orgName} - ${orgType}`);
+    setChatOrgType(orgType);
   }
 
   const fetchDeleteChat = async () => {
@@ -600,7 +645,7 @@ export default function ChatPage() {
   };
 
   const getChatAvatar = (chat: Chat) => {
-    if (chat.avatar) return getMediaUrl(chat.avatar);
+    if (chat.type == 'group') return ORG_TYPE_ICONS[chat.orgType || ''];
     if (chat.type === 'personal' && chat.otherParticipant?.avatar) return getMediaUrl(chat.otherParticipant.avatar);
     return null;
   };
@@ -643,7 +688,11 @@ export default function ChatPage() {
               >
                 <div className="chat-item-avatar">
                   {getChatAvatar(chat) ? (
-                    <img src={getChatAvatar(chat)!} alt={getChatName(chat)} className="chat-item-avatar-img" />
+                    <div className="chat-item-avatar-img">
+                      {
+                        getChatAvatar(chat)
+                      }
+                    </div>
                   ) : (
                     <div className="chat-item-avatar-placeholder">
                       {chat.type === 'group' ? '👥' : '👤'}
@@ -653,9 +702,6 @@ export default function ChatPage() {
                 <div className="chat-item-info">
                   <div className="chat-item-header">
                     <div className="chat-item-name">{getChatName(chat)}</div>
-                    <span className={`chat-type-badge ${chat.type === 'group' ? 'group' : 'personal'}`}>
-                      {chat.type === 'group' ? '👥 Группа' : '👤 Личный'}
-                    </span>
                   </div>
                   {chat.lastMessage && (
                     <div className="chat-item-preview">{chat.lastMessage}</div>
@@ -708,7 +754,7 @@ export default function ChatPage() {
               <div className="chat-header">
                 <div className="chat-header-left">
                   <div className="chat-header-avatar-wrapper">
-                    <img src={getChatAvatar(selectedChat)!} alt="chat-avatar" />
+                    {getChatAvatar(selectedChat)}
                   </div>
                 </div>
                 <div className="chat-header-right">
@@ -718,25 +764,46 @@ export default function ChatPage() {
                     <h3>{getChatName(selectedChat)}</h3>
                     {selectedChat.type === 'group' && (
                       <span className="chat-type">
-                        {chatOrgNameAndType}
+                        {chatOrgType}
                       </span>
                     )}
-                    {
-                      isUserAdmin && (
-                        <span
-                          className="delete-chat"
-                          onClick={fetchDeleteChat}
-                        >
-                          Удалить чат
-                        </span>
-                      )
-                    }
+                    
                   </div>
                   <div className="chat-header-bottom">
                     {declensionMemberWord(selectedChat.countParticipants)}
                   </div>
                 </div>
-                
+                <div 
+                  className="chat-header-context-menu-icon"
+                  ref={chatMenuModalRef}
+                >
+                  <div 
+                    className="chat-header-context-menu-icon-points"
+                    onClick={() => {
+                      setShowChatMenuModal(!showChatMenuModal)
+                    }}
+                  >
+                    <div className="chat-header-context-menu-icon-point"></div>
+                    <div className="chat-header-context-menu-icon-point"></div>
+                    <div className="chat-header-context-menu-icon-point"></div>
+                  </div>
+                  {
+                    showChatMenuModal && (
+                      <div className="chat-header-context-menu-modal">
+                        {
+                          isUserAdmin && (
+                            <span
+                              className="delete-chat"
+                              onClick={fetchDeleteChat}
+                            >
+                              Удалить чат
+                            </span>
+                          )
+                        }
+                      </div>
+                    )
+                  }                  
+                </div>
               </div>
             }
             
@@ -1066,9 +1133,19 @@ export default function ChatPage() {
                     className="message-input"
                   />
                   {messageText.trim() || selectedFile ? (
-                    <button onClick={handleSendMessage} className="send-btn">
-                      ➤
-                    </button>
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="30" 
+                      height="30" 
+                      viewBox="0 0 24 24" 
+                      fill="#8C5C5C" 
+                      stroke="none"
+                      onClick={handleSendMessage}
+                      className="send-btn"
+                    >
+                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                    </svg>
+
                   ) : (
                     <button
                       onClick={() => setShowVoiceRecorder(!showVoiceRecorder)}

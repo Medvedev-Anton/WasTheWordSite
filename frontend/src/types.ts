@@ -131,6 +131,7 @@ export interface Chat {
   participants?: ChatParticipant[];
   countNotReaded: number;
   countParticipants: number;
+  orgType?: string;
 }
 
 export interface ChatParticipant {
