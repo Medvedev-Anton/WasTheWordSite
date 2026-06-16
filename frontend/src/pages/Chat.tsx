@@ -645,8 +645,23 @@ export default function ChatPage() {
   };
 
   const getChatAvatar = (chat: Chat) => {
-    if (chat.type == 'group') return ORG_TYPE_ICONS[chat.orgType || ''];
-    if (chat.type === 'personal' && chat.otherParticipant?.avatar) {
+    if (chat.type == 'group') {
+      if (chat.avatar === null) {
+        return (
+          <div className="chat-item-avatar-img-placeholder">
+            {ORG_TYPE_ICONS[chat.orgType || '']}
+          </div>
+        );
+      }
+      else {
+        return (
+          <div className="chat-item-avatar-img">
+            <img src={chat.avatar} alt="chat-logo" />
+          </div>
+        );
+      }
+    } 
+    else if (chat.type === 'personal' && chat.otherParticipant?.avatar) {
       return (
         <img src={getMediaUrl(chat.otherParticipant.avatar)} alt="chat-logo" />
       )
@@ -691,13 +706,7 @@ export default function ChatPage() {
                 }}
               >
                 <div className="chat-item-avatar">
-                  {getChatAvatar(chat) ? (
-                    <div className="chat-item-avatar-img">
-                      {
-                        getChatAvatar(chat)
-                      }
-                    </div>
-                  ) : (
+                  {getChatAvatar(chat) ? getChatAvatar(chat): (
                     <div className="chat-item-avatar-placeholder">
                       {chat.type === 'group' ? '👥' : '👤'}
                     </div>
@@ -757,9 +766,7 @@ export default function ChatPage() {
               :
               <div className="chat-header">
                 <div className="chat-header-left">
-                  <div className="chat-header-avatar-wrapper">
                     {getChatAvatar(selectedChat)}
-                  </div>
                 </div>
                 <div className="chat-header-right">
                     <div className="chat-header-top">

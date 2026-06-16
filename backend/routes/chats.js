@@ -36,22 +36,11 @@ router.get('/', authenticateToken, (req, res) => {
             AND
             userId != ?
         ) as countNotReaded,
-        (
-          SELECT
-            COUNT(*)
-          FROM
-            chat_participants
-          WHERE
-            chatId = c.id
-        ) as countParticipants,
-        CASE
-          WHEN c.type = 'group' THEN
-            (
-              SELECT orgType FROM organizations WHERE id = c.organizationId
-            )
-        END as orgType
+        CASE WHEN c.type = 'group' THEN o.orgType END as orgType,
+        CASE WHEN c.type = 'group' THEN o.avatar END as avatar
       FROM chats c
       JOIN chat_participants cp ON c.id = cp.chatId
+      LEFT JOIN organizations o ON c.organizationId = o.id
       WHERE cp.userId = ?
       ORDER BY lastMessageTime DESC
     `).all(userId, userId, userId);
