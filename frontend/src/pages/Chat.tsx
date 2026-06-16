@@ -646,7 +646,11 @@ export default function ChatPage() {
 
   const getChatAvatar = (chat: Chat) => {
     if (chat.type == 'group') return ORG_TYPE_ICONS[chat.orgType || ''];
-    if (chat.type === 'personal' && chat.otherParticipant?.avatar) return getMediaUrl(chat.otherParticipant.avatar);
+    if (chat.type === 'personal' && chat.otherParticipant?.avatar) {
+      return (
+        <img src={getMediaUrl(chat.otherParticipant.avatar)} alt="chat-logo" />
+      )
+    }
     return null;
   };
 

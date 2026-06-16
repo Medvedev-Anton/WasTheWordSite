@@ -742,6 +742,12 @@
   font-size: 20px;
 }
 
+.chat-item-avatar-img img {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}
+
 .chat-item-avatar-placeholder {
   width: 44px;
   height: 44px;
