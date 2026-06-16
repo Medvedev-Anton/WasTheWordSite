@@ -1204,6 +1204,10 @@
   .chat-header-bottom {
     margin-top: 10px;
   }
+
+  .chat-header h3 {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 440px) {
