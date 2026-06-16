@@ -36,6 +36,14 @@ router.get('/', authenticateToken, (req, res) => {
             AND
             userId != ?
         ) as countNotReaded,
+         (
+          SELECT
+            COUNT(*)
+          FROM
+            chat_participants
+          WHERE
+            chatId = c.id
+        ) as countParticipants,
         CASE WHEN c.type = 'group' THEN o.orgType END as orgType,
         CASE WHEN c.type = 'group' THEN o.avatar END as avatar
       FROM chats c
