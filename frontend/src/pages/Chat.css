@@ -61,6 +61,17 @@
   background: rgba(61, 62, 64, .5);
   border: 1px solid rgba(211, 211, 211, 0.22);
   border-radius: 12px;
+  position: relative;
+}
+
+.chat-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
 }
 
 .chat-item:hover {
@@ -94,7 +105,6 @@
 .chat-item-name {
   font-weight: 600;
   color: #FFF;
-  background: #525252;
   border-radius: 100px;
   padding: 0 10px;
 }
@@ -628,7 +638,7 @@
 }
 
 .chat-back-btn:hover {
-  background: #f0f0f0;
+  background: #8C5C5C;
 }
 
 .delete-chat {
@@ -664,6 +674,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.count-checked-messages {
+  color: #FFF;
 }
 
 @media (max-width: 768px) {
@@ -712,6 +726,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    color: #FFF;
   }
 
   .message {
@@ -719,8 +734,8 @@
   }
 
   .message-avatar {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -908,7 +923,7 @@
   width: 15px;
   height: 2px;
   position: absolute;
-  background: #000;
+  background: #FFF;
   transform: rotate(45deg);
 }
 
@@ -916,7 +931,7 @@
   content: '';
   width: 15px;
   height: 2px;
-  background: #000;
+  background: #FFF;
   position: absolute;
   transform: rotate(-45deg);
 }
