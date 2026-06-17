@@ -22,4 +22,13 @@ export class PostsService extends PostsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    deleteById(postId) {
+        try {
+            return this.mapper.deleteById(postId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
