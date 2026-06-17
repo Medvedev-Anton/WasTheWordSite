@@ -171,7 +171,14 @@ router.post('/', authenticateToken, upload.single('file'), (req, res) => {
 // Send message as response to another message
 router.post('/response', authenticateToken, upload.single('file'), (req, res) => {
   try {
-    const { chatId, content, responseMessageText, responseMessageAuthor, responseMessageId } = req.body;
+    const { 
+      chatId, 
+      content, 
+      responseMessageText, 
+      responseMessageAuthor, 
+      responseMessageId
+    } = req.body;
+
     const userId = req.user.userId;
 
     if (!chatId) {
@@ -182,7 +189,7 @@ router.post('/response', authenticateToken, upload.single('file'), (req, res) =>
       return res.status(400).json({ error: 'Content or file is required' });
     }
 
-    if (!responseMessageText || !responseMessageAuthor || !responseMessageId) {
+    if (!responseMessageAuthor || !responseMessageId) {
       return res.status(400).json({ error: 'Response message params is required' });
     }
 
@@ -227,6 +234,14 @@ router.post('/response', authenticateToken, upload.single('file'), (req, res) =>
     const expiredAt = new Date();
     expiredAt.setDate(expiredAt.getDate() + messageLiveDuring);
 
+    let responseMessageFile = null;
+    let responseMessageFileType = null;
+
+    if (req.body.responseMessageFile && req.body.responseMessageFileType) {
+      responseMessageFile = req.body.responseMessageFile;
+      responseMessageFileType = req.body.responseMessageFileType;
+    }
+
     const result = db.prepare(`
       INSERT INTO messages (
         chatId, 
@@ -239,9 +254,11 @@ router.post('/response', authenticateToken, upload.single('file'), (req, res) =>
         responseFromMessageText, 
         responseFromMessageAuthor,
         responseFromMessageId,
-        isResponse
+        isResponse,
+        responseMessageFile,
+        responseMessageFileType
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
     `).run(
       chatId, 
       userId, 
@@ -252,7 +269,9 @@ router.post('/response', authenticateToken, upload.single('file'), (req, res) =>
       expiredAt.toISOString(), 
       responseMessageText, 
       responseMessageAuthor,
-      responseMessageId
+      responseMessageId,
+      responseMessageFile,
+      responseMessageFileType
     );
 
     const message = db.prepare(`
@@ -288,7 +307,7 @@ router.post('/forward', authenticateToken, upload.single('file'), (req, res) => 
       return res.status(400).json({ error: 'Content or file is required' });
     }
 
-    if (!responseMessageText || !responseMessageAuthor || !responseMessageId) {
+    if (!responseMessageAuthor || !responseMessageId) {
       return res.status(400).json({ error: 'Response message params is required' });
     }
 
@@ -333,6 +352,14 @@ router.post('/forward', authenticateToken, upload.single('file'), (req, res) => 
     const expiredAt = new Date();
     expiredAt.setDate(expiredAt.getDate() + messageLiveDuring);
 
+    let responseMessageFile = null;
+    let responseMessageFileType = null;
+
+    if (req.body.responseMessageFile && req.body.responseMessageFileType) {
+      responseMessageFile = req.body.responseMessageFile;
+      responseMessageFileType = req.body.responseMessageFileType;
+    }
+
     const result = db.prepare(`
       INSERT INTO messages (
         chatId, 
@@ -345,9 +372,11 @@ router.post('/forward', authenticateToken, upload.single('file'), (req, res) => 
         responseFromMessageText, 
         responseFromMessageAuthor,
         responseFromMessageId,
-        isForward
+        isForward,
+        responseMessageFile,
+        responseMessageFileType
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
     `).run(
       chatId, 
       userId, 
@@ -358,7 +387,9 @@ router.post('/forward', authenticateToken, upload.single('file'), (req, res) => 
       expiredAt.toISOString(), 
       responseMessageText, 
       responseMessageAuthor,
-      responseMessageId
+      responseMessageId,
+      responseMessageFile,
+      responseMessageFileType
     );
 
     const message = db.prepare(`

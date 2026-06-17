@@ -487,9 +487,19 @@ export default function ChatPage() {
       let response;
 
       if (isMessageResponse && checkedMessageIds.length > 0) {
+        const responseMessage = getMessageById(checkedMessageIds[0]);
+
         formData.append('responseMessageText', responseMessageText || '');
         formData.append('responseMessageAuthor', responseMessageAuthor || '');
         formData.append('responseMessageId', checkedMessageIds[0].toString() || '');
+        
+        if (responseMessage?.fileUrl !== null && responseMessage?.fileUrl !== undefined) {
+          formData.append('responseMessageFile', responseMessage?.fileUrl);
+        }
+
+        if (responseMessage?.fileType !== null && responseMessage?.fileType !== undefined) {
+          formData.append('responseMessageFileType', responseMessage?.fileType);
+        }
 
         response = await axios.post('/api/messages/response', formData, {
           headers: {
@@ -500,9 +510,19 @@ export default function ChatPage() {
         handleResponseCancelClick();
       }
       else if (isMessageForward && checkedMessageIds.length > 0) {
+        const responseMessage = getMessageById(checkedMessageIds[0]);
+
         formData.append('responseMessageText', responseMessageText || '');
         formData.append('responseMessageAuthor', responseMessageAuthor || '');
         formData.append('responseMessageId', checkedMessageIds[0].toString() || '');
+
+        if (responseMessage?.fileUrl !== null && responseMessage?.fileUrl !== undefined) {
+          formData.append('responseMessageFile', responseMessage?.fileUrl);
+        }
+
+        if (responseMessage?.fileType !== null && responseMessage?.fileType !== undefined) {
+          formData.append('responseMessageFileType', responseMessage?.fileType);
+        }
 
         response = await axios.post('/api/messages/forward', formData, {
           headers: {
@@ -930,6 +950,58 @@ export default function ChatPage() {
                                   {message.responseFromMessageText}
                                 </span>
                               </div>
+                              {
+                                message.responseMessageFile && (
+                                  <div className="message-response-file">
+                                    {
+                                      message.responseMessageFileType?.startsWith('image/') 
+                                      || message.responseMessageFile?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                      <img 
+                                        src={getMediaUrl(message.responseMessageFile)} 
+                                        alt='filename'
+                                        className="message-file-image"
+                                        onClick={() => {
+                                          const url = getMediaUrl(message.responseMessageFile);
+                                          if (url) window.open(url, '_blank');
+                                        }}
+                                      />
+                                    ) : message.responseMessageFileType?.startsWith('video/') 
+                                    || message.responseMessageFile?.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) ? (
+                                      <div className="message-video">
+                                        <ReactPlayer
+                                          url={getMediaUrl(message.responseMessageFile) || ''}
+                                          controls
+                                          width="100%"
+                                          height="auto"
+                                          style={{ maxHeight: '400px' }}
+                                          config={{
+                                            file: {
+                                              attributes: {
+                                                controlsList: 'nodownload'
+                                              }
+                                            }
+                                          }}
+                                        />
+                                      </div>
+                                    ) : message.responseMessageFileType?.startsWith('audio/') 
+                                    || message.responseMessageFile?.match(/\.(webm|mp3|wav|ogg|m4a)$/i) ? (
+                                      <AudioPlayer 
+                                        src={getMediaUrl(message.responseMessageFile) || ''}
+                                        fileName='filename'
+                                      />
+                                    ) : (
+                                      <a 
+                                        href={getMediaUrl(message.responseMessageFile)} 
+                                        download={message.responseMessageFile}
+                                        className="message-file-link"
+                                      >
+                                        <span className="file-icon">{getFileIcon(message.responseMessageFileType)}</span>
+                                        <span className="file-name">{message.fileName || 'Файл'}</span>
+                                      </a>
+                                    )}
+                                  </div>
+                                )
+                              }                              
                             </div>
                           )}
 
@@ -948,6 +1020,58 @@ export default function ChatPage() {
                                   {message.responseFromMessageText}
                                 </span>
                               </div>
+                              {
+                                message.responseMessageFile && (
+                                  <div className="message-response-file">
+                                    {
+                                      message.responseMessageFileType?.startsWith('image/') 
+                                      || message.responseMessageFile?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                      <img 
+                                        src={getMediaUrl(message.responseMessageFile)} 
+                                        alt='filename'
+                                        className="message-file-image"
+                                        onClick={() => {
+                                          const url = getMediaUrl(message.responseMessageFile);
+                                          if (url) window.open(url, '_blank');
+                                        }}
+                                      />
+                                    ) : message.responseMessageFileType?.startsWith('video/') 
+                                    || message.responseMessageFile?.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) ? (
+                                      <div className="message-video">
+                                        <ReactPlayer
+                                          url={getMediaUrl(message.responseMessageFile) || ''}
+                                          controls
+                                          width="100%"
+                                          height="auto"
+                                          style={{ maxHeight: '400px' }}
+                                          config={{
+                                            file: {
+                                              attributes: {
+                                                controlsList: 'nodownload'
+                                              }
+                                            }
+                                          }}
+                                        />
+                                      </div>
+                                    ) : message.responseMessageFileType?.startsWith('audio/') 
+                                    || message.responseMessageFile?.match(/\.(webm|mp3|wav|ogg|m4a)$/i) ? (
+                                      <AudioPlayer 
+                                        src={getMediaUrl(message.responseMessageFile) || ''}
+                                        fileName='filename'
+                                      />
+                                    ) : (
+                                      <a 
+                                        href={getMediaUrl(message.responseMessageFile)} 
+                                        download={message.responseMessageFile}
+                                        className="message-file-link"
+                                      >
+                                        <span className="file-icon">{getFileIcon(message.responseMessageFileType)}</span>
+                                        <span className="file-name">{message.fileName || 'Файл'}</span>
+                                      </a>
+                                    )}
+                                  </div>
+                                )
+                              } 
                             </div>
                           )}
 

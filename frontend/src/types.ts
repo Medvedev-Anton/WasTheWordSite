@@ -167,6 +167,8 @@ export interface Message {
   responseFromMessageText: string | null;
   responseFromMessageAuthor: string | null;
   responseFromMessageId: string | null;
+  responseMessageFile?: string;
+  responseMessageFileType?: string;
   rangImageUrl: string | null;
 }
 
