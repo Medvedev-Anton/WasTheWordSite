@@ -21,4 +21,12 @@ export class PostsMapperInterface {
     deleteAllOrgPosts(orgId) {
         throw new Error('deleteAllOrgPosts должен быть переопределен в наследнике');
     }
+
+    /**
+     * Удаление поста
+     * @param {number} postId
+     */
+    deleteById(postId) {
+        throw new Error('deleteById должен быть переопределен в наследнике');
+    }
 }

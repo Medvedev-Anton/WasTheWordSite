@@ -60,4 +60,39 @@ export class PostsMapper extends PostsMapperInterface {
                 organizationId = ?    
         `).run(orgId);
     }
+
+    deleteById(postId) {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        const filesToDelete = db.prepare(`
+            SELECT
+                f.fileUrl
+            FROM
+                posts p
+            JOIN
+                post_files f
+            ON 
+                p.id = f.postId
+            WHERE
+                p.id = ?
+        `).all(postId);
+
+        filesToDelete.forEach(file => {
+            if (file.fileUrl) {
+                const filePath = path.join(__dirname, '../..', file.fileUrl.replace(/^\//, ''));
+
+                if (fs.existsSync(filePath)) {
+                    try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+                }
+            }
+        });
+
+        db.prepare(`
+            DELETE FROM
+                posts
+            WHERE
+                id = ?    
+        `).run(postId);
+    }
 }
