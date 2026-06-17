@@ -36,4 +36,21 @@ export class PostsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Удаление поста
+     * @param {number} postId
+     */
+    static deleteById(postId) {
+        const service = new PostsService(
+            new PostsMapper()
+        );
+
+        try {
+            return service.deleteById(postId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
