@@ -1207,7 +1207,7 @@
 
 @media (max-width: 767px) {
   .chat-header {
-    align-items: start;
+    align-items: center;
     padding-top: 10px;
     padding-bottom: 10px;
   }
@@ -1239,8 +1239,23 @@
 }
 
 @media (max-width: 440px) {
+  .chat-header-left {
+    margin-top: auto;
+  }
+
+  .chat-header-top {
+    flex-direction: column;
+    align-items: start;
+  }
+
   .chat-header {
     justify-content: start;
+  }
+
+  .chat-back-btn {
+    position: absolute;
+    top: 0;
+    left: 1rem;
   }
 
   .message-author {
