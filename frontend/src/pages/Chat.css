@@ -1086,12 +1086,12 @@
 .message-rang-wrapper {
   width: 50px;
   margin-top: 5px;
+  height: 14px;
 }
 
 .message-rang-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 .close-message-context-wrapper {
