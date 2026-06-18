@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import axios from 'axios';
 import { Chat, Message, User } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -60,7 +60,6 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(true);
   const [isUserAdmin, setIsUserAdmin] = useState<boolean>(false);
   const [chatOrgType, setChatOrgType] = useState<string>('');
@@ -89,6 +88,11 @@ export default function ChatPage() {
   });
 
   const chatMenuModalRef = useRef<HTMLDivElement>(null);
+  
+  const shouldAutoScrollRef = useRef<boolean>(true);
+  const setShouldAutoScroll = (value: boolean) => {
+    shouldAutoScrollRef.current = value;
+  };
 
   const messageLongPressCallback = (e: any) => {
     const messageEl = e.currentTarget.closest('[data-message-id]') 
@@ -180,6 +184,31 @@ export default function ChatPage() {
 
   const { user } = useAuth();
 
+  const hasRestoredScrollRef = useRef<boolean>(false);
+
+  const throttle = <T extends (...args: any[]) => void>(func: T, limit: number): T => {
+    let inThrottle: boolean;
+    return function (this: any, ...args: Parameters<T>) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    } as T;
+  };
+
+  const saveScrollPosition = useCallback(
+    throttle(() => {
+      if (messagesContainerRef.current && selectedChat) {
+        localStorage.setItem(
+          `chat_scroll_pos_${selectedChat.id}`,
+          messagesContainerRef.current.scrollTop.toString()
+        );
+      }
+    }, 200),
+    [selectedChat?.id]
+  );
+
   useEffect(() => {
     fetchChats();
     if (showNewChatModal) {
@@ -213,7 +242,13 @@ export default function ChatPage() {
     const lastId = lastMsg?.id ?? null;
     const isNewMsg = lastId !== null && lastId !== lastMsgIdRef.current;
     lastMsgIdRef.current = lastId;
-    if (shouldAutoScroll && isNewMsg && messagesEndRef.current) {
+
+    if (
+      shouldAutoScrollRef.current &&
+      isNewMsg &&
+      hasRestoredScrollRef.current &&
+      messagesEndRef.current
+    ) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
@@ -268,6 +303,33 @@ export default function ChatPage() {
   }, [selectedChat]);
 
   useEffect(() => {
+    if (selectedChat) {
+      hasRestoredScrollRef.current = false;
+
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = 0;
+      }
+
+      setShouldAutoScroll(true);
+      fetchMessages(selectedChat.id);
+      fetchOrgAdmin(selectedChat);
+
+      if (selectedChat.type === 'group') {
+        fetchChatOrgData(selectedChat.id);
+      }
+
+      if (isMessageForwardStart) {
+        setIsMessageForwardStart(false);
+      }
+
+      const interval = setInterval(() => {
+        fetchMessages(selectedChat.id);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [selectedChat]);
+
+  useEffect(() => {
     const handleClickOutside = () => {
       if (messageMenuState.isVisible) {
         closeMessageMenu();
@@ -308,6 +370,35 @@ export default function ChatPage() {
           document.removeEventListener('mousedown', handleClickOutside);
       };
   }, [showChatMenuModal]);
+
+  useLayoutEffect(() => {
+    if (!selectedChat || messages.length === 0 || hasRestoredScrollRef.current) {
+      return;
+    }
+
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const savedScrollPos = localStorage.getItem(`chat_scroll_pos_${selectedChat.id}`);
+
+    if (savedScrollPos !== null) {
+      const scrollPos = parseInt(savedScrollPos, 10);
+      
+      // Защита от невалидных значений
+      if (!isNaN(scrollPos)) {
+        container.scrollTop = scrollPos;
+      }
+
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
+      setShouldAutoScroll(isAtBottom);
+    } else {
+      container.scrollTop = container.scrollHeight;
+      setShouldAutoScroll(true);
+    }
+
+    hasRestoredScrollRef.current = true;
+  }, [selectedChat, messages]);
 
   // Склонение слова "участник"
   function declensionMemberWord(count: number) {
@@ -432,6 +523,7 @@ export default function ChatPage() {
       const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
       const isAtBottom = scrollHeight - scrollTop - clientHeight < 100; // 100px threshold
       setShouldAutoScroll(isAtBottom);
+      saveScrollPosition();
     }
   };
 
