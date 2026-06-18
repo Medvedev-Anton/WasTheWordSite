@@ -62,14 +62,20 @@ export default function Profile() {
       const responseOrganizations = await axios.get(`/api/users/${currentUser.id}/organizations`);
       setOrganizations(responseOrganizations.data.organizations);
 
-      if (!response.data.hero) {
-        if (response.data.gender === 'M') {
-          setImageHero('/image/hero/default_male_hero.png');
-        }
-        else {
-          setImageHero('/image/hero/default_female_hero.png');
-        }
-      }
+      // if (!response.data.hero) {
+      //   if (response.data.gender === 'M') {
+      //     setImageHero('/image/hero/default_male_hero.png');
+      //   }
+      //   else {
+      //     setImageHero('/image/hero/default_female_hero.png');
+      //   }
+      // }
+
+      const defaultHeroImage = response.data.gender === 'M' 
+      ? '/image/hero/default_male_hero.png'
+      : '/image/hero/default_female_hero.png';
+    
+      setImageHero(response.data.hero?.imagePath || defaultHeroImage);
     } catch (error) {
       console.error('Failed to fetch profile:', error);
     } finally {
