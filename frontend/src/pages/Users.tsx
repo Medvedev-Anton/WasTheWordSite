@@ -68,7 +68,7 @@ export default function Users() {
                 u.rang ?
                 (
                   <div>
-                    <img src={u.rang.thumbnailUrl} alt={u.username} />
+                    <img src={u.rang.thumbnailUrl} alt={u.username} className="org-user-rang-img" />
                     <p className="user-rang-name">{u.rang.name}</p>
                   </div>
                 )

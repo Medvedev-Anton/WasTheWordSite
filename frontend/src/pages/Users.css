@@ -96,6 +96,10 @@
   color: #FFF;
 }
 
+.org-user-rang-img {
+  height: 28px;
+}
+
 @media (max-width: 600px) {
   .users-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
