@@ -74,16 +74,16 @@ export class OrgsResolver extends RangResolveStrategy {
             else if (countUserOrgs === 5) {
                 return RangFacade.findByOrderNumber(18).getId();
             }
-            else if (countUserOrgs === 6) {
+            else if (countUserOrgs >= 6 && countUserOrgs <= 10) {
                 return RangFacade.findByOrderNumber(19).getId();
             }
-            else if (countUserOrgs > 6 && countUserOrgs <= 10) {
+            else if (countUserOrgs > 10 && countUserOrgs <= 15) {
                 return RangFacade.findByOrderNumber(20).getId();
             }
-            else if (countUserOrgs > 10 && countUserOrgs <= 15) {
+            else if (countUserOrgs > 15 && countUserOrgs <= 20) {
                 return RangFacade.findByOrderNumber(21).getId();
             }
-            else if (countUserOrgs > 15 && countUserOrgs <= 20) {
+            else if (countUserOrgs > 20 && countUserOrgs <= 25) {
                 return RangFacade.findByOrderNumber(22).getId();
             }
             else if (countUserOrgs > 20) {
