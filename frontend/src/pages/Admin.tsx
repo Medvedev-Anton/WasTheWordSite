@@ -27,17 +27,60 @@ interface OrganizationCover {
 }
 
 const ORG_TYPES: string[] = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
+
 const ORG_TO_ICON: Record<string, string> = {
-  'Производственная': ' 🏭',
+  'Производственная': '🏭',
   'Коммерческая': '🏢',
-  'Административная': '🏕️',
+  'Административная': '🏛️',
   'Образовательная': '🎓',
   'Правительственная': '🏛️',
   'Банковская': '🏦',
   'Волонтёрская': '🤝',
   'Спортивная': '🏆',
   'Свободная': '🌐',
+  'Цех': '⚙️',
+  'Отдел': '📋',
+  'Мастерская': '🔧',
+  'Магазин': '🛒',
+  'Департамент': '🏛️',
+  'Управление': '📑',
+  'Филиал': '🏦',
+  'Отделение': '💳',
+  'Отряд': '👥',
+  'Звено': '👤',
+  'Факультет': '📚',
+  'Кафедра': '🔬',
+  'Сектор': '🔗',
+  'Группа': '👫',
+  'Раздел': '📌',
 };
+
+const ALL_ORGS_TYPES = [
+  'Производственная', 
+  'Коммерческая', 
+  'Административная', 
+  'Образовательная',
+  'Правительственная', 
+  'Банковская', 
+  'Волонтёрская', 
+  'Спортивная', 
+  'Свободная',
+  'Цех',
+  'Отдел',
+  'Мастерская',
+  'Магазин',
+  'Департамент',
+  'Управление',
+  'Филиал',
+  'Отделение',
+  'Отряд',
+  'Звено',
+  'Факультет',
+  'Кафедра',
+  'Сектор',
+  'Группа',
+  'Раздел'
+];
 
 export default function Admin() {
 
@@ -948,7 +991,7 @@ export default function Admin() {
 
                 {/* Type-based default covers */}
                 <div className="org-types-container">
-                  {ORG_TYPES.map(type => {
+                  {ALL_ORGS_TYPES.map(type => {
                     const typeCovers = coversByType[type] || [];
                     return (
                       <div className="org-type-group" key={type}>
@@ -993,7 +1036,7 @@ export default function Admin() {
                         <label htmlFor="cover-org-type">Тип организации (если обложка по умолчанию):</label>
                         <select id="cover-org-type" className="org-type-select" value={newCoverType} onChange={(e) => setNewCoverType(e.target.value)}>
                           <option value="">Общий пресет (без типа)</option>
-                          {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
+                          {ALL_ORGS_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
                         </select>
                       </div>
                     </div>
