@@ -8,7 +8,7 @@ import { RangResolverFacade } from "../../../facades/rang_resolver_facade.js";
  */
 export class OrgsResolver extends RangResolveStrategy {
     resolve(userId) {
-        const maxOrderNumber = 20;
+        const maxOrderNumber = 23;
 
         let currentUserRangId = -1;
 
