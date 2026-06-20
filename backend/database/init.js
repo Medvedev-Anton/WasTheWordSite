@@ -44,6 +44,7 @@ export async function initDatabase() {
   const hasCanCreateGovernmentOrganizations = tableInfo.some(col => col.name === 'canCreateGovernmentOrganizations');
   const hasBalance = tableInfo.some(col => col.name === 'balance');
   const hasGender = tableInfo.some(col => col.name === 'gender');
+  const hasEnegry = tableInfo.some(col => col.name === 'energy');
 
   if (!hasRole) {
     try {
@@ -95,6 +96,15 @@ export async function initDatabase() {
     }
     catch (e) {
       console.error('Error adding gender column:', e.message);
+    }
+  }
+
+  if (!hasEnegry) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN energy INT NULL`);
+    }
+    catch (e) {
+      console.error('Error adding energy column:', e.message);
     }
   }
 
