@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { db } from '../database/init.js';
 import { InitialBalancesFacade } from '../facades/initial_balances_facade.js';
+import EnergyFacade from '../facades/energy_facade.js';
 
 const router = express.Router();
 
@@ -33,11 +34,13 @@ router.post('/register', async (req, res) => {
 
     // Create user
     const result = db.prepare(`
-      INSERT INTO users (username, email, password, firstName, lastName, role, isBanned, balance, gender)
-      VALUES (?, ?, ?, ?, ?, 'user', 0, ?, ?)
+      INSERT INTO users (username, email, password, firstName, lastName, role, isBanned, balance, gender, energy)
+      VALUES (?, ?, ?, ?, ?, 'user', 0, ?, ?, 1)
     `).run(username, email, hashedPassword, firstName || null, lastName || null, initialBalance, gender);
 
     const user = db.prepare('SELECT id, username, email, firstName, lastName, avatar, role, isBanned FROM users WHERE id = ?').get(result.lastInsertRowid);
+
+    EnergyFacade.incrementUser(user.lastInsertRowid, 1);
 
     const token = jwt.sign(
       { userId: user.id, username: user.username },
