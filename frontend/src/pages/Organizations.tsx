@@ -495,6 +495,8 @@ function OrganizationDetail({
   const [currentUserOrgs, setCurrentUserOrgs] = useState<UserOrg[]>([]);
   const [loanValue, setLoanValue] = useState<number>(0);
   const [showCalcLoanResult, setShowCalcLoanResult] = useState<boolean>(false);
+  const [selectedIconId, setSelectedIconId] = useState(organization.organization_icon_id || 1);
+  const [selectedCoverId, setSelectedCoverId] = useState<number | null>(organization.organization_cover_id || null);
 
   useEffect(() => {
     setOrgFormData({
@@ -506,6 +508,9 @@ function OrganizationDetail({
       longitude: organization.longitude,
       latitude: organization.latitude
     });
+
+    setSelectedIconId(organization.organization_icon_id || 1);
+    setSelectedCoverId(organization.organization_cover_id || null);
   }, [organization])
 
   const navigate = useNavigate();
@@ -690,8 +695,7 @@ function OrganizationDetail({
   };
 
 
-  const [selectedIconId, setSelectedIconId] = useState(organization.organization_icon_id || 1);
-  const [selectedCoverId, setSelectedCoverId] = useState<number | null>(organization.organization_cover_id || null);
+  
   const [organizationIcons, setOrganizationIcons] = useState<OrganizationIcon[]>([]);
   const [organizationCovers, setOrganizationCovers] = useState<OrganizationCover[]>([]);
   const fetchIcons = async () => {
