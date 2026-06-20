@@ -296,11 +296,16 @@ export async function initDatabase() {
     const postsTableInfo = db.prepare("PRAGMA table_info(posts)").all();
     const contentColumn = postsTableInfo.find(col => col.name === 'content');
     const hasRepostOfId = postsTableInfo.some(col => col.name === 'repostOfId');
+    const displayInFrontPage = postsTableInfo.some(col => col.name === 'displayInFrontPage');
 
     // Check if we need to add repostOfId column
     if (!hasRepostOfId) {
       db.exec(`ALTER TABLE posts ADD COLUMN repostOfId INTEGER`);
       db.exec(`CREATE INDEX IF NOT EXISTS idx_posts_repostOfId ON posts(repostOfId)`);
+    }
+
+    if (!displayInFrontPage) {
+      db.exec(`ALTER TABLE posts ADD COLUMN displayInFrontPage TINYINT(1) DEFAULT 0`);
     }
 
     // Note: SQLite doesn't support ALTER TABLE to modify column constraints directly
