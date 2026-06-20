@@ -121,9 +121,11 @@ router.get('/', authenticateToken, (req, res) => {
         SELECT 
           o.*,
           u.username as adminUsername,
-          (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
+          (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount,
+          oc.imageUrl as presetCoverUrl
         FROM organizations o
         JOIN users u ON o.adminId = u.id
+        LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
         WHERE o.parentId = ?
         ORDER BY o.createdAt DESC
       `).all(pid);
@@ -287,9 +289,11 @@ router.get('/:id', authenticateToken, (req, res, next) => {
       SELECT 
         o.*,
         u.username as adminUsername,
-        (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
+        (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount,
+        oc.imageUrl as presetCoverUrl
       FROM organizations o
       JOIN users u ON o.adminId = u.id
+      LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
       WHERE o.parentId = ?
       ORDER BY o.createdAt DESC
     `).all(orgId);
