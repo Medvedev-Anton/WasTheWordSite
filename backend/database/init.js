@@ -1044,6 +1044,17 @@ export async function initDatabase() {
     )
   `);
 
+  // Create users orgs visits table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_orgs_visits(
+      ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      orgId INTEGER NOT NULL,
+      FOREIGN KEY(userId) REFERENCES users(id),
+      FOREIGN KEY(orgId) REFERENCES organizations(id)
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
