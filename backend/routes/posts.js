@@ -92,7 +92,7 @@ router.get('/feed', authenticateToken, (req, res) => {
       LEFT JOIN organizations o ON p.organizationId = o.id
       LEFT JOIN posts rp ON p.repostOfId = rp.id
       LEFT JOIN users ru ON rp.authorId = ru.id
-      WHERE (u.isBanned = 0 OR u.isBanned IS NULL OR p.authorId IS NULL) AND p.displayInFrontPage = 1
+      WHERE (u.isBanned = 0 OR u.isBanned IS NULL OR p.authorId IS NULL) AND p.displayInFrontPage = 1 AND p.repostOfId IS NULL
       ORDER BY p.createdAt DESC
     `).all(req.user.userId);
 
