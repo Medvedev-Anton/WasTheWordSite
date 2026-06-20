@@ -7,14 +7,16 @@ import './CreatePost.css';
 interface CreatePostProps {
   onPostCreated: (post: Post) => void;
   organizationId?: number;
+  parentId?: number | null;
 }
 
-export default function CreatePost({ onPostCreated, organizationId }: CreatePostProps) {
+export default function CreatePost({ onPostCreated, organizationId, parentId }: CreatePostProps) {
   const [content, setContent] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [filePreviews, setFilePreviews] = useState<Array<{ url: string; type: string; name: string }>>([]);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [displayInFrontPage, setDisplayInFrontPage] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +34,8 @@ export default function CreatePost({ onPostCreated, organizationId }: CreatePost
     if (organizationId) {
       formData.append('organizationId', organizationId.toString());
     }
+
+    formData.append('displayInFrontPage', displayInFrontPage.toString());
 
     try {
       const response = await axios.post('/api/posts', formData, {
@@ -135,6 +139,20 @@ export default function CreatePost({ onPostCreated, organizationId }: CreatePost
             ))}
           </div>
         )}
+        {parentId == null && (
+          <div className="create-post-display-in-front">
+            <label>
+              <input 
+                type="checkbox"
+                checked={displayInFrontPage}
+                onChange={() => setDisplayInFrontPage(!displayInFrontPage)} 
+              />
+              <span>
+                Отображать на главной странице
+              </span>
+            </label>
+          </div>
+        )}  
         <div className="create-post-actions">
           <label className="file-input-label">
             📎 Файлы

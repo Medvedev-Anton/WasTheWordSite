@@ -155,3 +155,11 @@
   background: #a22;
 }
 
+.create-post-display-in-front {
+  color: #FFF;
+  margin-top: 10px;
+}
+
+.create-post-display-in-front span {
+  margin-left: 5px;
+}

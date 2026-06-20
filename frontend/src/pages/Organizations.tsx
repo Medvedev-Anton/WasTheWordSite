@@ -1391,6 +1391,7 @@ function OrganizationDetail({
                 <div className="org-create-post">
                   <CreatePost
                     organizationId={organization.id}
+                    parentId={organization?.parentId}
                     onPostCreated={() => {
                       setShowCreatePost(false);
                       onUpdate(organization.id);

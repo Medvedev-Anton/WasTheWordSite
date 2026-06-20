@@ -165,7 +165,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 // Create post
 router.post('/', authenticateToken, upload.array('files', 10), (req, res) => {
   try {
-    const { content, organizationId, repostOfId } = req.body;
+    const { content, organizationId, repostOfId, displayInFrontPage } = req.body;
     const authorId = req.user.userId;
 
     if (!content && !repostOfId && (!req.files || req.files.length === 0)) {
@@ -200,11 +200,13 @@ router.post('/', authenticateToken, upload.array('files', 10), (req, res) => {
     // Ensure content is at least empty string if null
     const postContent = content || (req.files && req.files.length > 0 ? '' : null);
 
+    const displayInFrontPageValue = displayInFrontPage === 'true' ? 1 : 0;
+
     // Insert post (keep image field for backward compatibility with old posts)
     const result = db.prepare(`
-      INSERT INTO posts (content, image, authorId, organizationId, repostOfId)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(postContent, null, authorId, orgId, repostId);
+      INSERT INTO posts (content, image, authorId, organizationId, repostOfId, displayInFrontPage)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(postContent, null, authorId, orgId, repostId, displayInFrontPageValue);
 
     // Handle multiple file uploads
     if (req.files && req.files.length > 0) {
