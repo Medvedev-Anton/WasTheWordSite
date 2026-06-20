@@ -477,15 +477,7 @@ function OrganizationDetail({
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [activeTab, setActiveTab] = useState<'posts' | 'members' | 'settings'>('posts');
   const [editingOrg, setEditingOrg] = useState(false);
-  const [orgFormData, setOrgFormData] = useState({
-    name: organization.name,
-    description: organization.description || '',
-    defaultCanPost: organization.defaultCanPost === 1,
-    defaultCanComment: organization.defaultCanComment === 1,
-    isPrivate: organization.isPrivate === 1,
-    longitude: organization.longitude,
-    latitude: organization.latitude
-  });
+  const [orgFormData, setOrgFormData] = useState({});
   const [orgAvatarFile, setOrgAvatarFile] = useState<File | null>(null);
   const [orgCoverFile, setOrgCoverFile] = useState<File | null>(null);
   const [editingMember, setEditingMember] = useState<number | null>(null);
@@ -503,6 +495,18 @@ function OrganizationDetail({
   const [currentUserOrgs, setCurrentUserOrgs] = useState<UserOrg[]>([]);
   const [loanValue, setLoanValue] = useState<number>(0);
   const [showCalcLoanResult, setShowCalcLoanResult] = useState<boolean>(false);
+
+  useEffect(() => {
+    setOrgFormData({
+      name: organization.name,
+      description: organization.description || '',
+      defaultCanPost: organization.defaultCanPost === 1,
+      defaultCanComment: organization.defaultCanComment === 1,
+      isPrivate: organization.isPrivate === 1,
+      longitude: organization.longitude,
+      latitude: organization.latitude
+    });
+  }, [organization])
 
   const navigate = useNavigate();
 
