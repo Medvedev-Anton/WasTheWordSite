@@ -101,7 +101,7 @@ export async function initDatabase() {
 
   if (!hasEnegry) {
     try {
-      db.exec(`ALTER TABLE users ADD COLUMN energy INT NULL`);
+      db.exec(`ALTER TABLE users ADD COLUMN energy INT DEFAULT 0`);
     }
     catch (e) {
       console.error('Error adding energy column:', e.message);
