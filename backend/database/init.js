@@ -1060,8 +1060,8 @@ export async function initDatabase() {
       ID INTEGER PRIMARY KEY AUTOINCREMENT,
       userId INTEGER NOT NULL,
       orgId INTEGER NOT NULL,
-      FOREIGN KEY(userId) REFERENCES users(id),
-      FOREIGN KEY(orgId) REFERENCES organizations(id)
+      FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY(orgId) REFERENCES organizations(id) ON DELETE CASCADE
     )  
   `);
 
