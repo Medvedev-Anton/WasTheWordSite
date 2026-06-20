@@ -26,7 +26,7 @@ export default class EnergyFacade {
      * Получает значение энергии пользователя
      * @param {number} userId
      */
-    getByUser(userId) {
+    static getByUser(userId) {
         try {
             return this.getService().getByUser(userId);
         }
