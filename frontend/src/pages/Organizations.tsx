@@ -147,6 +147,8 @@ export default function Organizations() {
 
   const handleSelectOrg = async (orgId: number) => {
     try {
+      await axios.post(`/api/energy/org/${orgId}/visit`);
+
       const response = await axios.get(`/api/organizations/${orgId}`);
       setSelectedOrg(response.data);
     } catch (error) {
