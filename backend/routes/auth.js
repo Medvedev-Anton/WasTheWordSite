@@ -40,8 +40,6 @@ router.post('/register', async (req, res) => {
 
     const user = db.prepare('SELECT id, username, email, firstName, lastName, avatar, role, isBanned FROM users WHERE id = ?').get(result.lastInsertRowid);
 
-    EnergyFacade.incrementUser(user.lastInsertRowid, 1);
-
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       process.env.JWT_SECRET || 'your-secret-key',
@@ -84,6 +82,8 @@ router.post('/login', async (req, res) => {
     if (user.isBanned) {
       return res.status(403).json({ error: 'Your account has been banned' });
     }
+
+    EnergyFacade.incrementUser(user.id, 1);
 
     const { password: _, ...userWithoutPassword } = user;
     res.json({ user: userWithoutPassword, token });
