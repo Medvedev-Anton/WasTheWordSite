@@ -12,7 +12,7 @@ export default class EnergyController extends MainController {
      */
     incrementForOrgVisit() {
         const validate = this.has([
-            'orgId',
+            'id',
         ]);
 
         if (validate === false) {
@@ -21,7 +21,7 @@ export default class EnergyController extends MainController {
 
         try {
             const userId = parseInt(this.request.user.userId);
-            const orgId = parseInt(this.request.params.orgId);
+            const orgId = parseInt(this.request.params.id);
 
             if (UsersOrgsVisitsFacade.get(userId, orgId) == null) {
                 UsersOrgsVisitsFacade.create(userId, orgId);
