@@ -101,13 +101,13 @@ export class OrgsFacade {
      * Возвращает все организации по заданному типу
      * @param {string} orgType
      */
-    static getAllOrgsIdsByType(orgType) {
+    static getAllOrgsByType(orgType) {
         const service = new OrgsService(
             new OrgsMapper()
         );
 
         try {
-            return service.getAllOrgsIdsByType(orgType);
+            return service.getAllOrgsByType(orgType);
         }
         catch (e) {
             throw new Error(e.message);
@@ -226,8 +226,8 @@ export class OrgsFacade {
                     return;
                 }
 
-                const goverId = this.getAllOrgsIdsByType('Правительственная')[0] ?
-                                    this.getAllOrgsIdsByType('Правительственная')[0].id :
+                const goverId = this.getAllOrgsByType('Правительственная')[0] ?
+                                    this.getAllOrgsByType('Правительственная')[0].id :
                                     null;
 
                 BalanceFacade.entity('users').decrement(userId, creationPrice);
@@ -390,8 +390,8 @@ export class OrgsFacade {
      */
     static getGoverId() {
         try {
-            const goverId = this.getAllOrgsIdsByType('Правительственная')[0] ?
-                                    this.getAllOrgsIdsByType('Правительственная')[0].id :
+            const goverId = this.getAllOrgsByType('Правительственная')[0] ?
+                                    this.getAllOrgsByType('Правительственная')[0].id :
                                     null;
 
             return goverId;

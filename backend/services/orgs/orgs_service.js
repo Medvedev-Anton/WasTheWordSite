@@ -59,9 +59,9 @@ export class OrgsService extends OrgsServiceInterface {
         }
     }
 
-    getAllOrgsIdsByType(orgType) {
+    getAllOrgsByType(orgType) {
         try {
-            return this.mapper.getAllOrgsIdsByType(orgType);
+            return this.mapper.getAllOrgsByType(orgType);
         }
         catch (e) {
             throw new Error(e.message);

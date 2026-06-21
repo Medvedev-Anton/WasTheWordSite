@@ -40,8 +40,8 @@ export class TaxesFacade {
                     this.service.nullifyTax(tax.id);
                     BalanceFacade.entity(this.entity).decrement(tax.entityId, tax.tax);
 
-                    const goverId = OrgsFacade.getAllOrgsIdsByType('Правительственная')[0] ?
-                                    OrgsFacade.getAllOrgsIdsByType('Правительственная')[0].id :
+                    const goverId = OrgsFacade.getAllOrgsByType('Правительственная')[0] ?
+                                    OrgsFacade.getAllOrgsByType('Правительственная')[0].id :
                                     null;
 
                     if (goverId != null) {

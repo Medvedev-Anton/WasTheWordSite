@@ -70,8 +70,8 @@ export class OrgsServiceInterface {
      * Возвращает все организации по заданному типу
      * @param {string} orgType
      */
-    getAllOrgsIdsByType(orgType) {
-        throw new Error('getAllOrgsIdsByType должен быть переопределен в наследнике');
+    getAllOrgsByType(orgType) {
+        throw new Error('getAllOrgsByType должен быть переопределен в наследнике');
     }
 
     /**

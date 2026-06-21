@@ -204,7 +204,7 @@ export class LoansFacade {
      */
     static getAllBanksBorrowersPayments() {
         try {
-            const allBanksIds = OrgsFacade.getAllOrgsIdsByType('Банковская');
+            const allBanksIds = OrgsFacade.getAllOrgsByType('Банковская');
 
             allBanksIds.forEach(bank => {
                 LoansFacade.entity('users').getAllBorrowersPayment(bank.id);
