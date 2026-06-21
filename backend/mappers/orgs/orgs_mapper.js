@@ -240,4 +240,17 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return orgsObj;
     }
+
+    getById(orgId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                organizations
+            WHERE
+                id = ?    
+        `).get(orgId);
+
+        return result || null;
+    }
 }
