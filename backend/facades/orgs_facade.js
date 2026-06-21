@@ -494,4 +494,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает данные организации по id
+     * @param {number} orgId
+     */
+    static getById(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getById(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
