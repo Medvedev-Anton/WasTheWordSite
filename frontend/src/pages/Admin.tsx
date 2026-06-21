@@ -483,6 +483,19 @@ export default function Admin() {
     }
   };
 
+  const handleDeleteUser = async (userId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/admin/users/${userId}`);
+      fetchData();
+    } catch (error: any) {
+      alert(error.response?.data?.error || 'Ошибка');
+    }
+  }
+
   const handleRemoveAdmin = async (userId: number) => {
     if (!confirm('Вы уверены, что хотите убрать права администратора у этого пользователя?')) {
       return;
@@ -797,6 +810,12 @@ export default function Admin() {
                         className={user.isBanned ? 'btn-unban' : 'btn-ban'}
                       >
                         {user.isBanned ? 'Разблокировать' : 'Заблокировать'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="btn-delete-user"
+                      >
+                        Удалить
                       </button>
                     </td>
                   </tr>

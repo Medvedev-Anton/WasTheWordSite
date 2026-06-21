@@ -1668,6 +1668,12 @@ input[name="initial-user-balance"] {
   color: #D6D6D6;
 }
 
+.btn-delete-user {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  color: #FFF;
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   .heroes-two-columns {
     flex-direction: column;

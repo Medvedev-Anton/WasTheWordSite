@@ -101,6 +101,28 @@ router.post('/users/:id/ban', requireAdmin, (req, res) => {
   }
 });
 
+// Delete user
+router.delete('/users/:id', requireAdmin, (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    db.prepare(`
+      DELETE FROM
+        users
+      WHERE
+        id = ?  
+    `).run(userId);
+
+    res.status(200).json({
+      message: 'success'
+    });
+  }
+  catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Delete post (admin only)
 router.delete('/posts/:id', requireAdmin, (req, res) => {
   try {
