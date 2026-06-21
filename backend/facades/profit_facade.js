@@ -101,7 +101,9 @@ export class ProfitFacade {
                     const adminId = OrgsFacade.getAdminId(entityId);
                     const orgName = OrgsFacade.getById(employee.orgId).name;
 
-                    NotificationsFacade.create(adminId, `Ваша организация "${orgName}" получила доход в размере: ${incomingSum / 100}$`);
+                    if (incomingSum > 0) {
+                        NotificationsFacade.create(adminId, `Ваша организация "${orgName}" получила доход в размере: ${incomingSum / 100}$`);
+                    }
                 }
             }
             catch (e) {
