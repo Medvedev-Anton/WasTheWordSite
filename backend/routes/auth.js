@@ -10,10 +10,10 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { username, email, password, firstName, lastName, gender } = req.body;
+    const { username, password, gender } = req.body;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: 'Username, email and password are required' });
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
     }
 
     if (gender != 'M' && gender != 'F') {
@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
     }
 
     // Check if user exists
-    const existingUser = db.prepare('SELECT id FROM users WHERE username = ? OR email = ?').get(username, email);
+    const existingUser = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
@@ -34,11 +34,11 @@ router.post('/register', async (req, res) => {
 
     // Create user
     const result = db.prepare(`
-      INSERT INTO users (username, email, password, firstName, lastName, role, isBanned, balance, gender, energy)
-      VALUES (?, ?, ?, ?, ?, 'user', 0, ?, ?, 1)
-    `).run(username, email, hashedPassword, firstName || null, lastName || null, initialBalance, gender);
+      INSERT INTO users (username, email, password, role, isBanned, balance, gender, energy)
+      VALUES (?, '', ?, 'user', 0, ?, ?, 1)
+    `).run(username, hashedPassword, initialBalance, gender);
 
-    const user = db.prepare('SELECT id, username, email, firstName, lastName, avatar, role, isBanned FROM users WHERE id = ?').get(result.lastInsertRowid);
+    const user = db.prepare('SELECT id, username, lastName, avatar, role, isBanned FROM users WHERE id = ?').get(result.lastInsertRowid);
 
     const token = jwt.sign(
       { userId: user.id, username: user.username },

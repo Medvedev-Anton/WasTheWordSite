@@ -31,7 +31,7 @@ export default function Login() {
           {error && <div className="error">{error}</div>}
           <input
             type="text"
-            placeholder="Имя пользователя или email"
+            placeholder="Имя пользователя"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required

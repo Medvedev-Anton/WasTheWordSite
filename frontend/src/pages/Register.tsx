@@ -5,10 +5,7 @@ import './Auth.css';
 
 export default function Register() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
   const [gender, setGender] = useState('');
   const { register } = useAuth();
@@ -19,7 +16,7 @@ export default function Register() {
     setError('');
 
     try {
-      await register(username, email, password, firstName || undefined, lastName || undefined, gender || 'M');
+      await register(username, '', password, '', '', gender || 'M');
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Ошибка регистрации');
@@ -41,30 +38,11 @@ export default function Register() {
             required
           />
           <input
-            type="email"
-            placeholder="Email *"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
             type="password"
             placeholder="Пароль *"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-          />
-          <input
-            type="text"
-            placeholder="Имя"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Фамилия"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
           />
           <select
             value={gender}
