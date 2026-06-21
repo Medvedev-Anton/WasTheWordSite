@@ -104,4 +104,12 @@ export class OrgsServiceInterface {
     getSuborgsBalancesByOrg(orgId) {
         throw new Error('getSuborgsBalancesByOrg должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает данные организации по id
+     * @param {number} orgId
+     */
+    getById(orgId) {
+        throw new Error('getById должен быть переопределен в наследнике');
+    }
 }

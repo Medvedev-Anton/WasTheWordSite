@@ -103,4 +103,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getById(orgId) {
+        try {
+            return this.mapper.getById(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
