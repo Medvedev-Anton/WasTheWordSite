@@ -182,8 +182,7 @@ export default function UserProfile() {
                                 )}
                             </div>
                         </div>
-                        <h1 className="profile-username">{fullName}</h1>
-                        <p className="user-handle">@{user.username}</p>
+                        <h1 className="profile-username">{user.username}</h1>
 
                         {canMessage ? (
                             <button

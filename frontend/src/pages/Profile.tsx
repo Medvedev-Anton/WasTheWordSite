@@ -257,8 +257,7 @@ export default function Profile() {
                 )}
               </div>
             </div>
-            <h1 className="profile-username">{fullName}</h1>
-            <p className="user-handle">@{user.username}</p>
+            <h1 className="profile-username">{user.username}</h1>
           </div>
 
           <div className="cyber-card rank-card">

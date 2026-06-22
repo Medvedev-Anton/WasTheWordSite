@@ -61,9 +61,8 @@ export default function Users() {
                 </div>
               )}
               <div className="user-card-name">
-                {u.firstName && u.lastName ? `${u.firstName} ${u.lastName}` : u.username}
+                {u.username}
               </div>
-              <div className="user-card-username">@{u.username}</div>
               {
                 u.rang ?
                 (
