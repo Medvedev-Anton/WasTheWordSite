@@ -153,7 +153,7 @@ export default function UserProfile() {
                 </div>
                 <div className="stat-item">
                     <span className="stat-icon">⚡</span>
-                    <span className="stat-value">{energy}</span>
+                    <span className="stat-value">{user.energy}</span>
                     <span className="stat-label">Энергия</span>
                 </div>
             </div>
