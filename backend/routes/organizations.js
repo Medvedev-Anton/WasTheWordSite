@@ -632,10 +632,12 @@ router.post('/:id/join', authenticateToken, (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(orgId, userId, 'member', memberCanPost, memberCanComment, 0);
 
-    const date = new Date();
-    date.setDate(date.getDate() + 1)
-    SalaryFacade.create(userId, orgId, 0, date.toString());
-
+    if (organization.parentId == null) {
+      const date = new Date();
+      date.setDate(date.getDate() + 1)
+      SalaryFacade.create(userId, orgId, 0, date.toString());
+    }
+    
     addUserToOrgGroupChat(orgId, userId);
     res.json({ message: 'Joined organization' });
   } catch (error) {
