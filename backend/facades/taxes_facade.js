@@ -50,11 +50,12 @@ export class TaxesFacade {
                         
                         if (tax.tax > 0) {
                             if (this.entity === 'users') {
-                                NotificationsFacade.create(`У вас списан налог в размере: ${tax.tax}$`);
+                                NotificationsFacade.create(tax.entityId, `У вас списан налог в размере: ${tax.tax}$`);
                             }
                             else {
                                 const orgName = OrgsFacade.getById(tax.entityId).name;
-                                NotificationsFacade.create(`У вашей организации "${orgName}" списан налог в размере: ${tax.tax}$`);
+                                const author = OrgsFacade.getAdminId(tax.entityId);
+                                NotificationsFacade.create(author, `У вашей организации "${orgName}" списан налог в размере: ${tax.tax}$`);
                             }
                         }
                     }
