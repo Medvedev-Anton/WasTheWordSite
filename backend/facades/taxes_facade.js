@@ -4,6 +4,7 @@ import { TaxesService } from "../services/taxes/taxes_service.js";
 import { db } from "../database/init.js";
 import { BalanceFacade } from "./balance_facade.js";
 import { OrgsFacade } from "./orgs_facade.js";
+import NotificationsFacade from "./notifications_facade.js";
 
 export class TaxesFacade {
     constructor(entity) {
@@ -46,6 +47,16 @@ export class TaxesFacade {
 
                     if (goverId != null) {
                         BalanceFacade.entity('orgs').increment(goverId, tax.tax);
+                        
+                        if (tax.tax > 0) {
+                            if (this.entity === 'users') {
+                                NotificationsFacade.create(`У вас списан налог в размере: ${tax.tax}$`);
+                            }
+                            else {
+                                const orgName = OrgsFacade.getById(tax.entityId).name;
+                                NotificationsFacade.create(`У вашей организации "${orgName}" списан налог в размере: ${tax.tax}$`);
+                            }
+                        }
                     }
                 });
             }
