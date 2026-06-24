@@ -151,19 +151,24 @@ router.get('/', authenticateToken, (req, res) => {
       const subOrgStmt = db.prepare(`
         SELECT 
           o.*,
+          ui.imageUrl as imageUrl,
           oc.imageUrl as presetCoverUrl,
           (SELECT imageUrl FROM organization_cover WHERE orgType = o.orgType ORDER BY id DESC LIMIT 1) as typeDefaultCoverUrl,
           u.username as adminUsername,
           (SELECT COUNT(*) FROM organization_members WHERE organizationId = o.id) as membersCount
         FROM organizations o
         JOIN users u ON o.adminId = u.id
+        JOIN organization_icon ui ON o.organization_icon_id = ui.id
         LEFT JOIN organization_cover oc ON o.organization_cover_id = oc.id
         WHERE o.parentId = ?
         ORDER BY o.createdAt DESC
       `);
       organizations = organizations.map(org => ({
         ...org,
-        subOrganizations: subOrgStmt.all(org.id),
+        subOrganizations: subOrgStmt.all(org.id).map(suborg => ({
+          ...suborg,
+          subOrganizations: subOrgStmt.all(suborg.id)
+        })),
       }));
     }
 
