@@ -942,7 +942,7 @@ export default function Admin() {
                   </div>
                 </div>
                 <div className="org-types-container">
-                  {ORG_TYPES.map((type: string) => {
+                  {ALL_ORGS_TYPES.map((type: string) => {
                     const typeIcons = iconsByType[type] || [];
                     return (
                       <div className="org-type-group" key={type}>
@@ -971,7 +971,7 @@ export default function Admin() {
                         <label htmlFor="create-org-type">Тип организации:</label>
                         <select id="create-org-type" className="org-type-select" value={newIconType} onChange={(e) => setNewIconType(e.target.value)}>
                           <option value="">Выберите тип</option>
-                          {ORG_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
+                          {ALL_ORGS_TYPES.map(type => <option key={type} value={type}>{ORG_TO_ICON[type]} {type}</option>)}
                         </select>
                       </div>
                     </div>
