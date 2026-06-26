@@ -252,6 +252,7 @@ export default function Organizations() {
               <input type="text" name="name" placeholder="Название *" required />
               <textarea name="description" placeholder="Описание" rows={4} />
 
+              
               <div className="org-locations">
                 <div className="input-mode-toggle">
                   <button
@@ -992,72 +993,75 @@ function OrganizationDetail({
                 className="org-edit-textarea"
               />
 
-              <div className="org-locations">
-                <div className="input-mode-toggle">
-                  <button
-                    type="button"
-                    className={`mode-btn ${inputMode === 'address' ? 'active' : ''}`}
-                    onClick={() => setInputMode('address')}
-                  >
-                    <span className="mode-icon">📍</span>
-                    Поиск по адресу
-                  </button>
-                  <button
-                    type="button"
-                    className={`mode-btn ${inputMode === 'manual' ? 'active' : ''}`}
-                    onClick={() => setInputMode('manual')}
-                  >
-                    <span className="mode-icon">✏️</span>
-                    Ввести координаты
-                  </button>
+              {organization.parentId == null && (
+                <div className="org-locations">
+                  <div className="input-mode-toggle">
+                    <button
+                      type="button"
+                      className={`mode-btn ${inputMode === 'address' ? 'active' : ''}`}
+                      onClick={() => setInputMode('address')}
+                    >
+                      <span className="mode-icon">📍</span>
+                      Поиск по адресу
+                    </button>
+                    <button
+                      type="button"
+                      className={`mode-btn ${inputMode === 'manual' ? 'active' : ''}`}
+                      onClick={() => setInputMode('manual')}
+                    >
+                      <span className="mode-icon">✏️</span>
+                      Ввести координаты
+                    </button>
+                  </div>
+
+                  {inputMode === 'address' && (
+                    <div className="address-mode">
+                      <AddressInput
+                        onSelectAddress={onSelectAddress}
+                        placeholder="Введите адрес"
+                        onTextChange={(text: string) => { setAddress(text); }}
+                      />
+                    </div>
+                  )}
+
+                  {inputMode === 'manual' && (
+                    <div className="manual-mode">
+                      <div className="coordinate-group">
+                        <label className="coordinate-label">
+                          <span>Долгота</span>
+                          <input
+                            type="number"
+                            required
+                            min={-180}
+                            max={180}
+                            step="any"
+                            placeholder="Пример: 37.617635"
+                            value={longitude ?? ""}
+                            onChange={(e) => setLongitude(e.target.value)}
+                          />
+                        </label>
+                        <label className="coordinate-label">
+                          <span>Широта</span>
+                          <input
+                            type="number"
+                            required
+                            min={-90}
+                            max={90}
+                            step="any"
+                            placeholder="Пример: 55.755814"
+                            value={latitude ?? ""}
+                            onChange={(e) => setLatitude(e.target.value)}
+                          />
+                        </label>
+                      </div>
+                      <div className="coordinate-hint">
+                        💡 Координаты можно скопировать с <a href="https://yandex.ru/maps" target="_blank" rel="noopener noreferrer">Яндекс.Карт</a>
+                      </div>
+                    </div>
+                  )}
                 </div>
-
-                {inputMode === 'address' && (
-                  <div className="address-mode">
-                    <AddressInput
-                      onSelectAddress={onSelectAddress}
-                      placeholder="Введите адрес"
-                      onTextChange={(text: string) => { setAddress(text); }}
-                    />
-                  </div>
-                )}
-
-                {inputMode === 'manual' && (
-                  <div className="manual-mode">
-                    <div className="coordinate-group">
-                      <label className="coordinate-label">
-                        <span>Долгота</span>
-                        <input
-                          type="number"
-                          required
-                          min={-180}
-                          max={180}
-                          step="any"
-                          placeholder="Пример: 37.617635"
-                          value={longitude ?? ""}
-                          onChange={(e) => setLongitude(e.target.value)}
-                        />
-                      </label>
-                      <label className="coordinate-label">
-                        <span>Широта</span>
-                        <input
-                          type="number"
-                          required
-                          min={-90}
-                          max={90}
-                          step="any"
-                          placeholder="Пример: 55.755814"
-                          value={latitude ?? ""}
-                          onChange={(e) => setLatitude(e.target.value)}
-                        />
-                      </label>
-                    </div>
-                    <div className="coordinate-hint">
-                      💡 Координаты можно скопировать с <a href="https://yandex.ru/maps" target="_blank" rel="noopener noreferrer">Яндекс.Карт</a>
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
+              
 
               <div className="org-icon-section">
                 <h4>Иконка организации</h4>
