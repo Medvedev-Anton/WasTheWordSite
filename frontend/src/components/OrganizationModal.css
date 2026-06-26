@@ -17,7 +17,7 @@
 .game-modal {
     position: relative;
     width: 90%;
-    max-width: 400px;
+    max-width: 500px;
     transform: scale(0.9);
     opacity: 0;
     animation: modalAppear 0.3s ease forwards;
@@ -61,7 +61,7 @@
     top: 3.9%;
     left: 5.5%;
     width: 88.8%;
-    height: 160px;
+    height: 210px;
     overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -245,4 +245,64 @@
     color: rgba(255, 215, 0, 0.6);
     font-style: italic;
     list-style: none !important;
+}
+
+.game-org-icon-modal {
+    position: absolute;
+    right: 40px;
+    top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    border-radius: 14px;
+    border: 2px solid rgba(211, 211, 211, 0.3);
+    padding: 20px 40px;
+    animation: modalAppear 0.3s ease forwards;
+}
+
+.game-org-icon-modal__img-wrapper {
+    width: 250px;
+    height: 250px;
+}
+
+.game-org-icon-modal__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-org-icon-modal__title {
+    color: #8C5C5C;
+    font-weight: bold;
+}
+
+@media (max-width: 1300px) {
+    .game-modal {
+        max-width: 400px;
+    }
+
+    .game-modal__image {
+        height: 160px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .game-org-icon-modal__img-wrapper {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .game-modal {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 900px) {
+    .game-org-icon-modal {
+        right: unset;
+    }
 }

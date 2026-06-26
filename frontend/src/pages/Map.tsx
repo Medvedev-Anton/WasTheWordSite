@@ -230,6 +230,7 @@ export default function Map() {
                             setIsOpenModal(false);
                             setCurrentOrganization(null);
                         }}
+                        imageIconUrl={selectOrganization.imageUrl}
                     />
                     : ""}
             </div>

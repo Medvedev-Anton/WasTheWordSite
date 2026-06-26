@@ -20,6 +20,7 @@ interface ModalProps {
     coverImage?: string;
     presetCoverUrl?: string;
     typeDefaultCoverUrl?: string;
+    imageIconUrl?: string;
 }
 
 export default function OrganizationModal({
@@ -33,6 +34,7 @@ export default function OrganizationModal({
     coverImage,
     presetCoverUrl,
     typeDefaultCoverUrl,
+    imageIconUrl
 }: ModalProps) {
     const typeImages: Record<string, string> = {
         'Производственная': '/image/organizations/production.jpg',
@@ -111,6 +113,19 @@ export default function OrganizationModal({
                     )}
                     <p>{description}</p>
                 </div>
+            </div>
+
+            <div className="game-org-icon-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="game-org-icon-modal__img-wrapper">
+                    <img 
+                        src={imageIconUrl} 
+                        alt="org icon"
+                        className='game-org-icon-modal__img' 
+                    />
+                </div>
+                <p className="game-org-icon-modal__title">
+                    {type}
+                </p>
             </div>
         </div>
     );
