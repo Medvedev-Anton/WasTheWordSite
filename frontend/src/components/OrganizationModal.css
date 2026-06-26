@@ -305,4 +305,20 @@
     .game-org-icon-modal {
         right: unset;
     }
+
+    .game-modal-overlay {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .game-org-icon-modal {
+        position: relative;
+        top: 0;
+        padding: 10px;
+    }
+
+    .game-org-icon-modal__img-wrapper {
+        width: 100px;
+        height: 100px;
+    }
 }
