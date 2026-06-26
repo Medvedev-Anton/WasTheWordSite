@@ -158,16 +158,16 @@ export default function Map() {
                 suborgs.forEach(suborg => {
                     if (suborg.id == orgId) {
                         orgData = suborg;
+                    }
 
-                        if (suborg.subOrganizations && suborg.subOrganizations.length !== 0) {
-                            const subsuborgs = suborg.subOrganizations;
+                    if (suborg.subOrganizations && suborg.subOrganizations.length !== 0) {
+                        const subsuborgs = suborg.subOrganizations;
 
-                            subsuborgs.forEach(subsuborg => {
-                                if (subsuborg.id == orgId) {
-                                    orgData = subsuborg;
-                                }
-                            });
-                        }
+                        subsuborgs.forEach(subsuborg => {
+                            if (subsuborg.id == orgId) {
+                                orgData = subsuborg;
+                            }
+                        });
                     }
                 });
             }
