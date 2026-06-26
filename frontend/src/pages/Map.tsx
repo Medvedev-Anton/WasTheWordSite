@@ -64,7 +64,7 @@ export default function Map() {
     const markers = useMemo(() => {
         const allMarkers: any[] = [];
         
-        const BASE_RADIUS = 1;
+        const BASE_RADIUS = 0.5;
         const RADIUS_SCALE = 0.4;
         
         const addOrganizationWithChildren = (
