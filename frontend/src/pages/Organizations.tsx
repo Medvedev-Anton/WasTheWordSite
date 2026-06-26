@@ -101,6 +101,12 @@ export default function Organizations() {
 
   const handleCreateOrg = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (longitude.length === 0 || latitude.length === 0) {
+      alert('Введите адрес или координаты');
+      return false;
+    }
+
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
