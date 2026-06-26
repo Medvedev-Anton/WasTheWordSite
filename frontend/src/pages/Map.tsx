@@ -65,9 +65,8 @@ export default function Map() {
         const allMarkers: any[] = [];
         
         const BASE_RADIUS = 5;
-        const RADIUS_SCALE = 0.4; // Коэффициент уменьшения радиуса для каждого уровня вложенности
+        const RADIUS_SCALE = 0.4;
         
-        // Рекурсивная функция для добавления организации и всех её потомков
         const addOrganizationWithChildren = (
             org: any, 
             parentLon: number, 
@@ -79,8 +78,6 @@ export default function Map() {
             const lon = Number(org.longitude);
             const lat = Number(org.latitude);
             
-            // Для корневой организации (level 0) используем её собственные координаты
-            // Для подорганизаций вычисляем координаты на основе позиции родителя
             const orgLon = level === 0 
                 ? lon 
                 : parentLon + (radius / Math.cos(parentLat * Math.PI / 180)) * Math.cos(angle);
@@ -88,10 +85,8 @@ export default function Map() {
                 ? lat 
                 : parentLat + radius * Math.sin(angle);
             
-            // Добавляем маркер текущей организации
             allMarkers.push({
                 id: org.id,
-                // addJitter применяем только к корневым организациям
                 coordinates: level === 0 ? addJitter(orgLon, orgLat, org.id) : [orgLon, orgLat],
                 draggable: false,
                 content: (
@@ -113,11 +108,10 @@ export default function Map() {
                 }
             });
             
-            // Рекурсивно добавляем подорганизации
             if (org.subOrganizations && org.subOrganizations.length > 0) {
                 const subOrgs = org.subOrganizations;
                 const count = subOrgs.length;
-                const childRadius = radius * RADIUS_SCALE; // Уменьшаем радиус для следующего уровня
+                const childRadius = radius * RADIUS_SCALE;
                 
                 subOrgs.forEach((subOrg: any, index: number) => {
                     const childAngle = (2 * Math.PI * index) / count;
@@ -133,7 +127,6 @@ export default function Map() {
             }
         };
         
-        // Обрабатываем все корневые организации
         organizations.forEach((organization: any) => {
             const lon = Number(organization.longitude);
             const lat = Number(organization.latitude);
