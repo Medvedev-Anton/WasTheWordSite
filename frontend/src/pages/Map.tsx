@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import OrganizationModal from '../components/OrganizationModal';
 import { getMediaUrl } from '../config';
 import './Map.css';
+import { Organization } from '../types';
 
 interface OrganizationProps {
     id: number,
@@ -18,7 +19,7 @@ interface OrganizationProps {
     coverImage?: string,
     presetCoverUrl?: string,
     typeDefaultCoverUrl?: string,
-    subOrganizations?: { id: number; name: string; orgType?: string }[],
+    subOrganizations?: Organization[],
 };
 
 export default function Map() {
@@ -59,42 +60,131 @@ export default function Map() {
     };
 
     const navigate = useNavigate();
+
     const markers = useMemo(() => {
-        return organizations.filter((organization: any) =>
-            organization.longitude != null &&
-            organization.latitude != null &&
-            !isNaN(organization.longitude) &&
-            !isNaN(organization.latitude)
-        ).map((organization: any) => ({
-            id: organization.id,
-            coordinates: addJitter(organization.longitude, organization.latitude, organization.id),
-            draggable: false,
-            content: (
-                <OrganizationMarker
-                    key={organization.id}
-                    imagePath={getMediaUrl(organization.imageUrl) ?? ""}
-                    name={organization.name}
-                />
-            ),
-            onClick: (id: number) => {
-                setCurrentOrganization(id);
-                setIsOpenModal(true);
-                setCoordinatesMap([organization.longitude, organization.latitude]);
-            },
-            onDbClick: (id: number) => {
-                const organization = organizations.find(org => org.id === id);
-                if (organization) {
+        const allMarkers: any[] = [];
+        
+        const BASE_RADIUS = 5;
+        const RADIUS_SCALE = 0.4; // Коэффициент уменьшения радиуса для каждого уровня вложенности
+        
+        // Рекурсивная функция для добавления организации и всех её потомков
+        const addOrganizationWithChildren = (
+            org: any, 
+            parentLon: number, 
+            parentLat: number, 
+            angle: number, 
+            radius: number,
+            level: number = 0
+        ) => {
+            const lon = Number(org.longitude);
+            const lat = Number(org.latitude);
+            
+            // Для корневой организации (level 0) используем её собственные координаты
+            // Для подорганизаций вычисляем координаты на основе позиции родителя
+            const orgLon = level === 0 
+                ? lon 
+                : parentLon + (radius / Math.cos(parentLat * Math.PI / 180)) * Math.cos(angle);
+            const orgLat = level === 0 
+                ? lat 
+                : parentLat + radius * Math.sin(angle);
+            
+            // Добавляем маркер текущей организации
+            allMarkers.push({
+                id: org.id,
+                // addJitter применяем только к корневым организациям
+                coordinates: level === 0 ? addJitter(orgLon, orgLat, org.id) : [orgLon, orgLat],
+                draggable: false,
+                content: (
+                    <OrganizationMarker
+                        key={`org-${level}-${org.id}`}
+                        imagePath={getMediaUrl(org.imageUrl) ?? ""}
+                        name={org.name}
+                    />
+                ),
+                onClick: (id: number) => {
+                    setCurrentOrganization(id);
+                    setIsOpenModal(true);
+                    setCoordinatesMap([orgLon, orgLat]);
+                },
+                onDbClick: (id: number) => {
                     navigate(`/organizations`, {
-                        state: {
-                            selectOrganizationFromMap: organization
-                        }
+                        state: { selectOrganizationFromMap: org }
                     });
                 }
+            });
+            
+            // Рекурсивно добавляем подорганизации
+            if (org.subOrganizations && org.subOrganizations.length > 0) {
+                const subOrgs = org.subOrganizations;
+                const count = subOrgs.length;
+                const childRadius = radius * RADIUS_SCALE; // Уменьшаем радиус для следующего уровня
+                
+                subOrgs.forEach((subOrg: any, index: number) => {
+                    const childAngle = (2 * Math.PI * index) / count;
+                    addOrganizationWithChildren(
+                        subOrg, 
+                        orgLon, 
+                        orgLat, 
+                        childAngle, 
+                        childRadius, 
+                        level + 1
+                    );
+                });
             }
-        }));
+        };
+        
+        // Обрабатываем все корневые организации
+        organizations.forEach((organization: any) => {
+            const lon = Number(organization.longitude);
+            const lat = Number(organization.latitude);
+            
+            if (
+                organization.longitude != null &&
+                organization.latitude != null &&
+                !isNaN(lon) &&
+                !isNaN(lat)
+            ) {
+                addOrganizationWithChildren(organization, lon, lat, 0, BASE_RADIUS, 0);
+            }
+        });
+        
+        return allMarkers;
     }, [organizations]);
 
-    const selectOrganization = organizations.find(organization => { return organization.id === currentOrganization });
+    const findOrg = (orgId: number) => {
+        let orgData = null;
+
+        organizations.forEach(org => {
+            if (org.id == orgId) {
+                orgData = org;
+            }
+
+            if (org.subOrganizations && org.subOrganizations.length !== 0) {
+                const suborgs = org.subOrganizations;
+
+                suborgs.forEach(suborg => {
+                    if (suborg.id == orgId) {
+                        orgData = suborg;
+
+                        if (suborg.subOrganizations && suborg.subOrganizations.length !== 0) {
+                            const subsuborgs = suborg.subOrganizations;
+
+                            subsuborgs.forEach(subsuborg => {
+                                if (subsuborg.id == orgId) {
+                                    orgData = subsuborg;
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        return orgData;
+    }
+
+    // const selectOrganization = organizations.find(organization => { return organization.id === currentOrganization });
+    const selectOrganization = findOrg(currentOrganization || -1);
 
     return (
         <>
