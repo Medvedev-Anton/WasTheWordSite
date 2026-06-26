@@ -94,6 +94,7 @@ export default function Map() {
                         key={`org-${level}-${org.id}`}
                         imagePath={getMediaUrl(org.imageUrl) ?? ""}
                         name={org.name}
+                        orgLevel={level}
                     />
                 ),
                 onClick: (id: number) => {
