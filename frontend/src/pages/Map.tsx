@@ -102,7 +102,7 @@ export default function Map() {
                 onClick: (id: number) => {
                     setCurrentOrganization(id);
                     setIsOpenModal(true);
-                    setCoordinatesMap([orgLon, orgLat]);
+                    // setCoordinatesMap([orgLon, orgLat]);
                 },
                 onDbClick: (id: number) => {
                     navigate(`/organizations`, {
@@ -145,7 +145,7 @@ export default function Map() {
         });
         
         return allMarkers;
-    }, [organizations, currentZoom]);
+    }, [organizations]);
 
     const findOrg = (orgId: number) => {
         let orgData = null;
