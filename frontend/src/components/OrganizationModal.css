@@ -304,11 +304,15 @@
 @media (max-width: 900px) {
     .game-org-icon-modal {
         right: unset;
+        align-self: end;
+        margin-right: 20px;
+        margin-top: 20px;
     }
 
     .game-modal-overlay {
         flex-direction: column-reverse;
         gap: 10px;
+        justify-content: start;
     }
 
     .game-org-icon-modal {
