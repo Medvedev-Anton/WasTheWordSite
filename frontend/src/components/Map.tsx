@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
     YMap,
     YMapDefaultSchemeLayer,
@@ -42,10 +42,16 @@ export default function Map({
     gridSize,
     onChangeZoom,
     ...props }: MapProps) {
-    let location = {
+
+    // let location = {
+    //     center: coordinates,
+    //     zoom: zoom
+    // };
+
+    const [initialLocation] = useState({
         center: coordinates,
         zoom: zoom
-    };
+    });
 
     const features = useMemo(() => {
         return markers.map(marker => ({
@@ -7054,7 +7060,7 @@ export default function Map({
         <div {...props}>
             <YMapComponentsProvider apiKey="261c32e8-bc36-439e-82a8-b39d4b959a2f">
                 <YMap
-                    location={location}
+                    location={initialLocation}
                     zoomRange={zoomRange}
                     camera={camera}
                     behaviors={[
