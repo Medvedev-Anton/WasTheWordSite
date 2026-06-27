@@ -28,6 +28,7 @@ export default function Map() {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [currentOrganization, setCurrentOrganization] = useState<number | null>(null);
     const [coordinatesMap, setCoordinatesMap] = useState<[number, number]>([37, 50]);
+    const [currentZoom, setCurrentZoom] = useState<number | null>(null);
 
     const fetchOrganizations = async () => {
         const dataPromise = axios.get('/api/organizations');
@@ -95,6 +96,7 @@ export default function Map() {
                         imagePath={getMediaUrl(org.imageUrl) ?? ""}
                         name={org.name}
                         orgLevel={level}
+                        zoom={currentZoom}
                     />
                 ),
                 onClick: (id: number) => {
@@ -143,7 +145,7 @@ export default function Map() {
         });
         
         return allMarkers;
-    }, [organizations]);
+    }, [organizations, currentZoom]);
 
     const findOrg = (orgId: number) => {
         let orgData = null;
@@ -180,6 +182,10 @@ export default function Map() {
     // const selectOrganization = organizations.find(organization => { return organization.id === currentOrganization });
     const selectOrganization = findOrg(currentOrganization || -1);
 
+    const onChangeZoom = (zoom: number) => {
+        // setCurrentZoom(zoom);
+    }
+
     return (
         <>
             <div className="map-wrapper">
@@ -194,6 +200,7 @@ export default function Map() {
                             onMapClick={() => { }}
                             zoomRange={{ min: 2, max: 40 }}
                             renderCluster={(_coordinates: any, features: any) => (<ClusterMarker count={features.length} onClick={() => { }} />)}
+                            onChangeZoom={onChangeZoom}
                         />
 
                         <div className="map-edge-blur" />

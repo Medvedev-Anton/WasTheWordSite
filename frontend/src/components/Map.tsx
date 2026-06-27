@@ -28,6 +28,7 @@ interface MapProps extends React.HTMLAttributes<HTMLDivElement> {
     renderCluster: (coordinates: any, features: any) => React.ReactNode,
     gridSize?: number,
     camera?: { tilt: number, azimuth: number }
+    onChangeZoom: (zoom: number) => void
 }
 
 export default function Map({
@@ -39,6 +40,7 @@ export default function Map({
     renderCluster,
     camera,
     gridSize,
+    onChangeZoom,
     ...props }: MapProps) {
     let location = {
         center: coordinates,
@@ -7044,6 +7046,10 @@ export default function Map({
         }
     ], []);
 
+    const onUpdate = (object: any) => {
+        onChangeZoom(object.location.zoom);
+    }
+
     return (
         <div {...props}>
             <YMapComponentsProvider apiKey="261c32e8-bc36-439e-82a8-b39d4b959a2f">
@@ -7067,6 +7073,7 @@ export default function Map({
 
                     <YMapListener
                         onClick={onMapClick}
+                        onUpdate={onUpdate}
                     />
 
                     <YMapCustomClusterer
