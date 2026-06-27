@@ -677,6 +677,8 @@ function OrganizationDetail({
     if (!subOrgName.trim()) return;
     setSubOrgCreating(true);
     try {
+      const organizationIconId = selectedIconId?.toString();
+
       const data = new FormData();
       data.append('name', subOrgName.trim());
       data.append('description', subOrgDesc.trim());
@@ -684,6 +686,7 @@ function OrganizationDetail({
       data.append('defaultCanPost', 'true');
       data.append('defaultCanComment', 'true');
       data.append('isPrivate', 'false');
+      data.append('organizationIconId', organizationIconId ?? "");
       if (subOrgCoverId) {
         data.append('organizationCoverId', subOrgCoverId.toString());
       }
@@ -1315,6 +1318,25 @@ function OrganizationDetail({
                   </div>
                 </div>
               )}
+              {subOrgType && (
+                <div className="org-icon-selector">
+                  <h4>Выберите иконку для организации:</h4>
+                  <div className="icon-grid">
+                    {iconsByType[subOrgType].map(icon => (
+                      <div
+                        key={icon.id}
+                        className={`icon-option ${selectedIconId === icon.id ? 'selected' : ''}`}
+                        onClick={() => setSelectedIconId(icon.id)}
+                      >
+                        <div className="icon-preview">
+                          <img src={getMediaUrl(icon.imageUrl)} alt={subOrgType} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="org-edit-actions">
                 <button onClick={handleCreateSubOrg} className="save-org-btn" disabled={subOrgCreating}>
                   {subOrgCreating ? 'Создание...' : 'Создать'}
