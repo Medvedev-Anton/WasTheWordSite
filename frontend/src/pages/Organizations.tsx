@@ -11,7 +11,7 @@ import './Organizations.css';
 import AddressInput from '../components/AddressInput';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
 
-const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная'];
+const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная', 'Добывающая'];
 
 const ORG_TYPE_ICONS: Record<string, string> = {
   'Производственная': '🏭',
@@ -23,7 +23,11 @@ const ORG_TYPE_ICONS: Record<string, string> = {
   'Волонтёрская': '🤝',
   'Спортивная': '🏆',
   'Свободная': '🌐',
+  'Добывающая': '⛏️',
+  'Добывающий комплекс': '🏗️',
+  'Ферма': '🌾',
   'Цех': '⚙️',
+  'Витрина': '🪟',
   'Отдел': '📋',
   'Мастерская': '🔧',
   'Магазин': '🛒',
@@ -534,14 +538,16 @@ function OrganizationDetail({
     'Волонтёрская': 'Отряд',
     'Спортивная': 'Отряд',
     'Свободная': 'Группа',
+    'Добывающая': 'Добывающий комплекс',
     'Группа': 'Раздел',
     'Цех': 'Мастерская',
-    'Магазин': 'Отдел',
+    'Магазин': 'Витрина',
     'Отдел': 'Сектор',
     'Департамент': 'Управление',
     'Филиал': 'Отделение',
     'Факультет': 'Кафедра',
     'Отряд': 'Звено',
+    'Добывающий комплекс': 'Ферма',
   };
 
   const isMember = organization.members?.some(m => m.userId === currentUserId);
@@ -556,31 +562,37 @@ function OrganizationDetail({
   const canPost = isAdmin || (isMember && currentMember?.canPost === 1 && !currentMember?.isBlocked);
   const grandparentType = organization.parentOrg?.orgType;
   const subOrgType = (() => {
-    if (organization.orgType === 'Отдел' && grandparentType === 'Магазин') return null;
+    if (organization.orgType === 'Витрина' && grandparentType === 'Магазин') return null;
     return ORG_HIERARCHY[organization.orgType || ''] || null;
   })();
 
   // Correct Russian forms for sub-org type names
   const SUB_ORG_PLURAL: Record<string, string> = {
-    'Цех': 'Цехи', 'Отдел': 'Отделы', 'Факультет': 'Факультеты',
+    'Цех': 'Цехи', 'Витрина': 'Витрины', 'Отдел': 'Отделы', 'Факультет': 'Факультеты',
     'Кафедра': 'Кафедры', 'Отряд': 'Отряды', 'Звено': 'Звенья',
     'Мастерская': 'Мастерские', 'Магазин': 'Магазины', 'Сектор': 'Сектора',
     'Группа': 'Группы',
     'Раздел': 'Разделы',
+    'Добывающий комплекс': 'Добывающие комплексы',
+    'Ферма': 'Фермы',
   };
   const SUB_ORG_GENITIVE: Record<string, string> = {
-    'Цех': 'цехов', 'Отдел': 'отделов', 'Факультет': 'факультетов',
+    'Цех': 'цехов', 'Витрина': 'витрин', 'Отдел': 'отделов', 'Факультет': 'факультетов',
     'Кафедра': 'кафедр', 'Отряд': 'отрядов', 'Звено': 'звеньев',
     'Мастерская': 'мастерских', 'Магазин': 'магазинов', 'Сектор': 'секторов',
     'Группа': 'групп',
     'Раздел': 'разделов',
+    'Добывающий комплекс': 'добывающих комплексов',
+    'Ферма': 'ферм',
   };
   const SUB_ORG_GENITIVE_SINGLE: Record<string, string> = {
-    'Цех': 'цех', 'Отдел': 'отдел', 'Факультет': 'факультет',
+    'Цех': 'цех', 'Витрина': 'витрину', 'Отдел': 'отдел', 'Факультет': 'факультет',
     'Кафедра': 'кафедру', 'Отряд': 'отряд', 'Звено': 'звено',
     'Мастерская': 'мастерскую', 'Магазин': 'магазин', 'Сектор': 'сектор',
     'Группа': 'группу',
     'Раздел': 'раздел',
+    'Добывающий комплекс': 'добывающий комплекс',
+    'Ферма': 'ферму',
   };
 
   const handleJoin = async () => {
@@ -1318,7 +1330,7 @@ function OrganizationDetail({
                   </div>
                 </div>
               )}
-              {subOrgType && (
+              {subOrgType && iconsByType[subOrgType]?.length > 0 && (
                 <div className="org-icon-selector">
                   <h4>Выберите иконку для организации:</h4>
                   <div className="icon-grid">
@@ -1334,6 +1346,11 @@ function OrganizationDetail({
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+              {subOrgType && (!iconsByType[subOrgType] || iconsByType[subOrgType].length === 0) && (
+                <div className="no-icons-warning">
+                  <p>⚠️ Для типа "{subOrgType}" пока нет иконок. Будет использована иконка по умолчанию.</p>
                 </div>
               )}
 

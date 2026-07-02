@@ -873,6 +873,7 @@ export async function initDatabase() {
     { orgType: "Спортивная", percent: 0 },
     { orgType: "Свободная", percent: 0 },
     { orgType: "Банковская", percent: 0 },
+    { orgType: "Добывающая", percent: 0 },
   ];
 
   defaultOrgsTaxPercents.forEach(row => {
@@ -904,7 +905,9 @@ export async function initDatabase() {
     { orgType: "Спортивная", price: 0 },
     { orgType: "Свободная", price: 0 },
     { orgType: "Банковская", price: 0 },
+    { orgType: "Добывающая", price: 0 },
     { orgType: 'Цех', price: 0 },
+    { orgType: 'Витрина', price: 0 },
     { orgType: 'Отдел', price: 0 },
     { orgType: 'Мастерская', price: 0 },
     { orgType: 'Магазин', price: 0 },
@@ -919,6 +922,8 @@ export async function initDatabase() {
     { orgType: 'Сектор', price: 0 },
     { orgType: 'Группа', price: 0 },
     { orgType: 'Раздел', price: 0 },
+    { orgType: 'Добывающий комплекс', price: 0 },
+    { orgType: 'Ферма', price: 0 },
   ];
 
   defaultOrgsCreationPrices.forEach(row => {

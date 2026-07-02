@@ -331,7 +331,9 @@ router.post('/icons', requireAdmin, upload.array('images', 30), (req, res) => {
       'Волонтёрская', 
       'Спортивная', 
       'Свободная',
+      'Добывающая',
       'Цех',
+      'Витрина',
       'Отдел',
       'Мастерская',
       'Магазин',
@@ -345,7 +347,9 @@ router.post('/icons', requireAdmin, upload.array('images', 30), (req, res) => {
       'Кафедра',
       'Сектор',
       'Группа',
-      'Раздел'
+      'Раздел',
+      'Добывающий комплекс',
+      'Ферма'
     ];
     if (!validTypes.includes(orgType)) {
       return res.status(400).json({ error: 'Invalid organization type' });
@@ -486,7 +490,9 @@ router.post('/covers', requireAdmin, upload.array('images', 30), (req, res) => {
       'Волонтёрская', 
       'Спортивная', 
       'Свободная',
+      'Добывающая',
       'Цех',
+      'Витрина',
       'Отдел',
       'Мастерская',
       'Магазин',
@@ -500,7 +506,9 @@ router.post('/covers', requireAdmin, upload.array('images', 30), (req, res) => {
       'Кафедра',
       'Сектор',
       'Группа',
-      'Раздел'
+      'Раздел',
+      'Добывающий комплекс',
+      'Ферма'
     ];
     const resolvedOrgType = (orgType && validTypes.includes(orgType)) ? orgType : null;
 

@@ -15,7 +15,8 @@ export default function GovernmentDashboard() {
         'Волонтёрская', 
         'Спортивная', 
         'Свободная',
-        'Банковская'
+        'Банковская',
+        'Добывающая'
     ] as const;
     type OrgFormValues = Record<typeof ROOT_ORG_TYPES[number], 0>;
 

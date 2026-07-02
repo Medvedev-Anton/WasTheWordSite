@@ -45,7 +45,10 @@ export default function OrganizationModal({
         'Банковская': '/image/organizations/commercial.jpg',
         'Волонтёрская': '/image/organizations/free_appointment.jpg',
         'Спортивная': '/image/organizations/free_appointment.jpg',
-        'Свободная': '/image/organizations/free_appointment.jpg'
+        'Свободная': '/image/organizations/free_appointment.jpg',
+        'Добывающая': '/image/organizations/production.jpg',
+        'Добывающий комплекс': '/image/organizations/production.jpg',
+        'Ферма': '/image/organizations/production.jpg'
     };
 
     useEffect(() => {
