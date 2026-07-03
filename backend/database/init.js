@@ -1072,7 +1072,6 @@ export async function initDatabase() {
 
   // Create resources table
   db.exec(`
-    drop table resources;
     CREATE TABLE IF NOT EXISTS resources(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(255) NOT NULL,
