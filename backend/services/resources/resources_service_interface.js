@@ -21,12 +21,13 @@ export default class ResourcesServiceInterface {
 
     /**
      * Создание ресурса
+     * @param {number} number
      * @param {string} name
      * @param {string} imageUrl
      * @param {number} countNeedEnergy
      * @param {number} countNeedMoney
      */
-    create(name, imageUrl, countNeedEnergy, countNeedMoney) {
+    create(number, name, imageUrl, countNeedEnergy, countNeedMoney) {
         throw new Error('create должен быть переопределен в наследнике');
     }
 

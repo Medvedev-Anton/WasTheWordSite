@@ -16,9 +16,9 @@ export default class ResourcesService extends ResourcesServiceInterface {
         }
     }
 
-    create(name, imageUrl, countNeedEnergy, countNeedMoney) {
+    create(number, name, imageUrl, countNeedEnergy, countNeedMoney) {
         try {
-            return this.mapper.create(name, imageUrl, countNeedEnergy, countNeedMoney);
+            return this.mapper.create(number, name, imageUrl, countNeedEnergy, countNeedMoney);
         }
         catch (e) {
             throw new Error(e.message);
