@@ -177,6 +177,6 @@ export interface Resource {
   id: number;
   name: string;
   imageUrl: string;
-  needEnergy: number;
-  needMoney: number;
+  countNeedEnergy: number;
+  countNeedMoney: number;
 }
