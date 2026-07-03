@@ -104,4 +104,17 @@ export default class ResourceFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Удаляет изображение ресурса
+     * @param {number} id 
+     */
+    static deleteImage(id) {
+        try {
+            return this.getService().deleteImage(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
