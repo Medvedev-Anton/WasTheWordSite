@@ -20,7 +20,7 @@ export default class ResourcesMapperInterface {
      * @param {number} countNeedEnergy
      * @param {number} countNeedMoney
      */
-    create(id, name, imageUrl, countNeedEnergy, countNeedMoney) {
+    create(number, name, imageUrl, countNeedEnergy, countNeedMoney) {
         throw new Error('create должен быть переопределен в наследнике');
     }
 
