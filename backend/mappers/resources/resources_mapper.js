@@ -44,4 +44,17 @@ export default class ResourcesMapper extends ResourcesMapperInterface {
                 id = ?
         `).run(fieldName, newValue, id);
     }
+
+    findById(id) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                resources
+            WHERE
+                id = ? 
+        `).get(id);
+
+        return result || null;
+    }
 }

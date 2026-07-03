@@ -40,4 +40,12 @@ export default class ResourcesMapperInterface {
     update(id, fieldName, newValue) {
         throw new Error('update должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает данные ресурса 
+     * @param {number} id
+     */
+    findById(id) {
+        throw new Error('findById должен быть переопределен в наследнике');
+    }
 }
