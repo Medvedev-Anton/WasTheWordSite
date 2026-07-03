@@ -43,6 +43,7 @@ export default class ResourcesController extends MainController {
      */
     create() {
         const validate = this.has([
+            'number',
             'name', 
             'image', 
             'countNeedEnergy', 
@@ -54,11 +55,11 @@ export default class ResourcesController extends MainController {
         }
 
         try {
-            const {name, countNeedEnergy, countNeedMoney} = this.request.body;
+            const {number, name, countNeedEnergy, countNeedMoney} = this.request.body;
 
             const imageUrl = getUploadedFileUrl('image');
 
-            ResourceFacade.create(name, imageUrl, countNeedEnergy, countNeedMoney);
+            ResourceFacade.create(number, name, imageUrl, countNeedEnergy, countNeedMoney);
 
             this.send(201, {
                 message: 'Success'
