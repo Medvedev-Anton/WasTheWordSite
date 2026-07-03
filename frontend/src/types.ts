@@ -175,6 +175,7 @@ export interface Message {
 
 export interface Resource {
   id: number;
+  number: number;
   name: string;
   imageUrl: string;
   countNeedEnergy: number;
