@@ -49,31 +49,31 @@ router.delete('/:id', authenticateToken, (req, res) => {
 });
 
 // Изменить номер
-router.put('/:id/number', authenticateToken, (req, res) => {
+router.patch('/:id/number', authenticateToken, (req, res) => {
     const controller = new ResourcesController(req, res);
     controller.updateNumber();
 });
 
 // Изменить имя
-router.put('/:id/name', authenticateToken, (req, res) => {
+router.patch('/:id/name', authenticateToken, (req, res) => {
     const controller = new ResourcesController(req, res);
     controller.updateName();
 });
 
 // Изменить изображение
-router.put('/:id/image', authenticateToken, resourceMediaUpload, (req, res) => {
+router.patch('/:id/image', authenticateToken, resourceMediaUpload, (req, res) => {
     const controller = new ResourcesController(req, res);
     controller.updateName();
 });
 
 // Изменить необходимое количество энерегии
-router.put('/:id/needEnergy', authenticateToken, (req, res) => {
+router.patch('/:id/needEnergy', authenticateToken, (req, res) => {
     const controller = new ResourcesController(req, res);
     controller.updateNeedEnergy();
 });
 
 // Изменить необходимое количество денег
-router.put('/:id/needMoney', authenticateToken, (req, res) => {
+router.patch('/:id/needMoney', authenticateToken, (req, res) => {
     const controller = new ResourcesController(req, res);
     controller.updateNeedMoney();
 });
