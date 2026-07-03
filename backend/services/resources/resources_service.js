@@ -36,7 +36,7 @@ export default class ResourcesService extends ResourcesServiceInterface {
 
     updateNumber(id, newNumber) {
         try {
-            return this.mapper.updateNumber(id, newNumber);
+            return this.mapper.update(id, 'id', newNumber);
         }
         catch (e) {
             throw new Error(e.message);
@@ -45,7 +45,7 @@ export default class ResourcesService extends ResourcesServiceInterface {
 
     updateName(id, newName) {
         try {
-            return this.mapper.updateName(id, newName);
+            return this.mapper.updateName(id, 'name', newName);
         }
         catch (e) {
             throw new Error(e.message);
@@ -54,7 +54,7 @@ export default class ResourcesService extends ResourcesServiceInterface {
 
     updateImageUrl(id, newImageUrl) {
         try {
-            return this.mapper.updateImageUrl(id, newImageUrl);
+            return this.mapper.updateImageUrl(id, 'imageUrl', newImageUrl);
         }
         catch (e) {
             throw new Error(e.message);
@@ -63,7 +63,7 @@ export default class ResourcesService extends ResourcesServiceInterface {
 
     updateNeedEnergy(id, newEnergy) {
         try {
-            return this.mapper.updateNeedEnergy(id, newEnergy);
+            return this.mapper.updateNeedEnergy(id, 'countNeedEnergy', newEnergy);
         }
         catch (e) {
             throw new Error(e.message);
@@ -72,7 +72,7 @@ export default class ResourcesService extends ResourcesServiceInterface {
 
     updateNeedMoney(id, newMoney) {
         try {
-            return this.mapper.updateNeedMoney(id, newMoney);
+            return this.mapper.updateNeedMoney(id, 'countNeedMoney', newMoney);
         }
         catch (e) {
             throw new Error(e.message);

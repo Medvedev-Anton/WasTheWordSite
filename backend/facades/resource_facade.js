@@ -51,6 +51,20 @@ export default class ResourceFacade {
     }
 
     /**
+     * Обновление номера ресурса
+     * @param {number} id
+     * @param {number} newNumber
+     */
+    static updateNumber(id, newNumber) {
+        try {
+            return this.getService().updateNumber(id, newNumber);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Обновление названия
      * @param {number} id
      * @param {string} newName
