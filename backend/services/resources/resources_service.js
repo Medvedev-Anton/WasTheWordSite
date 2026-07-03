@@ -1,4 +1,6 @@
 import ResourcesServiceInterface from "./resources_service_interface.js";
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 export default class ResourcesService extends ResourcesServiceInterface {
     constructor(mapper) {
@@ -62,6 +64,39 @@ export default class ResourcesService extends ResourcesServiceInterface {
     updateNeedMoney(id, newMoney) {
         try {
             return this.mapper.updateNeedMoney(id, newMoney);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    getById(id) {
+        try {
+            return this.mapper.getById(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    deleteImage(id) {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        try {
+            const resource = this.getById(id);
+
+            if (resource === null) {
+                throw new Error('Не найден ресурс с ID: ' + id);
+            }
+
+            const imageUrl = resource.imageUrl;
+
+            const filePath = path.join(__dirname, '../..', imageUrl.replace(/^\//, ''));
+            
+            if (fs.existsSync(filePath)) {
+                try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+            }
         }
         catch (e) {
             throw new Error(e.message);

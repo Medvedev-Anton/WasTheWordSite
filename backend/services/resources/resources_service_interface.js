@@ -73,4 +73,20 @@ export default class ResourcesServiceInterface {
     updateNeedMoney(id, newMoney) {
         throw new Error('updateNeedMoney должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает данные ресурса по id
+     * @param {number} id
+     */
+    getById(id) {
+        throw new Error('getById должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Удаляет файл с изображением с сервера
+     * @param {number} id
+     */
+    deleteImage(id) {
+        throw new Error('deleteImage должен быть переопределен в наследнике');
+    }
 }
