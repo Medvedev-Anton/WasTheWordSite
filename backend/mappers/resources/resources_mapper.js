@@ -17,11 +17,11 @@ export default class ResourcesMapper extends ResourcesMapperInterface {
         return result;
     }
 
-    create(name, imageUrl, countNeedEnergy, countNeedMoney) {
+    create(id, name, imageUrl, countNeedEnergy, countNeedMoney) {
         const result = db.prepare(`
             INSERT INTO
-                resources (name, imageUrl, countNeedEnergy, countNeedMoney)
-            VALUES(?, ?, ?, ?)            
+                resources (id, name, imageUrl, countNeedEnergy, countNeedMoney)
+            VALUES(?, ?, ?, ?, ?)            
         `).run(name, imageUrl, countNeedEnergy, countNeedMoney);
     }
 

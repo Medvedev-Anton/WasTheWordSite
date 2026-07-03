@@ -14,12 +14,13 @@ export default class ResourcesMapperInterface {
 
     /**
      * Создание ресурса
+     * @param {number} id
      * @param {string} name
      * @param {string} imageUrl
      * @param {number} countNeedEnergy
      * @param {number} countNeedMoney
      */
-    create(name, imageUrl, countNeedEnergy, countNeedMoney) {
+    create(id, name, imageUrl, countNeedEnergy, countNeedMoney) {
         throw new Error('create должен быть переопределен в наследнике');
     }
 
