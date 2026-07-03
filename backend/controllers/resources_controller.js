@@ -58,7 +58,7 @@ export default class ResourcesController extends MainController {
 
             const imageUrl = this.getUploadedFileUrl('image');
 
-            ResourceFacade.create(number, name, imageUrl, countNeedEnergy, countNeedMoney);
+            ResourceFacade.create(number, name, `imageUrl`, countNeedEnergy, countNeedMoney);
             
             const resources = ResourceFacade.getAll();
 
@@ -97,6 +97,37 @@ export default class ResourcesController extends MainController {
         }
         catch (e) {
             console.error('Delete resource error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обновление номера
+     */
+    updateNumber() {
+        const validate = this.has([
+            'id',
+            'number', 
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const id = parseInt(this.request.params.id);
+            const number = parseInt(this.request.body.number);
+
+            ResourceFacade.updateNumber(id, number);
+
+            this.send(200, {
+                message: 'Update success'
+            });
+        }
+        catch (e) {
+            console.error('Update resource number error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
