@@ -16,7 +16,7 @@ export default class ResourcesController extends MainController {
         }
 
         const uploaded = files[fieldName]?.[0];
-        return uploaded ? `/uploads/${uploaded.filename}` : null;
+        return uploaded ? `/uploads/resources/${uploaded.filename}` : null;
     }
 
     /**
