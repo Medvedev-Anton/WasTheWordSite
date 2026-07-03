@@ -48,6 +48,12 @@ router.delete('/:id', authenticateToken, (req, res) => {
     controller.delete();
 });
 
+// Изменить номер
+router.put('/:id/number', authenticateToken, (req, res) => {
+    const controller = new ResourcesController(req, res);
+    controller.updateNumber();
+});
+
 // Изменить имя
 router.put('/:id/name', authenticateToken, (req, res) => {
     const controller = new ResourcesController(req, res);
