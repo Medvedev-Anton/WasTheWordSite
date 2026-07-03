@@ -63,7 +63,7 @@ router.patch('/:id/name', authenticateToken, (req, res) => {
 // Изменить изображение
 router.patch('/:id/image', authenticateToken, resourceMediaUpload, (req, res) => {
     const controller = new ResourcesController(req, res);
-    controller.updateName();
+    controller.updateImage();
 });
 
 // Изменить необходимое количество энерегии
