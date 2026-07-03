@@ -57,7 +57,7 @@ export default class ResourcesController extends MainController {
         try {
             const {number, name, countNeedEnergy, countNeedMoney} = this.request.body;
 
-            const imageUrl = getUploadedFileUrl('image');
+            const imageUrl = this.getUploadedFileUrl('image');
 
             ResourceFacade.create(number, name, imageUrl, countNeedEnergy, countNeedMoney);
 
