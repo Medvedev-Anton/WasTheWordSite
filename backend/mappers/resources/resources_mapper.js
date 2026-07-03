@@ -22,7 +22,7 @@ export default class ResourcesMapper extends ResourcesMapperInterface {
             INSERT INTO
                 resources (id, name, imageUrl, countNeedEnergy, countNeedMoney)
             VALUES(?, ?, ?, ?, ?)            
-        `).run(name, imageUrl, countNeedEnergy, countNeedMoney);
+        `).run(id, name, imageUrl, countNeedEnergy, countNeedMoney);
     }
 
     delete(id) {
