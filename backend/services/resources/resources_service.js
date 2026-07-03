@@ -34,6 +34,15 @@ export default class ResourcesService extends ResourcesServiceInterface {
         }
     }
 
+    updateNumber(id, newNumber) {
+        try {
+            return this.mapper.updateNumber(id, newNumber);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     updateName(id, newName) {
         try {
             return this.mapper.updateName(id, newName);

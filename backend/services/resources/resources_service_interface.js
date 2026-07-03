@@ -40,6 +40,15 @@ export default class ResourcesServiceInterface {
     }
 
     /**
+     * Обновление номера ресурса
+     * @param {number} id
+     * @param {number} newNumber
+     */
+    updateNumber(id, newNumber) {
+        throw new Error('updateNumber должен быть переопределен в наследнике');
+    }
+
+    /**
      * Обновление названия
      * @param {number} id
      * @param {string} newName
