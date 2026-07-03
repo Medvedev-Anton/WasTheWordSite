@@ -22,14 +22,15 @@ export default class ResourceFacade {
 
     /**
      * Создание ресурса
+     * @param {number} number
      * @param {string} name
      * @param {string} imageUrl
      * @param {number} countNeedEnergy
      * @param {number} countNeedMoney
      */
-    static create(name, imageUrl, countNeedEnergy, countNeedMoney) {
+    static create(number, name, imageUrl, countNeedEnergy, countNeedMoney) {
         try {
-            return this.getService().create(name, imageUrl, countNeedEnergy, countNeedMoney);
+            return this.getService().create(number, name, imageUrl, countNeedEnergy, countNeedMoney);
         }
         catch (e) {
             throw new Error(e.message);
