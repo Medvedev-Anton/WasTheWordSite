@@ -58,7 +58,7 @@ export default class ResourcesController extends MainController {
 
             const imageUrl = this.getUploadedFileUrl('image');
 
-            ResourceFacade.create(number, name, `imageUrl`, countNeedEnergy, countNeedMoney);
+            ResourceFacade.create(number, name, imageUrl, countNeedEnergy, countNeedMoney);
             
             const resources = ResourceFacade.getAll();
 
