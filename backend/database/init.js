@@ -1070,6 +1070,17 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create resources table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS resources(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      imageUrl TEXT NOT NULL,
+      countNeedEnergy INT NOT NULL,
+      countNeedMoney INT NOT NULL
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
