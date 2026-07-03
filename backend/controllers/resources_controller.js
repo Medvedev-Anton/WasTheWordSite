@@ -45,7 +45,6 @@ export default class ResourcesController extends MainController {
         const validate = this.has([
             'number',
             'name', 
-            'image', 
             'countNeedEnergy', 
             'countNeedMoney'
         ]);
