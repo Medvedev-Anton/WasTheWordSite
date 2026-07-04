@@ -57,12 +57,12 @@ export default class CompoundItemsController extends MainController {
 
         try {
             const {
-                number, name, number, itemsParts
+                number, name, itemsParts
             } = this.request.body;
 
             const imageUrl = this.getUploadedFileUrl('image');
 
-            CompoundItemsFacade.create(number, name, imageUrl, number, itemsParts);
+            CompoundItemsFacade.create(number, name, imageUrl, itemsParts);
             
             const items = CompoundItemsFacade.getAll();
 
