@@ -1,4 +1,5 @@
 import CompoundItemsMapperInterface from "./compound_items_mapper_interface.js";
+import { db } from "../../database/init.js";
 
 export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
     constructor() {
