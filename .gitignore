@@ -21,6 +21,7 @@ backend/database/database.db
 backend/uploads/messages
 backend/uploads/organizations/*
 backend/uploads/resources/*
+backend/uploads/simple-items/*
 !backend/uploads/organizations/default.jpg
 !backend/uploads/rangs
 # backend/*
