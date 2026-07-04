@@ -1,6 +1,7 @@
 import ResourcesServiceInterface from "./resources_service_interface.js";
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import path from 'path';
 
 export default class ResourcesService extends ResourcesServiceInterface {
     constructor(mapper) {
@@ -81,7 +82,7 @@ export default class ResourcesService extends ResourcesServiceInterface {
 
     getById(id) {
         try {
-            return this.mapper.getById(id);
+            return this.mapper.findById(id);
         }
         catch (e) {
             throw new Error(e.message);
