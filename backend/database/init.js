@@ -1103,7 +1103,8 @@ export async function initDatabase() {
     CREATE TABLE IF NOT EXISTS compound_items(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(255) NOT NULL,
-      imageUrl TEXT NOT NULL
+      imageUrl TEXT NOT NULL,
+      number INTETGER NOT NULL
     )  
   `);
 
