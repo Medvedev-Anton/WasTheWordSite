@@ -91,8 +91,11 @@ export default class ResourcesController extends MainController {
 
             ResourceFacade.delete(id);
 
+            const resources = ResourceFacade.getAll();
+
             this.send(200, {
-                message: 'Success'
+                message: 'Success',
+                resources: resources
             });
         }
         catch (e) {
