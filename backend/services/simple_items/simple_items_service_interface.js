@@ -1,4 +1,4 @@
-import SimpleItemsMapperInterface from "../../mappers/simple_items/simple_items_mapper_interface/.js";
+import SimpleItemsMapperInterface from "../../mappers/simple_items/simple_items_mapper_interface.js";
 
 export default class SimpleItemsServiceInterface {
     /**
