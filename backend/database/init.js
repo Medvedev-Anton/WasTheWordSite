@@ -1114,6 +1114,7 @@ export async function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       compoundItemId INTEGER NOT NULL,
       partItemId INTEGER NOT NULL,
+      countNeed INTEGER NOT NULL,
       FOREIGN KEY (compoundItemId) REFERENCES compound_items(id) ON DELETE CASCADE,
       FOREIGN KEY (partItemId) REFERENCES simple_items(id) ON DELETE CASCADE
     )  

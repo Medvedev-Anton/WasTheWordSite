@@ -96,10 +96,11 @@ export default class CompoundItemsFacade {
      * Создание части предмета
      * @param {number} compoundItemId
      * @param {number} partItemId
+     * @param {number} countNeed
      */
-    static createPart(compoundItemId, partItemId) {
+    static createPart(compoundItemId, partItemId, countNeed) {
         try {
-            return this.getService().createPart(compoundItemId, partItemId);
+            return this.getService().createPart(compoundItemId, partItemId, countNeed);
         }
         catch (e) {
             throw new Error(e.message);

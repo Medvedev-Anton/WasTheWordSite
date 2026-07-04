@@ -92,12 +92,12 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
         `).run(newValue, id);
     }
 
-    createPart(compoundItemId, partItemId) {
+    createPart(compoundItemId, partItemId, countNeed) {
         db.prepare(`
             INSERT INTO
-                compound_items_parts (compoundItemId, partItemId)    
-            VALUES (?, ?)
-        `).run(compoundItemId, partItemId);
+                compound_items_parts (compoundItemId, partItemId, countNeed)    
+            VALUES (?, ?, ?)
+        `).run(compoundItemId, partItemId, countNeed);
     }
 
     deletePart(partId) {

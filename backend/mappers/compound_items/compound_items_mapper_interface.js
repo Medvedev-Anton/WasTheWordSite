@@ -46,8 +46,9 @@ export default class CompoundItemsMapperInterface {
      * Создание части предмета
      * @param {number} compoundItemId
      * @param {number} partItemId
+     * @param {number} countNeed
      */
-    createPart(compoundItemId, partItemId) {
+    createPart(compoundItemId, partItemId, countNeed) {
         throw new Error('createPart должен быть переопределен в наследнике');
     }
 

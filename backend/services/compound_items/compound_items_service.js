@@ -63,9 +63,9 @@ export default class CompoundItemsService extends CompoundItemsServiceInterface 
         }
     }
 
-    createPart(compoundItemId, partItemId) {
+    createPart(compoundItemId, partItemId, countNeed) {
         try {
-            return this.mapper.createPart(compoundItemId, partItemId);
+            return this.mapper.createPart(compoundItemId, partItemId, countNeed);
         }
         catch (e) {
             throw new Error(e.message);
