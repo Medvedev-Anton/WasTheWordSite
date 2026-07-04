@@ -6,7 +6,7 @@ export default class SimpleItemsMapperInterface {
     }
 
     /**
-     * Возвращает все ресурсы
+     * Возвращает все предметы
      */
     findAll() {
         throw new Error('findAll должен быть переопределен в наследнике');
@@ -27,7 +27,7 @@ export default class SimpleItemsMapperInterface {
     }
 
     /**
-     * Удаление ресурса
+     * Удаление предмета
      * @param {number} id
      */
     delete(id) {
@@ -35,7 +35,7 @@ export default class SimpleItemsMapperInterface {
     }
 
     /**
-     * Обновление поля ресурса
+     * Обновление поля предмета
      * @param {number} id
      * @param {string} fieldName
      * @param {any} newValue
@@ -45,7 +45,7 @@ export default class SimpleItemsMapperInterface {
     }
 
     /**
-     * Возвращает данные ресурса 
+     * Возвращает данные предмета 
      * @param {number} id
      */
     findById(id) {

@@ -13,14 +13,14 @@ export default class SimpleItemsServiceInterface {
     }
 
     /**
-     * Возвращает все ресурсы
+     * Возвращает все предметы
      */
     getAll() {
         throw new Error('getAll должен быть переопределен в наследнике');
     }
 
     /**
-     * Создание ресурса
+     * Создание предмета
      * @param {number} id
      * @param {string} name
      * @param {string} imageUrl
@@ -34,7 +34,7 @@ export default class SimpleItemsServiceInterface {
     }
 
     /**
-     * Удаление ресурса
+     * Удаление предмета
      * @param {number} id
      */
     delete(id) {
@@ -42,7 +42,7 @@ export default class SimpleItemsServiceInterface {
     }
 
     /**
-     * Обновление номера ресурса
+     * Обновление номера предмета
      * @param {number} id
      * @param {number} newNumber
      */
@@ -105,7 +105,7 @@ export default class SimpleItemsServiceInterface {
     }
 
     /**
-     * Возвращает данные ресурса по id
+     * Возвращает данные предмета по id
      * @param {number} id
      */
     getById(id) {
