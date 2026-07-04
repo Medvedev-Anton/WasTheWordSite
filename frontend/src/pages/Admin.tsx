@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { User, Post, Organization, Resource } from '../types';
+import { User, Post, Organization, Resource, SimpleItem } from '../types';
 import { getMediaUrl } from '../config';
 import './Admin.css';
 import IconEditModal from '../components/IconEditModal';
@@ -102,7 +102,8 @@ export default function Admin() {
   'heroes' | 
   'finance' | 
   'chats' |
-  'resources'
+  'resources' |
+  'simple-items'
   >('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -166,6 +167,17 @@ export default function Admin() {
   const [newResourceNeedEnergy, setNewResourceNeedEnergy] = useState<number | null>(null);
   const [newResourceNeedMoney, setNewResourceNeedMoney] = useState<number | null>(null);
   const [resourcesList, setResourcesList] = useState<Resource[]>([]);
+
+  // Simple items states
+  const [newSimpleItemImage, setNewSimpleItemImage] = useState(null);
+  const [newSimpleItemImageUrl, setNewSimpleItemImageUrl] = useState<string | null>(null);
+  const [newSimpleItemNumber, setNewSimpleItemNumber] = useState<number | null>(null);
+  const [newSimpleItemName, setNewSimpleItemName] = useState<string | null>(null);
+  const [newSimpleItemNeedEnergy, setNewSimpleItemNeedEnergy] = useState<number | null>(null);
+  const [newSimpleItemNeedMoney, setNewSimpleItemNeedMoney] = useState<number | null>(null);
+  const [newSimpleItemNeedResourceId, setNewSimpleItemNeedResourceId] = useState<number | null>(null);
+  const [newSimpleItemCountNeedResource, setNewSimpleItemCountNeedResource] = useState<number | null>(null);
+  const [simpleItemsList, setSimpleItemsList] = useState<SimpleItem[]>([]);
 
   // Resources ref
   const uploadNewResourceImageRef = useRef(null);
@@ -401,6 +413,14 @@ export default function Admin() {
     };
   }, [newResourceImage]);
 
+    useEffect(() => {
+    return () => {
+      if (newSimpleItemImage) {
+        URL.revokeObjectURL(newSimpleItemImage);
+      }
+    };
+  }, [newSimpleItemImage]);
+
   useEffect(() => {
 
   }, []);
@@ -461,6 +481,11 @@ export default function Admin() {
 
       else if (activeTab === 'resources') {
         fetchAllResources();
+      }
+
+      else if (activeTab === 'simple-items') {
+        fetchAllResources();
+        fetchAllSimpleItems();
       }
 
       else {
@@ -700,7 +725,7 @@ export default function Admin() {
     });
   }
 
-  // Resources funcs
+  /*** Resources funcs ***/
 
   // Загрузка всех ресурсов
   const fetchAllResources = async () => {
@@ -964,6 +989,330 @@ export default function Admin() {
     }
   }
 
+  /*** Simple items funcs ***/
+
+  // Загрузка всех предметов
+  const fetchAllSimpleItems = async () => {
+    try {
+      const result = await axios.get('/api/simple-items');
+      setSimpleItemsList(result.data.items);
+    }
+    catch (e) {
+      alert('Не удалось загрузить предметы');
+    }
+  }
+
+  // Загрузка изображения нового предмета
+  const handleChangeNewSimpleItemImage = (e: any) => {
+    const file = e.target.files[0];
+    setNewSimpleItemImage(file);
+
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Пожалуйста, выберите изображение');
+        return;
+      }
+      
+      const imageUrl = URL.createObjectURL(file);
+      setNewSimpleItemImageUrl(imageUrl);
+    }
+  }
+
+  // Обработка изменения номера нового предмета
+  const handleChangeNewSimpleItemNumber = (e: any) => {
+    setNewSimpleItemNumber(e.target.value);
+  }
+
+  // Обработка изменения названия нового предмета
+  const handleChangeNewSimpleItemName = (e: any) => {
+    setNewSimpleItemName(e.target.value);
+  }
+
+  // Обработка изменения необходимого количества энергии нового предмета
+  const handleChangeNewSimpleItemNeedEnergy = (e: any) => {
+    setNewSimpleItemNeedEnergy(e.target.value);
+  }
+
+  // Обработка изменения необходимого количества денег нового предмета
+  const handleChangeNewSimpleItemNeedMoney = (e: any) => {
+    setNewSimpleItemNeedMoney(e.target.value);
+  }
+
+  // Обработка изменения необходимого ресурса для нового предмета
+  const handleChangeNewSimpleItemNeedResourceId = (e: any) => {
+    setNewSimpleItemNeedResourceId(e.target.value);
+  }
+
+  // Обработка изменения количества необходимого ресурса для нового предмета
+  const handleChangeNewSimpleItemCountNeedResource = (e: any) => {
+    setNewSimpleItemCountNeedResource(e.target.value);
+  }
+
+  // Обработка добавления нового предмета
+  const handleClickAddNewSimpleItem = async (e: any) => {
+    e.preventDefault();
+
+    if (
+      newSimpleItemNumber === null ||
+      newSimpleItemName === null ||
+      newSimpleItemName.length === 0 ||
+      newSimpleItemImage === null ||
+      newSimpleItemNeedEnergy === null ||
+      newSimpleItemNeedMoney === null ||
+      newSimpleItemNeedResourceId === null ||
+      newSimpleItemCountNeedResource === null
+    ) {
+      alert('Все поля должны быть заполнены');
+      return false;
+    }
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      const number = formData.get('number') as string;
+      const name = formData.get('name') as string;
+      const energy = formData.get('energy') as string;
+      const money = formData.get('money') as string;
+      const image = formData.get('image') as File;
+      const needResourceId = formData.get('needResourceId') as string;
+      const countNeedResource = formData.get('countNeedResource') as string;
+
+      const data = new FormData();
+      data.append('number', number);
+      data.append('name', name);
+      data.append('countNeedEnergy', energy);
+      data.append('countNeedMoney', money);
+      data.append('image', image);
+      data.append('needResourceId', needResourceId);
+      data.append('countNeedResource', countNeedResource);
+
+      const result = await axios.post('/api/simple-items', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      cleareAddNewSimpleItemForm();
+      setSimpleItemsList(result.data.items);
+    }
+    catch (e) {
+      alert('Не удалось создать предмет');
+    }
+  }
+
+  // Очищает форму добавления нового предмета
+  const cleareAddNewSimpleItemForm = () => {
+    setNewSimpleItemNumber(null);
+    setNewSimpleItemName(null);
+    setNewSimpleItemImage(null);
+    setNewSimpleItemImageUrl(null);
+    setNewSimpleItemNeedEnergy(null);
+    setNewSimpleItemNeedMoney(null);
+    setNewSimpleItemNeedResourceId(null);
+    setNewSimpleItemCountNeedResource(null);
+  }
+
+  // Отправка запроса на обновление номера предмета
+  const handleFetchUpdateSimpleItemNumber = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/simple-items/${id}/number`, {
+        number: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить номер предмета');
+    }
+  }
+
+  // Изменение номера предмета
+  const handleChangeSimpleItemNumber = (itemId: number, e: any) => {
+    const item = simpleItemsList.find(r => r.id === itemId);
+
+    if (item !== undefined && item !== null) {
+      setSimpleItemsList(prev => prev.map(r => {
+        if (r.id === itemId) {
+          return {
+            ...r,
+            number: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение названия предмета
+  const handleFetchUpdateSimpleItemName = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/simple-items/${id}/name`, {
+        name: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить имя предмета');
+    }
+  }
+
+  // Изменение названия предмета
+  const handleChangeSimpleItemName = (itemId: number, e: any) => {
+    const item = simpleItemsList.find(r => r.id === itemId);
+
+    if (item !== undefined && item !== null) {
+      setSimpleItemsList(prev => prev.map(r => {
+        if (r.id === itemId) {
+          return {
+            ...r,
+            name: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение количества необходимой энергии предмета
+  const handleFetchUpdateSimpleItemNeedEnergy = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/simple-items/${id}/needEnergy`, {
+        energy: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить энергию предмета');
+    }
+  }
+
+  // Изменение количества необходимой энергии предмета
+  const handleChangeSimpleItemNeedEnergy = (itemId: number, e: any) => {
+    const item = simpleItemsList.find(r => r.id === itemId);
+
+    if (item !== undefined && item !== null) {
+      setSimpleItemsList(prev => prev.map(r => {
+        if (r.id === itemId) {
+          return {
+            ...r,
+            countNeedEnergy: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение количества необходимых денег предмета
+  const handleFetchUpdateSimpleItemNeedMoney = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/simple-items/${id}/needMoney`, {
+        money: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить деньги предмета');
+    }
+  }
+
+  // Изменение количества необходимых денег предмета
+  const handleChangeSimpleItemNeedMoney = (itemId: number, e: any) => {
+    const item = simpleItemsList.find(r => r.id === itemId);
+
+    if (item !== undefined && item !== null) {
+      setSimpleItemsList(prev => prev.map(r => {
+        if (r.id === itemId) {
+          return {
+            ...r,
+            countNeedMoney: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение необходимого ресурса для предмета
+  const handleFetchUpdateSimpleItemNeedResourceId = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/simple-items/${id}/needResource`, {
+        newResourceId: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить необходимый ресурс для предмета');
+    }
+  }
+
+  // Отправка запроса на изменение количества необходимого ресурса для предмета
+  const handleFetchUpdateSimpleItemNeedCountResource = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/simple-items/${id}/needResourceCount`, {
+        newResourceCount: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить необходимое количество ресурс для предмета');
+    }
+  }
+
+  // Изменение количества необходимого ресурса предмета
+  const handleChangeSimpleItemNeedCountResource = (itemId: number, e: any) => {
+    const item = simpleItemsList.find(r => r.id === itemId);
+
+    if (item !== undefined && item !== null) {
+      setSimpleItemsList(prev => prev.map(r => {
+        if (r.id === itemId) {
+          return {
+            ...r,
+            countNeedResource: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение изображения предмета
+  const handleFetchUpdateSimpleItemImage = async (id: number, e: any) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', e.target.files[0]);
+
+      const result = await axios.patch(`/api/simple-items/${id}/image`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const item = simpleItemsList.find(r => r.id === id);
+
+      if (item !== undefined && item !== null) {
+        setSimpleItemsList(prev => prev.map(r => {
+          if (r.id === id) {
+            return {
+              ...r,
+              imageUrl: result.data.newImageUrl
+            }
+          }
+
+          return r;
+        }));
+      }
+    }
+    catch (e) {
+      alert('Не удалось обновить изображение предмета');
+    }
+  }
+
+  // Отправка запроса на удаление предмета
+  const handleFetchDeleteSimpleItem = async (id: number) => {
+    try {
+      const result = await axios.delete(`/api/simple-items/${id}`);
+
+      setSimpleItemsList(result.data.items);
+    }
+    catch (e) {
+      alert('Не удалось удалить предмет');
+    }
+  }
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
@@ -1026,6 +1375,13 @@ export default function Admin() {
           onClick={() => setActiveTab('resources')}
         >
           Ресурсы
+        </button>
+
+        <button
+          className={activeTab === 'simple-items' ? 'active' : ''}
+          onClick={() => setActiveTab('simple-items')}
+        >
+          Простые предметы
         </button>
       </div>
 
@@ -1711,7 +2067,7 @@ export default function Admin() {
                   </div>
                 </form>
                 <div className="admin-resources-table__content__rows">
-                  {resourcesList.map(resource => (
+                  {resourcesList?.map(resource => (
                     <div 
                       className="admin-resources-table__content__rows-row"
                       key={resource.id}
@@ -1770,6 +2126,234 @@ export default function Admin() {
                         <button
                           className="admin-resources-table__content__rows-ceil__add-btn"
                           onClick={() => handleFetchDeleteResource(resource.id)}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'simple-items' && (
+          <div className='admin-simple-items-wrapper'>
+            <div className="admin-simple-items-table">
+              <div className="admin-simple-items-table__heading">
+                <div className="admin-simple-items-table__heading-ceil">
+                  <span>
+                    Номер
+                  </span>
+                </div>
+                <div className="admin-simple-items-table__heading-ceil">
+                  <span>
+                    Название
+                  </span>
+                </div>
+                <div className="admin-simple-items-table__heading-ceil">
+                  <span>
+                    Энергия
+                  </span>
+                </div>
+                <div className="admin-simple-items-table__heading-ceil">
+                  <span>
+                    Деньги
+                  </span>
+                </div>
+                <div className="admin-simple-items-table__heading-ceil">
+                  <span>
+                    Ресурс
+                  </span>
+                </div>
+                <div className="admin-simple-items-table__heading-ceil">
+                  <span>
+                    Количество ресурса
+                  </span>
+                </div>
+                <div className="admin-simple-items-table__heading-ceil">
+                  <span>
+                    Картинка
+                  </span>
+                </div>
+                <div className="admin-simple-items-table__heading-ceil">
+
+                </div>
+              </div>
+              <div className="admin-simple-items-table__content">
+                <form 
+                  className="admin-simple-items-table__adding-new"
+                  onSubmit={handleClickAddNewSimpleItem}
+                >
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <input 
+                      type="number" 
+                      value={newSimpleItemNumber || ''}
+                      onChange={handleChangeNewSimpleItemNumber}
+                      name="number"
+                    />
+                  </div>
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <input 
+                      type="text" 
+                      value={newSimpleItemName || ''}
+                      onChange={handleChangeNewSimpleItemName}
+                      name="name"
+                    />
+                  </div>
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <input 
+                      type="number" 
+                      value={newSimpleItemNeedEnergy || ''}
+                      onChange={handleChangeNewSimpleItemNeedEnergy}
+                      name="energy"
+                    />
+                  </div>
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <input 
+                      type="number"
+                      value={newSimpleItemNeedMoney || ''}
+                      onChange={handleChangeNewSimpleItemNeedMoney} 
+                      name="money"
+                    />
+                  </div>
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <select
+                      onChange={handleChangeNewSimpleItemNeedResourceId}
+                      name='needResourceId'
+                      value={newSimpleItemNeedResourceId || undefined}
+                    >
+                      <option value={undefined}>
+                        Не выбрано
+                      </option>
+                      {resourcesList?.map(resource => (
+                        <option 
+                          key={resource.id} 
+                          value={resource.id}
+                        >
+                          {resource.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <input 
+                      type="number"
+                      value={newSimpleItemCountNeedResource || ''}
+                      onChange={handleChangeNewSimpleItemCountNeedResource} 
+                      name="countNeedResource"
+                    />
+                  </div>
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <div className="admin-simple-items-table__adding-new-ceil__image-displaying">
+                      {newSimpleItemImageUrl && (
+                        <img src={newSimpleItemImageUrl} alt="new resource image" />
+                      )}                      
+                    </div>
+                    <label htmlFor="new-resource-upload-image" className='admin-simple-items-table__adding-new-ceil__upload-btn'>
+                      Загрузить
+                      <input 
+                        className="admin-simple-items-table__adding-new-ceil__upload-file"
+                        type="file" 
+                        accept='image/*'
+                        onChange={handleChangeNewSimpleItemImage}
+                        id='new-resource-upload-image'
+                        name="image"
+                      />
+                    </label>
+                  </div>
+                  <div className="admin-simple-items-table__adding-new-ceil">
+                    <button
+                      className="admin-simple-items-table__adding-new-ceil__add-btn"
+                    >
+                      Добавить
+                    </button>
+                  </div>
+                </form>
+                <div className="admin-simple-items-table__content__rows">
+                  {simpleItemsList?.map(item => (
+                    <div 
+                      className="admin-simple-items-table__content__rows-row"
+                      key={item.id}
+                    >
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={item.number} 
+                            onBlur={(e) => handleFetchUpdateSimpleItemNumber(item.id, e)}
+                            onChange={(e) => handleChangeSimpleItemNumber(item.id, e)}
+                        />
+                      </div>
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <input 
+                            type="text"
+                            value={item.name} 
+                            onBlur={(e) => handleFetchUpdateSimpleItemName(item.id, e)}
+                            onChange={(e) => handleChangeSimpleItemName(item.id, e)}
+                        />
+                      </div>
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={item.countNeedEnergy} 
+                            onBlur={(e) => handleFetchUpdateSimpleItemNeedEnergy(item.id, e)}
+                            onChange={(e) => handleChangeSimpleItemNeedEnergy(item.id, e)}
+                        />
+                      </div>
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={item.countNeedMoney} 
+                            onBlur={(e) => handleFetchUpdateSimpleItemNeedMoney(item.id, e)}
+                            onChange={(e) => handleChangeSimpleItemNeedMoney(item.id, e)}
+                        />
+                      </div>
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <select
+                          onChange={(e) => handleFetchUpdateSimpleItemNeedResourceId(item.id, e)}
+                          value={item.needResourceId}
+                        >
+                          {resourcesList?.map(resource => (
+                            <option 
+                              key={resource.id} 
+                              value={resource.id}
+                            >
+                              {resource.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={item.countNeedResource} 
+                            onBlur={(e) => handleFetchUpdateSimpleItemNeedCountResource(item.id, e)}
+                            onChange={(e) => handleChangeSimpleItemNeedCountResource(item.id, e)}
+                        />
+                      </div>
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <div className="admin-simple-items-table__content__rows-ceil__image-displaying">
+                          {item.imageUrl && (
+                            <img src={item.imageUrl} alt="new resource image" />
+                          )}                      
+                        </div>
+                        <label htmlFor="resource-upload-image" className='admin-simple-items-table__content__rows-ceil__upload-btn'>
+                          Загрузить
+                          <input 
+                            className="admin-simple-items-table__content__rows-ceil__upload-file"
+                            type="file" 
+                            accept='image/*'
+                            id='resource-upload-image'
+                            name="image"
+                            onChange={(e) => handleFetchUpdateSimpleItemImage(item.id, e)}
+                          />
+                        </label>
+                      </div>
+                      <div className="admin-simple-items-table__content__rows-ceil">
+                        <button
+                          className="admin-simple-items-table__content__rows-ceil__add-btn"
+                          onClick={() => handleFetchDeleteSimpleItem(item.id)}
                         >
                           Удалить
                         </button>
