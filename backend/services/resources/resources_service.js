@@ -28,6 +28,7 @@ export default class ResourcesService extends ResourcesServiceInterface {
 
     delete(id) {
         try {
+            this.deleteImage(id);
             return this.mapper.delete(id);
         }
         catch (e) {
