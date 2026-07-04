@@ -182,7 +182,8 @@ export default class ResourcesController extends MainController {
             ResourceFacade.updateImageUrl(id, uploadedImageUrl);
 
             this.send(200, {
-                update: 'Success'
+                update: 'Success',
+                newImageUrl: uploadedImageUrl
             });
         }
         catch (e) {
