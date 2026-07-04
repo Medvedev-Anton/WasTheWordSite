@@ -13,7 +13,7 @@ export default class SimpleItemsMapperInterface {
     }
 
     /**
-     * Создание ресурса
+     * Создание предмета
      * @param {number} id
      * @param {string} name
      * @param {string} imageUrl
