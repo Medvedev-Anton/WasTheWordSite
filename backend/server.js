@@ -19,6 +19,7 @@ import orgCreationPriceRouter from './routes/org-creation-price.js';
 import heroesRouter from './routes/heroes.js';
 import energyRouter from './routes/energy.js';
 import resourcesRouter from './routes/resources.js';
+import simpleItemsRouter from './routes/simple_items.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -71,7 +72,8 @@ app.use('/api/orgs/creation-prices', orgCreationPriceRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/heroes', heroesRouter);
 app.use('/api/energy', energyRouter);
-app.use('/api/resources', resourcesRouter)
+app.use('/api/resources', resourcesRouter);
+app.use('/api/simple-items', simpleItemsRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
