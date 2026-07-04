@@ -1082,6 +1082,21 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create simple items table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS simple_items(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      imageUrl TEXT NOT NULL,
+      countNeedEnergy INT NOT NULL,
+      countNeedMoney INT NOT NULL,
+      number INTEGER NOT NULL,
+      resourceId INTEGER NOT NULL,
+      countNeedResource INTEGER NOT NULL,
+      FOREIGN KEY (resourceId) REFERENCES resources(id)
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
