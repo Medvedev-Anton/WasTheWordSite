@@ -1,0 +1,134 @@
+import SimpleItemsServiceInterface from "./simple_items_service_interface.js";
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import path from 'path';
+
+export default class SimpleItemsService extends SimpleItemsServiceInterface {
+    constructor(mapper) {
+        super(mapper);
+    }
+
+    getAll() {
+        try {
+            return this.mapper.findAll();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    create(number, name, imageUrl, countNeedEnergy, countNeedMoney, resourceId, countNeedResource) {
+        try {
+            return this.mapper.create(number, name, imageUrl, countNeedEnergy, countNeedMoney, resourceId, countNeedResource);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    delete(id) {
+        try {
+            this.deleteImage(id);
+            return this.mapper.delete(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateNumber(id, newNumber) {
+        try {
+            return this.mapper.update(id, 'number', newNumber);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateName(id, newName) {
+        try {
+            return this.mapper.update(id, 'name', newName);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateImageUrl(id, newImageUrl) {
+        try {
+            return this.mapper.update(id, 'imageUrl', newImageUrl);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateNeedEnergy(id, newEnergy) {
+        try {
+            return this.mapper.update(id, 'countNeedEnergy', newEnergy);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateNeedMoney(id, newMoney) {
+        try {
+            return this.mapper.update(id, 'countNeedMoney', newMoney);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateNeedResourceId(id, newResourceId) {
+        try {
+            return this.mapper.update(id, 'needResourceId', newResourceId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateCountNeedResource(id, newResourceCount) {
+        try {
+            return this.mapper.update(id, 'countNeedResource', newResourceCount);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    getById(id) {
+        try {
+            return this.mapper.findById(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    deleteImage(id) {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        try {
+            const item = this.getById(id);
+
+            if (item === null) {
+                throw new Error('Не найден предмет с ID: ' + id);
+            }
+
+            const imageUrl = item.imageUrl;
+
+            const filePath = path.join(__dirname, '../..', imageUrl.replace(/^\//, ''));
+            
+            if (fs.existsSync(filePath)) {
+                try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+            }
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+}
