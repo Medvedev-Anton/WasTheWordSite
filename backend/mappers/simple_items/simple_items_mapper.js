@@ -16,12 +16,12 @@ export default class SimpleItemsMapper extends SimpleItemsMapperInterface {
         return result;
     }
 
-    create(number, name, imageUrl, countNeedEnergy, countNeedMoney, resourceId, countNeedResource) {
+    create(number, name, imageUrl, countNeedEnergy, countNeedMoney, needResourceId, countNeedResource) {
         const result = db.prepare(`
             INSERT INTO
-                simple_items (number, name, imageUrl, countNeedEnergy, countNeedMoney, resourceId, countNeedResource)
+                simple_items (number, name, imageUrl, countNeedEnergy, countNeedMoney, needResourceId, countNeedResource)
             VALUES(?, ?, ?, ?, ?, ?, ?)            
-        `).run(number, name, imageUrl, countNeedEnergy, countNeedMoney, resourceId, countNeedResource);
+        `).run(number, name, imageUrl, countNeedEnergy, countNeedMoney, needResourceId, countNeedResource);
     }
 
     delete(id) {

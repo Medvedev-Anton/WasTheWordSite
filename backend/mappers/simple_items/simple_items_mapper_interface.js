@@ -19,10 +19,10 @@ export default class SimpleItemsMapperInterface {
      * @param {string} imageUrl
      * @param {number} countNeedEnergy
      * @param {number} countNeedMoney
-     * @param {number} resourceId
+     * @param {number} needResourceId
      * @param {number} countNeedResource
      */
-    create(number, name, imageUrl, countNeedEnergy, countNeedMoney, resourceId, countNeedResource) {
+    create(number, name, imageUrl, countNeedEnergy, countNeedMoney, needResourceId, countNeedResource) {
         throw new Error('create должен быть переопределен в наследнике');
     }
 
