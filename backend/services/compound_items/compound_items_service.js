@@ -17,9 +17,9 @@ export default class CompoundItemsService extends CompoundItemsServiceInterface 
         }
     }
 
-    create(number, name, imageUrl, number, itemsParts) {
+    create(number, name, imageUrl, itemsParts) {
         try {
-            return this.mapper.create(number, name, imageUrl, number, itemsParts);
+            return this.mapper.create(number, name, imageUrl, itemsParts);
         }
         catch (e) {
             throw new Error(e.message);

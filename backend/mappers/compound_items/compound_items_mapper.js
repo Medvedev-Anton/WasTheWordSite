@@ -47,7 +47,7 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
         return result;
     }
 
-    create(number, name, imageUrl, number, itemsParts) {
+    create(number, name, imageUrl, itemsParts) {
         const transaction = db.transaction(() => {
             db.prepare(`
                 INSERT INTO 

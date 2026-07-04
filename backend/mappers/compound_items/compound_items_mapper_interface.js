@@ -14,13 +14,13 @@ export default class CompoundItemsMapperInterface {
 
     /**
      * Создание предмета
-     * @param {number} id
+     * @param {number} number
      * @param {string} name
      * @param {string} imageUrl
      * @param {number} number
      * @param {Array<Record<string, number>>} itemsParts
      */
-    create(number, name, imageUrl, number, itemsParts) {
+    create(number, name, imageUrl, itemsParts) {
         throw new Error('create должен быть переопределен в наследнике');
     }
 

@@ -28,9 +28,9 @@ export default class CompoundItemsFacade {
      * @param {number} number
      * @param {Array<Record<string, number>>} itemsParts
      */
-    static create(number, name, imageUrl, number, itemsParts) {
+    static create(number, name, imageUrl, itemsParts) {
         try {
-            return this.getService().create(number, name, imageUrl, number, itemsParts);
+            return this.getService().create(number, name, imageUrl, itemsParts);
         }
         catch (e) {
             throw new Error(e.message);
