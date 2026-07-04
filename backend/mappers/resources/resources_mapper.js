@@ -39,10 +39,10 @@ export default class ResourcesMapper extends ResourcesMapperInterface {
             UPDATE
                 resources
             SET
-                ? = ?
+                ${fieldName} = ?
             WHERE
                 id = ?
-        `).run(fieldName, newValue, id);
+        `).run(newValue, id);
     }
 
     findById(id) {
