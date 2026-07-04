@@ -171,7 +171,6 @@ export default class ResourcesController extends MainController {
     updateImage() {
          const validate = this.has([
             'id',
-            'image', 
         ]);
 
         try {
