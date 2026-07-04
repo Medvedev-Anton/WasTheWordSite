@@ -1,4 +1,5 @@
 import SimpleItemsMapperInterface from "./simple_items_mapper_interface.js";
+import { db } from "../../database/init.js";
 
 export default class SimpleItemsMapper extends SimpleItemsMapperInterface {
     constructor() {
