@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { User, Post, Organization } from '../types';
+import { User, Post, Organization, Resource } from '../types';
 import { getMediaUrl } from '../config';
 import './Admin.css';
 import IconEditModal from '../components/IconEditModal';
@@ -93,7 +93,17 @@ const ALL_ORGS_TYPES = [
 export default function Admin() {
 
 
-  const [activeTab, setActiveTab] = useState<'users' | 'posts' | 'stats' | 'organization-images' | 'organizations' | 'heroes' | 'finance' | 'chats'>('stats');
+  const [activeTab, setActiveTab] = useState<
+  'users' | 
+  'posts' | 
+  'stats' | 
+  'organization-images' | 
+  'organizations' | 
+  'heroes' | 
+  'finance' | 
+  'chats' |
+  'resources'
+  >('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -147,6 +157,18 @@ export default function Admin() {
   const [editStateImageFile, setEditStateImageFile] = useState<File | null>(null);
   const [editStateImagePreview, setEditStateImagePreview] = useState<string | null>(null);
   const [newHeroGender, setNewHeroGender] = useState<'M' | 'F' | ''>('');
+
+  // Resources states
+  const [newResourceImage, setNewResourceImage] = useState(null);
+  const [newResourceImageUrl, setNewResourceImageUrl] = useState<string | null>(null);
+  const [newResourceNumber, setNewResourceNumber] = useState<number | null>(null);
+  const [newResourceName, setNewResourceName] = useState<string | null>(null);
+  const [newResourceNeedEnergy, setNewResourceNeedEnergy] = useState<number | null>(null);
+  const [newResourceNeedMoney, setNewResourceNeedMoney] = useState<number | null>(null);
+  const [resourcesList, setResourcesList] = useState<Resource[]>([]);
+
+  // Resources ref
+  const uploadNewResourceImageRef = useRef(null);
 
   const handleDeleteHeroState = async (heroStateId: number) => {
     if (!confirm('Вы уверены, что хотите удалить это состояние?')) return;
@@ -371,6 +393,18 @@ export default function Admin() {
     fetchData();
   }, [activeTab]);
 
+  useEffect(() => {
+    return () => {
+      if (newResourceImage) {
+        URL.revokeObjectURL(newResourceImage);
+      }
+    };
+  }, [newResourceImage]);
+
+  useEffect(() => {
+
+  }, []);
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -423,6 +457,10 @@ export default function Admin() {
       else if (activeTab === 'chats') {
         const response = await axios.get('/api/messages/live-during');
         setMessageLiveDuring(response.data.liveDuringDays);
+      }
+
+      else if (activeTab === 'resources') {
+        fetchAllResources();
       }
 
       else {
@@ -662,6 +700,270 @@ export default function Admin() {
     });
   }
 
+  // Resources funcs
+
+  // Загрузка всех ресурсов
+  const fetchAllResources = async () => {
+    try {
+      const result = await axios.get('/api/resources');
+      setResourcesList(result.data.resources);
+    }
+    catch (e) {
+      alert('Не удалось загрузить ресурсы');
+    }
+  }
+
+  // Загрузка изображения нового ресурса
+  const handleChangeNewResourceImage = (e: any) => {
+    const file = e.target.files[0];
+    setNewResourceImage(file);
+
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Пожалуйста, выберите изображение');
+        return;
+      }
+      
+      const imageUrl = URL.createObjectURL(file);
+      setNewResourceImageUrl(imageUrl);
+    }
+  }
+
+  // Обработка изменения номера нового ресурса
+  const handleChangeNewResourceNumber = (e: any) => {
+    setNewResourceNumber(e.target.value);
+  }
+
+  // Обработка изменения названия нового ресурса
+  const handleChangeNewResourceName = (e: any) => {
+    setNewResourceName(e.target.value);
+  }
+
+  // Обработка изменения необходимого количества энергии нового ресурса
+  const handleChangeNewResourceNeedEnergy = (e: any) => {
+    setNewResourceNeedEnergy(e.target.value);
+  }
+
+  // Обработка изменения необходимого количества денег нового ресурса
+  const handleChangeNewResourceNeedMoney = (e: any) => {
+    setNewResourceNeedMoney(e.target.value);
+  }
+
+  // Обработка добавления нового ресурса
+  const handleClickAddNewResource = async (e: any) => {
+    e.preventDefault();
+
+    if (
+      newResourceNumber === null ||
+      newResourceName === null ||
+      newResourceName.length === 0 ||
+      newResourceImage === null ||
+      newResourceNeedEnergy === null ||
+      newResourceNeedMoney === null
+    ) {
+      alert('Все поля должны быть заполнены');
+      return false;
+    }
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      const number = formData.get('number') as string;
+      const name = formData.get('name') as string;
+      const energy = formData.get('energy') as string;
+      const money = formData.get('money') as string;
+      const image = formData.get('image') as File;
+
+      const data = new FormData();
+      data.append('number', number);
+      data.append('name', name);
+      data.append('countNeedEnergy', energy);
+      data.append('countNeedMoney', money);
+      data.append('image', image);
+
+      const result = await axios.post('/api/resources', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      cleareAddNewResourceForm();
+      setResourcesList(result.data.resources);
+    }
+    catch (e) {
+      alert('Не удалось создать ресурс');
+    }
+  }
+
+  // Очищает форму добавления нового ресурса
+  const cleareAddNewResourceForm = () => {
+    setNewResourceNumber(null);
+    setNewResourceName(null);
+    setNewResourceImage(null);
+    setNewResourceImageUrl(null);
+    setNewResourceNeedEnergy(null);
+    setNewResourceNeedMoney(null);
+  }
+
+  // Отправка запроса на обновление номера ресурса
+  const handleFetchUpdateResourceNumber = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/resources/${id}/number`, {
+        number: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить номер ресурса');
+    }
+  }
+
+  // Изменение номера ресурса
+  const handleChangeResourceNumber = (resourceId: number, e: any) => {
+    const resource = resourcesList.find(r => r.id === resourceId);
+
+    if (resource !== undefined && resource !== null) {
+      setResourcesList(prev => prev.map(r => {
+        if (r.id === resourceId) {
+          return {
+            ...r,
+            number: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение названия ресурса
+  const handleFetchUpdateResourceName = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/resources/${id}/name`, {
+        name: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить имя ресурса');
+    }
+  }
+
+  // Изменение названия ресурса
+  const handleChangeResourceName = (resourceId: number, e: any) => {
+    const resource = resourcesList.find(r => r.id === resourceId);
+
+    if (resource !== undefined && resource !== null) {
+      setResourcesList(prev => prev.map(r => {
+        if (r.id === resourceId) {
+          return {
+            ...r,
+            name: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение количества необходимой энергии ресурса
+  const handleFetchUpdateResourceNeedEnergy = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/resources/${id}/needEnergy`, {
+        energy: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить энергию ресурса');
+    }
+  }
+
+  // Изменение количества необходимой энергии ресурса
+  const handleChangeResourceNeedEnergy = (resourceId: number, e: any) => {
+    const resource = resourcesList.find(r => r.id === resourceId);
+
+    if (resource !== undefined && resource !== null) {
+      setResourcesList(prev => prev.map(r => {
+        if (r.id === resourceId) {
+          return {
+            ...r,
+            countNeedEnergy: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение количества необходимых денег ресурса
+  const handleFetchUpdateResourceNeedMoney = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/resources/${id}/needMoney`, {
+        money: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить деньги ресурса');
+    }
+  }
+
+  // Изменение количества необходимых денег ресурса
+  const handleChangeResourceNeedMoney = (resourceId: number, e: any) => {
+    const resource = resourcesList.find(r => r.id === resourceId);
+
+    if (resource !== undefined && resource !== null) {
+      setResourcesList(prev => prev.map(r => {
+        if (r.id === resourceId) {
+          return {
+            ...r,
+            countNeedMoney: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение изображения ресурса
+  const handleFetchUpdateResourceImage = async (id: number, e: any) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', e.target.files[0]);
+
+      const result = await axios.patch(`/api/resources/${id}/image`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const resource = resourcesList.find(r => r.id === id);
+
+      if (resource !== undefined && resource !== null) {
+        setResourcesList(prev => prev.map(r => {
+          if (r.id === id) {
+            return {
+              ...r,
+              imageUrl: result.data.newImageUrl
+            }
+          }
+
+          return r;
+        }));
+      }
+    }
+    catch (e) {
+      alert('Не удалось обновить изображение ресурса');
+    }
+  }
+
+  // Отправка запроса на удаление ресурса
+  const handleFetchDeleteResource = async (id: number) => {
+    try {
+      const result = await axios.delete(`/api/resources/${id}`);
+
+      setResourcesList(result.data.resources);
+    }
+    catch (e) {
+      alert('Не удалось удалить ресурс');
+    }
+  }
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
@@ -717,6 +1019,13 @@ export default function Admin() {
           onClick={() => setActiveTab('chats')}
         >
           Чаты
+        </button>
+
+        <button
+          className={activeTab === 'resources' ? 'active' : ''}
+          onClick={() => setActiveTab('resources')}
+        >
+          Ресурсы
         </button>
       </div>
 
@@ -1305,6 +1614,174 @@ export default function Admin() {
           </div>
         )}
 
+        {activeTab === 'resources' && (
+          <div className='admin-resources-wrapper'>
+            <div className="admin-resources-table">
+              <div className="admin-resources-table__heading">
+                <div className="admin-resources-table__heading-ceil">
+                  <span>
+                    Номер
+                  </span>
+                </div>
+                <div className="admin-resources-table__heading-ceil">
+                  <span>
+                    Название
+                  </span>
+                </div>
+                <div className="admin-resources-table__heading-ceil">
+                  <span>
+                    Энергия
+                  </span>
+                </div>
+                <div className="admin-resources-table__heading-ceil">
+                  <span>
+                    Деньги
+                  </span>
+                </div>
+                <div className="admin-resources-table__heading-ceil">
+                  <span>
+                    Картинка
+                  </span>
+                </div>
+                <div className="admin-resources-table__heading-ceil">
+
+                </div>
+              </div>
+              <div className="admin-resources-table__content">
+                <form 
+                  className="admin-resources-table__adding-new"
+                  onSubmit={handleClickAddNewResource}
+                >
+                  <div className="admin-resources-table__adding-new-ceil">
+                    <input 
+                      type="number" 
+                      value={newResourceNumber || ''}
+                      onChange={handleChangeNewResourceNumber}
+                      name="number"
+                    />
+                  </div>
+                  <div className="admin-resources-table__adding-new-ceil">
+                    <input 
+                      type="text" 
+                      value={newResourceName || ''}
+                      onChange={handleChangeNewResourceName}
+                      name="name"
+                    />
+                  </div>
+                  <div className="admin-resources-table__adding-new-ceil">
+                    <input 
+                      type="number" 
+                      value={newResourceNeedEnergy || ''}
+                      onChange={handleChangeNewResourceNeedEnergy}
+                      name="energy"
+                    />
+                  </div>
+                  <div className="admin-resources-table__adding-new-ceil">
+                    <input 
+                      type="number"
+                      value={newResourceNeedMoney || ''}
+                      onChange={handleChangeNewResourceNeedMoney} 
+                      name="money"
+                    />
+                  </div>
+                  <div className="admin-resources-table__adding-new-ceil">
+                    <div className="admin-resources-table__adding-new-ceil__image-displaying">
+                      {newResourceImageUrl && (
+                        <img src={newResourceImageUrl} alt="new resource image" />
+                      )}                      
+                    </div>
+                    <label htmlFor="new-resource-upload-image" className='admin-resources-table__adding-new-ceil__upload-btn'>
+                      Загрузить
+                      <input 
+                        className="admin-resources-table__adding-new-ceil__upload-file"
+                        type="file" 
+                        accept='image/*'
+                        onChange={handleChangeNewResourceImage}
+                        id='new-resource-upload-image'
+                        name="image"
+                      />
+                    </label>
+                  </div>
+                  <div className="admin-resources-table__adding-new-ceil">
+                    <button
+                      className="admin-resources-table__adding-new-ceil__add-btn"
+                    >
+                      Добавить
+                    </button>
+                  </div>
+                </form>
+                <div className="admin-resources-table__content__rows">
+                  {resourcesList.map(resource => (
+                    <div 
+                      className="admin-resources-table__content__rows-row"
+                      key={resource.id}
+                    >
+                      <div className="admin-resources-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={resource.number} 
+                            onBlur={(e) => handleFetchUpdateResourceNumber(resource.id, e)}
+                            onChange={(e) => handleChangeResourceNumber(resource.id, e)}
+                        />
+                      </div>
+                      <div className="admin-resources-table__content__rows-ceil">
+                        <input 
+                            type="text"
+                            value={resource.name} 
+                            onBlur={(e) => handleFetchUpdateResourceName(resource.id, e)}
+                            onChange={(e) => handleChangeResourceName(resource.id, e)}
+                        />
+                      </div>
+                      <div className="admin-resources-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={resource.countNeedEnergy} 
+                            onBlur={(e) => handleFetchUpdateResourceNeedEnergy(resource.id, e)}
+                            onChange={(e) => handleChangeResourceNeedEnergy(resource.id, e)}
+                        />
+                      </div>
+                      <div className="admin-resources-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={resource.countNeedMoney} 
+                            onBlur={(e) => handleFetchUpdateResourceNeedMoney(resource.id, e)}
+                            onChange={(e) => handleChangeResourceNeedMoney(resource.id, e)}
+                        />
+                      </div>
+                      <div className="admin-resources-table__content__rows-ceil">
+                        <div className="admin-resources-table__content__rows-ceil__image-displaying">
+                          {resource.imageUrl && (
+                            <img src={resource.imageUrl} alt="new resource image" />
+                          )}                      
+                        </div>
+                        <label htmlFor="resource-upload-image" className='admin-resources-table__content__rows-ceil__upload-btn'>
+                          Загрузить
+                          <input 
+                            className="admin-resources-table__content__rows-ceil__upload-file"
+                            type="file" 
+                            accept='image/*'
+                            id='resource-upload-image'
+                            name="image"
+                            onChange={(e) => handleFetchUpdateResourceImage(resource.id, e)}
+                          />
+                        </label>
+                      </div>
+                      <div className="admin-resources-table__content__rows-ceil">
+                        <button
+                          className="admin-resources-table__content__rows-ceil__add-btn"
+                          onClick={() => handleFetchDeleteResource(resource.id)}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showStateHeroesModal && (
           <div className="modal-simple">
             <div className="modal-simple-content">
@@ -1330,6 +1807,7 @@ export default function Admin() {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
+                  ref={uploadNewResourceImageRef}
                 />
                 {imagePreview && (
                   <div className="image-preview-mini">
