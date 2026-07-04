@@ -1091,9 +1091,9 @@ export async function initDatabase() {
       countNeedEnergy INT NOT NULL,
       countNeedMoney INT NOT NULL,
       number INTEGER NOT NULL,
-      resourceId INTEGER NOT NULL,
+      needResourceId INTEGER NOT NULL,
       countNeedResource INTEGER NOT NULL,
-      FOREIGN KEY (resourceId) REFERENCES resources(id)
+      FOREIGN KEY (needResourceId) REFERENCES resources(id)
     )  
   `);
 
