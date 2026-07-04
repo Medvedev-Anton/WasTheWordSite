@@ -1084,6 +1084,7 @@ export async function initDatabase() {
 
   // Create simple items table
   db.exec(`
+    drop table simple_items;
     CREATE TABLE IF NOT EXISTS simple_items(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(255) NOT NULL,
@@ -1093,7 +1094,27 @@ export async function initDatabase() {
       number INTEGER NOT NULL,
       needResourceId INTEGER NOT NULL,
       countNeedResource INTEGER NOT NULL,
-      FOREIGN KEY (needResourceId) REFERENCES resources(id)
+      FOREIGN KEY (needResourceId) REFERENCES resources(id) ON DELETE CASCADE
+    )  
+  `);
+
+  // Create compound items table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS compound_items(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name VARCHAR(255) NOT NULL,
+      imageUrl TEXT NOT NULL
+    )  
+  `);
+
+  // Create compound items parts table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS compound_items_parts(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      compoundItemId INTEGER NOT NULL,
+      partItemId INTEGER NOT NULL,
+      FOREIGN KEY (compoundItemId) REFERENCES compound_items(id) ON DELETE CASCADE,
+      FOREIGN KEY (partItemId) REFERENCES simple_items(id) ON DELETE CASCADE
     )  
   `);
 
