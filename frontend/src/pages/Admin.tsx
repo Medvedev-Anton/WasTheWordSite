@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { User, Post, Organization, Resource, SimpleItem } from '../types';
+import { User, Post, Organization, Resource, SimpleItem, CompoundItem, CompoundItemPartRow } from '../types';
 import { getMediaUrl } from '../config';
 import './Admin.css';
 import IconEditModal from '../components/IconEditModal';
+import CompoundItemParts from '../components/CompoundItemParts';
 
 interface Stats {
   totalUsers: number;
@@ -103,7 +104,8 @@ export default function Admin() {
   'finance' | 
   'chats' |
   'resources' |
-  'simple-items'
+  'simple-items' |
+  'compound-items'
   >('stats');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -178,6 +180,14 @@ export default function Admin() {
   const [newSimpleItemNeedResourceId, setNewSimpleItemNeedResourceId] = useState<number | null>(null);
   const [newSimpleItemCountNeedResource, setNewSimpleItemCountNeedResource] = useState<number | null>(null);
   const [simpleItemsList, setSimpleItemsList] = useState<SimpleItem[]>([]);
+
+  // Compound items state
+  const [newCompoundItemImage, setNewCompoundItemImage] = useState(null);
+  const [newCompoundItemImageUrl, setNewCompoundItemImageUrl] = useState<string | null>(null);
+  const [newCompoundItemNumber, setNewCompoundItemNumber] = useState<number | null>(null);
+  const [newCompoundItemName, setNewCompoundItemName] = useState<string | null>(null);
+  const [newCompoundItemParts, setNewCompoundItemParts] = useState<CompoundItemPartRow[]>([]);
+  const [compoundItemsList, setCompoundItemsList] = useState<CompoundItem[]>([]);
 
   // Resources ref
   const uploadNewResourceImageRef = useRef(null);
@@ -486,6 +496,12 @@ export default function Admin() {
       else if (activeTab === 'simple-items') {
         fetchAllResources();
         fetchAllSimpleItems();
+      }
+
+      else if (activeTab === 'compound-items') {
+        fetchAllSimpleItems();
+        fetchAllCompoundItems();
+        setNewCompoundItemParts([]);
       }
 
       else {
@@ -1313,6 +1329,247 @@ export default function Admin() {
     }
   }
 
+  /*** Compound items funcs ***/
+
+  // Загрузка всех предметов
+  const fetchAllCompoundItems = async () => {
+    try {
+      const result = await axios.get('/api/compound-items');
+      setCompoundItemsList(result.data.items);
+    }
+    catch (e) {
+      alert('Не удалось загрузить предметы');
+    }
+  }
+
+  // Загрузка изображения нового предмета
+  const handleChangeNewCompoundItemImage = (e: any) => {
+    const file = e.target.files[0];
+    setNewCompoundItemImage(file);
+
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Пожалуйста, выберите изображение');
+        return;
+      }
+      
+      const imageUrl = URL.createObjectURL(file);
+      setNewCompoundItemImageUrl(imageUrl);
+    }
+  }
+
+  // Обработка изменения номера нового предмета
+  const handleChangeNewCompoundItemNumber = (e: any) => {
+    setNewCompoundItemNumber(e.target.value);
+  }
+
+  // Обработка изменения названия нового предмета
+  const handleChangeNewCompoundItemName = (e: any) => {
+    setNewCompoundItemName(e.target.value);
+  }
+
+  // Обработка изменения состава нового предмета
+  const handleChangeNewCompoundItemsRows = (compoundItemsPartsRows: CompoundItemPartRow[] | undefined) => {
+    setNewCompoundItemParts(compoundItemsPartsRows || []);
+  }
+
+  // Обработка добавления нового предмета
+  const handleClickAddNewCompoundItem = async (e: any) => {
+    e.preventDefault();
+
+    if (
+      newCompoundItemNumber === null ||
+      newCompoundItemName === null ||
+      newCompoundItemName.length === 0 ||
+      newCompoundItemImage === null
+    ) {
+      alert('Все поля должны быть заполнены');
+      return false;
+    }
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      const number = formData.get('number') as string;
+      const name = formData.get('name') as string;
+      const image = formData.get('image') as File;
+      const itemsPartsJSON = JSON.stringify(newCompoundItemParts) as string;
+
+      const data = new FormData();
+      data.append('number', number);
+      data.append('name', name);
+      data.append('image', image);
+      data.append('itemsParts', itemsPartsJSON);
+
+      const result = await axios.post('/api/compound-items', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      cleareAddNewCompoundItemForm();
+      setCompoundItemsList(result.data.items);
+    }
+    catch (e) {
+      alert('Не удалось создать предмет');
+    }
+  }
+
+  // Очищает форму добавления нового предмета
+  const cleareAddNewCompoundItemForm = () => {
+    setNewCompoundItemNumber(null);
+    setNewCompoundItemName(null);
+    setNewCompoundItemImage(null);
+    setNewCompoundItemImageUrl(null);
+    setNewCompoundItemParts([]);
+  }
+
+  // Отправка запроса на обновление номера предмета
+  const handleFetchUpdateCompoundItemNumber = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/compound-items/${id}/number`, {
+        number: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить номер предмета');
+    }
+  }
+
+  // Изменение номера предмета
+  const handleChangeCompoundItemNumber = (itemId: number, e: any) => {
+    const item = compoundItemsList.find(r => r.id === itemId);
+
+    if (item !== undefined && item !== null) {
+      setCompoundItemsList(prev => prev.map(r => {
+        if (r.id === itemId) {
+          return {
+            ...r,
+            number: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение названия предмета
+  const handleFetchUpdateCompoundItemName = async (id: number, e: any) => {
+    try {
+      await axios.patch(`/api/compound-items/${id}/name`, {
+        name: e.target.value
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить имя предмета');
+    }
+  }
+
+  // Изменение названия предмета
+  const handleChangeCompoundItemName = (itemId: number, e: any) => {
+    const item = compoundItemsList.find(r => r.id === itemId);
+
+    if (item !== undefined && item !== null) {
+      setCompoundItemsList(prev => prev.map(r => {
+        if (r.id === itemId) {
+          return {
+            ...r,
+            name: e.target.value
+          }
+        }
+
+        return r;
+      }));
+    }
+  }
+
+  // Отправка запроса на изменение изображения предмета
+  const handleFetchUpdateCompoundItemImage = async (id: number, e: any) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', e.target.files[0]);
+
+      const result = await axios.patch(`/api/compound-items/${id}/image`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const item = compoundItemsList.find(r => r.id === id);
+
+      if (item !== undefined && item !== null) {
+        setCompoundItemsList(prev => prev.map(r => {
+          if (r.id === id) {
+            return {
+              ...r,
+              imageUrl: result.data.newImageUrl
+            }
+          }
+
+          return r;
+        }));
+      }
+    }
+    catch (e) {
+      alert('Не удалось обновить изображение предмета');
+    }
+  }
+
+  // Отправка запроса на удаление предмета
+  const handleFetchDeleteCompoundItem = async (id: number) => {
+    try {
+      const result = await axios.delete(`/api/compound-items/${id}`);
+
+      setCompoundItemsList(result.data.items);
+    }
+    catch (e) {
+      alert('Не удалось удалить предмет');
+    }
+  }
+
+  // Отправка запроса на изменения необходимого количества части предмета
+  const handleFetchUpdateItemPartNeedCount = async (compoundItemId: number | undefined, partId: number | undefined, newValue: number) => {
+    try {
+      await axios.patch(`/api/compound-items/${compoundItemId}/parts/${partId}/needCount`, {
+        needCount: newValue
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить количество предмета');
+    }
+  }
+
+  // Отправка запроса на изменение ID части предмета
+  const handleFetchUpdateItemPartId = async (compoundItemId: number | undefined, partId: number | undefined, newValue: number) => {
+    try {
+      await axios.patch(`/api/compound-items/${compoundItemId}/parts/${partId}/partItemId`, {
+        partItemId: newValue
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить предмет');
+    }
+  }
+
+  // Отправка запроса на создание части предмета
+  const handleFetchCreateItemPart = async (compoundItemId: number | undefined, partItemId: number, countNeed: number) => {
+    try {
+      await axios.post(`/api/compound-items/${compoundItemId}/parts/`, {
+        partItemId: partItemId,
+        countNeed: countNeed
+      });
+    }
+    catch (e) {
+      alert('Не удалось создать предмет');
+    }
+  }
+
+  // Отправка запроса на удаление части предмета
+  const handleFetchDeleteItemPart = async (compoundItemId: number | undefined, partId: number | undefined) => {
+    try {
+      await axios.delete(`/api/compound-items/${compoundItemId}/parts/${partId}`);
+    }
+    catch (e) {
+      alert('Не удалось удалить предмет');
+    }
+  }
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
@@ -1382,6 +1639,13 @@ export default function Admin() {
           onClick={() => setActiveTab('simple-items')}
         >
           Простые предметы
+        </button>
+
+        <button
+          className={activeTab === 'compound-items' ? 'active' : ''}
+          onClick={() => setActiveTab('compound-items')}
+        >
+          Составные предметы
         </button>
       </div>
 
@@ -2354,6 +2618,154 @@ export default function Admin() {
                         <button
                           className="admin-simple-items-table__content__rows-ceil__add-btn"
                           onClick={() => handleFetchDeleteSimpleItem(item.id)}
+                        >
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'compound-items' && (
+          <div className='admin-compound-items-wrapper'>
+            <div className="admin-compound-items-table">
+              <div className="admin-compound-items-table__heading">
+                <div className="admin-compound-items-table__heading-ceil">
+                  <span>
+                    Номер
+                  </span>
+                </div>
+                <div className="admin-compound-items-table__heading-ceil">
+                  <span>
+                    Название
+                  </span>
+                </div>
+                <div className="admin-compound-items-table__heading-ceil">
+                  <span>
+                    Состав
+                  </span>
+                </div>
+                <div className="admin-compound-items-table__heading-ceil">
+                  <span>
+                    Картинка
+                  </span>
+                </div>
+                <div className="admin-compound-items-table__heading-ceil">
+
+                </div>
+              </div>
+              <div className="admin-compound-items-table__content">
+                <form 
+                  className="admin-compound-items-table__adding-new"
+                  onSubmit={handleClickAddNewCompoundItem}
+                >
+                  <div className="admin-compound-items-table__adding-new-ceil">
+                    <input 
+                      type="number" 
+                      value={newCompoundItemNumber || ''}
+                      onChange={handleChangeNewCompoundItemNumber}
+                      name="number"
+                    />
+                  </div>
+                  <div className="admin-compound-items-table__adding-new-ceil">
+                    <input 
+                      type="text" 
+                      value={newCompoundItemName || ''}
+                      onChange={handleChangeNewCompoundItemName}
+                      name="name"
+                    />
+                  </div>
+                  <div className="admin-compound-items-table__adding-new-ceil">
+                    <CompoundItemParts 
+                      allSimpleItems={simpleItemsList}
+                      onChangeRows={handleChangeNewCompoundItemsRows}
+                    />
+                  </div>
+                  <div className="admin-compound-items-table__adding-new-ceil">
+                    <div className="admin-compound-items-table__adding-new-ceil__image-displaying">
+                      {newCompoundItemImageUrl && (
+                        <img src={newCompoundItemImageUrl} alt="new resource image" />
+                      )}                      
+                    </div>
+                    <label htmlFor="new-resource-upload-image" className='admin-compound-items-table__adding-new-ceil__upload-btn'>
+                      Загрузить
+                      <input 
+                        className="admin-compound-items-table__adding-new-ceil__upload-file"
+                        type="file" 
+                        accept='image/*'
+                        onChange={handleChangeNewCompoundItemImage}
+                        id='new-resource-upload-image'
+                        name="image"
+                      />
+                    </label>
+                  </div>
+                  <div className="admin-compound-items-table__adding-new-ceil">
+                    <button
+                      className="admin-compound-items-table__adding-new-ceil__add-btn"
+                    >
+                      Добавить
+                    </button>
+                  </div>
+                </form>
+                <div className="admin-compound-items-table__content__rows">
+                  {compoundItemsList?.map(item => (
+                    <div 
+                      className="admin-compound-items-table__content__rows-row"
+                      key={item.id}
+                    >
+                      <div className="admin-compound-items-table__content__rows-ceil">
+                        <input 
+                            type="number"
+                            value={item.number} 
+                            onBlur={(e) => handleFetchUpdateCompoundItemNumber(item.id, e)}
+                            onChange={(e) => handleChangeCompoundItemNumber(item.id, e)}
+                        />
+                      </div>
+                      <div className="admin-compound-items-table__content__rows-ceil">
+                        <input 
+                            type="text"
+                            value={item.name} 
+                            onBlur={(e) => handleFetchUpdateCompoundItemName(item.id, e)}
+                            onChange={(e) => handleChangeCompoundItemName(item.id, e)}
+                        />
+                      </div>
+                      <div className="admin-compound-items-table__content__rows-ceil">
+                        <CompoundItemParts 
+                          compoundItemId={item.id}
+                          allSimpleItems={simpleItemsList}
+                          compoundItemsPartsRows={item.parts}
+                          onChangeNeedCountCreated={handleFetchUpdateItemPartNeedCount}
+                          onChangePartItemIdCreated={handleFetchUpdateItemPartId}
+                          onAppendingPartItem={handleFetchCreateItemPart}
+                          onDeletePartItem={handleFetchDeleteItemPart}
+                        />
+                      </div>
+                      <div className="admin-compound-items-table__content__rows-ceil">
+                        <div className="admin-compound-items-table__content__rows-ceil__image-displaying">
+                          {item.imageUrl && (
+                            <img src={item.imageUrl} alt="new resource image" />
+                          )}                      
+                        </div>
+                        <label htmlFor="resource-upload-image" className='admin-compound-items-table__content__rows-ceil__upload-btn'>
+                          Загрузить
+                          <input 
+                            className="admin-compound-items-table__content__rows-ceil__upload-file"
+                            type="file" 
+                            accept='image/*'
+                            id='resource-upload-image'
+                            name="image"
+                            onChange={(e) => handleFetchUpdateCompoundItemImage(item.id, e)}
+                          />
+                        </label>
+                      </div>
+                      <div className="admin-compound-items-table__content__rows-ceil">
+                        <button
+                          className="admin-compound-items-table__content__rows-ceil__add-btn"
+                          onClick={() => handleFetchDeleteCompoundItem(item.id)}
                         >
                           Удалить
                         </button>

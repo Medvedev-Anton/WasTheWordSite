@@ -192,3 +192,18 @@ export interface SimpleItem {
   needResourceId: number;
   countNeedResource: number; 
 }
+
+export interface CompoundItem {
+  id: number;
+  number: number;
+  name: string;
+  imageUrl: string;
+  parts: CompoundItemPartRow[]
+}
+
+export interface CompoundItemPartRow {
+  id?: number;
+  compoundItemId?: number;
+  partItemId: number;
+  countNeed: number;
+}

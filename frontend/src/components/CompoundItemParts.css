@@ -1,0 +1,40 @@
+.compound-item-part-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.compound-item-part-wrapper__creation-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.compound-item-part-wrapper__creation-row__create-btn button {
+    width: 100%;
+    padding: 10px 0;
+    background: #8C5C5C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    transition: all .3s;
+}
+
+.compound-item-part-wrapper__creation-row__create-btn button:hover {
+    opacity: .6;
+}
+
+.compound-item-part-wrapper__row__delete-btn button {
+    width: 100%;
+    padding: 10px 0;
+    background: #8C5C5C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    transition: all .3s;
+}
+
+.compound-item-part-wrapper__row__delete-btn button:hover {
+    opacity: .6;
+}
