@@ -121,11 +121,13 @@ export default class CompoundItemsService extends CompoundItemsServiceInterface 
 
             const imageUrl = item.imageUrl;
 
-            const filePath = path.join(__dirname, '../..', imageUrl.replace(/^\//, ''));
+            if (imageUrl !== undefined) {
+                const filePath = path.join(__dirname, '../..', imageUrl.replace(/^\//, ''));
             
-            if (fs.existsSync(filePath)) {
-                try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
-            }
+                if (fs.existsSync(filePath)) {
+                    try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
+                }
+            }            
         }
         catch (e) {
             throw new Error(e.message);
