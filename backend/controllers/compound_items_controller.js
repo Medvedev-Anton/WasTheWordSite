@@ -290,4 +290,35 @@ export default class CompoundItemsController extends MainController {
             });
         }
     }
+
+    /**
+     * Обновление ID части предмета
+     */
+    updatePartItemId() {
+        const validate = this.has([
+            'partId',
+            'partItemId'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const partId = parseInt(this.request.params.partId);
+            const partItemId = parseInt(this.request.body.partItemId);
+
+            CompoundItemsFacade.updatePartItemId(partId, partItemId);
+
+            this.send(200, {
+                message: 'Success',
+            });
+        }
+        catch (e) {
+            console.error('Delete item part error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
