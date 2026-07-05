@@ -84,4 +84,10 @@ router.patch('/:id/parts/:partId/needCount', authenticateToken, (req, res) => {
   controller.updatePartNeedCount();
 });
 
+// Изменить ID части предмета
+router.patch('/:id/parts/:partId/partItemId', authenticateToken, (req, res) => {
+  const controller = new CompoundItemsController(req, res);
+  controller.updatePartItemId();
+});
+
 export default router;
