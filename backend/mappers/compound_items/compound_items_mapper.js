@@ -58,9 +58,9 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
             itemsParts.forEach(part => {
                 db.prepare(`
                     INSERT INTO
-                        compound_items_parts (compoundItemId, partItemId)
+                        compound_items_parts (compoundItemId, partItemId, countNeed)
                     VALUES (?, ?)
-                `).run(part.compoundItemId, part.partItemId);
+                `).run(part.compoundItemId, part.partItemId, part.countNeed);
             });
         });
 
