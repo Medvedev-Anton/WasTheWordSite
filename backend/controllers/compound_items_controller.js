@@ -248,7 +248,36 @@ export default class CompoundItemsController extends MainController {
 
             CompoundItemsFacade.deletePart(partId);
 
-            const items = CompoundItemsFacade.getAll();
+            this.send(200, {
+                message: 'Success',
+            });
+        }
+        catch (e) {
+            console.error('Delete item part error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обновление необходимого количества части предмета
+     */
+    updatePartNeedCount() {
+        const validate = this.has([
+            'partId',
+            'needCount'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const partId = parseInt(this.request.params.partId);
+            const needCount = parseInt(this.request.body.needCount);
+
+            CompoundItemsFacade.updatePartNeedCount(partId, needCount);
 
             this.send(200, {
                 message: 'Success',
