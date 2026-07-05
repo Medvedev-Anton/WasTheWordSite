@@ -1679,10 +1679,15 @@ input[name="initial-user-balance"] {
 
 /*** Resources table ***/
 
+.admin-resources-wrapper {
+  overflow-x: auto;
+}
+
 .admin-resources-table {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 1000px;
 }
 
 .admin-resources-table__heading {
@@ -1857,10 +1862,15 @@ input[name="initial-user-balance"] {
 }
 
 /*** Simple Items table ***/
+.admin-simple-items-wrapper {
+  overflow-x: auto;
+}
+
 .admin-simple-items-table {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 1000px;
 }
 
 .admin-simple-items-table__heading {
@@ -2055,10 +2065,15 @@ input[name="initial-user-balance"] {
 }
 
 /*** Compound Items table ***/
+.admin-compound-items-wrapper {
+  overflow-x: auto;
+}
+
 .admin-compound-items-table {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-width: 1000px;
 }
 
 .admin-compound-items-table__heading {
