@@ -204,7 +204,6 @@ export default class CompoundItemsController extends MainController {
     createPart() {
         const validate = this.has([
             'id',
-            'compoundItemId',
             'partItemId',
             'countNeed'
         ]);
@@ -214,7 +213,7 @@ export default class CompoundItemsController extends MainController {
         }
 
         try {
-            const compoundItemId = parseInt(this.request.body.compoundItemId);
+            const compoundItemId = parseInt(this.request.params.id);
             const partItemId = parseInt(this.request.body.partItemId);
             const countNeed = parseInt(this.request.body.countNeed);
 
