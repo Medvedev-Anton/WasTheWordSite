@@ -49,13 +49,15 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
 
     create(number, name, imageUrl, itemsParts) {
         const transaction = db.transaction(() => {
-            db.prepare(`
+            const result = db.prepare(`
                 INSERT INTO 
                     compound_items (name, imageUrl, number)
                 VALUES (?, ?, ?)
             `).run(name, imageUrl, number);
 
             itemsParts.forEach(part => {
+                part.compoundItemId = result.lastInsertRowid;
+
                 db.prepare(`
                     INSERT INTO
                         compound_items_parts (compoundItemId, partItemId, countNeed)
