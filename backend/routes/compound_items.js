@@ -32,50 +32,56 @@ const resourceMediaUpload = upload.fields([
 
 // Получить все предметы
 router.get('/', authenticateToken, (req, res) => {
-    const controller = new CompoundItemsController(req, res);
-    controller.getAll();
+  const controller = new CompoundItemsController(req, res);
+  controller.getAll();
 });
 
 // Создать предмет
 router.post('/', authenticateToken, resourceMediaUpload, (req, res) => {
-    const controller = new CompoundItemsController(req, res);
-    controller.create();
+  const controller = new CompoundItemsController(req, res);
+  controller.create();
 }); 
 
 // Удалить предмет
 router.delete('/:id', authenticateToken, (req, res) => {
-    const controller = new CompoundItemsController(req, res);
-    controller.delete();
+  const controller = new CompoundItemsController(req, res);
+  controller.delete();
 });
 
 // Изменить номер
 router.patch('/:id/number', authenticateToken, (req, res) => {
-    const controller = new CompoundItemsController(req, res);
-    controller.updateNumber();
+  const controller = new CompoundItemsController(req, res);
+  controller.updateNumber();
 });
 
 // Изменить имя
 router.patch('/:id/name', authenticateToken, (req, res) => {
-    const controller = new CompoundItemsController(req, res);
-    controller.updateName();
+  const controller = new CompoundItemsController(req, res);
+  controller.updateName();
 });
 
 // Изменить изображение
 router.patch('/:id/image', authenticateToken, resourceMediaUpload, (req, res) => {
-    const controller = new CompoundItemsController(req, res);
-    controller.updateImage();
+  const controller = new CompoundItemsController(req, res);
+  controller.updateImage();
 });
 
 // Создать часть предмета
 router.post('/:id/parts', authenticateToken, (req, res) => {
   const controller = new CompoundItemsController(req, res);
-    controller.createPart();
+  controller.createPart();
 });
 
 // Удалить часть предмета
 router.post('/:id/parts/:partId', authenticateToken, (req, res) => {
   const controller = new CompoundItemsController(req, res);
-    controller.deletePart();
+  controller.deletePart();
+});
+
+// Изменить необходимое количество части предмета
+router.patch('/:id/parts/:partId/needCount', authenticateToken, (req, res) => {
+  const controller = new CompoundItemsController(req, res);
+  controller.updatePartNeedCount();
 });
 
 export default router;
