@@ -73,7 +73,7 @@ router.post('/:id/parts', authenticateToken, (req, res) => {
 });
 
 // Удалить часть предмета
-router.post('/:id/parts/:partId', authenticateToken, (req, res) => {
+router.delete('/:id/parts/:partId', authenticateToken, (req, res) => {
   const controller = new CompoundItemsController(req, res);
   controller.deletePart();
 });
