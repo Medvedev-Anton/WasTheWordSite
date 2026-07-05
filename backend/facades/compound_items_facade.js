@@ -121,6 +121,20 @@ export default class CompoundItemsFacade {
     }
 
     /**
+     * Обновление необходимого количества части предмета
+     * @param {number} partId
+     * @param {number} newValue
+     */
+    static updatePartNeedCount(partId, newValue) {
+        try {
+            return this.getService().updatePartNeedCount(partId, newValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Удаляет изображение предмета
      * @param {number} id 
      */
