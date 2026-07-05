@@ -70,6 +70,15 @@ export default class CompoundItemsMapperInterface {
     }
 
     /**
+     * Обновление ID необходимого предмета
+     * @param {number} partId
+     * @param {number} partItemId
+     */
+    updatePartItemId(partId, partItemId) {
+        throw new Error('updatePartItemId должен быть переопределен в наследнике');
+    }
+
+    /**
      * Возвращает данные предмета 
      * @param {number} id
      */

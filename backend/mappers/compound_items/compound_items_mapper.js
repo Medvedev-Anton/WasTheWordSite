@@ -126,6 +126,17 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
         `).run(newValue, partId);
     }
 
+    updatePartItemId(partId, partItemId) {
+        db.prepare(`
+            UPDATE 
+                compound_items_parts
+            SET
+                partItemId = ?
+            WHERE
+                id = ?
+        `).run(partItemId, partId);
+    }
+
     findById(id) {
         const rows = db.prepare(`
             SELECT 
