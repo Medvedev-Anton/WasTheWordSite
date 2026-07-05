@@ -135,6 +135,20 @@ export default class CompoundItemsFacade {
     }
 
     /**
+     * Обновление ID необходимого предмета
+     * @param {number} partId
+     * @param {number} partItemId
+     */
+    static updatePartItemId(partId, partItemId) {
+        try {
+            return this.getService().updatePartItemId(partId, partItemId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Удаляет изображение предмета
      * @param {number} id 
      */
