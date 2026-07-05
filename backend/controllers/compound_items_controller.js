@@ -205,7 +205,8 @@ export default class CompoundItemsController extends MainController {
         const validate = this.has([
             'id',
             'compoundItemId',
-            'partItemId'
+            'partItemId',
+            'countNeed'
         ]);
         
         if (validate === false) {
@@ -215,11 +216,12 @@ export default class CompoundItemsController extends MainController {
         try {
             const compoundItemId = parseInt(this.request.body.compoundItemId);
             const partItemId = parseInt(this.request.body.partItemId);
+            const countNeed = parseInt(this.request.body.countNeed);
 
-            CompoundItemsFacade.createPart(compoundItemId, partItemId);
+            CompoundItemsFacade.createPart(compoundItemId, partItemId, countNeed);
 
-            this.send(200, {
-                message: 'Update success'
+            this.send(201, {
+                message: 'Create success'
             });
         }
         catch (e) {
