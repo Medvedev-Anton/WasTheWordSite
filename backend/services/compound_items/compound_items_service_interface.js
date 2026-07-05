@@ -84,6 +84,15 @@ export default class CompoundItemsServiceInterface {
     }
 
     /**
+     * Обновление необходимого количества части предмета
+     * @param {number} partId
+     * @param {number} newValue
+     */
+    updatePartNeedCount(partId, newValue) {
+        throw new Error('updatePartNeedCount должен быть переопределен в наследнике');
+    }
+
+    /**
      * Возвращает данные предмета 
      * @param {number} id
      */

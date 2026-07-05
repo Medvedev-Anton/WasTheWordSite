@@ -81,6 +81,15 @@ export default class CompoundItemsService extends CompoundItemsServiceInterface 
         }
     }
 
+    updatePartNeedCount(partId, newValue) {
+        try {
+            return this.mapper.updatePartNeedCount(partId, newValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     findById(id) {
         try {
             return this.mapper.findById(id);
