@@ -13,9 +13,10 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
                 ci.name AS compound_name,
                 ci.imageUrl AS compound_imageUrl,
                 ci.number AS number,
-                si.id AS part_id,
-                si.name AS part_name,
-                si.imageUrl AS part_imageUrl
+                cip.id AS part_id,
+                cip.compoundItemId as compoundItemId,
+                cip.partItemId as partItemId,
+                cip.countNeed as countNeed
             FROM compound_items ci
             LEFT JOIN compound_items_parts cip ON ci.id = cip.compoundItemId
             LEFT JOIN simple_items si ON cip.partItemId = si.id
@@ -26,20 +27,21 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
             
             if (!compoundItem) {
                 compoundItem = {
-                id: row.compound_id,
-                name: row.compound_name,
-                imageUrl: row.compound_imageUrl,
-                number: row.number,
-                parts: []
+                    id: row.compound_id,
+                    name: row.compound_name,
+                    imageUrl: row.compound_imageUrl,
+                    number: row.number,
+                    parts: []
                 };
                 acc.push(compoundItem);
             }
             
             if (row.part_id) {
                 compoundItem.parts.push({
-                id: row.part_id,
-                name: row.part_name,
-                imageUrl: row.part_imageUrl
+                    id: row.part_id,
+                    compoundItemId: row.compoundItemId,
+                    partItemId: row.partItemId,
+                    countNeed: row.countNeed
                 });
             }
             
@@ -119,7 +121,7 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
                 ci.id AS compound_id,
                 ci.name AS compound_name,
                 ci.imageUrl AS compound_imageUrl,
-                si.id AS part_id,
+                si.id AS part_item_id,
                 si.name AS part_name,
                 si.imageUrl AS part_imageUrl
             FROM compound_items ci
@@ -141,9 +143,9 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
                 acc.push(compoundItem);
             }
             
-            if (row.part_id) {
+            if (row.part_item_id) {
                 compoundItem.parts.push({
-                id: row.part_id,
+                id: row.part_item_id,
                 name: row.part_name,
                 imageUrl: row.part_imageUrl
                 });
