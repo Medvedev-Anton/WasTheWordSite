@@ -45,10 +45,7 @@ export default class CompoundItemsController extends MainController {
         const validate = this.has([
             'number',
             'name', 
-            'countNeedEnergy', 
-            'countNeedMoney',
-            'needResourceId',
-            'countNeedResource'
+            'itemsParts', 
         ]);
 
         if (validate === false) {
