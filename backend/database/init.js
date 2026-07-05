@@ -1084,7 +1084,6 @@ export async function initDatabase() {
 
   // Create simple items table
   db.exec(`
-    drop table simple_items;
     CREATE TABLE IF NOT EXISTS simple_items(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name VARCHAR(255) NOT NULL,
