@@ -105,7 +105,7 @@ export default class CompoundItemsServiceInterface {
      * Возвращает данные предмета 
      * @param {number} id
      */
-    findById(id) {
-        throw new Error('findById должен быть переопределен в наследнике');
+    getById(id) {
+        throw new Error('getById должен быть переопределен в наследнике');
     }
 }

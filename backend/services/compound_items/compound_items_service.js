@@ -99,7 +99,7 @@ export default class CompoundItemsService extends CompoundItemsServiceInterface 
         }
     }
 
-    findById(id) {
+    getById(id) {
         try {
             return this.mapper.findById(id);
         }
