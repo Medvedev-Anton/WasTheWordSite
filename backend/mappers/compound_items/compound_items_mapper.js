@@ -12,6 +12,7 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
                 ci.id AS compound_id,
                 ci.name AS compound_name,
                 ci.imageUrl AS compound_imageUrl,
+                ci.number AS number,
                 si.id AS part_id,
                 si.name AS part_name,
                 si.imageUrl AS part_imageUrl
@@ -28,6 +29,7 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
                 id: row.compound_id,
                 name: row.compound_name,
                 imageUrl: row.compound_imageUrl,
+                number: row.number,
                 parts: []
                 };
                 acc.push(compoundItem);
