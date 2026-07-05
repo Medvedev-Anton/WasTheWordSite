@@ -142,7 +142,7 @@ export default class CompoundItemsMapper extends CompoundItemsMapperInterface {
             SELECT 
                 ci.id AS compound_id,
                 ci.name AS compound_name,
-                ci.imageUrl AS imageUrl,
+                ci.imageUrl AS compound_imageUrl,
                 si.id AS part_item_id,
                 si.name AS part_name,
                 si.imageUrl AS part_imageUrl
