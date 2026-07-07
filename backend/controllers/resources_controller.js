@@ -298,4 +298,32 @@ export default class ResourcesController extends MainController {
             });
         }
     }
+
+    /**
+     * Получить ресурс по ID
+     */
+    getById() {
+        const validate = this.has([
+            'id',
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const id = parseInt(this.request.params.id);
+            const resource = ResourceFacade.getById(id);
+
+            this.send(200, {
+                resource: resource
+            });
+        }
+        catch (e) {
+            console.error('Get resource by id error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
