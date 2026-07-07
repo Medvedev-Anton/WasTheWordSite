@@ -112,4 +112,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getOrgBalance(orgId) {
+        try {
+            return this.mapper.getOrgBalance(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
