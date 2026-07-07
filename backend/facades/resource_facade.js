@@ -1,5 +1,9 @@
 import ResourcesMapper from "../mappers/resources/resources_mapper.js";
 import ResourcesService from "../services/resources/resources_service.js";
+import { db } from "../database/init.js";
+import { BalanceFacade } from "./balance_facade.js";
+import { OrgsFacade } from "./orgs_facade.js";
+import OrgsResourcesFacade from "./orgs_resources_facade.js";
 
 export default class ResourceFacade {
     static getService() {
@@ -143,6 +147,43 @@ export default class ResourceFacade {
         }
         catch (e) {
             throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Добыча ресурса организацией
+     * @param {number} orgId
+     * @param {number} resourceId
+     */
+    static extract(orgId, resourceId) {
+        const transaction = db.transaction(() => {
+            try {
+                const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+                const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
+
+                const resource = this.getById(resourceId);
+                const countNeedMoney = resource.countNeedMoney;
+                const countNeedEnergy = resource.countNeedEnergy;
+
+                if (orgBalance < countNeedMoney || orgEnergy < countNeedEnergy) {
+                    throw new Error('Не хватает денег или энергии для добычи ресурса');
+                }
+
+                BalanceFacade.entity('orgs').decrement(orgId, countNeedMoney);
+                OrgsFacade.decrementOrgEnergy(orgId, countNeedEnergy);
+
+                OrgsResourcesFacade.createOrIncrement(orgId, resourceId);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции добычи ресурса: ' + e.message);
         }
     }
 }
