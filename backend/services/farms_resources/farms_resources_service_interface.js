@@ -5,7 +5,9 @@ export default class FarmsResourcesServiceInterface {
      * @param {FarmsResourcesMapperInterface} mapper 
      */
     constructor(mapper) {
-        throw new Error('Нельзя создать экземпляр класса FarmsResourcesServiceInterface');
+        if (new.target === 'FarmsResourcesServiceInterface') {
+            throw new Error('Нельзя создать экземпляр класса FarmsResourcesServiceInterface');
+        }        
     
         this.mapper = mapper;
     }
