@@ -128,4 +128,13 @@ export class OrgsServiceInterface {
     getOrgEnergy(orgId) {
         throw new Error('getOrgEnergy должен быть переопределен в наследнике');
     }
+
+    /**
+     * Декремент энергии организации
+     * @param {number} orgId
+     * @param {number} decrementValue
+     */
+    decrementOrgEnergy(orgId, decrementValue) {
+        throw new Error('decrementOrgEnergy должен быть переопределен в наследнике');
+    }
 }

@@ -130,4 +130,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    decrementOrgEnergy(orgId, decrementValue) {
+        try {
+            return this.mapper.decrementOrgEnergy(orgId, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
