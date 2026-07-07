@@ -9,8 +9,8 @@ export default class FarmsResourcesMapper extends FarmsResourcesMapperInterface 
     create(farmId, resourceId) {
         db.prepare(`
             INSERT INTO
-                farms_resources
-            VALUES (farmId, resourceId)
+                farms_resources (farmId, resourceId)
+            VALUES (?, ?)
         `).run(farmId, resourceId);
     }
 }
