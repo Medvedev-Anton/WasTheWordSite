@@ -1,5 +1,6 @@
 import { BalanceFacade } from "../facades/balance_facade.js";
 import { OrgsFacade } from "../facades/orgs_facade.js";
+import OrgsResourcesFacade from "../facades/orgs_resources_facade.js";
 import ResourceFacade from "../facades/resource_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -290,11 +291,13 @@ export default class ResourcesController extends MainController {
 
             const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
             const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
+            const orgResources = OrgsResourcesFacade.getAllByOrgId(orgId);
 
             this.send(200, {
                 message: 'success',
                 orgBalance: orgBalance,
-                orgEnergy: orgEnergy
+                orgEnergy: orgEnergy,
+                orgResources: orgResources
             });
         }
         catch (e) {

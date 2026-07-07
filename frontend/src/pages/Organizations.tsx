@@ -518,6 +518,7 @@ function OrganizationDetail({
   const [farmResource, setFarmResource] = useState<Resource | null>(null);
   const [orgBalance, setOrgBalance] = useState<number>(0);
   const [orgEnergy, setOrgEnergy] = useState<number>(0);
+  const [orgResources, setOrgResources] = useState<Resource[]>([]);
 
   useEffect(() => {
     setOrgFormData({
@@ -545,6 +546,8 @@ function OrganizationDetail({
 
     setOrgBalance(organization.balance);
     setOrgEnergy(organization.energy);
+
+    setOrgResources(organization.resources);
   }, [organization])
 
   useEffect(() => {
@@ -1014,6 +1017,7 @@ function OrganizationDetail({
 
       setOrgBalance(result.data.orgBalance);
       setOrgEnergy(result.data.orgEnergy);
+      setOrgResources(result.data.orgResources);
     }
     catch (e) {
       alert('Не удалось добыть ресурс. Возможно у организации не хватает средств');
@@ -1504,9 +1508,9 @@ function OrganizationDetail({
       </div>
 
       <div className="org-resources-wrapper">
-        {organization.resources.length !== 0 && (
+        {orgResources.length !== 0 && (
           <Resources 
-            resources={organization.resources}
+            resources={orgResources}
           />
         )}        
 
