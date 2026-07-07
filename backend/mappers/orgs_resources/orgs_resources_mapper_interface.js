@@ -38,4 +38,13 @@ export default class OrgsResourcesMapperInterface {
     findAllByOrgId(orgId) {
         throw new Error('findAllByOrgId должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить по организации и ресурсу
+     * @param {number} orgId
+     * @param {number} resourceId
+     */
+    findByOrgAndResource(orgId, resourceId) {
+        throw new Error('findAllByOrgId должен быть переопределен в наследнике');
+    }
 }

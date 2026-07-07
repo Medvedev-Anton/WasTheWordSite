@@ -52,4 +52,19 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
 
         return result;
     }
+
+    findByOrgAndResource(orgId, resourceId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+               orgs_resources
+            WHERE
+                orgId = ?
+                AND
+                resourceId = ?     
+        `).get(orgId, resourceId);
+
+        return result || null;
+    }
 }
