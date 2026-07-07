@@ -10,7 +10,8 @@ import { getMediaUrl } from '../config';
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
-import OrgResources from '../components/OrgResources';
+import OrgResources from '../components/Resources';
+import Resources from '../components/Resources';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная', 'Добывающая'];
 
@@ -1421,7 +1422,7 @@ function OrganizationDetail({
 
       <div className="org-resources-wrapper">
         {organization.resources.length !== 0 && (
-          <OrgResources 
+          <Resources 
             resources={organization.resources}
           />
         )}        
