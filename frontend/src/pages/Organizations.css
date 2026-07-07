@@ -2010,6 +2010,28 @@
   .org-resources__ceil-title {
     font-size: 14px;
   }
+
+  .resource-extraction__extract {
+    flex-wrap: wrap;
+  }
+
+  .resource-extraction__extract__resource-img-wrapper {
+    order: 1;
+  }
+
+  .resource-extraction__extract__count {
+    order: 2;
+  }
+
+  .resource-extraction__extract-btn-wrapper {
+    order: 3;
+    width: 100%;
+  }
+
+  .resource-extraction__extract-btn {
+    width: 100%;
+    padding: 20px 0 !important;
+  }
 }
 
 @media (max-width: 480px) {
