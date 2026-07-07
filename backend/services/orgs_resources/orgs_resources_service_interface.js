@@ -45,4 +45,13 @@ export default class OrgsResourcesServiceInterface {
     getAllByOrgId(orgId) {
         throw new Error('getAllByOrgId должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить по организации и ресурсу
+     * @param {number} orgId
+     * @param {number} resourceId
+     */
+    getByOrgAndResource(orgId, resourceId) {
+        throw new Error('getByOrgAndResource должен быть переопределен в наследнике');
+    }
 }

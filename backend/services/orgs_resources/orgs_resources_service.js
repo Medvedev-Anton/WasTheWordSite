@@ -16,7 +16,7 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
 
     delete(id) {
         try {
-            return this.mapper.delete(id)
+            return this.mapper.delete(id);
         }
         catch (e) {
             throw new Error(e.message);
@@ -25,7 +25,7 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
 
     getById(id) {
         try {
-            return this.mapper.findById(id)
+            return this.mapper.findById(id);
         }
         catch (e) {
             throw new Error(e.message);
@@ -34,7 +34,16 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
 
     getAllByOrgId(orgId) {
         try {
-            return this.mapper.findAllByOrgId(orgId)
+            return this.mapper.findAllByOrgId(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    getByOrgAndResource(orgId, resourceId) {
+        try {
+            return this.mapper.findByOrgAndResource(orgId, resourceId);
         }
         catch (e) {
             throw new Error(e.message);
