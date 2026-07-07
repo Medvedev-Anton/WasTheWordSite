@@ -937,7 +937,7 @@ export default function Admin() {
   const handleFetchUpdateResourceNeedMoney = async (id: number, e: any) => {
     try {
       await axios.patch(`/api/resources/${id}/needMoney`, {
-        money: e.target.value
+        money: e.target.value * 100
       });
     }
     catch (e) {
@@ -954,7 +954,7 @@ export default function Admin() {
         if (r.id === resourceId) {
           return {
             ...r,
-            countNeedMoney: e.target.value
+            countNeedMoney: e.target.value * 100
           }
         }
 
@@ -1219,7 +1219,7 @@ export default function Admin() {
   const handleFetchUpdateSimpleItemNeedMoney = async (id: number, e: any) => {
     try {
       await axios.patch(`/api/simple-items/${id}/needMoney`, {
-        money: e.target.value
+        money: e.target.value * 100
       });
     }
     catch (e) {
@@ -1236,7 +1236,7 @@ export default function Admin() {
         if (r.id === itemId) {
           return {
             ...r,
-            countNeedMoney: e.target.value
+            countNeedMoney: e.target.value * 100
           }
         }
 
@@ -2363,9 +2363,10 @@ export default function Admin() {
                       <div className="admin-resources-table__content__rows-ceil">
                         <input 
                             type="number"
-                            value={resource.countNeedMoney} 
+                            value={(resource.countNeedMoney / 100)} 
                             onBlur={(e) => handleFetchUpdateResourceNeedMoney(resource.id, e)}
                             onChange={(e) => handleChangeResourceNeedMoney(resource.id, e)}
+                            step='any'
                         />
                       </div>
                       <div className="admin-resources-table__content__rows-ceil">
@@ -2568,7 +2569,7 @@ export default function Admin() {
                       <div className="admin-simple-items-table__content__rows-ceil">
                         <input 
                             type="number"
-                            value={item.countNeedMoney} 
+                            value={item.countNeedMoney / 100} 
                             onBlur={(e) => handleFetchUpdateSimpleItemNeedMoney(item.id, e)}
                             onChange={(e) => handleChangeSimpleItemNeedMoney(item.id, e)}
                         />
