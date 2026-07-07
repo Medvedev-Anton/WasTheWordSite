@@ -516,7 +516,7 @@ export class OrgsFacade {
      * Возвращает баланс организации
      * @param {number} orgId
      */
-    getOrgBalance(orgId) {
+    static getOrgBalance(orgId) {
         const service = new OrgsService(
             new OrgsMapper()
         );
@@ -533,7 +533,7 @@ export class OrgsFacade {
      * Возвращает энергию организации
      * @param {number} orgId
      */
-    getOrgEnergy(orgId) {
+    static getOrgEnergy(orgId) {
         const service = new OrgsService(
             new OrgsMapper()
         );
