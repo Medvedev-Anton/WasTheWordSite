@@ -516,6 +516,8 @@ function OrganizationDetail({
   const [resourcesList, setResourcesList] = useState<Resource[]>([]);
   const [selectedFarmResourceId, setSelectedFarmResourceId] = useState<number | null>(null);
   const [farmResource, setFarmResource] = useState<Resource | null>(null);
+  const [orgBalance, setOrgBalance] = useState<number>(0);
+  const [orgEnergy, setOrgEnergy] = useState<number>(0);
 
   useEffect(() => {
     setOrgFormData({
@@ -540,6 +542,9 @@ function OrganizationDetail({
     if (organization.orgType === 'Ферма') {
       fetchFarmResource(organization.id);
     }
+
+    setOrgBalance(organization.balance);
+    setOrgEnergy(organization.energy);
   }, [organization])
 
   useEffect(() => {
@@ -1003,9 +1008,12 @@ function OrganizationDetail({
 
   const fetchExtractFarmResource = async (farmId: number, resourceId: number) => {
     try {
-      await axios.post(`/api/resources/${resourceId}/extract/farm`, {
+      const result = await axios.post(`/api/resources/${resourceId}/extract/farm`, {
         orgId: farmId
       });
+
+      setOrgBalance(result.data.orgBalance);
+      setOrgEnergy(result.data.orgEnergy);
     }
     catch (e) {
       alert('Не удалось добыть ресурс. Возможно у организации не хватает средств');
@@ -1257,7 +1265,8 @@ function OrganizationDetail({
               <div className="org-type-label">{organization.orgType || 'Организация'}</div>
               <h2>{organization.name}</h2>
               <p>{organization.description || 'Нет описания'}</p>
-              <p className="org-balance">Баланс: {(organization.balance / 100).toFixed(2)} BFB</p>
+              <p className="org-balance">Баланс: {(orgBalance / 100).toFixed(2)} BFB</p>
+              <p className="org-energy">Энергия: {orgEnergy}</p>
               <div className="org-stats">
                 <span>👥 {organization.membersCount} сотрудников</span>
                 <span>👤 Руководитель: {organization.adminUsername}</span>
@@ -1657,7 +1666,12 @@ function OrganizationDetail({
         
       </div>{/* end org-content-with-sidebar */}
 
-      {organization.orgType === 'Ферма' && farmResource !== undefined && farmResource !== null && (
+      {
+        organization.orgType === 'Ферма' && 
+        farmResource !== undefined && 
+        farmResource !== null && 
+        (isAdmin || isMember) &&
+        (
         <div className="farm-resource-extract-wrapper">
           <ResourceExtraction 
             resource={farmResource}
