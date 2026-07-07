@@ -67,4 +67,15 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
 
         return result || null;
     }
+
+    increment(id, incrementValue) {
+        db.prepare(`
+            UPDATE
+                orgs_resources
+            SET
+                count = count + ?
+            WHERE
+                id = ?      
+        `).run(incrementValue, id);
+    }
 }
