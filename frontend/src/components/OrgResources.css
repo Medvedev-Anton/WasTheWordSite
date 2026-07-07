@@ -1,0 +1,41 @@
+.org-resources-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    background: rgba(61, 62, 64, .5);
+    padding: 10px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
+}
+
+.org-resources__ceil {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba(61, 62, 64, .5);
+    padding: 10px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
+    gap: 3px;
+}
+
+.org-resources__ceil-image-wrapper {
+    width: 100%;
+    height: 90%;
+}
+
+.org-resources__ceil-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.org-resources__ceil-title {
+    text-align: center;
+    background: #000;
+    color: #FFF;
+}
