@@ -4,6 +4,12 @@
     display: flex;
     flex-direction: column;
     align-items: start;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: rgba(61, 62, 64, .5);
+    border-radius: 12px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    padding: 0.75rem;
+    gap: 20px;
 }
 
 .resource-extraction__components {
@@ -12,8 +18,8 @@
 }
 
 .resource-extraction__component {
-    width: 70px;
-    height: 70px;
+    width: 100px;
+    height: 100px;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -26,19 +32,29 @@
 .resource-extraction__extract {
     display: flex;
     gap: 30px;
+    align-items: center;
 }
 
 .resource-extraction__extract-btn {
     background: #8C5C5C;
-    width: 100px;
-    height: 50px;
+    padding: 30px 100px;
     color: #FFF;
     border-radius: 12px;
+    font-size: 24px;
+    transition: all .3s;
+}
+
+.resource-extraction__extract-btn:hover {
+    opacity: .6;
 }
 
 .resource-extraction__extract__resource-img-wrapper {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 90%;
+    background: rgba(61, 62, 64, .5);
+    padding: 10px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
 }
 
 .resource-extraction__extract__resource-img {
@@ -51,4 +67,28 @@
     background: #000;
     color: #FFF;
     text-align: center;
+}
+
+.resource-extraction__extract__count {
+    color: #FFF;
+    font-size: 30px;
+    background: rgba(61, 62, 64, .5);
+    padding: 10px;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    border-radius: 12px;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resource-extraction__component-value {
+    color: #FFF;
+    font-size: 20px;
+}
+
+.resource-extraction__component-title {
+    color: #FFF;
+    font-size: 20px;
 }
