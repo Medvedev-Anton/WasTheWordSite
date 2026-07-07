@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import RepostCard from '../components/RepostCard';
 import { getMediaUrl } from '../config';
 import './Profile.css';
+import Resources from '../components/Resources';
 
 export default function UserProfile() {
     const { id } = useParams<{ id: string }>();
@@ -319,27 +320,16 @@ export default function UserProfile() {
                 </div>
             </div>
 
-            <div className="cyber-card reposts-card">
-                <h3>РЕПОСТЫ</h3>
-                <div className="reposts-grid">
-                    {user.posts && user.posts.length > 0 ? (
-                        user.posts.map((post) => (
-                            <RepostCard
-                                key={post.id}
-                                post={post}
-                                onLike={handleRepostLike}
-                                onRepost={() => { }}
-                            />
-                        ))
-                    ) : (
-                        <div className="empty-reposts">
-                            <span>📭</span>
-                            <p>Нет репостов</p>
-
-                        </div>
-                    )}
+            {user.resources.length !== 0 && (
+                <div className="cyber-card reposts-card">
+                    <h3>Ресурсы</h3>
+                    <div className="users-resources-wrapper">
+                    <Resources 
+                        resources={user.resources}
+                    />
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
