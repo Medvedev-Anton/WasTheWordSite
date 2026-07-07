@@ -49,4 +49,29 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
             throw new Error(e.message);
         }
     }
+
+    increment(id, incrementValue) {
+        try {
+            return this.mapper.increment(id, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    createOrIncrement(orgId, resourceId) {
+        try {
+            const resource = this.getByOrgAndResource(orgId, resourceId);
+
+            if (resource === null) {
+                this.create(orgId, resourceId, 1);
+            }
+            else {
+                this.increment(resource.id, 1);
+            }
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

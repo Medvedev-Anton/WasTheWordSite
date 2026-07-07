@@ -54,4 +54,22 @@ export default class OrgsResourcesServiceInterface {
     getByOrgAndResource(orgId, resourceId) {
         throw new Error('getByOrgAndResource должен быть переопределен в наследнике');
     }
+
+    /**
+     * Увеличить количество
+     * @param {number} id
+     * @param {number} incrementValue
+     */
+    increment(id, incrementValue) {
+        throw new Error('increment должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Создать или увеличить на единицу
+     * @param {number} orgId
+     * @param {number} resourceId
+     */
+    createOrIncrement(orgId, resourceId) {
+        throw new Error('createOrIncrement должен быть переопределен в наследнике');
+    }
 }
