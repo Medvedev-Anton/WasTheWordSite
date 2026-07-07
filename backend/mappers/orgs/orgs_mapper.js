@@ -253,4 +253,27 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return result || null;
     }
+
+    getOrgBalance(orgId) {
+        const result = db.prepare(`
+            SELECT
+                balance
+            FROM
+                organizations
+            WHERE
+                id = ?
+        `).get(orgId);
+
+        if (result === undefined || result === null) {
+            return 0;
+        }
+
+        const balance = parseInt(result.balance);
+
+        if (isNaN(balance)) {
+            return 0;
+        }
+
+        return balance;
+    }
 }

@@ -105,4 +105,12 @@ export class OrgsMapperInterface {
     getById(orgId) {
         throw new Error('getById должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает баланс организации
+     * @param {number} orgId
+     */
+    getOrgBalance(orgId) {
+        throw new Error('getOrgBalance должен быть переопределен в наследнике');
+    }
 }
