@@ -19,6 +19,7 @@ import PostsViewsFacade from '../facades/posts_views.js';
 import ChatsController from '../controllers/chats_controller.js';
 import { PostsFacade } from '../facades/posts_facade.js';
 import ChatsFacade from '../facades/chats_facade.js';
+import OrgsResourcesFacade from '../facades/orgs_resources_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -369,7 +370,18 @@ router.get('/:id', authenticateToken, (req, res, next) => {
       ? db.prepare('SELECT id FROM chat_participants WHERE chatId = ? AND userId = ?').get(groupChat.id, req.user.userId)
       : null;
 
-    res.json({ ...organization, members, posts, subOrganizations, parentOrg, groupChatId: groupChat?.id || null, isInGroupChat: !!groupChatParticipant });
+    const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
+
+    res.json({ 
+      ...organization, 
+      members, 
+      posts, 
+      subOrganizations, 
+      parentOrg, 
+      groupChatId: groupChat?.id || null, 
+      isInGroupChat: !!groupChatParticipant,
+      resources: resources
+    });
   } catch (error) {
     console.error('Get organization error:', error);
     res.status(500).json({ error: 'Server error' });
