@@ -5,20 +5,19 @@ import './ResourceExtraction.css';
 interface ResourceExtractionProps {
     resource: Resource;
     farmId: number;
-    onExtract: (farmId: number, resourceId: number) => void
+    onExtract: (farmId: number, resourceId: number) => void;
+    countExtractedResource: number;
 }
 
 export default function ResourceExtraction(
     { 
         resource, 
         farmId,
-        onExtract
+        onExtract,
+        countExtractedResource
     }: ResourceExtractionProps
 ) {
-    const [countExtraction, setCountExtraction] = useState<number>(0);
-
     const onClickExtractBtn = () => {
-        setCountExtraction(prev => prev + 1);
         onExtract(farmId, resource.id);
     }
 
@@ -64,7 +63,7 @@ export default function ResourceExtraction(
                     </p>
                 </div>
                 <div className="resource-extraction__extract__count">
-                    {countExtraction}
+                    {countExtractedResource}
                 </div>
             </div>
         </div>

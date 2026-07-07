@@ -519,6 +519,7 @@ function OrganizationDetail({
   const [orgBalance, setOrgBalance] = useState<number>(0);
   const [orgEnergy, setOrgEnergy] = useState<number>(0);
   const [orgResources, setOrgResources] = useState<Resource[]>([]);
+  const [countExtractedResource, setCountExtractedResource] = useState<number>(0);
 
   useEffect(() => {
     setOrgFormData({
@@ -1015,12 +1016,15 @@ function OrganizationDetail({
         orgId: farmId
       });
 
+      setCountExtractedResource(prev => prev + 1);
+
       setOrgBalance(result.data.orgBalance);
       setOrgEnergy(result.data.orgEnergy);
       setOrgResources(result.data.orgResources);
     }
     catch (e) {
       alert('Не удалось добыть ресурс. Возможно у организации не хватает средств');
+      throw new Error('Ошибка при добыче ресурса');
     }
   }
 
@@ -1681,6 +1685,7 @@ function OrganizationDetail({
             resource={farmResource}
             farmId={organization.id}
             onExtract={fetchExtractFarmResource}
+            countExtractedResource={countExtractedResource}
           />
         </div>
       )}      
