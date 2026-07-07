@@ -1,0 +1,21 @@
+import FarmsResourcesMapperInterface from "../../mappers/farms_resources/farms_resources_mapper_interface.js";
+
+export default class FarmsResourcesServiceInterface {
+    /**
+     * @param {FarmsResourcesMapperInterface} mapper 
+     */
+    constructor(mapper) {
+        throw new Error('Нельзя создать экземпляр класса FarmsResourcesServiceInterface');
+    
+        this.mapper = mapper;
+    }
+
+    /**
+     * Создание записи
+     * @param {number} farmId
+     * @param {number} resourceId
+     */
+    create(farmId, resourceId) {
+        throw new Error('create должен быть переопределен в наследнике');
+    }
+}
