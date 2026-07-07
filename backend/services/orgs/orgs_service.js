@@ -121,4 +121,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getOrgEnergy(orgId) {
+        try {
+            return this.mapper.getOrgEnergy(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

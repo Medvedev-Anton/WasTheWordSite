@@ -120,4 +120,12 @@ export class OrgsServiceInterface {
     getOrgBalance(orgId) {
         throw new Error('getOrgBalance должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает энернию организации
+     * @param {number} orgId
+     */
+    getOrgEnergy(orgId) {
+        throw new Error('getOrgEnergy должен быть переопределен в наследнике');
+    }
 }
