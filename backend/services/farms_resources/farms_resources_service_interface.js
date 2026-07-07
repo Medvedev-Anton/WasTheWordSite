@@ -20,4 +20,12 @@ export default class FarmsResourcesServiceInterface {
     create(farmId, resourceId) {
         throw new Error('create должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить по ID фермы
+     * @param {number} farmId
+     */
+    getByFarmId(farmId) {
+        throw new Error('getByFarmId должен быть переопределен в наследнике');
+    }
 }

@@ -13,4 +13,13 @@ export default class FarmsResourcesService extends FarmsResourcesServiceInterfac
             throw new Error(e.message);
         }
     }
+
+    getByFarmId(farmId) {
+        try {
+            return this.mapper.getByFarmId(farmId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
