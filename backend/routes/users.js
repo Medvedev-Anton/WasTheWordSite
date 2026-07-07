@@ -8,6 +8,7 @@ import fs from 'fs';
 import { RangFacade } from '../facades/rang_facade.js';
 import { BalanceController } from '../controllers/balance_controller.js';
 import { error } from 'console';
+import UsersResourcesFacade from '../facades/users_resources_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -170,7 +171,17 @@ router.get('/:id', authenticateToken, (req, res) => {
     FROM heroes
     WHERE heroes.id = ?;
   `).get(rangId ?? null, user.heroId ?? null, user.heroId ?? null) || null;
-    res.json({ ...user, photos, posts, rang, hero: hero });
+
+    const resources = UsersResourcesFacade.getAllByUserId(userId);
+
+    res.json({ 
+      ...user, 
+      photos, 
+      posts, 
+      rang, 
+      hero: hero,
+      resources: resources
+    });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ error: 'Server error' });
