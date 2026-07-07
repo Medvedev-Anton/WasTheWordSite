@@ -494,7 +494,11 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       }
     }
 
-    if (resolvedType === 'Ферма') {
+    if (
+      resolvedType === 'Ферма' && 
+      req.body.selectedFarmResourceId !== null &&
+      req.body.selectedFarmResourceId !== undefined
+    ) {
       const selectedFarmResourceId = req.body.selectedFarmResourceId;
       FarmsResourcesFacade.create(result.lastInsertRowid, selectedFarmResourceId);
     }
