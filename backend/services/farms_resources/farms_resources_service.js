@@ -16,7 +16,7 @@ export default class FarmsResourcesService extends FarmsResourcesServiceInterfac
 
     getByFarmId(farmId) {
         try {
-            return this.mapper.getByFarmId(farmId);
+            return this.mapper.findByFarmId(farmId);
         }
         catch (e) {
             throw new Error(e.message);

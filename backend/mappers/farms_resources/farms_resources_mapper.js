@@ -19,7 +19,7 @@ export default class FarmsResourcesMapper extends FarmsResourcesMapperInterface 
             SELECT
                 r.*
             FROM
-                farm_resources f
+                farms_resources f
             JOIN
                 resources r
             ON
