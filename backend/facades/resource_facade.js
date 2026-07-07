@@ -132,4 +132,17 @@ export default class ResourceFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получает ресурс по ID
+     * @param {number} id
+     */
+    static getById(id) {
+        try {
+            return this.getService().getById(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
