@@ -27,7 +27,7 @@ export default class OrgsResourcesFacade {
      * Удаление записи
      * @param {number} id
      */
-    delete(id) {
+    static delete(id) {
         try {
             return this.getService().delete(id);
         }
@@ -40,7 +40,7 @@ export default class OrgsResourcesFacade {
      * Получить по ID
      * @param {number} id
      */
-    getById(id) {
+    static getById(id) {
         try {
             return this.getService().getById(id);
         }
@@ -53,7 +53,7 @@ export default class OrgsResourcesFacade {
      * Получить все ресурсы организации
      * @param {number} orgId
      */
-    getAllByOrgId(orgId) {
+    static getAllByOrgId(orgId) {
         try {
             return this.getService().getAllByOrgId(orgId);
         }
