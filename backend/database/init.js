@@ -1119,6 +1119,18 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create orgs resources table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_resources(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orgId INTEGER NOT NULL,
+      resourceId INTEGER NOT NULL,
+      count INTEGER NOT NULL,
+      FOREIGN KEY (orgId) REFERENCES organizations(id) ON DELETE CASCADE,
+      FOREIGN KEY (resourceId) REFERENCES resources(id) ON DELETE CASCADE
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
