@@ -1,0 +1,43 @@
+import OrgsResourcesServiceInterface from "./orgs_resources_service_interface.js";
+
+export default class OrgsResourcesService extends OrgsResourcesServiceInterface {
+    constructor(mapper) {
+        super(mapper);
+    }
+
+    create(orgId, resourceId, count) {
+        try {
+            return this.mapper.create(orgId, resourceId, count);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    delete(id) {
+        try {
+            return this.mapper.delete(id)
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    getById(id) {
+        try {
+            return this.mapper.findById(id)
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    getAllByOrgId(orgId) {
+        try {
+            return this.mapper.findAllByOrgId(id)
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+}
