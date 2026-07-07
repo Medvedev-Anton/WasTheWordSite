@@ -545,4 +545,22 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Декремент энергии организации
+     * @param {number} orgId
+     * @param {number} decrementValue
+     */
+    static decrementOrgEnergy(orgId, decrementValue) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.decrementOrgEnergy(orgId, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
