@@ -101,7 +101,8 @@ export interface Organization {
   posts?: Post[],
   longitude: string,
   latitude: string,
-  balance: number
+  balance: number,
+  resources: Resource[]
 }
 
 export interface OrganizationMember {
