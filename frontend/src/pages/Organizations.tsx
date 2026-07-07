@@ -12,6 +12,7 @@ import AddressInput from '../components/AddressInput';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
 import OrgResources from '../components/Resources';
 import Resources from '../components/Resources';
+import ResourceExtraction from '../components/ResourceExtraction';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная', 'Добывающая'];
 
@@ -514,6 +515,7 @@ function OrganizationDetail({
   const [selectedCoverId, setSelectedCoverId] = useState<number | null>(organization.organization_cover_id || null);
   const [resourcesList, setResourcesList] = useState<Resource[]>([]);
   const [selectedFarmResourceId, setSelectedFarmResourceId] = useState<number | null>(null);
+  const [farmResource, setFarmResource] = useState<Resource | null>(null);
 
   useEffect(() => {
     setOrgFormData({
@@ -534,6 +536,10 @@ function OrganizationDetail({
     if (resolvedOrgType === 'Ферма') {
       fetchAllResources();
     }
+
+    if (organization.orgType === 'Ферма') {
+      fetchFarmResource(organization.id);
+    }
   }, [organization])
 
   useEffect(() => {
@@ -550,6 +556,17 @@ function OrganizationDetail({
     }
     catch (e) {
       alert('Не удалось получить все ресурсы');
+    }
+  }
+
+  // Получить добываемый фермой ресурс
+  const fetchFarmResource = async (farmId: number) => {
+    try {
+      const result = await axios.get(`/api/farms/${farmId}/resource`);
+      setFarmResource(result.data.resource);
+    }
+    catch (e) {
+      alert('Не удалось получить ресурс фермы');
     }
   }
 
@@ -982,6 +999,17 @@ function OrganizationDetail({
 
   const handleChangeFarmResourceId = (e: any) => {
     setSelectedFarmResourceId(e.target.value);
+  }
+
+  const fetchExtractFarmResource = async (farmId: number, resourceId: number) => {
+    try {
+      await axios.post(`/api/resources/${resourceId}/extract/farm`, {
+        orgId: farmId
+      });
+    }
+    catch (e) {
+      alert('Не удалось добыть ресурс. Возможно у организации не хватает средств');
+    }
   }
 
   return (
@@ -1628,6 +1656,16 @@ function OrganizationDetail({
 
         
       </div>{/* end org-content-with-sidebar */}
+
+      {organization.orgType === 'Ферма' && farmResource !== undefined && farmResource !== null && (
+        <div className="farm-resource-extract-wrapper">
+          <ResourceExtraction 
+            resource={farmResource}
+            farmId={organization.id}
+            onExtract={fetchExtractFarmResource}
+          />
+        </div>
+      )}      
 
       {/* Delete confirmation modal */}
       {showDeleteModal && (
