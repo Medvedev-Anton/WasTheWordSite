@@ -511,4 +511,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает баланс организации
+     * @param {number} orgId
+     */
+    getOrgBalance(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getOrgBalance(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
