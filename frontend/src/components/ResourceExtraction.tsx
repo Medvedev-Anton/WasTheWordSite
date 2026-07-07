@@ -27,7 +27,7 @@ export default function ResourceExtraction(
             <div className="resource-extraction__components">
                 <div className="resource-extraction__component">
                     <p className='resource-extraction__component-value'>
-                        {resource.countNeedMoney}
+                        {(resource.countNeedMoney / 100).toFixed(2)}
                     </p>
                     <p className="resource-extraction__component-title">
                         BFB
