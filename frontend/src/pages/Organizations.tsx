@@ -10,6 +10,7 @@ import { getMediaUrl } from '../config';
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
+import OrgResources from '../components/OrgResources';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная', 'Добывающая'];
 
@@ -1418,6 +1419,45 @@ function OrganizationDetail({
         )}
       </div>
 
+      <div className="org-resources-wrapper">
+        {organization.resources.length !== 0 && (
+          <OrgResources 
+            resources={organization.resources}
+          />
+        )}        
+
+        {/* Members sidebar */}
+        <aside className="org-members-sidebar">
+          <div className="org-members-sidebar-header">
+            <span className="org-members-sidebar-title">Сотрудники</span>
+            <span className="org-members-sidebar-count">{organization.membersCount}</span>
+          </div>
+          <div className="org-members-sidebar-avatars">
+            {(organization.members || []).slice(0, 8).map(m => (
+              <div
+                key={m.userId}
+                className="sidebar-member"
+                onClick={() => { setSelectedMember(m); setShowMembersModal(true); }}
+                title={m.firstName && m.lastName ? `${m.firstName} ${m.lastName}` : m.username}
+              >
+                {m.avatar
+                  ? <img src={getMediaUrl(m.avatar)} alt={m.username} className="sidebar-member-avatar" />
+                  : <div className="sidebar-member-avatar-placeholder">{(m.firstName || m.username)[0].toUpperCase()}</div>
+                }
+                <span className="sidebar-member-name">
+                  {m.firstName ? m.firstName : m.username}
+                </span>
+              </div>
+            ))}
+          </div>
+          {(organization.members?.length || 0) > 0 && (
+            <button className="org-members-show-all-btn" onClick={() => { setSelectedMember(organization.members?.[0] || null); setShowMembersModal(true); }}>
+              Показать всех →
+            </button>
+          )}
+        </aside>
+      </div>
+
       <div className="org-content-with-sidebar">
         <div className="org-main-content">
 
@@ -1539,36 +1579,7 @@ function OrganizationDetail({
           )}
         </div>{/* end org-main-content */}
 
-        {/* Members sidebar */}
-        <aside className="org-members-sidebar">
-          <div className="org-members-sidebar-header">
-            <span className="org-members-sidebar-title">Сотрудники</span>
-            <span className="org-members-sidebar-count">{organization.membersCount}</span>
-          </div>
-          <div className="org-members-sidebar-avatars">
-            {(organization.members || []).slice(0, 8).map(m => (
-              <div
-                key={m.userId}
-                className="sidebar-member"
-                onClick={() => { setSelectedMember(m); setShowMembersModal(true); }}
-                title={m.firstName && m.lastName ? `${m.firstName} ${m.lastName}` : m.username}
-              >
-                {m.avatar
-                  ? <img src={getMediaUrl(m.avatar)} alt={m.username} className="sidebar-member-avatar" />
-                  : <div className="sidebar-member-avatar-placeholder">{(m.firstName || m.username)[0].toUpperCase()}</div>
-                }
-                <span className="sidebar-member-name">
-                  {m.firstName ? m.firstName : m.username}
-                </span>
-              </div>
-            ))}
-          </div>
-          {(organization.members?.length || 0) > 0 && (
-            <button className="org-members-show-all-btn" onClick={() => { setSelectedMember(organization.members?.[0] || null); setShowMembersModal(true); }}>
-              Показать всех →
-            </button>
-          )}
-        </aside>
+        
       </div>{/* end org-content-with-sidebar */}
 
       {/* Delete confirmation modal */}

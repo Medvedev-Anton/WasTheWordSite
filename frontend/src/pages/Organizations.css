@@ -714,6 +714,10 @@
   .organizations-grid {
     grid-template-columns: 1fr;
   }
+
+  .org-resources-wrapper {
+    flex-direction: column;
+  }
 }
 
 
@@ -1171,6 +1175,13 @@
 .moderator-btn:hover,
 .remove-moderator-btn:hover {
   transform: translateY(-2px);
+}
+
+.org-resources-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: start;
+  justify-content: flex-end;
 }
 
 @media (max-width: 768px) {
@@ -1980,6 +1991,15 @@
 
   .input-mode-toggle {
     flex-direction: column;
+  }
+
+  .org-resources__ceil {
+    width: 100px !important;
+    height: 100px !important;
+  }
+
+  .org-resources__ceil-title {
+    font-size: 14px;
   }
 }
 
