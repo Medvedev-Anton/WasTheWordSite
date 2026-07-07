@@ -563,4 +563,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает тип организации
+     * @param {number} orgId
+     */
+    static getOrgType(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getOrgType(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
