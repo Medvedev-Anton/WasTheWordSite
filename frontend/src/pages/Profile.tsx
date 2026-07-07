@@ -7,6 +7,7 @@ import SkinModal from '../components/SkinModal';
 import RepostCard from '../components/RepostCard';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
+import Resources from '../components/Resources';
 
 export default function Profile() {
   const { user: currentUser } = useAuth();
@@ -501,27 +502,16 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="cyber-card reposts-card">
-        <h3>РЕПОСТЫ</h3>
-        <div className="reposts-grid">
-          {user.posts && user.posts.length > 0 ? (
-            user.posts.map((post) => (
-              <RepostCard
-                key={post.id}
-                post={post}
-                onLike={handleRepostLike}
-                onRepost={() => { }}
-              />
-            ))
-          ) : (
-            <div className="empty-reposts">
-              <span>📭</span>
-              <p>Нет репостов</p>
-              <small>Репостните пост из ленты</small>
-            </div>
-          )}
+      {user.resources && (
+        <div className="cyber-card reposts-card">
+          <h3>Ресурсы</h3>
+          <div className="users-resources-wrapper">
+            <Resources 
+              resources={user.resources}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {
         showSkinModal ?
