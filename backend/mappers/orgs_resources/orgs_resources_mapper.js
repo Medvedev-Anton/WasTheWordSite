@@ -41,13 +41,13 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
             SELECT
                 r.*
             FROM
-               orgs_resources or
+               orgs_resources o
             JOIN
                 resources r
             ON
-                r.id = or.resourceId
+                r.id = o.resourceId
             WHERE
-                or.orgId = ?     
+                o.orgId = ?     
         `).all(orgId);
 
         return result;
