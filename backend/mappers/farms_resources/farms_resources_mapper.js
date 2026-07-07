@@ -27,5 +27,7 @@ export default class FarmsResourcesMapper extends FarmsResourcesMapperInterface 
             WHERE
                 f.farmId = ?    
         `).get(farmId);
+
+        return result;
     }
 }
