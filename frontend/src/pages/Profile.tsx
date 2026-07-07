@@ -502,7 +502,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {user.resources && (
+      {user.resources.length !== 0 && (
         <div className="cyber-card reposts-card">
           <h3>Ресурсы</h3>
           <div className="users-resources-wrapper">
