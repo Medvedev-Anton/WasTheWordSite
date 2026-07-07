@@ -153,6 +153,7 @@ export async function initDatabase() {
   const hasLatitude = orgTableInfo.some(col => col.name === 'latitude');
   const hasCoverImage = orgTableInfo.some(col => col.name === 'coverImage');
   const hasOrgBalance = orgTableInfo.some(col => col.name === 'balance');
+  const hasEnergy = orgTableInfo.some(col => col.name === 'energy');
 
   if (!hasDefaultCanPost) {
     try {
@@ -217,6 +218,13 @@ export async function initDatabase() {
       db.exec(`ALTER TABLE organizations ADD COLUMN balance BIGINT DEFAULT 0`);
     } catch (e) {
       console.error('Error adding balance column:', e.message);
+    }
+  }
+  if (!hasEnergy) {
+    try {
+      db.exec(`ALTER TABLE organizations ADD COLUMN energy INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding energy column:', e.message);
     }
   }
 
