@@ -1,23 +1,23 @@
 import { Resource } from '../types';
-import './OrgResources.css';
+import './Resources.css';
 
-interface OrgResourcesProps {
+interface ResourcesProps {
     resources: Resource[];
 }
 
-export default function OrgResources(
+export default function Resources(
     {
         resources
-    }: OrgResourcesProps
+    }: ResourcesProps
 ) {
     return (
-        <div className="org-resources-content">
+        <div className="resources-content">
             {resources?.map(resource => (
-                <div key={resource.id} className="org-resources__ceil">
-                    <div className="org-resources__ceil-image-wrapper">
+                <div key={resource.id} className="resources__ceil">
+                    <div className="resources__ceil-image-wrapper">
                         <img src={resource.imageUrl} alt="resource image" />
                     </div>
-                    <div className="org-resources__ceil-title">
+                    <div className="resources__ceil-title">
                         {resource.name}
                     </div>
                 </div>

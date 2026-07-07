@@ -1,4 +1,4 @@
-.org-resources-content {
+.resources-content {
     width: 100%;
     height: 100%;
     display: flex;
@@ -10,7 +10,7 @@
     border-radius: 12px;
 }
 
-.org-resources__ceil {
+.resources__ceil {
     width: 150px;
     height: 150px;
     display: flex;
@@ -23,18 +23,18 @@
     gap: 3px;
 }
 
-.org-resources__ceil-image-wrapper {
+.resources__ceil-image-wrapper {
     width: 100%;
     height: 90%;
 }
 
-.org-resources__ceil-image-wrapper img {
+.resources__ceil-image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.org-resources__ceil-title {
+.resources__ceil-title {
     text-align: center;
     background: #000;
     color: #FFF;
