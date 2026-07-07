@@ -1,3 +1,4 @@
+import { OrgsFacade } from "../facades/orgs_facade.js";
 import ResourceFacade from "../facades/resource_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -253,6 +254,45 @@ export default class ResourcesController extends MainController {
         }
         catch (e) {
             console.error('Update resource money error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обрабатывает добычу ресурса организацией
+     */
+    orgExtract() {
+        const validate = this.has([
+            'id',
+            'orgId', 
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const resourceId = parseInt(this.request.params.id);
+            const orgId = parseInt(this.request.body.orgId);
+
+            const orgType = OrgsFacade.getOrgType('orgId');
+
+            if (orgType !== 'Ферма') {
+                this.send(400, {
+                    message: 'Добычу может вести только ферма'
+                });
+            }
+
+            ResourceFacade.extract(orgId, resourceId);
+
+            this.send(200, {
+                message: 'success'
+            });
+        }
+        catch (e) {
+            console.error('Extract org resource error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
