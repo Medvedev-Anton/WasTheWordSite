@@ -61,4 +61,18 @@ export default class OrgsResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Создать или увеличить на единицу
+     * @param {number} orgId
+     * @param {number} resourceId
+     */
+    static createOrIncrement(orgId, resourceId) {
+        try {
+            return this.getService().createOrIncrement(orgId, resourceId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
