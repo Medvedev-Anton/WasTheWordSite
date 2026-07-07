@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { Organization } from '../types';
+import { Organization, Resource } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import PostCard from '../components/PostCard';
 import CreatePost from '../components/CreatePost';
@@ -512,6 +512,8 @@ function OrganizationDetail({
   const [showCalcLoanResult, setShowCalcLoanResult] = useState<boolean>(false);
   const [selectedIconId, setSelectedIconId] = useState(organization.organization_icon_id || 1);
   const [selectedCoverId, setSelectedCoverId] = useState<number | null>(organization.organization_cover_id || null);
+  const [resourcesList, setResourcesList] = useState<Resource[]>([]);
+  const [selectedFarmResourceId, setSelectedFarmResourceId] = useState<number | null>(null);
 
   useEffect(() => {
     setOrgFormData({
@@ -526,7 +528,30 @@ function OrganizationDetail({
 
     setSelectedIconId(organization.organization_icon_id || 1);
     setSelectedCoverId(organization.organization_cover_id || null);
+
+    const resolvedOrgType = ORG_HIERARCHY[organization.orgType || ''];
+
+    if (resolvedOrgType === 'Ферма') {
+      fetchAllResources();
+    }
   }, [organization])
+
+  useEffect(() => {
+    if (resourcesList.length !== 0) {
+      setSelectedFarmResourceId(resourcesList[0]?.id);
+    }    
+  }, [resourcesList]);
+
+  // Получение всех существующих ресурсов
+  const fetchAllResources = async () => {
+    try {
+      const result = await axios.get('/api/resources');
+      setResourcesList(result.data.resources);
+    }
+    catch (e) {
+      alert('Не удалось получить все ресурсы');
+    }
+  }
 
   const navigate = useNavigate();
 
@@ -701,6 +726,11 @@ function OrganizationDetail({
       data.append('defaultCanComment', 'true');
       data.append('isPrivate', 'false');
       data.append('organizationIconId', organizationIconId ?? "");
+
+      if (subOrgType === 'Ферма' && selectedFarmResourceId !== null) {
+        data.append('selectedFarmResourceId', selectedFarmResourceId.toString());
+      }
+
       if (subOrgCoverId) {
         data.append('organizationCoverId', subOrgCoverId.toString());
       }
@@ -948,6 +978,10 @@ function OrganizationDetail({
 
   const handleChangeUserLoanOrgId = (e: any) => {
     setUserLoanOrgId(e.target.value);
+  }
+
+  const handleChangeFarmResourceId = (e: any) => {
+    setSelectedFarmResourceId(e.target.value);
   }
 
   return (
@@ -1299,6 +1333,18 @@ function OrganizationDetail({
                 onChange={(e) => setSubOrgName(e.target.value)}
                 className="org-edit-input"
               />
+              {subOrgType === 'Ферма' && (
+                <select
+                  className="farm-resource-select"
+                  onChange={handleChangeFarmResourceId}
+                >
+                  {resourcesList?.map(resource => (
+                    <option key={resource.id} value={resource.id}>
+                      {resource.name}
+                    </option>
+                  ))}
+                </select>
+              )}              
               <textarea
                 placeholder="Описание"
                 value={subOrgDesc}
