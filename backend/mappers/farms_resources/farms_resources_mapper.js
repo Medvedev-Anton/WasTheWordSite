@@ -13,4 +13,19 @@ export default class FarmsResourcesMapper extends FarmsResourcesMapperInterface 
             VALUES (?, ?)
         `).run(farmId, resourceId);
     }
+
+    findByFarmId(farmId) {
+        const result = db.prepare(`
+            SELECT
+                r.*
+            FROM
+                farm_resources f
+            JOIN
+                resources r
+            ON
+                r.id = f.resourceId
+            WHERE
+                f.farmId = ?    
+        `).get(farmId);
+    }
 }

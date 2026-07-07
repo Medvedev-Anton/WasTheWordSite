@@ -13,4 +13,12 @@ export default class FarmsResourcesMapperInterface {
     create(farmId, resourceId) {
         throw new Error('create должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить по ID фермы
+     * @param {number} farmId
+     */
+    findByFarmId(farmId) {
+        throw new Error('findByFarmId должен быть переопределен в наследнике');
+    }
 }
