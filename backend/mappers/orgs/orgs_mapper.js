@@ -299,4 +299,15 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return energy;
     }
+
+    decrementOrgEnergy(orgId, decrementValue) {
+        db.prepare(`
+            UPDATE
+                organizations
+            SET
+                energy = energy - ?
+            WHERE
+                id = ?    
+        `).run(decrementValue, orgId);
+    }
 }
