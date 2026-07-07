@@ -21,4 +21,17 @@ export default class FarmsResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получить по ID фермы
+     * @param {number} farmId
+     */
+    static getByFarmId(farmId) {
+        try {
+            return this.getService().getByFarmId(farmId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
