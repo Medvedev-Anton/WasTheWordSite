@@ -39,11 +39,15 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
     findAllByOrgId(orgId) {
         const result = db.prepare(`
             SELECT
-                *
+                r.*
             FROM
-               orgs_resources
+               orgs_resources or
+            JOIN
+                resources r
+            ON
+                r.id = or.resourceId
             WHERE
-                orgId = ?     
+                or.orgId = ?     
         `).all(orgId);
 
         return result;
