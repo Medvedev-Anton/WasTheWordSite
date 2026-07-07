@@ -20,6 +20,7 @@ import ChatsController from '../controllers/chats_controller.js';
 import { PostsFacade } from '../facades/posts_facade.js';
 import ChatsFacade from '../facades/chats_facade.js';
 import OrgsResourcesFacade from '../facades/orgs_resources_facade.js';
+import FarmsResourcesFacade from '../facades/farms_resources_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -491,6 +492,11 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
         BanksLoansBalanceFacade.create(result.lastInsertRowid, 0);
         BankFacade.entity('orgs').createBankRowDefault(result.lastInsertRowid);
       }
+    }
+
+    if (resolvedType === 'Ферма') {
+      const selectedFarmResourceId = req.body.selectedFarmResourceId;
+      FarmsResourcesFacade.create(result.lastInsertRowid, selectedFarmResourceId);
     }
 
     try {
