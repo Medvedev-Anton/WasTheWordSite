@@ -528,4 +528,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает энергию организации
+     * @param {number} orgId
+     */
+    getOrgEnergy(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getOrgEnergy(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
