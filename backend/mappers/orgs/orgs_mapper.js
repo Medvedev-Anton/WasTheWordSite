@@ -276,4 +276,27 @@ export class OrgsMapper extends OrgsMapperInterface {
 
         return balance;
     }
+
+    getOrgEnergy(orgId) {
+        const result = db.prepare(`
+            SELECT
+                energy
+            FROM
+                organizations
+            WHERE
+                id = ?
+        `).get(orgId);
+
+        if (result === undefined || result === null) {
+            return 0;
+        }
+
+        const energy = parseInt(result.energy);
+
+        if (isNaN(energy)) {
+            return 0;
+        }
+
+        return energy;
+    }
 }

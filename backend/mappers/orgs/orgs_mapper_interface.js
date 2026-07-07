@@ -113,4 +113,12 @@ export class OrgsMapperInterface {
     getOrgBalance(orgId) {
         throw new Error('getOrgBalance должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает энергию организации
+     * @param {number} orgId
+     */
+    getOrgEnergy(orgId) {
+        throw new Error('getOrgEnergy должен быть переопределен в наследнике');
+    }
 }
