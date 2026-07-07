@@ -43,7 +43,10 @@ router.post('/', authenticateToken, resourceMediaUpload, (req, res) => {
 });
 
 // Получить ресурс
-router.get('/:id', );
+router.get('/:id', authenticateToken, (req, res) => {
+    const controller = new ResourcesController(req, res);
+    controller.getById();
+});
 
 // Удалить ресурс
 router.delete('/:id', authenticateToken, (req, res) => {
