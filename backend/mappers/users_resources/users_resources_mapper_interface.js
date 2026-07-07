@@ -28,6 +28,6 @@ export default class UsersResourcesMapperInterface {
      * @param {number} userId
      */
     findAllByUserId(userId) {
-        throw new Error('userId должен быть переопределен в наследнике');
+        throw new Error('findAllByUserId должен быть переопределен в наследнике');
     }
 }
