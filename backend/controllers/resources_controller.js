@@ -277,7 +277,7 @@ export default class ResourcesController extends MainController {
             const resourceId = parseInt(this.request.params.id);
             const orgId = parseInt(this.request.body.orgId);
 
-            const orgType = OrgsFacade.getOrgType('orgId');
+            const orgType = OrgsFacade.getOrgType(orgId);
 
             if (orgType !== 'Ферма') {
                 this.send(400, {
