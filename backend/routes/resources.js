@@ -40,7 +40,10 @@ router.get('/', authenticateToken, (req, res) => {
 router.post('/', authenticateToken, resourceMediaUpload, (req, res) => {
     const controller = new ResourcesController(req, res);
     controller.create();
-}); 
+});
+
+// Получить ресурс
+router.get('/:id', );
 
 // Удалить ресурс
 router.delete('/:id', authenticateToken, (req, res) => {
@@ -79,7 +82,7 @@ router.patch('/:id/needMoney', authenticateToken, (req, res) => {
 });
 
 // Добыча ресурса фермой
-router.post('/:id/extract/farm', (req, res) => {
+router.post('/:id/extract/farm', authenticateToken, (req, res) => {
     const controller = new ResourcesController(req, res);
     controller.orgExtract();
 });
