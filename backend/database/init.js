@@ -1131,6 +1131,18 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create users resources table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_resources(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      resourceId INTEGER NOT NULL,
+      count INTEGER NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (resourceId) REFERENCES resources(id) ON DELETE CASCADE
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
