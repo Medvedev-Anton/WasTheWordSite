@@ -2,7 +2,7 @@ import UsersResourcesServiceInterface from "./users_resources_service_interface.
 
 export default class UsersResourcesService extends UsersResourcesServiceInterface {
     constructor(mapper) {
-        this.mapper = mapper;
+        super(mapper);
     }
 
     create(userId, resourceId, count) {
