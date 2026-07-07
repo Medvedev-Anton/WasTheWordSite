@@ -13,7 +13,7 @@ export default function OrgResources(
     return (
         <div className="org-resources-content">
             {resources?.map(resource => (
-                <div className="org-resources__ceil">
+                <div key={resource.id} className="org-resources__ceil">
                     <div className="org-resources__ceil-image-wrapper">
                         <img src={resource.imageUrl} alt="resource image" />
                     </div>
