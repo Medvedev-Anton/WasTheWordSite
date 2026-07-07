@@ -1143,6 +1143,17 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create farms resources table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS farms_resources(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      farmId INTEGER NOT NULL,
+      resourceId INTEGER NOT NULL,
+      FOREIGN KEY (farmId) REFERENCES organizations(id) ON DELETE CASCADE,
+      FOREIGN KEY (resourceId) REFERENCES resources(id) ON DELETE CASCADE
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
