@@ -18,6 +18,7 @@ export interface User {
   rang?: Rang;
   balance: number;
   energy: number;
+  resources: Resource[];
 }
 
 export interface Rang {
