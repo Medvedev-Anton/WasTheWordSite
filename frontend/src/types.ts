@@ -103,6 +103,7 @@ export interface Organization {
   longitude: string,
   latitude: string,
   balance: number,
+  energy: number,
   resources: Resource[]
 }
 
