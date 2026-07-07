@@ -78,4 +78,10 @@ router.patch('/:id/needMoney', authenticateToken, (req, res) => {
     controller.updateNeedMoney();
 });
 
+// Добыча ресурса фермой
+router.post('/:id/extract/farm', (req, res) => {
+    const controller = new ResourcesController(req, res);
+    controller.orgExtract();
+});
+
 export default router;
