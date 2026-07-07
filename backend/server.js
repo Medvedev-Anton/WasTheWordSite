@@ -21,6 +21,7 @@ import energyRouter from './routes/energy.js';
 import resourcesRouter from './routes/resources.js';
 import simpleItemsRouter from './routes/simple_items.js';
 import compoundItemsRouter from './routes/compound_items.js';
+import farmsRouter from './routes/farms.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -76,6 +77,7 @@ app.use('/api/energy', energyRouter);
 app.use('/api/resources', resourcesRouter);
 app.use('/api/simple-items', simpleItemsRouter);
 app.use('/api/compound-items', compoundItemsRouter);
+app.use('/api/farms', farmsRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
