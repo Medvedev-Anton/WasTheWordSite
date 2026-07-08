@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Resource } from '../types';
 import './Resources.css';
 
@@ -10,6 +11,18 @@ export default function Resources(
         resources
     }: ResourcesProps
 ) {
+    const [emptyCeils, setEmptyCeils] = useState<number[]>([]);
+
+    useEffect(() => {
+        const emptyCeilsArr = [];
+
+        for (let i = 0; i < (12 - resources.length); i++) {
+            emptyCeilsArr.push(i);
+        }
+
+        setEmptyCeils(emptyCeilsArr);
+    }, [resources]);
+
     return (
         <div className="resources-content">
             {resources?.map(resource => (
@@ -22,6 +35,14 @@ export default function Resources(
                     </div>
                 </div>
             ))}
+
+            {
+                emptyCeils.map(elem => (
+                    <div key={elem} className="resources__ceil">
+
+                    </div>
+                ))
+            }
         </div>
     );
 }
