@@ -1057,9 +1057,11 @@ function OrganizationDetail({
         {!orgCoverPreview && <span>Добавьте обложку, чтобы выделить организацию</span>}
       </div>
 
-      <div>
-        <OrgBalanceDiagram orgId={organization.id} />
-      </div>
+      {organization.orgType !== 'Ферма' && (
+        <div>
+          <OrgBalanceDiagram orgId={organization.id} />
+        </div>
+      )}      
 
       <div className="org-header">
         {editingOrg ? (
