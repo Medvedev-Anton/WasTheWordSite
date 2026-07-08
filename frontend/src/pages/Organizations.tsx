@@ -1556,6 +1556,22 @@ function OrganizationDetail({
         </aside>
       </div>
 
+      {
+        organization.orgType === 'Ферма' && 
+        farmResource !== undefined && 
+        farmResource !== null && 
+        (isAdmin || isMember) &&
+        (
+        <div className="farm-resource-extract-wrapper">
+          <ResourceExtraction 
+            resource={farmResource}
+            farmId={organization.id}
+            onExtract={fetchExtractFarmResource}
+            countExtractedResource={countExtractedResource}
+          />
+        </div>
+      )}    
+
       <div className="org-content-with-sidebar">
         <div className="org-main-content">
 
@@ -1678,23 +1694,7 @@ function OrganizationDetail({
         </div>{/* end org-main-content */}
 
         
-      </div>{/* end org-content-with-sidebar */}
-
-      {
-        organization.orgType === 'Ферма' && 
-        farmResource !== undefined && 
-        farmResource !== null && 
-        (isAdmin || isMember) &&
-        (
-        <div className="farm-resource-extract-wrapper">
-          <ResourceExtraction 
-            resource={farmResource}
-            farmId={organization.id}
-            onExtract={fetchExtractFarmResource}
-            countExtractedResource={countExtractedResource}
-          />
-        </div>
-      )}      
+      </div>{/* end org-content-with-sidebar */}  
 
       {/* Delete confirmation modal */}
       {showDeleteModal && (
