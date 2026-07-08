@@ -17,13 +17,18 @@ export default class FarmsResourcesMapper extends FarmsResourcesMapperInterface 
     findByFarmId(farmId) {
         const result = db.prepare(`
             SELECT
-                r.*
+                r.*,
+                o.count as countExtracted
             FROM
                 farms_resources f
             JOIN
                 resources r
             ON
                 r.id = f.resourceId
+            JOIN
+                orgs_resources o
+            ON
+                o.orgId = f.farmId
             WHERE
                 f.farmId = ?    
         `).get(farmId);

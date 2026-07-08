@@ -183,6 +183,7 @@ export interface Resource {
   imageUrl: string;
   countNeedEnergy: number;
   countNeedMoney: number;
+  countExtracted?: number;
 }
 
 export interface SimpleItem {

@@ -557,6 +557,10 @@ function OrganizationDetail({
     }    
   }, [resourcesList]);
 
+  useEffect(() => {
+    setCountExtractedResource(farmResource?.countExtracted || 0);
+  }, [farmResource]);
+
   // Получение всех существующих ресурсов
   const fetchAllResources = async () => {
     try {
