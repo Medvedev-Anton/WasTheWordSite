@@ -1173,6 +1173,7 @@ export async function initDatabase() {
 
   const energyParams = [
     { name: "buyEnergyPrice", value: 0 },
+    { name: "energyToOrgForOrgVisit", value: 0 },
   ];
 
   energyParams.forEach(row => {
