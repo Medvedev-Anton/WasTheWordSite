@@ -21,7 +21,7 @@ export default class EnergyParamsServiceInterface {
 
     /**
      * Изменить значение параметра
-     * @param {float} newValue
+     * @param {number} newValue
      */
     updateBuyEnergyPrice(newValue) {
         throw new Error('updateBuyEnergyPrice должен быть переопределен в наследнике');

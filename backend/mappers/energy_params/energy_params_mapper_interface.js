@@ -16,7 +16,7 @@ export default class EnergyParamsMapperInterface {
     /**
      * Изменить значение параметра
      * @param {string} name
-     * @param {float} newValue
+     * @param {number} newValue
      */
     update(name, newValue) {
         throw new Error('update должен быть переопределен в наследнике');

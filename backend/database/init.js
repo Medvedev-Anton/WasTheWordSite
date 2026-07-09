@@ -1167,7 +1167,7 @@ export async function initDatabase() {
     CREATE TABLE IF NOT EXISTS energy_params(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      value FLOAT NOT NULL
+      value INTEGER NOT NULL
     )  
   `);
 

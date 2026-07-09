@@ -22,7 +22,7 @@ export default class EnergyParamsFacade {
 
     /**
      * Изменить значение параметра
-     * @param {float} newValue
+     * @param {number} newValue
      */
     static updateBuyEnergyPrice(newValue) {
         try {
