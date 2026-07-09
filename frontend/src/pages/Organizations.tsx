@@ -10,7 +10,6 @@ import { getMediaUrl } from '../config';
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
-import OrgResources from '../components/Resources';
 import Resources from '../components/Resources';
 import ResourceExtraction from '../components/ResourceExtraction';
 

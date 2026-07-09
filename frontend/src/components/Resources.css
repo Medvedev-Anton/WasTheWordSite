@@ -24,7 +24,7 @@
 
 .resources__ceil-image-wrapper {
     width: 100%;
-    height: 90%;
+    height: 80%;
 }
 
 .resources__ceil-image-wrapper img {
@@ -37,6 +37,13 @@
     text-align: center;
     background: #000;
     color: #FFF;
+    font-size: 14px;
+}
+
+.resources__ceil-count {
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
 }
 
 @media (max-width: 1100px) {
@@ -53,7 +60,7 @@
 
 @media (max-width: 968px) {
     .resources__ceil {
-        height: 100px;
+        height: 150px;
     }
 }
 

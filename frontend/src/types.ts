@@ -184,6 +184,7 @@ export interface Resource {
   countNeedEnergy: number;
   countNeedMoney: number;
   countExtracted?: number;
+  count?: number;
 }
 
 export interface SimpleItem {

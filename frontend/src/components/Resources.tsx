@@ -33,6 +33,9 @@ export default function Resources(
                     <div className="resources__ceil-title">
                         {resource.name}
                     </div>
+                    <div className="resources__ceil-count">
+                        {resource.count} шт.
+                    </div>
                 </div>
             ))}
 

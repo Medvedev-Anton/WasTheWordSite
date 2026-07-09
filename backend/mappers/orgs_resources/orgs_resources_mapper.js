@@ -39,7 +39,8 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
     findAllByOrgId(orgId) {
         const result = db.prepare(`
             SELECT
-                r.*
+                r.*,
+                o.count as count
             FROM
                orgs_resources o
             JOIN
