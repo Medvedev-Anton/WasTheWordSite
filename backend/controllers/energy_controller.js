@@ -89,4 +89,43 @@ export default class EnergyController extends MainController {
             });
         }
     }
+
+    /**
+     * Перевод энергии из организации в подорганизацию
+     */
+    transferFromOrgToSuborg() {
+        const validate = this.has([
+            'orgIdFrom',
+            'suborgIdTo',
+            'countEnergy'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const orgIdFrom = parseInt(this.request.body.orgIdFrom);
+            const suborgIdTo = parseInt(this.request.body.suborgIdTo);
+            const countEnergy = parseInt(this.request.body.countEnergy);
+            const userId = parseInt(this.request.user.userId);
+
+            const orgIdFromAdmin = OrgsFacade.getAdminId(orgIdFrom);
+
+            if (userId !== orgIdFromAdmin) {
+                this.send(400, {
+                    message: 'Вы не являетесь владельцем организации чтобы осуществить перевод'
+                });
+                return;
+            }
+
+            EnergyFacade.transferFromOrgToOrg(orgIdFrom, suborgIdTo, countEnergy);
+        }
+        catch (e) {
+            console.error('Transfer energy from org to suborg error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
