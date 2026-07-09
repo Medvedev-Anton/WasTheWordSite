@@ -1162,6 +1162,30 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create energy params table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS energy_params(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      value FLOAT NOT NULL
+    )  
+  `);
+
+  const energyParams = [
+    { name: "buyEnergyPrice", value: 0 },
+  ];
+
+  energyParams.forEach(row => {
+    const name = db.prepare(`SELECT COUNT(*) as count FROM energy_params WHERE name = ?`).get(row.name);
+
+    if (name.count === 0) {
+      db.prepare(`
+        INSERT INTO energy_params (name, value) 
+        VALUES (?, ?)
+      `).run(row.name, row.value);
+    }
+  });
+
   console.log('Database initialized successfully');
 }
 
