@@ -40,4 +40,16 @@ router.post('/org-buy', authenticateToken, (req, res) => {
     controller.orgBuyEnergy();
 });
 
+// Перевод энергии из организации в подорганизации
+router.post('/transfer/org-suborg', authenticateToken, (req, res) => {
+    const controller = new EnergyController(req, res);
+    controller.transferFromOrgToSuborg();
+});
+
+// Перевод энергии из подорганизации в организацию
+router.post('/transfer/suborgs-org', authenticateToken, (req, res) => {
+    const controller = new EnergyController(req, res);
+    controller.transferFromSuborgToOrg();
+});
+
 export default router;
