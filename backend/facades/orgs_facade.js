@@ -580,4 +580,21 @@ export class OrgsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает ID родителя организации
+     * @param {number} orgId
+     */
+    static getParentId(orgId) {
+        const service = new OrgsService(
+            new OrgsMapper()
+        );
+
+        try {
+            return service.getParentId(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

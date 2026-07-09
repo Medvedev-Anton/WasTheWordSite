@@ -310,4 +310,21 @@ export class OrgsMapper extends OrgsMapperInterface {
                 id = ?    
         `).run(decrementValue, orgId);
     }
+
+    getParentId(orgId) {
+        const result = db.prepare(`
+            SELECT
+                parentId
+            FROM
+               organizations
+            WHERE
+                id = ?     
+        `).get(orgId);
+
+        if (result === undefined || result === null) {
+            return null;
+        }
+
+        return result.parentId || null;
+    }
 }

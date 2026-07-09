@@ -137,4 +137,12 @@ export class OrgsServiceInterface {
     decrementOrgEnergy(orgId, decrementValue) {
         throw new Error('decrementOrgEnergy должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает ID родителя организации
+     * @param {number} orgId
+     */
+    getParentId(orgId) {
+        throw new Error('getParentId должен быть переопределен в наследнике');
+    }
 }

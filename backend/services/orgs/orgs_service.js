@@ -139,4 +139,13 @@ export class OrgsService extends OrgsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getParentId(orgId) {
+        try {
+            return this.mapper.getParentId(orgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
