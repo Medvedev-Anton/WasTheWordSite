@@ -25,6 +25,9 @@ export default class EnergyParamsController extends MainController {
         }
     }
 
+    /**
+     * Обновляет цену за покупку энергии
+     */
     updateBuyEnergyPrice() {
         const validate = this.has([
             'newValue'
