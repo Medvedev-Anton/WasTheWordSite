@@ -172,7 +172,13 @@ export default class ResourceFacade {
                 BalanceFacade.entity('orgs').decrement(orgId, countNeedMoney);
                 OrgsFacade.decrementOrgEnergy(orgId, countNeedEnergy);
 
-                OrgsResourcesFacade.createOrIncrement(orgId, resourceId);
+                const orgParentId = OrgsFacade.getParentId(orgId);
+
+                if (orgParentId === null) {
+                    throw new Error('Ферма с ID ' + orgParentId + ' не имеет родителя');
+                }
+
+                OrgsResourcesFacade.createOrIncrement(orgParentId, resourceId);
             }
             catch (e) {
                 throw new Error(e.message);
