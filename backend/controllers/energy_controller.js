@@ -132,7 +132,7 @@ export default class EnergyController extends MainController {
     /**
      * Перевод энергии из подорганизации в организацию
      */
-    transferFromOrgToSuborg() {
+    transferFromSuborgToOrg() {
         const validate = this.has([
             'suborgIdFrom',
             'orgIdTo',
