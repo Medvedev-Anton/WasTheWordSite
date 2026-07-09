@@ -1,4 +1,5 @@
 import EnergyFacade from "../facades/energy_facade.js";
+import EnergyParamsFacade from "../facades/energy_params_facade.js";
 import { OrgsFacade } from "../facades/orgs_facade.js";
 import UsersOrgsVisitsFacade from "../facades/users_orgs_visits_facade.js";
 import { MainController } from "./main_controller.js";
@@ -27,6 +28,9 @@ export default class EnergyController extends MainController {
             if (UsersOrgsVisitsFacade.get(userId, orgId) == null) {
                 UsersOrgsVisitsFacade.create(userId, orgId);
                 EnergyFacade.entity('users').increment(userId, 1);
+
+                const energyToOrg = EnergyParamsFacade.getEnergyToOrgForOrgVisit();
+                EnergyFacade.entity('users').increment(userId, energyToOrg);
             }
             
             this.send(200, {
