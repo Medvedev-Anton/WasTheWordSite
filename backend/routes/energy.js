@@ -47,7 +47,7 @@ router.post('/transfer/org-suborg', authenticateToken, (req, res) => {
 });
 
 // Перевод энергии из подорганизации в организацию
-router.post('/transfer/suborgs-org', authenticateToken, (req, res) => {
+router.post('/transfer/suborg-org', authenticateToken, (req, res) => {
     const controller = new EnergyController(req, res);
     controller.transferFromSuborgToOrg();
 });
