@@ -1,0 +1,63 @@
+.org-buy-energy {
+    margin-top: 30px;
+    background: rgba(61, 62, 64, .5);
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.org-buy-energy__title h2 {
+    font-size: 20px;
+    text-align: center;
+    color: #D6D6D6;
+}
+
+.org-buy-energy__content {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.org-buy-energy__content-row {
+    display: flex;
+    align-items: center;
+}
+
+.org-buy-energy__content-row__title {
+    width: 350px;
+    color: #B0B0B0;
+}
+
+.org-buy-energy__content-row__input {
+    margin-top: 0 !important;
+}
+
+.org-buy-energy__content__but-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: #8C5C5C;
+    color: #FFF;
+    margin-top: 20px;
+    transition: all .3s;
+}
+
+.org-buy-energy__content__but-btn:hover {
+    opacity: .6;
+}
+
+@media (max-width: 600px) {
+    .org-buy-energy__content-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .org-buy-energy__content-row__title {
+        width: 100%;
+    }
+
+    .org-buy-energy__content__but-btn {
+        width: 100%;
+    }
+}

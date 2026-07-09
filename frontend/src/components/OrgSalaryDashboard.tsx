@@ -75,7 +75,7 @@ export default function OrgSalaryDashboard({orgId}) {
             <div className="org-salary-rows">
                 {
                     Object.entries(salaries).map(([username, salary]) => (
-                        <div className="salary-row">
+                        <div className="salary-row" key={username}>
                             <div className="salary-username">
                                 {username}
                             </div>

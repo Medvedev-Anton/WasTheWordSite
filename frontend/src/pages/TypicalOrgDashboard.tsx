@@ -8,11 +8,13 @@ import SuborgsDashboardTable from "../components/SuborgsDashboardTable";
 import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
 import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
 import GoBackFromOrgDashboard from "../components/GoBackFromOrgDashboard";
+import OrgBuyEnergy from "../components/OrgBuyEnergy";
 
 interface Organization {
   id: number;
   name: string;
   orgType?: string;
+  energy: number;
 }
 
 export default function TypicalOrgDashboard() {
@@ -49,6 +51,15 @@ export default function TypicalOrgDashboard() {
             </div>
 
             <TransferFromOrgToSuborg orgId={id} />
+
+            {org?.id !== undefined && org?.id !== null && (
+                <div className="buy-energy-wrapper">
+                    <OrgBuyEnergy 
+                        orgId={org.id}
+                        orgEnergy={org.energy}
+                    />
+                </div>
+            )}            
 
             <div className="transfer-wrapper">
                 <TransferOrgBalance orgId={id} />
