@@ -5,11 +5,13 @@ import axios from 'axios';
 import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
 import GoBackFromOrgDashboard from '../components/GoBackFromOrgDashboard';
+import OrgBuyEnergy from '../components/OrgBuyEnergy';
 
 interface Organization {
   id: number;
   name: string;
   orgType?: string;
+  energy: number;
 }
 
 export default function TypicalSuborgDashboard() {
@@ -37,9 +39,20 @@ export default function TypicalSuborgDashboard() {
                 <GoBackFromOrgDashboard orgId={id} />
             </div>
 
-            <div className="typical-suborg-balance">
-                <OrgBalanceDiagram orgId={id} />
-            </div>
+            {id !== undefined && id !== null && (
+                <div className="typical-suborg-balance">
+                    <OrgBalanceDiagram orgId={parseInt(id)} />
+                </div>
+            )}
+            
+            {org?.id !== undefined && org?.id !== null && (
+                <div className="buy-energy-wrapper">
+                    <OrgBuyEnergy 
+                        orgId={org.id}
+                        orgEnergy={org.energy}
+                    />
+                </div>
+            )} 
 
             <TransferFromOrgToSuborg orgId={id} />
         </div>
