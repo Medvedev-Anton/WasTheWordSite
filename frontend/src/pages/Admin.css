@@ -2271,6 +2271,37 @@ input[name="initial-user-balance"] {
   opacity: .6;
 }
 
+.admin-energy-wrapper__title h2 {
+  font-size: 1.5rem;
+  color: #D6D6D6;
+  margin-bottom: 1rem;
+}
+
+.admin-energy-wrapper__buy-price {
+  display: flex;
+  margin-top: 30px;
+  gap: 15px;
+  align-items: center;
+}
+
+.admin-energy-wrapper__buy-price-title {
+  min-width: 110px;
+  color: #B0B0B0;
+}
+
+.admin-energy-wrapper__buy-price-input {
+  border: 0;
+  border-bottom: 1px solid #000;
+  padding: 5px 0 5px 10px;
+  font-size: 16px;
+  background: #888888;
+  color: #FFF;
+  background-image: url(/image/dollar.png);
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+
 @media (max-width: 768px) {
   .heroes-two-columns {
     flex-direction: column;

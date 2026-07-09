@@ -103,6 +103,7 @@ export default function Admin() {
   'heroes' | 
   'finance' | 
   'chats' |
+  'energy' |
   'resources' |
   'simple-items' |
   'compound-items'
@@ -160,6 +161,9 @@ export default function Admin() {
   const [editStateImageFile, setEditStateImageFile] = useState<File | null>(null);
   const [editStateImagePreview, setEditStateImagePreview] = useState<string | null>(null);
   const [newHeroGender, setNewHeroGender] = useState<'M' | 'F' | ''>('');
+
+  // Energy states
+  const [buyEnergyPrice, setBuyEnergyPrice] = useState<number>(0);
 
   // Resources states
   const [newResourceImage, setNewResourceImage] = useState(null);
@@ -489,6 +493,10 @@ export default function Admin() {
         setMessageLiveDuring(response.data.liveDuringDays);
       }
 
+      else if (activeTab === 'energy') {
+        fetchBuyEnergyPrice();
+      }
+
       else if (activeTab === 'resources') {
         fetchAllResources();
       }
@@ -517,6 +525,16 @@ export default function Admin() {
       setLoading(false);
     }
   };
+
+  const fetchBuyEnergyPrice = async () => {
+    try {
+      const result = await axios.get('/api/energy/params/buyEnergyPrice');
+      setBuyEnergyPrice(result.data.price);
+    }
+    catch (e) {
+      alert('Не удалось загрузить цену за единицу энергии');
+    }
+  }
 
   const handleBanUser = async (userId: number, isBanned: boolean) => {
     if (!confirm(`Вы уверены, что хотите ${isBanned ? 'заблокировать' : 'разблокировать'} этого пользователя?`)) {
@@ -1570,6 +1588,32 @@ export default function Admin() {
     }
   }
 
+  /*** ENERGY FUNCS ***/
+
+  // Изменения параметра цены за единицу энергии
+  const handleChangeBuyEnergyPrice = (e: any) => {
+    setBuyEnergyPrice(e.target.value);
+  }
+
+  // Запрос на обновление цены за единицу энергии
+  const fetchUpdateBuyEnergyPrice = async (e: any) => {
+    let newValue = e.target.value;
+
+    if (newValue.length === 0) {
+      newValue = 0;
+      setBuyEnergyPrice(newValue);
+    }
+
+    try {
+      await axios.post('/api/energy/params/buyEnergyPrice', {
+        newValue: newValue
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить параметр');
+    }
+  }
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
@@ -1625,6 +1669,13 @@ export default function Admin() {
           onClick={() => setActiveTab('chats')}
         >
           Чаты
+        </button>
+
+        <button
+          className={activeTab === 'energy' ? 'active' : ''}
+          onClick={() => setActiveTab('energy')}
+        >
+          Энергия
         </button>
 
         <button
@@ -2229,6 +2280,28 @@ export default function Admin() {
                 value={messageLiveDuring}
                 onChange={handleChangeNewMessageLiveDuring}
                 onBlur={handleFetchNewMessageLiveDuring}
+              />
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'energy' && (
+          <div className='admin-energy-wrapper'>
+            <div className="admin-energy-wrapper__title">
+              <h2>
+                Энергия
+              </h2>
+            </div>
+            <div className="admin-energy-wrapper__buy-price">
+              <p className='admin-energy-wrapper__buy-price-title'>
+                Цена за единицу:
+              </p>
+              <input 
+                type="number" 
+                className='admin-energy-wrapper__buy-price-input'
+                value={buyEnergyPrice}
+                onChange={handleChangeBuyEnergyPrice}
+                onBlur={fetchUpdateBuyEnergyPrice}
               />
             </div>
           </div>
