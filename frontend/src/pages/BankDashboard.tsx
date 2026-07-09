@@ -8,6 +8,7 @@ import TransferOrgBalance from '../components/TransferOrgBalance';
 import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
 import GoBackFromOrgDashboard from '../components/GoBackFromOrgDashboard';
 import OrgBuyEnergy from '../components/OrgBuyEnergy';
+import EnergyTranfserToFromSuborgs from '../components/EnergyTranfserToFromSuborgs';
 
 interface Borrower {
     borrowerId: number,
@@ -230,6 +231,16 @@ export default function BankDashboard() {
                     />
                 </div>
             )} 
+
+            {org?.id !== undefined && org?.id !== null && (
+                <div className="energy-transfer-to-from-suborgs-wrapper">
+                    <EnergyTranfserToFromSuborgs 
+                        orgId={org.id}
+                        suborgs={org.subOrganizations}
+                        orgEnergy={org.energy}
+                    />
+                </div>
+            )}  
             
             <TransferFromOrgToSuborg orgId={id} />
 

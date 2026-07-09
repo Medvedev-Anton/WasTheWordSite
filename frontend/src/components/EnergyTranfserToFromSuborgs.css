@@ -1,0 +1,84 @@
+.energy-transfer-to-from-suborgs {
+    margin-top: 30px;
+    background: rgba(61, 62, 64, .5);
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.energy-transfer-to-from-suborgs__title h2 {
+    font-size: 20px;
+    text-align: center;
+    color: #D6D6D6;
+}
+
+.energy-transfer-to-from-suborgs__content {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.energy-transfer-to-from-suborgs__content-row {
+    display: flex;
+    align-items: center;
+}
+
+.energy-transfer-to-from-suborgs__content-row__title {
+    min-width: 250px;
+    color: #B0B0B0;
+}
+
+.energy-transfer-to-from-suborgs__content-row__input,
+.energy-transfer-to-from-suborgs__content-row__select {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    height: 30px;
+    font-size: 16px;
+    color: #FFF;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    background: #888888;
+    margin-top: 0 !important;
+    min-width: 236px;
+}
+
+.energy-transfer-to-from-suborgs__content-btns {
+    display: flex;
+    gap: 20px;
+}
+
+.energy-transfer-to-from-suborgs__content-btns button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: #8C5C5C;
+    color: #FFF;
+    transition: all .3s;
+}
+
+.energy-transfer-to-from-suborgs__content-btns button:hover {
+    opacity: .6;
+}
+
+@media (max-width: 600px) {
+    .energy-transfer-to-from-suborgs__content-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .energy-transfer-to-from-suborgs__content-row__title {
+        width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    .energy-transfer-to-from-suborgs__content-btns {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .energy-transfer-to-from-suborgs__content-btns button {
+        width: 100%;
+    }
+}

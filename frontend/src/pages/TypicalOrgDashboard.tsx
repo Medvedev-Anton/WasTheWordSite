@@ -9,13 +9,8 @@ import OrgBalanceDiagram from "../components/OrgBalanceDiagram";
 import TransferFromOrgToSuborg from "../components/TransferFromOrgToSuborg";
 import GoBackFromOrgDashboard from "../components/GoBackFromOrgDashboard";
 import OrgBuyEnergy from "../components/OrgBuyEnergy";
-
-interface Organization {
-  id: number;
-  name: string;
-  orgType?: string;
-  energy: number;
-}
+import { Organization } from "../types";
+import EnergyTranfserToFromSuborgs from "../components/EnergyTranfserToFromSuborgs";
 
 export default function TypicalOrgDashboard() {
     const { id } = useParams();
@@ -59,7 +54,17 @@ export default function TypicalOrgDashboard() {
                         orgEnergy={org.energy}
                     />
                 </div>
-            )}            
+            )}  
+
+            {org?.id !== undefined && org?.id !== null && (
+                <div className="energy-transfer-to-from-suborgs-wrapper">
+                    <EnergyTranfserToFromSuborgs 
+                        orgId={org.id}
+                        suborgs={org.subOrganizations}
+                        orgEnergy={org.energy}
+                    />
+                </div>
+            )}  
 
             <div className="transfer-wrapper">
                 <TransferOrgBalance orgId={id} />
