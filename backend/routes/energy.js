@@ -22,4 +22,10 @@ router.post('/params/buyEnergyPrice', authenticateToken, (req, res) => {
     controller.updateBuyEnergyPrice();
 });
 
+// Покупка энергии организацией
+router.post('/org-buy', authenticateToken, (req, res) => {
+    const controller = new EnergyController(req, res);
+    controller.orgBuyEnergy();
+});
+
 export default router;
