@@ -102,4 +102,37 @@ export default class EnergyFacade {
             throw new Error('Ошибка при покупке энергии: ' + e.message); 
         }
     }
+
+    /**
+     * Перевод из организации в организацию
+     * @param {number} orgIdFrom
+     * @param {number} orgIdTo
+     * @param {number} countEnergy
+     */
+    static transferFromOrgToOrg(orgIdFrom, orgIdTo, countEnergy) {
+        const transaction = db.transaction(() => {
+            try {
+                const energyManager = this.entity('orgs');
+
+                const orgEnergy = energyManager.get(orgIdFrom);
+
+                if (orgEnergy < countEnergy) {
+                    throw new Error(`У организации с ID: ${orgIdFrom} не хватает энергии для перевода`);
+                }
+
+                energyManager.decrement(orgIdFrom, countEnergy);
+                energyManager.increment(orgIdTo, countEnergy);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при переводе энергии между организациями: ' + e.message); 
+        }
+    }
 }
