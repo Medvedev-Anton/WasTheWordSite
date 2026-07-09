@@ -20,7 +20,7 @@ export default class EnergyParamsMapper extends EnergyParamsMapperInterface {
             return null;
         }
 
-        const value = parseFloat(result.value);
+        const value = parseInt(result.value);
 
         if (isNaN(value)) {
             return null;
