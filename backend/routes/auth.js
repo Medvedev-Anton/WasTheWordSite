@@ -83,7 +83,7 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ error: 'Your account has been banned' });
     }
 
-    EnergyFacade.incrementUser(user.id, 1);
+    EnergyFacade.entity('users').increment(user.id, 1);
 
     const { password: _, ...userWithoutPassword } = user;
     res.json({ user: userWithoutPassword, token });

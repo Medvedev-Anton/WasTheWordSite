@@ -5,18 +5,27 @@ export default class EnergyService extends EnergyServiceInterface {
         super(mapper);
     }
 
-    incrementUser(userId, incrementValue) {
+    get(entityId) {
         try {
-            return this.mapper.incrementUser(userId, incrementValue);
+            return this.mapper.get(entityId);
         }
         catch (e) {
             throw new Error(e.message);
         }
     }
 
-    getByUser(userId) {
+    increment(entityId, incrementValue) {
         try {
-            return this.mapper.findByUser(userId);
+            return this.mapper.increment(entityId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    decrement(entityId, decrementValue) {
+        try {
+            return this.mapper.decrement(entityId, decrementValue);
         }
         catch (e) {
             throw new Error(e.message);

@@ -1,21 +1,35 @@
-import EnergyMapper from "../mappers/energy/energy_mapper.js";
+import EnergyOrgsMapper from "../mappers/energy/energy_orgs_mapper.js";
+import EnergyUsersMapper from "../mappers/energy/energy_users_mapper.js";
 import EnergyService from "../services/energy/energy_service.js";
 
 export default class EnergyFacade {
-    static getService() {
-        return new EnergyService(
-            new EnergyMapper()
-        );
+    constructor(entity) {
+        if (entity === 'users') {
+            this.service = new EnergyService(
+                new EnergyUsersMapper()
+            );
+        }
+        else if (entity === 'orgs') {
+            this.service = new EnergyService(
+                new EnergyOrgsMapper()
+            );
+        }
+        else {
+            throw new Error('Неизвестная сущность для работы с энергией: ' + entity);
+        }
+    }
+
+    static entity(entity) {
+        return new this(entity);
     }
 
     /**
-     * Инкрементирует значение энергии пользователя
+     * Получает значение энергии сущности
      * @param {number} userId
-     * @param {number} incrementValue
      */
-    static incrementUser(userId, incrementValue) {
+    get(entityId) {
         try {
-            return this.getService().incrementUser(userId, incrementValue);
+            return this.service.get(entityId);
         }
         catch (e) {
             throw new Error(e.message);
@@ -23,12 +37,27 @@ export default class EnergyFacade {
     }
 
     /**
-     * Получает значение энергии пользователя
-     * @param {number} userId
+     * Инкрементирует значение энергии сущности
+     * @param {number} entityId
+     * @param {number} incrementValue
      */
-    static getByUser(userId) {
+    increment(entityId, incrementValue) {
         try {
-            return this.getService().getByUser(userId);
+            return this.service.increment(entityId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Декрементирует значение энергии сущности
+     * @param {number} entityId
+     * @param {number} decrementValue
+     */
+    decrement(entityId, decrementValue) {
+        try {
+            return this.service.decrement(entityId, decrementValue);
         }
         catch (e) {
             throw new Error(e.message);

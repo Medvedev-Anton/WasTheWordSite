@@ -25,7 +25,7 @@ export default class EnergyController extends MainController {
 
             if (UsersOrgsVisitsFacade.get(userId, orgId) == null) {
                 UsersOrgsVisitsFacade.create(userId, orgId);
-                EnergyFacade.incrementUser(userId, 1);
+                EnergyFacade.entity('users').increment(userId, 1);
             }
             
             this.send(200, {

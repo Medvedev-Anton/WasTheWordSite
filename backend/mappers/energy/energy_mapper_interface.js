@@ -6,19 +6,28 @@ export default class EnergyMapperInterface {
     }
 
     /**
-     * Инкрементирует значение энергии пользователя
-     * @param {number} userId
-     * @param {number} incrementValue
+     * Получает значение энергии сущности
+     * @param {number} entityId
      */
-    incrementUser(userId, incrementValue) {
-        throw new Error('incrementUser должен быть переопределен в наследнике');
+    get(entityId) {
+        throw new Error('get должен быть переопределен в наследнике');
     }
 
     /**
-     * Получает значение энергии пользователя
-     * @param {number} userId
+     * Инкрементирует значение энергии сущности
+     * @param {number} entityId
+     * @param {number} incrementValue
      */
-    findByUser(userId) {
-        throw new Error('findByUser должен быть переопределен в наследнике');
+    increment(entityId, incrementValue) {
+        throw new Error('increment должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Декрементирует значение энергии сущности
+     * @param {number} entityId
+     * @param {number} decrementValue
+     */
+    decrement(entityId, decrementValue) {
+        throw new Error('decrement должен быть переопределен в наследнике');
     }
 }
