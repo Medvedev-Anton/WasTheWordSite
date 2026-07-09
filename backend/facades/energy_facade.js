@@ -7,6 +7,8 @@ import EnergyParamsFacade from "./energy_params_facade.js";
 
 export default class EnergyFacade {
     constructor(entity) {
+        this.entity = entity;
+
         if (entity === 'users') {
             this.service = new EnergyService(
                 new EnergyUsersMapper()
