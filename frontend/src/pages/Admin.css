@@ -2297,10 +2297,13 @@ input[name="initial-user-balance"] {
   font-size: 16px;
   background: #888888;
   color: #FFF;
-  background-image: url(/image/dollar.png);
-  background-size: 20px;
+}
+
+.admin-energy-wrapper__param-row-input.dollar-bg {
+  background: url(/image/dollar.png), #888888;
   background-repeat: no-repeat;
   background-position: center right;
+  background-size: 20px;
 }
 
 @media (max-width: 768px) {

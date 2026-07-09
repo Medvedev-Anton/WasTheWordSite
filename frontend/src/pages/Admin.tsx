@@ -2334,7 +2334,7 @@ export default function Admin() {
               </p>
               <input 
                 type="number" 
-                className='admin-energy-wrapper__param-row-input'
+                className='admin-energy-wrapper__param-row-input dollar-bg'
                 value={buyEnergyPrice}
                 onChange={handleChangeBuyEnergyPrice}
                 onBlur={fetchUpdateBuyEnergyPrice}
