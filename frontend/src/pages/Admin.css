@@ -2277,19 +2277,20 @@ input[name="initial-user-balance"] {
   margin-bottom: 1rem;
 }
 
-.admin-energy-wrapper__buy-price {
+.admin-energy-wrapper__param-row {
   display: flex;
   margin-top: 30px;
   gap: 15px;
   align-items: center;
 }
 
-.admin-energy-wrapper__buy-price-title {
+.admin-energy-wrapper__param-row-title {
   min-width: 110px;
   color: #B0B0B0;
+  width: 200px;
 }
 
-.admin-energy-wrapper__buy-price-input {
+.admin-energy-wrapper__param-row-input {
   border: 0;
   border-bottom: 1px solid #000;
   padding: 5px 0 5px 10px;

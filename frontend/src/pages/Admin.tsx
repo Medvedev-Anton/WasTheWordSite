@@ -164,6 +164,7 @@ export default function Admin() {
 
   // Energy states
   const [buyEnergyPrice, setBuyEnergyPrice] = useState<number>(0);
+  const [countEnergyToOrgForOrgVisit, setCountEnergyToOrgForOrgVisit] = useState<number>(0);
 
   // Resources states
   const [newResourceImage, setNewResourceImage] = useState(null);
@@ -495,6 +496,7 @@ export default function Admin() {
 
       else if (activeTab === 'energy') {
         fetchBuyEnergyPrice();
+        fetchCountEnergyToOrgForOrgVisit();
       }
 
       else if (activeTab === 'resources') {
@@ -530,6 +532,16 @@ export default function Admin() {
     try {
       const result = await axios.get('/api/energy/params/buyEnergyPrice');
       setBuyEnergyPrice(result.data.price);
+    }
+    catch (e) {
+      alert('Не удалось загрузить цену за единицу энергии');
+    }
+  }
+
+  const fetchCountEnergyToOrgForOrgVisit = async () => {
+    try {
+      const result = await axios.get('/api/energy/params/energyToOrgForOrgVisit');
+      setCountEnergyToOrgForOrgVisit(result.data.energy);
     }
     catch (e) {
       alert('Не удалось загрузить цену за единицу энергии');
@@ -1614,6 +1626,30 @@ export default function Admin() {
     }
   }
 
+  // Изменения параметра количества энергии, начисляемой организации за посещение ее страницы
+  const handleChangeEnergyToOrgForOrgVisit = (e: any) => {
+    setCountEnergyToOrgForOrgVisit(e.target.value);
+  }
+
+  // Запрос на обновление параметра количества энергии, начисляемой организации за посещение ее страницы
+  const fetchUpdateEnergyToOrgForOrgVisit = async (e: any) => {
+    let newValue = e.target.value;
+
+    if (newValue.length === 0) {
+      newValue = 0;
+      setBuyEnergyPrice(newValue);
+    }
+
+    try {
+      await axios.post('/api/energy/params/energyToOrgForOrgVisit', {
+        newValue: newValue
+      });
+    }
+    catch (e) {
+      alert('Не удалось обновить параметр');
+    }
+  }
+
   return (
     <div className="admin-page">
       <h1>Панель администратора</h1>
@@ -2292,16 +2328,28 @@ export default function Admin() {
                 Энергия
               </h2>
             </div>
-            <div className="admin-energy-wrapper__buy-price">
-              <p className='admin-energy-wrapper__buy-price-title'>
+            <div className="admin-energy-wrapper__param-row">
+              <p className='admin-energy-wrapper__param-row-title'>
                 Цена за единицу:
               </p>
               <input 
                 type="number" 
-                className='admin-energy-wrapper__buy-price-input'
+                className='admin-energy-wrapper__param-row-input'
                 value={buyEnergyPrice}
                 onChange={handleChangeBuyEnergyPrice}
                 onBlur={fetchUpdateBuyEnergyPrice}
+              />
+            </div>
+            <div className="admin-energy-wrapper__param-row">
+              <p className='admin-energy-wrapper__param-row-title'>
+                Кол-во начисляемой организации энергии за посещение:
+              </p>
+              <input 
+                type="number" 
+                className='admin-energy-wrapper__param-row-input'
+                value={countEnergyToOrgForOrgVisit}
+                onChange={handleChangeEnergyToOrgForOrgVisit}
+                onBlur={fetchUpdateEnergyToOrgForOrgVisit}
               />
             </div>
           </div>
