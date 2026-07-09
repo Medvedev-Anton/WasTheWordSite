@@ -34,7 +34,7 @@ export default function Resources(
                         {resource.name}
                     </div>
                     <div className="resources__ceil-count">
-                        {resource.count} шт.
+                        {resource.count || 0} шт.
                     </div>
                 </div>
             ))}
