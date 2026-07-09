@@ -1,4 +1,5 @@
 import EnergyFacade from "../facades/energy_facade.js";
+import { OrgsFacade } from "../facades/orgs_facade.js";
 import UsersOrgsVisitsFacade from "../facades/users_orgs_visits_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -34,6 +35,50 @@ export default class EnergyController extends MainController {
         }
         catch (e) {
             console.error('Increment for org visit error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Покупка энергии организацией
+     */
+    orgBuyEnergy() {
+        const validate = this.has([
+            'orgId',
+            'countEnergy'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const userId = parseInt(this.request.user.userId);
+            const orgId = parseInt(this.request.body.orgId);
+            const orgAdmin = OrgsFacade.getAdminId(orgId);
+
+            if (userId !== orgId) {
+                this.send(400, {
+                    message: 'Вы не являетесь владельцем этой организации'
+                });
+            }
+
+            const countEnergy = parseInt(this.request.body.countEnergy);
+
+            const energyManager = EnergyFacade.entity('orgs');
+
+            energyManager.buyEnergy(orgId, countEnergy);
+
+            const orgEnergy = energyManager.get(orgId);
+
+            this.send(200, {
+                'orgEnergy': orgEnergy
+            });
+        }
+        catch (e) {
+            console.error('Org buy energy error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
