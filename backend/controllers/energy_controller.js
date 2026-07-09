@@ -59,7 +59,7 @@ export default class EnergyController extends MainController {
             const orgId = parseInt(this.request.body.orgId);
             const orgAdmin = OrgsFacade.getAdminId(orgId);
 
-            if (userId !== orgId) {
+            if (userId !== orgAdmin) {
                 this.send(400, {
                     message: 'Вы не являетесь владельцем этой организации'
                 });
