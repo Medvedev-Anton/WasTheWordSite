@@ -30,7 +30,7 @@ export default class EnergyController extends MainController {
                 EnergyFacade.entity('users').increment(userId, 1);
 
                 const energyToOrg = EnergyParamsFacade.getEnergyToOrgForOrgVisit();
-                EnergyFacade.entity('users').increment(userId, energyToOrg);
+                EnergyFacade.entity('orgs').increment(orgId, energyToOrg);
             }
             
             this.send(200, {
