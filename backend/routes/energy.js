@@ -22,6 +22,18 @@ router.post('/params/buyEnergyPrice', authenticateToken, (req, res) => {
     controller.updateBuyEnergyPrice();
 });
 
+// Получение значения параметра количества энергии, начисляемой организации за посещение ее страницы
+router.get('/params/energyToOrgForOrgVisit', authenticateToken, (req, res) => {
+    const controller = new EnergyParamsController(req, res);
+    controller.getEnergyToOrgForOrgVisit();
+});
+
+// Обновление значения параметра количества энергии, начисляемой организации за посещение ее страницы
+router.post('/params/energyToOrgForOrgVisit', authenticateToken, (req, res) => {
+    const controller = new EnergyParamsController(req, res);
+    controller.updateEnergyToOrgForOrgVisit();
+});
+
 // Покупка энергии организацией
 router.post('/org-buy', authenticateToken, (req, res) => {
     const controller = new EnergyController(req, res);
