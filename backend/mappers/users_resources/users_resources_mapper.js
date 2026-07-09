@@ -26,7 +26,8 @@ export default class UsersResourcesMapper extends UsersResourcesMapperInterface 
     findAllByUserId(userId) {
         const result = db.prepare(`
             SELECT
-                r.*
+                r.*,
+                u.count as count
             FROM
                 users_resources u
             JOIN
