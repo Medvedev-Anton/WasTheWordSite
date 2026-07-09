@@ -12,13 +12,13 @@ router.post('/org/:id/visit', authenticateToken, (req, res) => {
 
 // Получение значения параметра цены за покупку энергии
 router.get('/params/buyEnergyPrice', authenticateToken, (req, res) => {
-    const controller = new EnergyParamsController();
+    const controller = new EnergyParamsController(req, res);
     controller.getBuyEnergyPrice();
 });
 
 // Обновление значения параметра цены за покупку энергии
 router.post('/params/buyEnergyPrice', authenticateToken, (req, res) => {
-    const controller = new EnergyParamsController();
+    const controller = new EnergyParamsController(req, res);
     controller.updateBuyEnergyPrice();
 });
 
