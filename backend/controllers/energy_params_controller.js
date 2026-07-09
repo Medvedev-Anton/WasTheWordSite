@@ -53,4 +53,52 @@ export default class EnergyParamsController extends MainController {
             });
         }
     }
+
+    /**
+     * Вовзращает значение параметра количества энергии, начисляемой организации за посещение ее страницы
+     */
+    getEnergyToOrgForOrgVisit() {
+        try {
+            const energy = EnergyParamsFacade.getEnergyToOrgForOrgVisit();
+
+            this.send(200, {
+                energy: energy
+            });
+        }
+        catch (e) {
+            console.error('Get energy to org for org visit error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Обновляет значение параметра количества энергии, начисляемой организации за посещение ее страницы
+     */
+    updateEnergyToOrgForOrgVisit() {
+        const validate = this.has([
+            'newValue'
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+        
+        try {
+            const newValue = parseInt(this.request.body.newValue);
+
+            EnergyParamsFacade.updateEnergyToOrgForOrgVisit(newValue);
+
+            this.send(200, {
+                message: 'success'
+            });
+        }
+        catch (e) {
+            console.error('Update energy to org for org visit error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
