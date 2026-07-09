@@ -63,6 +63,7 @@ export default class EnergyController extends MainController {
                 this.send(400, {
                     message: 'Вы не являетесь владельцем этой организации'
                 });
+                return;
             }
 
             const countEnergy = parseInt(this.request.body.countEnergy);
