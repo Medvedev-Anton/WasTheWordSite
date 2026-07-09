@@ -32,4 +32,29 @@ export default class EnergyParamsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получить значение параметра количества энергии, начисляемой организации за посещение ее страницы
+     */
+    static getEnergyToOrgForOrgVisit() {
+        try {
+            return this.getService().getEnergyToOrgForOrgVisit();
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Изменить значение параметра количества энергии, начисляемой организации за посещение ее страницы
+     * @param {number} newValue
+     */
+    static updateEnergyToOrgForOrgVisit(newValue) {
+        try {
+            return this.getService().updateEnergyToOrgForOrgVisit(newValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

@@ -22,4 +22,22 @@ export default class EnergyParamsService extends EnergyParamsServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    getEnergyToOrgForOrgVisit() {
+        try {
+            return this.mapper.findByName('energyToOrgForOrgVisit');
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    updateEnergyToOrgForOrgVisit(newValue) {
+        try {
+            return this.mapper.update('energyToOrgForOrgVisit', newValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

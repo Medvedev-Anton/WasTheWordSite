@@ -26,4 +26,19 @@ export default class EnergyParamsServiceInterface {
     updateBuyEnergyPrice(newValue) {
         throw new Error('updateBuyEnergyPrice должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить значение параметра количества энергии, начисляемой организации за посещение ее страницы
+     */
+    getEnergyToOrgForOrgVisit() {
+        throw new Error('getEnergyToOrgForOrgVisit должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Изменить значение параметра количества энергии, начисляемой организации за посещение ее страницы
+     * @param {number} newValue
+     */
+    updateEnergyToOrgForOrgVisit(newValue) {
+        throw new Error('updateEnergyToOrgForOrgVisit должен быть переопределен в наследнике');
+    }
 }
