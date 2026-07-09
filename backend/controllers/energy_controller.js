@@ -120,6 +120,12 @@ export default class EnergyController extends MainController {
             }
 
             EnergyFacade.transferFromOrgToOrg(orgIdFrom, suborgIdTo, countEnergy);
+
+            const orgEnergy = EnergyFacade.entity('orgs').get(orgIdFrom);
+
+            this.send(200, {
+                'orgEnergy': orgEnergy
+            });
         }
         catch (e) {
             console.error('Transfer energy from org to suborg error:', e.message);
@@ -159,6 +165,12 @@ export default class EnergyController extends MainController {
             }
 
             EnergyFacade.transferFromOrgToOrg(suborgIdFrom, orgIdTo, countEnergy);
+
+            const orgEnergy = EnergyFacade.entity('orgs').get(orgIdTo);
+
+            this.send(200, {
+                'orgEnergy': orgEnergy
+            });
         }
         catch (e) {
             console.error('Transfer energy from org to suborg error:', e.message);
