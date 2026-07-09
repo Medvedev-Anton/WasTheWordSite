@@ -54,6 +54,24 @@
     justify-content: start;
 }
 
+.suborgs-management-table input[type="number"] {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    height: 30px;
+    font-size: 16px;
+    color: #FFF;
+    border: 1px solid rgba(211, 211, 211, 0.22);
+    background: #888888;
+}
+
+.suborgs-management-table input[type="number"].input-with-dollar-back {
+    background: url(/image/dollar.png), #888888;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
 @media (max-width: 1024px) {
     .suborgs-management-wrapper {
         grid-template-columns: 1fr;
