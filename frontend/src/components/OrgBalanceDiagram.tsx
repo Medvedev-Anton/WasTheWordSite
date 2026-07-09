@@ -1,13 +1,22 @@
 import { Pie } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend, ChartData } from 'chart.js';
+import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './OrgBalanceDiagram.css';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
+interface OrgBalanceDiagramProps {
+    orgId: number;
+    isEmbedded?: boolean;
+}
 
-export default function OrgBalanceDiagram({ orgId }) {
+export default function OrgBalanceDiagram(
+    { 
+        orgId,
+        isEmbedded 
+    }: OrgBalanceDiagramProps
+) {
     const [orgBalance, setOrgBalance] = useState<number>(0);
     const [totalOrgsBalance, setTotalOrgsBalance] = useState<number>(0);
     const [chartData, setChartData] = useState<Record<string, any>>({
@@ -62,6 +71,7 @@ export default function OrgBalanceDiagram({ orgId }) {
         plugins: {
         legend: {
             position: 'bottom',
+            align: 'start',
             labels: { padding: 20 },
         },
         tooltip: {
@@ -80,7 +90,7 @@ export default function OrgBalanceDiagram({ orgId }) {
 
     return (
         <div 
-            className="org-balance-chart-wrapper"
+            className={`org-balance-chart-wrapper ${isEmbedded ? 'embedded' : ''}`}
         >
             <h2>
                 Бюджет организации

@@ -1054,13 +1054,7 @@ function OrganizationDetail({
         style={orgCoverPreview ? { backgroundImage: `url(${orgCoverPreview})` } : undefined}
       >
         {!orgCoverPreview && <span>Добавьте обложку, чтобы выделить организацию</span>}
-      </div>
-
-      {organization.orgType !== 'Ферма' && (
-        <div>
-          <OrgBalanceDiagram orgId={organization.id} />
-        </div>
-      )}      
+      </div>    
 
       <div className="org-header">
         {editingOrg ? (
@@ -1269,17 +1263,43 @@ function OrganizationDetail({
           </>
         ) : (
           <>
-            {organization.avatar ? (
-              <img src={getMediaUrl(organization.avatar)} alt={organization.name} className="org-header-avatar" />
-            ) : (
-              <div className="org-header-avatar-placeholder">{ORG_TYPE_ICONS[organization.orgType || ''] || '🏢'}</div>
-            )}
+            <div className="org-header__name-block">
+              <div className="org-header__name__title">
+                <h2>{organization.name}</h2>
+              </div>
+              <div className="org-header__name__img-wrapper">
+                {organization.avatar ? (
+                  <img src={getMediaUrl(organization.avatar)} alt={organization.name} className="org-header-avatar" />
+                ) : (
+                  <div className="org-header-avatar-placeholder">{ORG_TYPE_ICONS[organization.orgType || ''] || '🏢'}</div>
+                )}
+              </div>
+              <div className="org-header__name__org-type">
+                <div className="org-type-label">{organization.orgType || 'Организация'}</div>
+              </div>
+            </div>
+
+            <div className="org-header__balance">
+              <OrgBalanceDiagram 
+                orgId={organization.id} 
+                isEmbedded={true}
+              />
+            </div>
+
+            <div className="org-header__energy">
+              <div className="org-header__energy__title">
+                Энергия
+              </div>
+              <div className="org-header__energy__img-wrapper">
+                <img src="image/energy.png" alt="energy-icon" />
+              </div>
+              <div className="org-header__energy__value">
+                {orgEnergy}
+              </div>
+            </div>
+            
             <div className="org-header-info">
-              <div className="org-type-label">{organization.orgType || 'Организация'}</div>
-              <h2>{organization.name}</h2>
               <p>{organization.description || 'Нет описания'}</p>
-              <p className="org-balance">Баланс: {(orgBalance / 100).toFixed(2)} BFB</p>
-              <p className="org-energy">Энергия: {orgEnergy}</p>
               <div className="org-stats">
                 <span>👥 {organization.membersCount} сотрудников</span>
                 <span>👤 Руководитель: {organization.adminUsername}</span>

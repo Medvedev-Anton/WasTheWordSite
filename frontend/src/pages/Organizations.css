@@ -743,8 +743,9 @@
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .org-cover-hero {
@@ -934,6 +935,7 @@
   gap: 1.5rem;
   color: #999;
   font-size: 0.9rem;
+  flex-direction: column;
 }
 
 .join-btn,
@@ -1183,6 +1185,46 @@
   justify-content: flex-end;
 }
 
+.org-header__name-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.org-header__name__org-type {
+  margin-top: 10px;
+}
+
+.org-header__energy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.org-header__energy__img-wrapper {
+  width: 100px;
+}
+
+.org-header__energy__img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.org-header__energy__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(214, 214, 214);
+}
+
+.org-header__energy__value {
+  color: #B0B0B0;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .organizations-grid {
     grid-template-columns: 1fr;
@@ -1251,6 +1293,8 @@
   font-size: 0.8rem;
   padding: 0.15rem 0.5rem;
   border-radius: 99px;
+  display: flex;
+  justify-content: center;
 }
 
 /* Org type select */
@@ -1271,6 +1315,7 @@
 /* Org header info */
 .org-header-info {
   flex: 1;
+  margin-top: 6px;
 }
 
 .org-type-label {
@@ -1281,7 +1326,6 @@
   font-weight: 600;
   padding: 0.25rem 0.75rem;
   border-radius: 99px;
-  margin-bottom: 0.5rem;
 }
 
 .org-header-actions {
@@ -2047,6 +2091,10 @@
 
   .icon-option {
     max-height: 140px;
+  }
+
+  .org-header {
+    align-items: center;
   }
 }
 
