@@ -13,4 +13,13 @@ export default class WorkshopsSimpleItemsService extends WorkshopsSimpleItemsSer
             throw new Error(e.message);
         }
     }
+
+    getWorkshopSimpleItem(workshopId) {
+        try {
+            return this.mapper.getWorkshopSimpleItem(workshopId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

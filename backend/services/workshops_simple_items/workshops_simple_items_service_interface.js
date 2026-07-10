@@ -20,4 +20,12 @@ export default class WorkshopsSimpleItemsServiceInterface {
     create(workshopId, simpleItemId) {
         throw new Error('create должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает данные предмета мастерской
+     * @param {number} workshopId
+     */
+    getWorkshopSimpleItem(workshopId) {
+        throw new Error('getWorkshopSimpleItem должен быть переопределен в наследнике');
+    }
 }
