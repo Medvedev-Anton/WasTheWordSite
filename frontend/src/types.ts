@@ -200,6 +200,7 @@ export interface SimpleItem {
   countNeedResource: number; 
   count?: number;
   countCreated?: number;
+  resource?: Resource;
 }
 
 export interface CompoundItem {

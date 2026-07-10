@@ -1,3 +1,4 @@
+import ResourceFacade from "../facades/resource_facade.js";
 import WorkshopsSimpleItemsFacade from "../facades/workshops_simple_items_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -21,9 +22,13 @@ export default class WorkshopsController extends MainController {
         try {
             const workshopId = parseInt(this.request.params.id);
             const simpleItem = WorkshopsSimpleItemsFacade.getWorkshopSimpleItem(workshopId);
+            const resource = ResourceFacade.getById(simpleItem.needResourceId);
 
             this.send(200, {
-                simpleItem: simpleItem
+                simpleItem: {
+                    ...simpleItem,
+                    resource
+                }
             });
         }
         catch (e) {
