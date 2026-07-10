@@ -1162,6 +1162,16 @@ export async function initDatabase() {
     )  
   `);
 
+  const farmResourcesTableInfo = db.prepare("PRAGMA table_info(farms_resources)").all();
+  const hasCountExtracted = farmResourcesTableInfo.some(col => col.name === 'countExtracted');
+  if (!hasCountExtracted) {
+    try {
+      db.exec(`ALTER TABLE farms_resources ADD COLUMN countExtracted INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding countExtracted to farms_resources:', e.message);
+    }
+  }
+
   // Create energy params table
   db.exec(`
     CREATE TABLE IF NOT EXISTS energy_params(
