@@ -22,6 +22,7 @@ import ChatsFacade from '../facades/chats_facade.js';
 import OrgsResourcesFacade from '../facades/orgs_resources_facade.js';
 import FarmsResourcesFacade from '../facades/farms_resources_facade.js';
 import OrgsSimpleItemsFacade from '../facades/orgs_simple_items_facade.js';
+import WorkshopsSimpleItemsFacade from '../facades/workshops_simple_items_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -504,6 +505,15 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
     ) {
       const selectedFarmResourceId = req.body.selectedFarmResourceId;
       FarmsResourcesFacade.create(result.lastInsertRowid, selectedFarmResourceId);
+    }
+
+    if (
+      resolvedType === 'Мастерская' && 
+      req.body.selectedWorkshopSimpleItemId !== null &&
+      req.body.selectedWorkshopSimpleItemId !== undefined
+    ) {
+      const selectedWorkshopSimpleItemId = req.body.selectedWorkshopSimpleItemId;
+      WorkshopsSimpleItemsFacade.create(result.lastInsertRowid, selectedWorkshopSimpleItemId);
     }
 
     try {
