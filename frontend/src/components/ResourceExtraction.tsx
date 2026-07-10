@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Resource } from '../types';
 import './ResourceExtraction.css';
 
