@@ -98,7 +98,7 @@ export default class OrgsResourcesFacade {
      */
     static getByOrgAndResource(orgId, resourceId) {
         try {
-            return this.getService().findByOrgAndResource(orgId, resourceId);
+            return this.getService().getByOrgAndResource(orgId, resourceId);
         }
         catch (e) {
             throw new Error(e.message);
