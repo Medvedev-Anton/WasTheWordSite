@@ -201,7 +201,13 @@ export default class SimpleItemsFacade {
 
                 const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
                 const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
-                const orgResourceCount = OrgsResourcesFacade.getByOrgAndResource(orgId, needResourceId).count;
+                let orgResourceCount = 0;
+
+                const orgResource = OrgsResourcesFacade.getByOrgAndResource(orgId, needResourceId);
+                
+                if (orgResource !== null) {
+                    orgResourceCount = orgResource.count;
+                }
                 
                 const countNeedMoney = simpleItemData.countNeedMoney;
                 const countNeedEnergy = simpleItemData.countNeedEnergy;
