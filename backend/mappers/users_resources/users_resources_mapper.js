@@ -10,7 +10,7 @@ export default class UsersResourcesMapper extends UsersResourcesMapperInterface 
         db.prepare(`
             INSERT INTO
                 users_resources
-            VALUES (userId, resourceId, count)    
+            VALUES (?, ?, ?)    
         `).run(userId, resourceId, count);
     }
 
