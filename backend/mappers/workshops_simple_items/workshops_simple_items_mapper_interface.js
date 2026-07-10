@@ -13,4 +13,12 @@ export default class WorkshopsSimpleItemsMapperInterface {
     create(workshopId, simpleItemId) {
         throw new Error('create должен быть переопределен в наследнике');
     }
+
+    /**
+     * Возвращает данные предмета мастерской
+     * @param {number} workshopId
+     */
+    findItemByWorkshopId(workshopId) {
+        throw new Error('findItemByWorkshopId должен быть переопределен в наследнике');
+    }
 }

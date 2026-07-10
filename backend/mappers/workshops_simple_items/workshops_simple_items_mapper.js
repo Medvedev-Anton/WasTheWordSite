@@ -13,4 +13,24 @@ export default class WorkshopsSimpleItemsMapper extends WorkshopsSimpleItemsMapp
             VALUES (?, ?)
         `).run(workshopId, simpleItemId);
     }
+
+    findItemByWorkshopId(workshopId) {
+        const result = db.prepare(`
+            SELECT
+                i.*,
+                o.count as countCreated
+            FROM
+                workshops_simple_items w
+            JOIN
+                simple_items i
+            ON
+                w.simpleItemId = i.id
+            JOIN
+                orgs_simple_items o
+            ON
+                o.orgId = w.workshopId
+            WHERE
+                w.workshopId = ?
+        `);
+    }
 }
