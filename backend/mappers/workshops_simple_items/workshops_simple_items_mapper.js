@@ -24,7 +24,7 @@ export default class WorkshopsSimpleItemsMapper extends WorkshopsSimpleItemsMapp
             JOIN
                 simple_items i
             ON
-                o.orgId = w.workshopId
+                i.id = w.simpleItemId
             WHERE
                 w.workshopId = ?
         `).get(workshopId);
