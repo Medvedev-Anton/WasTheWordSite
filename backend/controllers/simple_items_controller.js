@@ -353,8 +353,14 @@ export default class SimpleItemsController extends MainController {
 
             SimpleItemsFacade.create(orgId, simpleItemId);
 
+            const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+            const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
+            const orgResources = OrgsResourcesFacade.getAllByOrgId(orgId);
+
             this.send(200, {
-                message: 'success'
+                orgBalance: orgBalance,
+                orgEnergy: orgEnergy,
+                orgResources: orgResources
             });
         }
         catch (e) {
