@@ -90,4 +90,18 @@ export default class OrgsResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получить по организации и ресурсу
+     * @param {number} orgId
+     * @param {number} resourceId
+     */
+    static getByOrgAndResource(orgId, resourceId) {
+        try {
+            return this.getService().findByOrgAndResource(orgId, resourceId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
