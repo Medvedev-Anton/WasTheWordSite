@@ -1,4 +1,5 @@
 import OrgsSimpleItemsMapperInterface from "./orgs_simple_items_mapper_interface.js";
+import { db } from "../../database/init.js";
 
 export default class OrgsSimpleItemsMapper extends OrgsSimpleItemsMapperInterface {
     constructor() {

@@ -34,7 +34,7 @@ export default class OrgsSimpleItemsService extends OrgsSimpleItemsServiceInterf
 
     getAllByOrgId(orgId) {
         try {
-            return this.mapper.findAllByOrgId(id);
+            return this.mapper.findAllByOrgId(orgId);
         }
         catch (e) {
             throw new Error(e.message);
