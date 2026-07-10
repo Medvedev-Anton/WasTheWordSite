@@ -1,5 +1,11 @@
 import SimpleItemsMapper from "../mappers/simple_items/simple_items_mapper.js";
 import SimpleItemsService from "../services/simple_items/simple_items_service.js";
+import { db } from "../database/init.js";
+import { BalanceFacade } from "./balance_facade.js";
+import { OrgsFacade } from "./orgs_facade.js";
+import OrgsResourcesFacade from "./orgs_resources_facade.js";
+import EnergyFacade from "./energy_facade.js";
+import OrgsSimpleItemsFacade from "./orgs_simple_items_facade.js";
 
 export default class SimpleItemsFacade {
     static getService() {
@@ -173,6 +179,58 @@ export default class SimpleItemsFacade {
         }
         catch (e) {
             throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Создание простого предмета организацией
+     * @param {number} orgId
+     * @param {number} simpleItemId
+     */
+    static create(orgId, simpleItemId) {
+        const transaction = db.transaction(() => {
+            try {
+                const simpleItemData = this.getById(simpleItemId);
+
+                if (simpleItemData === null) {
+                    throw new Error('Не найден простой предмет с ID: ' + simpleItemId);
+                }
+
+                const needResourceId = simpleItemData.needResourceId;
+
+                const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
+                const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
+                const orgResourceCount = OrgsResourcesFacade.getByOrgAndResource(orgId, needResourceId).count;
+                
+                const countNeedMoney = simpleItemData.countNeedMoney;
+                const countNeedEnergy = simpleItemData.countNeedEnergy;
+                const countNeedResource = simpleItemData.countNeedResource;
+
+                if (
+                    orgBalance < countNeedMoney ||
+                    orgEnergy < countNeedEnergy ||
+                    orgResourceCount < countNeedResource
+                ) {
+                    throw new Error('Не хватает ресурсов для создания');
+                }
+
+                BalanceFacade.entity('orgs').decrement(orgId, countNeedMoney);
+                EnergyFacade.entity('orgs').decrement(orgId, countNeedEnergy);
+                OrgsResourcesFacade.decrementOrgResource(orgId, needResourceId, countNeedResource);
+
+                const parentId = OrgsFacade.getParentId(orgId);
+                OrgsSimpleItemsFacade.createOrIncrement(orgId, simpleItemId);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error('Ошибка при обработке транзакции создания простого предмета: ' + e.message);
         }
     }
 }
