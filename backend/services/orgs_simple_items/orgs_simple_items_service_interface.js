@@ -34,16 +34,16 @@ export default class OrgsSimpleItemsServiceInterface {
      * Получить по ID
      * @param {number} id
      */
-    findById(id) {
-        throw new Error('findById должен быть переопределен в наследнике');
+    getById(id) {
+        throw new Error('getById должен быть переопределен в наследнике');
     }
 
     /**
      * Получить все ресурсы организации
      * @param {number} orgId
      */
-    findAllByOrgId(orgId) {
-        throw new Error('findAllByOrgId должен быть переопределен в наследнике');
+    getAllByOrgId(orgId) {
+        throw new Error('getAllByOrgId должен быть переопределен в наследнике');
     }
 
     /**
@@ -51,8 +51,8 @@ export default class OrgsSimpleItemsServiceInterface {
      * @param {number} orgId
      * @param {number} simpleItemId
      */
-    findByOrgAndSimpleItem(orgId, simpleItemId) {
-        throw new Error('findAllByOrgId должен быть переопределен в наследнике');
+    getByOrgAndSimpleItem(orgId, simpleItemId) {
+        throw new Error('getByOrgAndSimpleItem должен быть переопределен в наследнике');
     }
 
     /**
