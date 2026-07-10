@@ -1,7 +1,7 @@
 export default class OrgsSimpleItemsMapperInterface {
     constructor() {
-        if (new.target === 'OrgsResourcesMapperInterface') {
-            throw new Error('Нельзя создать экземпляр класса OrgsResourcesMapperInterface');
+        if (new.target === 'OrgsSimpleItemsMapperInterface') {
+            throw new Error('Нельзя создать экземпляр класса OrgsSimpleItemsMapperInterface');
         }
     }
 
