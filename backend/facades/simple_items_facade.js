@@ -151,6 +151,19 @@ export default class SimpleItemsFacade {
     }
 
     /**
+     * Возвращает данные предмета по id
+     * @param {number} id
+     */
+    static getById(id) {
+        try {
+            return this.getService().getById(id);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Удаляет изображение предмета
      * @param {number} id 
      */
