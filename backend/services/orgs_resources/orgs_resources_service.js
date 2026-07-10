@@ -74,4 +74,13 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
             throw new Error(e.message);
         }
     }
+
+    decrementOrgResource(orgId, resourceId, decrementValue) {
+        try {
+            return this.mapper.decrementOrgResource(orgId, resourceId, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

@@ -72,4 +72,14 @@ export default class OrgsResourcesServiceInterface {
     createOrIncrement(orgId, resourceId) {
         throw new Error('createOrIncrement должен быть переопределен в наследнике');
     }
+
+    /**
+     * Уменьшить количество ресурса организации
+     * @param {number} orgId
+     * @param {number} resourceId
+     * @param {number} decrementValue
+     */
+    decrementOrgResource(orgId, resourceId, decrementValue) {
+        throw new Error('increment должен быть переопределен в наследнике');
+    }
 }

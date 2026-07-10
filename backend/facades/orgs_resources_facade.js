@@ -75,4 +75,19 @@ export default class OrgsResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Уменьшить количество ресурса организации
+     * @param {number} orgId
+     * @param {number} resourceId
+     * @param {number} decrementValue
+     */
+    static decrementOrgResource(orgId, resourceId, decrementValue) {
+        try {
+            return this.getService().decrementOrgResource(orgId, resourceId, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

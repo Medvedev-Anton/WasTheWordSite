@@ -79,4 +79,17 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
                 id = ?      
         `).run(incrementValue, id);
     }
+
+    decrementOrgResource(orgId, resourceId, decrementValue) {
+        db.prepare(`
+            UPDATE
+                orgs_resources
+            SET
+                count = count - ?
+            WHERE
+                orgId = ?
+                AND
+                resourceId = ?
+        `).run(decrementValue, orgId, resourceId);
+    }
 }
