@@ -1453,6 +1453,62 @@ function OrganizationDetail({
         ""
       }
 
+      
+
+      {/* Tabs */}
+      <div className="org-tabs">
+        <button
+          className={`org-tab ${activeTab === 'posts' ? 'active' : ''}`}
+          onClick={() => setActiveTab('posts')}
+        >📝 Посты</button>
+        {canAccessSettings && (
+          <button
+            className={`org-tab ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >⚙️ Настройки</button>
+        )}
+      </div>
+
+      <div className="org-resources-wrapper">
+        {(orgResources.length !== 0 || orgSimpleItems.length !== 0) && (
+          <ResourcesItems 
+            resources={orgResources}
+            simpleItems={orgSimpleItems}
+          />
+        )}        
+
+        {/* Members sidebar */}
+        <aside className="org-members-sidebar">
+          <div className="org-members-sidebar-header">
+            <span className="org-members-sidebar-title">Сотрудники</span>
+            <span className="org-members-sidebar-count">{organization.membersCount}</span>
+          </div>
+          <div className="org-members-sidebar-avatars">
+            {(organization.members || []).slice(0, 8).map(m => (
+              <div
+                key={m.userId}
+                className="sidebar-member"
+                onClick={() => { setSelectedMember(m); setShowMembersModal(true); }}
+                title={m.firstName && m.lastName ? `${m.firstName} ${m.lastName}` : m.username}
+              >
+                {m.avatar
+                  ? <img src={getMediaUrl(m.avatar)} alt={m.username} className="sidebar-member-avatar" />
+                  : <div className="sidebar-member-avatar-placeholder">{(m.firstName || m.username)[0].toUpperCase()}</div>
+                }
+                <span className="sidebar-member-name">
+                  {m.firstName ? m.firstName : m.username}
+                </span>
+              </div>
+            ))}
+          </div>
+          {(organization.members?.length || 0) > 0 && (
+            <button className="org-members-show-all-btn" onClick={() => { setSelectedMember(organization.members?.[0] || null); setShowMembersModal(true); }}>
+              Показать всех →
+            </button>
+          )}
+        </aside>
+      </div>
+
       {/* Sub-organizations section (visible inline, no tab) */}
       {subOrgType && (
         <div className="org-suborgs-inline">
@@ -1607,60 +1663,6 @@ function OrganizationDetail({
           </div>
         </div>
       )}
-
-      {/* Tabs */}
-      <div className="org-tabs">
-        <button
-          className={`org-tab ${activeTab === 'posts' ? 'active' : ''}`}
-          onClick={() => setActiveTab('posts')}
-        >📝 Посты</button>
-        {canAccessSettings && (
-          <button
-            className={`org-tab ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
-          >⚙️ Настройки</button>
-        )}
-      </div>
-
-      <div className="org-resources-wrapper">
-        {(orgResources.length !== 0 || orgSimpleItems.length !== 0) && (
-          <ResourcesItems 
-            resources={orgResources}
-            simpleItems={orgSimpleItems}
-          />
-        )}        
-
-        {/* Members sidebar */}
-        <aside className="org-members-sidebar">
-          <div className="org-members-sidebar-header">
-            <span className="org-members-sidebar-title">Сотрудники</span>
-            <span className="org-members-sidebar-count">{organization.membersCount}</span>
-          </div>
-          <div className="org-members-sidebar-avatars">
-            {(organization.members || []).slice(0, 8).map(m => (
-              <div
-                key={m.userId}
-                className="sidebar-member"
-                onClick={() => { setSelectedMember(m); setShowMembersModal(true); }}
-                title={m.firstName && m.lastName ? `${m.firstName} ${m.lastName}` : m.username}
-              >
-                {m.avatar
-                  ? <img src={getMediaUrl(m.avatar)} alt={m.username} className="sidebar-member-avatar" />
-                  : <div className="sidebar-member-avatar-placeholder">{(m.firstName || m.username)[0].toUpperCase()}</div>
-                }
-                <span className="sidebar-member-name">
-                  {m.firstName ? m.firstName : m.username}
-                </span>
-              </div>
-            ))}
-          </div>
-          {(organization.members?.length || 0) > 0 && (
-            <button className="org-members-show-all-btn" onClick={() => { setSelectedMember(organization.members?.[0] || null); setShowMembersModal(true); }}>
-              Показать всех →
-            </button>
-          )}
-        </aside>
-      </div>
 
       {
         organization.orgType === 'Ферма' && 
