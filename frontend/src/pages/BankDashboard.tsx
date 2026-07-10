@@ -220,7 +220,7 @@ export default function BankDashboard() {
             </div>
 
             <div className="bank-org-diagram">
-                <OrgBalanceDiagram orgId={id} />
+                <OrgBalanceDiagram orgBalance={org?.balance} />
             </div>
 
             {org?.id !== undefined && org?.id !== null && (

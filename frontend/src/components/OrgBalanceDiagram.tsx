@@ -7,18 +7,18 @@ import './OrgBalanceDiagram.css';
 Chart.register(ArcElement, Tooltip, Legend);
 
 interface OrgBalanceDiagramProps {
-    orgId: number;
     isEmbedded?: boolean;
+    orgBalance?: number;
 }
 
 export default function OrgBalanceDiagram(
     { 
-        orgId,
-        isEmbedded 
+        isEmbedded,
+        orgBalance
     }: OrgBalanceDiagramProps
 ) {
-    const [orgBalance, setOrgBalance] = useState<number>(0);
     const [totalOrgsBalance, setTotalOrgsBalance] = useState<number>(0);
+    const [resolvedOrgBalance, setResolvedOrgBalance] = useState<number>(0);
     const [chartData, setChartData] = useState<Record<string, any>>({
         labels: ['Бюджет организации', 'Общий бюджет всех организаций'],
         datasets: [
@@ -32,9 +32,14 @@ export default function OrgBalanceDiagram(
     });
 
     useEffect(() => {
-        fetchOrgBalance();
         fetchTotalOrgsBalances();
     }, []);
+
+    useEffect(() => {
+        if (orgBalance !== undefined) {
+            setResolvedOrgBalance(orgBalance / 100);
+        }        
+    }, [orgBalance]);
 
     useEffect(() => {
         setChartData({
@@ -42,21 +47,13 @@ export default function OrgBalanceDiagram(
             datasets: [
                 {
                     label: 'Бюджет',
-                    data: [orgBalance, totalOrgsBalance - orgBalance],
+                    data: [resolvedOrgBalance, totalOrgsBalance - resolvedOrgBalance],
                     backgroundColor: ['#D6D6D6', '#8C5C5C'],
                     hoverOffset: 10,
                 },
             ],
         });
-    }, [orgBalance, totalOrgsBalance]);
-
-    // Запрос на получение баланса организации
-    const fetchOrgBalance = async () => {
-        const result = await axios.get(`/api/organizations/${orgId}/balance`);
-        const balance = +(parseFloat(result.data.balance || 0) / 100).toFixed(2);
-        console.log(result.data);
-        setOrgBalance(balance);
-    }
+    }, [resolvedOrgBalance, totalOrgsBalance]);
     
     // Запрос на получение общей суммы балансов всех организаций
     const fetchTotalOrgsBalances = async () => {
@@ -97,7 +94,7 @@ export default function OrgBalanceDiagram(
             </h2>
             <Pie data={chartData} options={options} />
             <p className="org-balance-chart__balance">
-                {orgBalance} BFB
+                {resolvedOrgBalance} BFB
             </p>
         </div>
     );

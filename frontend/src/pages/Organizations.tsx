@@ -1281,7 +1281,7 @@ function OrganizationDetail({
 
             <div className="org-header__balance">
               <OrgBalanceDiagram 
-                orgId={organization.id} 
+                orgBalance={orgBalance} 
                 isEmbedded={true}
               />
             </div>

@@ -38,7 +38,7 @@ export default function TypicalOrgDashboard() {
             </div>
 
             <div className="typical-org-balance">
-                <OrgBalanceDiagram orgId={id} />
+                <OrgBalanceDiagram orgBalance={org?.balance} />
             </div>
 
             <div className="org-salaries">

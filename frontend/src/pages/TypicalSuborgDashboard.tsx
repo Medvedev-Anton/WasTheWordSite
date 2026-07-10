@@ -36,7 +36,7 @@ export default function TypicalSuborgDashboard() {
 
             {id !== undefined && id !== null && (
                 <div className="typical-suborg-balance">
-                    <OrgBalanceDiagram orgId={parseInt(id)} />
+                    <OrgBalanceDiagram orgBalance={org?.balance} />
                 </div>
             )}
             

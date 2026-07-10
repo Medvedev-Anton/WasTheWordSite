@@ -21,6 +21,7 @@ export default function GovernmentDashboard() {
     type OrgFormValues = Record<typeof ROOT_ORG_TYPES[number], 0>;
 
     const { id } = useParams();
+    const [goverBalance, setGoverBalance] = useState<number>(0);
     const [usersTax, setUsersTax] = useState<number>(0);
     const [orgsTaxes, setOrgsTaxes] = useState<OrgFormValues>(() => {
         return Object.fromEntries(ROOT_ORG_TYPES.map(t => [t, 0])) as OrgFormValues
@@ -38,6 +39,7 @@ export default function GovernmentDashboard() {
         fetchAllOrgsCreationPrices();
         fetchAllOrgsWithBalances();
         fetchPostViewPrice();
+        fetchGoverBalance();
     }, []);
 
     useEffect(() => {
@@ -53,6 +55,13 @@ export default function GovernmentDashboard() {
             ));
         });
     }, [orgsBalances]);
+
+    // Запрос на получение баланса организации
+    const fetchGoverBalance = async () => {
+        const result = await axios.get(`/api/organizations/${id}/balance`);
+        const balance = +(parseFloat(result.data.balance || 0) / 100).toFixed(2);
+        setGoverBalance(balance);
+    }
 
     /* Налог пользователя */
 
@@ -333,7 +342,7 @@ export default function GovernmentDashboard() {
                             Правительственная организация
                         </h3>
                         <div className="gover-balance-diagram">
-                            <OrgBalanceDiagram orgId={id} />
+                            <OrgBalanceDiagram orgBalance={goverBalance} />
                         </div>
                     </div>
                     <div className="created-orgs-wrapper">
