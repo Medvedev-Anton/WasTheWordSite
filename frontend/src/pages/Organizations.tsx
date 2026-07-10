@@ -1363,7 +1363,7 @@ function OrganizationDetail({
                 Энергия
               </div>
               <div className="org-header__energy__img-wrapper">
-                <img src="image/energy.png" alt="energy-icon" />
+                <img src="/image/energy.png" alt="energy-icon" />
               </div>
               <div className="org-header__energy__value">
                 {orgEnergy}
