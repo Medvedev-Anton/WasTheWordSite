@@ -364,4 +364,32 @@ export default class SimpleItemsController extends MainController {
             });
         }
     }
+
+    /**
+     * Получить предмет по ID
+     */
+    getById() {
+        const validate = this.has([
+            'id', 
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const simpleItemId = parseInt(this.request.params.id);
+            const simpleItem = SimpleItemsFacade.getById(simpleItemId);
+
+            this.send(200, {
+                simpleItem: simpleItem
+            });
+        }
+        catch (e) {
+            console.error('Get simple item by id error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
