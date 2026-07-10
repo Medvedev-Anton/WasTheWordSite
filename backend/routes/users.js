@@ -9,6 +9,7 @@ import { RangFacade } from '../facades/rang_facade.js';
 import { BalanceController } from '../controllers/balance_controller.js';
 import { error } from 'console';
 import UsersResourcesFacade from '../facades/users_resources_facade.js';
+import UsersSimpleItemsFacade from '../facades/users_simple_items_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -173,6 +174,7 @@ router.get('/:id', authenticateToken, (req, res) => {
   `).get(rangId ?? null, user.heroId ?? null, user.heroId ?? null) || null;
 
     const resources = UsersResourcesFacade.getAllByUserId(userId);
+    const simpleItems = UsersSimpleItemsFacade.getAllByUserId(userId);
 
     res.json({ 
       ...user, 
@@ -180,7 +182,8 @@ router.get('/:id', authenticateToken, (req, res) => {
       posts, 
       rang, 
       hero: hero,
-      resources: resources
+      resources: resources,
+      simpleItems: simpleItems
     });
   } catch (error) {
     console.error('Get user error:', error);

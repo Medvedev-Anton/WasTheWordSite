@@ -509,6 +509,7 @@ export default function Profile() {
           <div className="users-resources-wrapper">
             <ResourcesItems 
               resources={user.resources}
+              simpleItems={user.simpleItems}
             />
           </div>
         </div>
