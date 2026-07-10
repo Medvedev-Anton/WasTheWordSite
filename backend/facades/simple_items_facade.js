@@ -188,7 +188,7 @@ export default class SimpleItemsFacade {
      * @param {number} orgId
      * @param {number} simpleItemId
      */
-    static create(orgId, simpleItemId) {
+    static workshopCreate(orgId, simpleItemId) {
         const transaction = db.transaction(() => {
             try {
                 const simpleItemData = this.getById(simpleItemId);

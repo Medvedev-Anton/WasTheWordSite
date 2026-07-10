@@ -351,7 +351,7 @@ export default class SimpleItemsController extends MainController {
             const orgId = parseInt(this.request.body.orgId);
             const simpleItemId = parseInt(this.request.params.id);
 
-            SimpleItemsFacade.create(orgId, simpleItemId);
+            SimpleItemsFacade.workshopCreate(orgId, simpleItemId);
 
             const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
             const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
