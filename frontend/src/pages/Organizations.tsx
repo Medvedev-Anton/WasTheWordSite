@@ -521,6 +521,8 @@ function OrganizationDetail({
   const [orgResources, setOrgResources] = useState<Resource[]>([]);
   const [countExtractedResource, setCountExtractedResource] = useState<number>(0);
   const [orgSimpleItems, setOrgSimpleItems] = useState<SimpleItem[]>([]);
+  const [simpleItemsList, setSimpleItemsList] = useState<SimpleItem[]>([]);
+  const [selectedWorkshopSimpleItemId, setSelectedWorkshopSimpleItemId] = useState<number | null>(null);
 
   useEffect(() => {
     setOrgFormData({
@@ -540,6 +542,10 @@ function OrganizationDetail({
 
     if (resolvedOrgType === 'Ферма') {
       fetchAllResources();
+    }
+
+    if (resolvedOrgType === 'Мастерская') {
+      fetchAllSimpleItems();
     }
 
     if (organization.orgType === 'Ферма') {
@@ -571,6 +577,17 @@ function OrganizationDetail({
     }
     catch (e) {
       alert('Не удалось получить все ресурсы');
+    }
+  }
+
+  // Получение всех существующих простых предметов
+  const fetchAllSimpleItems = async () => {
+    try {
+      const result = await axios.get('/api/simple-items');
+      setSimpleItemsList(result.data.items);
+    }
+    catch (e) {
+      alert('Не удалось получить все предметы');
     }
   }
 
@@ -761,6 +778,10 @@ function OrganizationDetail({
 
       if (subOrgType === 'Ферма' && selectedFarmResourceId !== null) {
         data.append('selectedFarmResourceId', selectedFarmResourceId.toString());
+      }
+
+      if (subOrgType === 'Мастерская' && selectedWorkshopSimpleItemId !== null) {
+        data.append('selectedWorkshopSimpleItemId', selectedWorkshopSimpleItemId.toString());
       }
 
       if (subOrgCoverId) {
@@ -1032,6 +1053,10 @@ function OrganizationDetail({
       alert('Не удалось добыть ресурс. Возможно у организации не хватает средств');
       throw new Error('Ошибка при добыче ресурса');
     }
+  }
+
+  const handleChangeWorkshopSimpleItemId = (e: any) => {
+    setSelectedWorkshopSimpleItemId(e.target.value);
   }
 
   return (
@@ -1417,7 +1442,21 @@ function OrganizationDetail({
                     </option>
                   ))}
                 </select>
-              )}              
+              )}
+
+              {subOrgType === 'Мастерская' && (
+                <select
+                  className="workshop-simple-item-select"
+                  onChange={handleChangeWorkshopSimpleItemId}
+                >
+                  {simpleItemsList?.map(item => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+
               <textarea
                 placeholder="Описание"
                 value={subOrgDesc}
