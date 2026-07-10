@@ -21,6 +21,7 @@ import { PostsFacade } from '../facades/posts_facade.js';
 import ChatsFacade from '../facades/chats_facade.js';
 import OrgsResourcesFacade from '../facades/orgs_resources_facade.js';
 import FarmsResourcesFacade from '../facades/farms_resources_facade.js';
+import OrgsSimpleItemsFacade from '../facades/orgs_simple_items_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -372,6 +373,7 @@ router.get('/:id', authenticateToken, (req, res, next) => {
       : null;
 
     const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
+    const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
 
     res.json({ 
       ...organization, 
@@ -381,7 +383,8 @@ router.get('/:id', authenticateToken, (req, res, next) => {
       parentOrg, 
       groupChatId: groupChat?.id || null, 
       isInGroupChat: !!groupChatParticipant,
-      resources: resources
+      resources: resources,
+      simpleItems: simpleItems
     });
   } catch (error) {
     console.error('Get organization error:', error);
