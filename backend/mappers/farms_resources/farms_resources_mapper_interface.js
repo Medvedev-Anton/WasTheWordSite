@@ -21,4 +21,13 @@ export default class FarmsResourcesMapperInterface {
     findByFarmId(farmId) {
         throw new Error('findByFarmId должен быть переопределен в наследнике');
     }
+
+    /**
+     * Инкрементирует количество добытого ресурса
+     * @param {number} farmId
+     * @param {number} incrementValue
+     */
+    incrementCountExtracted(farmId, incrementValue) {
+        throw new Error('incrementCountExtracted должен быть переопределен в наследнике');
+    }
 }

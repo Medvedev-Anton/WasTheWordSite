@@ -34,4 +34,18 @@ export default class FarmsResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Инкрементирует количество добытого ресурса
+     * @param {number} farmId
+     * @param {number} incrementValue
+     */
+    static incrementCountExtracted(farmId, incrementValue) {
+        try {
+            return this.getService().incrementCountExtracted(farmId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

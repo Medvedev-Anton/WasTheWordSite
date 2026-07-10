@@ -4,6 +4,7 @@ import { db } from "../database/init.js";
 import { BalanceFacade } from "./balance_facade.js";
 import { OrgsFacade } from "./orgs_facade.js";
 import OrgsResourcesFacade from "./orgs_resources_facade.js";
+import FarmsResourcesFacade from "./farms_resources_facade.js";
 
 export default class ResourceFacade {
     static getService() {
@@ -175,10 +176,11 @@ export default class ResourceFacade {
                 const orgParentId = OrgsFacade.getParentId(orgId);
 
                 if (orgParentId === null) {
-                    throw new Error('Ферма с ID ' + orgParentId + ' не имеет родителя');
+                    throw new Error('Ферма с ID ' + orgId + ' не имеет родителя');
                 }
 
                 OrgsResourcesFacade.createOrIncrement(orgParentId, resourceId);
+                FarmsResourcesFacade.incrementCountExtracted(orgId, 1);
             }
             catch (e) {
                 throw new Error(e.message);

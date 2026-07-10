@@ -22,4 +22,13 @@ export default class FarmsResourcesService extends FarmsResourcesServiceInterfac
             throw new Error(e.message);
         }
     }
+
+    incrementCountExtracted(farmId, incrementValue) {
+        try {
+            return this.mapper.incrementCountExtracted(farmId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

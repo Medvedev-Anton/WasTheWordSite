@@ -18,21 +18,28 @@ export default class FarmsResourcesMapper extends FarmsResourcesMapperInterface 
         const result = db.prepare(`
             SELECT
                 r.*,
-                o.count as countExtracted
+                f.countExtracted as countExtracted
             FROM
                 farms_resources f
             JOIN
                 resources r
             ON
                 r.id = f.resourceId
-            JOIN
-                orgs_resources o
-            ON
-                o.orgId = f.farmId
             WHERE
                 f.farmId = ?    
         `).get(farmId);
 
         return result;
+    }
+
+    incrementCountExtracted(farmId, incrementValue) {
+        db.prepare(`
+            UPDATE
+                farms_resources
+            SET
+                countExtracted = countExtracted + ?
+            WHERE
+                farmId = ?     
+        `).run(incrementValue, farmId);
     }
 }
