@@ -1223,10 +1223,12 @@ export async function initDatabase() {
 
   // Create workshops simple items table
   db.exec(`
+    drop table workshops_simple_items;
     CREATE TABLE IF NOT EXISTS workshops_simple_items(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       workshopId INTEGER NOT NULL,
       simpleItemId INTEGER NOT NULL,
+      countCreated INTEGER DEFAULT 0,
       FOREIGN KEY (workshopId) REFERENCES organizations(id) ON DELETE CASCADE,
       FOREIGN KEY (simpleItemId) REFERENCES simple_items(id) ON DELETE CASCADE
     )  

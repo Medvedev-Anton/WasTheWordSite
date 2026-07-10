@@ -6,6 +6,7 @@ import { OrgsFacade } from "./orgs_facade.js";
 import OrgsResourcesFacade from "./orgs_resources_facade.js";
 import EnergyFacade from "./energy_facade.js";
 import OrgsSimpleItemsFacade from "./orgs_simple_items_facade.js";
+import WorkshopsSimpleItemsFacade from "./workshops_simple_items_facade.js";
 
 export default class SimpleItemsFacade {
     static getService() {
@@ -220,6 +221,7 @@ export default class SimpleItemsFacade {
 
                 const parentId = OrgsFacade.getParentId(orgId);
                 OrgsSimpleItemsFacade.createOrIncrement(orgId, simpleItemId);
+                WorkshopsSimpleItemsFacade.incrementCountCreated(orgId, 1);
             }
             catch (e) {
                 throw new Error(e.message);

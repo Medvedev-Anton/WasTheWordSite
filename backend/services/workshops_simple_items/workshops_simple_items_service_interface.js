@@ -28,4 +28,13 @@ export default class WorkshopsSimpleItemsServiceInterface {
     getWorkshopSimpleItem(workshopId) {
         throw new Error('getWorkshopSimpleItem должен быть переопределен в наследнике');
     }
+
+    /**
+     * Инкрементирует количество созданных предметов мастерской
+     * @param {number} workshopId
+     * @param {number} incrementValue
+     */
+    incrementCountCreated(workshopId, incrementValue) {
+        throw new Error('incrementCountCreated должен быть переопределен в наследнике');
+    }
 }

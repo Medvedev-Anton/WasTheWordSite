@@ -22,4 +22,13 @@ export default class WorkshopsSimpleItemsService extends WorkshopsSimpleItemsSer
             throw new Error(e.message);
         }
     }
+
+    incrementCountCreated(workshopId, incrementValue) {
+        try {
+            return this.mapper.incrementCountCreated(workshopId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

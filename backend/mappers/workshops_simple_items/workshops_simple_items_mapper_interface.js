@@ -21,4 +21,13 @@ export default class WorkshopsSimpleItemsMapperInterface {
     findItemByWorkshopId(workshopId) {
         throw new Error('findItemByWorkshopId должен быть переопределен в наследнике');
     }
+
+    /**
+     * Инкрементирует количество созданных предметов мастерской
+     * @param {number} workshopId
+     * @param {number} incrementValue
+     */
+    incrementCountCreated(workshopId, incrementValue) {
+        throw new Error('incrementCountCreated должен быть переопределен в наследнике');
+    }
 }

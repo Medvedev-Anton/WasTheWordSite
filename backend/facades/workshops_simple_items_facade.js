@@ -34,4 +34,18 @@ export default class WorkshopsSimpleItemsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Инкрементирует количество созданных предметов мастерской
+     * @param {number} workshopId
+     * @param {number} incrementValue
+     */
+    static incrementCountCreated(workshopId, incrementValue) {
+        try {
+            return this.getService().incrementCountCreated(workshopId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

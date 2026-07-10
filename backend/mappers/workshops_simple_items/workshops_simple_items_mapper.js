@@ -18,19 +18,30 @@ export default class WorkshopsSimpleItemsMapper extends WorkshopsSimpleItemsMapp
         const result = db.prepare(`
             SELECT
                 i.*,
-                o.count as countCreated
+                w.countCreated as countCreated
             FROM
                 workshops_simple_items w
             JOIN
                 simple_items i
             ON
-                w.simpleItemId = i.id
-            JOIN
-                orgs_simple_items o
-            ON
                 o.orgId = w.workshopId
             WHERE
                 w.workshopId = ?
-        `);
+        `).get(workshopId);
+
+        console.log(workshopId);
+
+        return result;
+    }
+
+    incrementCountCreated(workshopId, incrementValue) {
+        db.prepare(`
+            UPDATE
+                workshops_simple_items
+            SET
+                countCreated = countCreated + ?
+            WHERE
+                workshopId = ?     
+        `).run(incrementValue, workshopId);
     }
 }
