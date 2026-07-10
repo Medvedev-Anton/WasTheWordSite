@@ -15,10 +15,11 @@
 .simple-item-creation__components {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .simple-item-creation__component {
-    width: 100px;
+    min-width: 100px;
     height: 100px;
     display: flex;
     flex-direction: column;
@@ -27,12 +28,14 @@
     border-radius: 12px;
     align-items: center;
     justify-content: center;
+    padding: 0 10px;
 }
 
 .simple-item-creation__extract {
     display: flex;
     gap: 30px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .simple-item-creation__extract-btn {

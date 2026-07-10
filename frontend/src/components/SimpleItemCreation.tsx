@@ -39,6 +39,14 @@ export default function SimpleItemCreation(
                         Energy
                     </p>
                 </div>
+                <div className="simple-item-creation__component resources">
+                    <p className='simple-item-creation__component-value'>
+                        {simpleItem.countNeedResource}
+                    </p>
+                    <p className="simple-item-creation__component-title">
+                        {simpleItem?.resource?.name}
+                    </p>
+                </div>
             </div>
             <div className="simple-item-creation__extract">
                 <div className="simple-item-creation__extract-btn-wrapper">
