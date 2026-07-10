@@ -1211,6 +1211,17 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create workshops simple items table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS workshops_simple_items(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      workshopId INTEGER NOT NULL,
+      simpleItemId INTEGER NOT NULL,
+      FOREIGN KEY (workshopId) REFERENCES organizations(id) ON DELETE CASCADE,
+      FOREIGN KEY (simpleItemId) REFERENCES simple_items(id) ON DELETE CASCADE
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
