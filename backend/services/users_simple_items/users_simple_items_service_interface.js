@@ -8,6 +8,8 @@ export default class UsersSimpleItemsServiceInterface {
         if (new.target === 'UsersSimpleItemsServiceInterface') {
             throw new Error('Нельзя создать экземпляр класса UsersSimpleItemsServiceInterface');
         }
+
+        this.mapper = mapper;
     }
 
     /**

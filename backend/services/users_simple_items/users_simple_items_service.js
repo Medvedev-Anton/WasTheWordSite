@@ -25,7 +25,7 @@ export default class UsersSimpleItemsService extends UsersSimpleItemsServiceInte
 
     getAllByUserId(userId) {
         try {
-            return this.mapper.getAllByUserId(userId);
+            return this.mapper.findAllByUserId(userId);
         }
         catch (e) {
             throw new Error(e.message);

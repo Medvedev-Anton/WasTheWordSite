@@ -31,7 +31,7 @@ export default class UsersSimpleItemsMapper extends UsersSimpleItemsMapperInterf
             FROM
                 users_simple_items u
             JOIN
-                simpleItems i
+                simple_items i
             ON
                 u.simpleItemId = i.id
             WHERE
