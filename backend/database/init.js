@@ -1199,6 +1199,18 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create users simple items table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users_simple_items(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER NOT NULL,
+      simpleItemId INTEGER NOT NULL,
+      count INTEGER NOT NULL,
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (simpleItemId) REFERENCES simple_items(id) ON DELETE CASCADE
+    )  
+  `);
+
   console.log('Database initialized successfully');
 }
 
