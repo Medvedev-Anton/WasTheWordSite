@@ -90,4 +90,10 @@ router.patch('/:id/needResourceCount', authenticateToken, (req, res) => {
     controller.updateNeedResourceCount();
 });
 
+// Создание мастерской предмета
+router.post('/:id/create/workshop', authenticateToken, (req, res) => {
+    const controller = new SimpleItemsController(req, res);
+    controller.workshopCreateSimpleItem();
+});
+
 export default router;
