@@ -566,6 +566,12 @@ function OrganizationDetail({
   }, [resourcesList]);
 
   useEffect(() => {
+    if (simpleItemsList.length !== 0) {
+      setSelectedWorkshopSimpleItemId(simpleItemsList[0]?.id);
+    }    
+  }, [simpleItemsList]);
+
+  useEffect(() => {
     setCountExtractedResource(farmResource?.countExtracted || 0);
   }, [farmResource]);
 
