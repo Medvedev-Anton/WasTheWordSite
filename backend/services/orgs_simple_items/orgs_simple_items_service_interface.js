@@ -65,6 +65,15 @@ export default class OrgsSimpleItemsServiceInterface {
     }
 
     /**
+     * Уменьшить количество
+     * @param {number} id
+     * @param {number} decrementValue
+     */
+    decrement(id, decrementValue) {
+        throw new Error('decrement должен быть переопределен в наследнике');
+    }
+
+    /**
      * Создать или увеличить на единицу
      * @param {number} orgId
      * @param {number} simpleItemId

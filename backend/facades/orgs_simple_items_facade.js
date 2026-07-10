@@ -91,6 +91,20 @@ export default class OrgsSimpleItemsFacade {
     }
 
     /**
+     * Уменьшить количество
+     * @param {number} id
+     * @param {number} decrementValue
+     */
+    decrement(id, decrementValue) {
+        try {
+            return this.getService().decrement(id, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
      * Создать или увеличить на единицу
      * @param {number} orgId
      * @param {number} simpleItemId

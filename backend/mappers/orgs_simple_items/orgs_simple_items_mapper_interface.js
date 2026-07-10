@@ -58,6 +58,15 @@ export default class OrgsSimpleItemsMapperInterface {
     }
 
     /**
+     * Уменьшить количество
+     * @param {number} id
+     * @param {number} decrementValue
+     */
+    decrement(id, decrementValue) {
+        throw new Error('decrement должен быть переопределен в наследнике');
+    }
+
+    /**
      * Получение количества определенного предмета
      * @param {number} orgId
      * @param {number} simpleItemId

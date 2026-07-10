@@ -59,6 +59,15 @@ export default class OrgsSimpleItemsService extends OrgsSimpleItemsServiceInterf
         }
     }
 
+    decrement(id, decrementValue) {
+        try {
+            return this.mapper.decrement(id, decrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     createOrIncrement(orgId, simpleItemId) {
         try {
             const simpleItem = this.getByOrgAndSimpleItem(orgId, simpleItemId);

@@ -80,6 +80,17 @@ export default class OrgsSimpleItemsMapper extends OrgsSimpleItemsMapperInterfac
         `).run(incrementValue, id);
     }
 
+    decrement(id, decrementValue) {
+        db.prepare(`
+            UPDATE
+                orgs_simple_items
+            SET
+                count = count - ?
+            WHERE
+                id = ?      
+        `).run(decrementValue, id);
+    }
+
     findCountByOrgAndSimpleItem(orgId, simpleItemId) {
         const result = db.prepare(`
             SELECT
