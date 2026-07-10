@@ -21,4 +21,17 @@ export default class WorkshopsSimpleItemsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Возвращает данные предмета мастерской
+     * @param {number} workshopId
+     */
+    static getWorkshopSimpleItem(workshopId) {
+        try {
+            return this.getService().getWorkshopSimpleItem(workshopId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
