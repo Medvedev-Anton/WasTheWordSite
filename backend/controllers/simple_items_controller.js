@@ -340,7 +340,7 @@ export default class SimpleItemsController extends MainController {
     workshopCreateSimpleItem() {
         const validate = this.has([
             'orgId',
-            'simpleItemId', 
+            'id', 
         ]);
 
         if (validate === false) {
@@ -349,7 +349,7 @@ export default class SimpleItemsController extends MainController {
 
         try {
             const orgId = parseInt(this.request.body.orgId);
-            const simpleItemId = parseInt(this.request.body.simpleItemId);
+            const simpleItemId = parseInt(this.request.params.id);
 
             SimpleItemsFacade.create(orgId, simpleItemId);
 
