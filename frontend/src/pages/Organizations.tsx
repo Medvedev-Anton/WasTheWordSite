@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { Organization, Resource } from '../types';
+import { Organization, Resource, SimpleItem } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import PostCard from '../components/PostCard';
 import CreatePost from '../components/CreatePost';
@@ -10,8 +10,9 @@ import { getMediaUrl } from '../config';
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
-import Resources from '../components/Resources';
+import Resources from '../components/ResourcesItems';
 import ResourceExtraction from '../components/ResourceExtraction';
+import ResourcesItems from '../components/ResourcesItems';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная', 'Добывающая'];
 
@@ -519,6 +520,7 @@ function OrganizationDetail({
   const [orgEnergy, setOrgEnergy] = useState<number>(0);
   const [orgResources, setOrgResources] = useState<Resource[]>([]);
   const [countExtractedResource, setCountExtractedResource] = useState<number>(0);
+  const [orgSimpleItems, setOrgSimpleItems] = useState<SimpleItem[]>([]);
 
   useEffect(() => {
     setOrgFormData({
@@ -548,6 +550,7 @@ function OrganizationDetail({
     setOrgEnergy(organization.energy);
 
     setOrgResources(organization.resources);
+    setOrgSimpleItems(organization.simpleItems);
   }, [organization])
 
   useEffect(() => {
@@ -1537,9 +1540,10 @@ function OrganizationDetail({
       </div>
 
       <div className="org-resources-wrapper">
-        {orgResources.length !== 0 && (
-          <Resources 
+        {orgResources.length !== 0 || orgSimpleItems.length !== 0 && (
+          <ResourcesItems 
             resources={orgResources}
+            simpleItems={orgSimpleItems}
           />
         )}        
 

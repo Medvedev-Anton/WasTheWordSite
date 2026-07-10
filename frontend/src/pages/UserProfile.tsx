@@ -6,7 +6,8 @@ import { useAuth } from '../contexts/AuthContext';
 import RepostCard from '../components/RepostCard';
 import { getMediaUrl } from '../config';
 import './Profile.css';
-import Resources from '../components/Resources';
+import Resources from '../components/ResourcesItems';
+import ResourcesItems from '../components/ResourcesItems';
 
 export default function UserProfile() {
     const { id } = useParams<{ id: string }>();
@@ -324,7 +325,7 @@ export default function UserProfile() {
                 <div className="cyber-card reposts-card">
                     <h3>Ресурсы</h3>
                     <div className="users-resources-wrapper">
-                    <Resources 
+                    <ResourcesItems 
                         resources={user.resources}
                     />
                     </div>

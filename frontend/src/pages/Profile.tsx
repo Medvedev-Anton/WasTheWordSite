@@ -7,7 +7,8 @@ import SkinModal from '../components/SkinModal';
 import RepostCard from '../components/RepostCard';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
-import Resources from '../components/Resources';
+import Resources from '../components/ResourcesItems';
+import ResourcesItems from '../components/ResourcesItems';
 
 export default function Profile() {
   const { user: currentUser } = useAuth();
@@ -506,7 +507,7 @@ export default function Profile() {
         <div className="cyber-card reposts-card">
           <h3>Ресурсы</h3>
           <div className="users-resources-wrapper">
-            <Resources 
+            <ResourcesItems 
               resources={user.resources}
             />
           </div>
