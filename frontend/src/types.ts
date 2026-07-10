@@ -105,6 +105,7 @@ export interface Organization {
   balance: number,
   energy: number,
   resources: Resource[]
+  simpleItems: SimpleItem[]
 }
 
 export interface OrganizationMember {
@@ -196,6 +197,7 @@ export interface SimpleItem {
   countNeedMoney: number;
   needResourceId: number;
   countNeedResource: number; 
+  count?: number;
 }
 
 export interface CompoundItem {
