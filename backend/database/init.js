@@ -1223,7 +1223,6 @@ export async function initDatabase() {
 
   // Create workshops simple items table
   db.exec(`
-    drop table workshops_simple_items;
     CREATE TABLE IF NOT EXISTS workshops_simple_items(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       workshopId INTEGER NOT NULL,
