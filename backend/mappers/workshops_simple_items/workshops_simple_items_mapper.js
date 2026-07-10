@@ -29,8 +29,6 @@ export default class WorkshopsSimpleItemsMapper extends WorkshopsSimpleItemsMapp
                 w.workshopId = ?
         `).get(workshopId);
 
-        console.log(workshopId);
-
         return result;
     }
 
