@@ -226,7 +226,7 @@ export default class SimpleItemsFacade {
                 OrgsResourcesFacade.decrementOrgResource(orgId, needResourceId, countNeedResource);
 
                 const parentId = OrgsFacade.getParentId(orgId);
-                OrgsSimpleItemsFacade.createOrIncrement(orgId, simpleItemId);
+                OrgsSimpleItemsFacade.createOrIncrement(parentId, simpleItemId);
                 WorkshopsSimpleItemsFacade.incrementCountCreated(orgId, 1);
             }
             catch (e) {
