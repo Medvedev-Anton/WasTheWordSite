@@ -16,7 +16,7 @@ export default class WorkshopsSimpleItemsService extends WorkshopsSimpleItemsSer
 
     getWorkshopSimpleItem(workshopId) {
         try {
-            return this.mapper.getWorkshopSimpleItem(workshopId);
+            return this.mapper.findItemByWorkshopId(workshopId);
         }
         catch (e) {
             throw new Error(e.message);
