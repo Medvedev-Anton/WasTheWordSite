@@ -36,6 +36,12 @@ router.get('/', authenticateToken, (req, res) => {
     controller.getAll();
 });
 
+// Получить предмет
+router.get('/:id', authenticateToken, (req, res) => {
+    const controller = new SimpleItemsController(req, res);
+    controller.getById();
+});
+
 // Создать предмет
 router.post('/', authenticateToken, resourceMediaUpload, (req, res) => {
     const controller = new SimpleItemsController(req, res);
