@@ -1,3 +1,7 @@
+import { BalanceFacade } from "../facades/balance_facade.js";
+import { OrgsFacade } from "../facades/orgs_facade.js";
+import OrgsResourcesFacade from "../facades/orgs_resources_facade.js";
+import OrgsSimpleItemsFacade from "../facades/orgs_simple_items_facade.js";
 import SimpleItemsFacade from "../facades/simple_items_facade.js";
 import { MainController } from "./main_controller.js";
 
@@ -324,6 +328,37 @@ export default class SimpleItemsController extends MainController {
         }
         catch (e) {
             console.error('Update item need resource count error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Создание предмета мастерской
+     */
+    workshopCreateSimpleItem() {
+        const validate = this.has([
+            'orgId',
+            'simpleItemId', 
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const orgId = parseInt(this.request.body.orgId);
+            const simpleItemId = parseInt(this.request.body.simpleItemId);
+
+            SimpleItemsFacade.create(orgId, simpleItemId);
+
+            this.send(200, {
+                message: 'success'
+            });
+        }
+        catch (e) {
+            console.error('Workshop create item error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
