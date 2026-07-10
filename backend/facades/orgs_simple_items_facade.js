@@ -103,4 +103,18 @@ export default class OrgsSimpleItemsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получение количества определенного предмета
+     * @param {number} orgId
+     * @param {number} simpleItemId
+     */
+    static getOrgSimpleItemCount(orgId, simpleItemId) {
+        try {
+            return this.getService().getOrgSimpleItemCount(orgId, simpleItemId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

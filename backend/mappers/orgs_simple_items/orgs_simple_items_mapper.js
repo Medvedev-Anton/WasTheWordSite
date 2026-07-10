@@ -79,4 +79,29 @@ export default class OrgsSimpleItemsMapper extends OrgsSimpleItemsMapperInterfac
                 id = ?      
         `).run(incrementValue, id);
     }
+
+    findCountByOrgAndSimpleItem(orgId, simpleItemId) {
+        const result = db.prepare(`
+            SELECT
+                count
+            FROM
+                orgs_simple_items
+            WHERE
+                orgId = ?
+                AND
+                simpleItemId = ?
+        `).get(orgId, simpleItemId);
+
+        if (result === undefined || result === null) {
+            return 0;
+        }
+
+        const count = parseInt(result.count);
+
+        if (isNaN(count)) {
+            return 0;
+        }
+
+        return count;
+    }
 }

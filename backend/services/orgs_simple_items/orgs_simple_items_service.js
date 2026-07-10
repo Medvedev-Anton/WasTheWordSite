@@ -74,4 +74,13 @@ export default class OrgsSimpleItemsService extends OrgsSimpleItemsServiceInterf
             throw new Error(e.message);
         }
     }
+
+    getOrgSimpleItemCount(orgId, simpleItemId) {
+        try {
+            return this.mapper.findCountByOrgAndSimpleItem(orgId, simpleItemId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

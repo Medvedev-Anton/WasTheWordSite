@@ -72,4 +72,13 @@ export default class OrgsSimpleItemsServiceInterface {
     createOrIncrement(orgId, simpleItemId) {
         throw new Error('createOrIncrement должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получение количества определенного предмета
+     * @param {number} orgId
+     * @param {number} simpleItemId
+     */
+    getOrgSimpleItemCount(orgId, simpleItemId) {
+        throw new Error('getOrgSimpleItemCount должен быть переопределен в наследнике');
+    }
 }

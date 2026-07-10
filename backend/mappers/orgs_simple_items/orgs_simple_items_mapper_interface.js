@@ -56,4 +56,13 @@ export default class OrgsSimpleItemsMapperInterface {
     increment(id, incrementValue) {
         throw new Error('increment должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получение количества определенного предмета
+     * @param {number} orgId
+     * @param {number} simpleItemId
+     */
+    findCountByOrgAndSimpleItem(orgId, simpleItemId) {
+        throw new Error('findCountByOrgAndSimpleItem должен быть переопределен в наследнике');
+    }
 }
