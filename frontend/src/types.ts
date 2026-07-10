@@ -105,7 +105,7 @@ export interface Organization {
   latitude: string,
   balance: number,
   energy: number,
-  resources: Resource[]
+  resources: Resource[],
   simpleItems: SimpleItem[]
 }
 
@@ -199,6 +199,7 @@ export interface SimpleItem {
   needResourceId: number;
   countNeedResource: number; 
   count?: number;
+  countCreated?: number;
 }
 
 export interface CompoundItem {

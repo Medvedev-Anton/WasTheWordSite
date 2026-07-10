@@ -10,9 +10,9 @@ import { getMediaUrl } from '../config';
 import './Organizations.css';
 import AddressInput from '../components/AddressInput';
 import OrgBalanceDiagram from '../components/OrgBalanceDiagram';
-import Resources from '../components/ResourcesItems';
 import ResourceExtraction from '../components/ResourceExtraction';
 import ResourcesItems from '../components/ResourcesItems';
+import SimpleItemCreation from '../components/SimpleItemCreation';
 
 const ROOT_ORG_TYPES = ['Производственная', 'Коммерческая', 'Административная', 'Образовательная', 'Правительственная', 'Банковская', 'Волонтёрская', 'Спортивная', 'Свободная', 'Добывающая'];
 
@@ -523,6 +523,8 @@ function OrganizationDetail({
   const [orgSimpleItems, setOrgSimpleItems] = useState<SimpleItem[]>([]);
   const [simpleItemsList, setSimpleItemsList] = useState<SimpleItem[]>([]);
   const [selectedWorkshopSimpleItemId, setSelectedWorkshopSimpleItemId] = useState<number | null>(null);
+  const [workshopSimpleItem, setWorkshopSimpleItem] = useState<SimpleItem | null>(null);
+  const [countCreatedSimpleItems, setCountCreatedSimpleItems] = useState<number>(0);
 
   useEffect(() => {
     setOrgFormData({
@@ -552,6 +554,10 @@ function OrganizationDetail({
       fetchFarmResource(organization.id);
     }
 
+    if (organization.orgType === 'Мастерская') {
+      fetchWorkshopSimpleItem(organization.id);
+    }
+
     setOrgBalance(organization.balance);
     setOrgEnergy(organization.energy);
 
@@ -574,6 +580,10 @@ function OrganizationDetail({
   useEffect(() => {
     setCountExtractedResource(farmResource?.countExtracted || 0);
   }, [farmResource]);
+
+  useEffect(() => {
+    setCountCreatedSimpleItems(workshopSimpleItem?.countCreated || 0);
+  }, [workshopSimpleItem]);
 
   // Получение всех существующих ресурсов
   const fetchAllResources = async () => {
@@ -605,6 +615,17 @@ function OrganizationDetail({
     }
     catch (e) {
       alert('Не удалось получить ресурс фермы');
+    }
+  }
+
+  // Получить создаваемый мастерской предмет
+  const fetchWorkshopSimpleItem = async (workshopId: number) => {
+    try {
+      const result = await axios.get(`/api/workshops/${workshopId}/simple-item`);
+      setWorkshopSimpleItem(result.data.simpleItem);
+    }
+    catch (e) {
+      alert('Не удалось получить предмет мастерской');
     }
   }
 
@@ -1063,6 +1084,23 @@ function OrganizationDetail({
 
   const handleChangeWorkshopSimpleItemId = (e: any) => {
     setSelectedWorkshopSimpleItemId(e.target.value);
+  }
+
+  const fetchCreateWorkshopSimpleItem = async (workshopId: number, simpleItemId: number) => {
+    try {
+      const result = await axios.post(`/api/simple-items/${simpleItemId}/create/workshop`, {
+        orgId: workshopId
+      });
+
+      setCountCreatedSimpleItems(prev => prev + 1);
+
+      setOrgBalance(result.data.orgBalance);
+      setOrgEnergy(result.data.orgEnergy);
+      setOrgResources(result.data.orgResources);
+    }
+    catch (e) {
+      alert('Не удалось создать предмет. Возможно у организации не хватает средств');
+    }
   }
 
   return (
@@ -1585,7 +1623,7 @@ function OrganizationDetail({
       </div>
 
       <div className="org-resources-wrapper">
-        {orgResources.length !== 0 || orgSimpleItems.length !== 0 && (
+        {(orgResources.length !== 0 || orgSimpleItems.length !== 0) && (
           <ResourcesItems 
             resources={orgResources}
             simpleItems={orgSimpleItems}
@@ -1638,7 +1676,23 @@ function OrganizationDetail({
             countExtractedResource={countExtractedResource}
           />
         </div>
-      )}    
+      )}
+
+      {
+        organization.orgType === 'Мастерская' && 
+        workshopSimpleItem !== undefined && 
+        workshopSimpleItem !== null && 
+        (isAdmin || isMember) &&
+        (
+        <div className="workshop-simple-item-creation-wrapper">
+          <SimpleItemCreation 
+            simpleItem={workshopSimpleItem}
+            workshopId={organization.id}
+            onCreate={fetchCreateWorkshopSimpleItem}
+            countCreatedItems={countCreatedSimpleItems}
+          />
+        </div>
+      )}
 
       <div className="org-content-with-sidebar">
         <div className="org-main-content">
