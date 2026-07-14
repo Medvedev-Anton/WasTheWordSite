@@ -6,6 +6,7 @@ import { OrgsFacade } from "./orgs_facade.js";
 import OrgsResourcesFacade from "./orgs_resources_facade.js";
 import FarmsResourcesFacade from "./farms_resources_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
+import UsersResourcesFacade from "./users_resources_facade.js";
 
 export default class ResourceFacade {
     static getService() {
@@ -232,6 +233,59 @@ export default class ResourceFacade {
                 OrgsResourcesFacade.decrementOrgResource(sellerId, resourceId, resourceCount);
                 OrgsResourcesFacade.createOrIncrement(buyerId, resourceId, resourceCount);
                 balanceManager.decrement(buyerId, totalPrice);
+
+                const sellerOrgType = OrgsFacade.getOrgType(sellerId);
+                ProfitFacade.entity('orgs').orgType(sellerOrgType).processWithTax(sellerId, totalPrice);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error(`Ошибка при обработке транзакции покупки ресурса организации ${buyerId} у организации ${sellerId} ресурса: ` + e.message);
+        }
+    }
+
+    /**
+     * Покупка ресурса пользователем у организации
+     * @param {number} sellerId 
+     * @param {number} buyerId 
+     * @param {number} resourceId 
+     * @param {number} resourceCount 
+     */
+    static buyUserFromOrg(sellerId, buyerId, resourceId, resourceCount) {
+        const transaction = db.transaction(() => {
+            try {
+                const resource = OrgsResourcesFacade.getByOrgAndResource(sellerId, resourceId);
+
+                if (resource === null) {
+                    throw new Error(`У организации-продавца ${sellerId} нет ресурса ${resourceId}`);
+                }
+
+                const sellerResourceCount = parseInt(resource.count);
+
+                if (sellerResourceCount < resourceCount) {
+                    throw new Error(`У организации-продавца ${sellerId} нет ресурса ${resourceId} в нужном количестве ${resourceCount}`);
+                }
+
+                const sellerResourcePrice = parseInt(resource.price);
+                const totalPrice = resourceCount * sellerResourcePrice;
+
+                const userBalanceManager = BalanceFacade.entity('users');
+
+                const buyerBalance = userBalanceManager.getBalance(buyerId);
+
+                if (buyerBalance < totalPrice) {
+                    throw new Error(`У покупателя ${buyerId} не хватает средств для покупки ресурса ${resourceId} у продавца ${sellerId}`);
+                }
+
+                OrgsResourcesFacade.decrementOrgResource(sellerId, resourceId, resourceCount);
+                UsersResourcesFacade.createOrIncrement(buyerId, resourceId, resourceCount);
+                userBalanceManager.decrement(buyerId, totalPrice);
 
                 const sellerOrgType = OrgsFacade.getOrgType(sellerId);
                 ProfitFacade.entity('orgs').orgType(sellerOrgType).processWithTax(sellerId, totalPrice);
