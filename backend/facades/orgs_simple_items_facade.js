@@ -108,10 +108,11 @@ export default class OrgsSimpleItemsFacade {
      * Создать или увеличить на единицу
      * @param {number} orgId
      * @param {number} simpleItemId
+     * @param {number} incrementValue
      */
-    static createOrIncrement(orgId, simpleItemId) {
+    static createOrIncrement(orgId, simpleItemId, incrementValue = 1) {
         try {
-            return this.getService().createOrIncrement(orgId, simpleItemId);
+            return this.getService().createOrIncrement(orgId, simpleItemId, incrementValue);
         }
         catch (e) {
             throw new Error(e.message);

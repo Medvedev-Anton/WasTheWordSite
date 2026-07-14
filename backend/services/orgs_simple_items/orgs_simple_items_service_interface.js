@@ -77,8 +77,9 @@ export default class OrgsSimpleItemsServiceInterface {
      * Создать или увеличить на единицу
      * @param {number} orgId
      * @param {number} simpleItemId
+     * @param {number} incrementValue
      */
-    createOrIncrement(orgId, simpleItemId) {
+    createOrIncrement(orgId, simpleItemId, incrementValue) {
         throw new Error('createOrIncrement должен быть переопределен в наследнике');
     }
 

@@ -68,15 +68,15 @@ export default class OrgsSimpleItemsService extends OrgsSimpleItemsServiceInterf
         }
     }
 
-    createOrIncrement(orgId, simpleItemId) {
+    createOrIncrement(orgId, simpleItemId, incrementValue = 1) {
         try {
             const simpleItem = this.getByOrgAndSimpleItem(orgId, simpleItemId);
 
             if (simpleItem === null) {
-                this.create(orgId, simpleItemId, 1);
+                this.create(orgId, simpleItemId, incrementValue);
             }
             else {
-                this.increment(simpleItem.id, 1);
+                this.increment(simpleItem.id, incrementValue);
             }
         }
         catch (e) {
