@@ -230,9 +230,11 @@ export default class ResourceFacade {
                 }
 
                 OrgsResourcesFacade.decrementOrgResource(sellerId, resourceId, resourceCount);
-                OrgsResourcesFacade.createOrIncrement(buyerId, resource, resourceCount);
+                OrgsResourcesFacade.createOrIncrement(buyerId, resourceId, resourceCount);
                 balanceManager.decrement(buyerId, totalPrice);
-                ProfitFacade.entity('orgs').processWithTax(sellerId, totalPrice);
+
+                const sellerOrgType = OrgsFacade.getOrgType(sellerId);
+                ProfitFacade.entity('orgs').orgType(sellerOrgType).processWithTax(sellerId, totalPrice);
             }
             catch (e) {
                 throw new Error(e.message);
