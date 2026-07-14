@@ -48,4 +48,19 @@ export default class UsersResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Обновить цену ресурса
+     * @param {number} userId
+     * @param {number} resourceId
+     * @param {number} newPrice
+     */
+    static updateUserResourcePrice(userId, resourceId, newPrice) {
+        try {
+            return this.getService().updateUserResourcePrice(userId, resourceId, newPrice);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

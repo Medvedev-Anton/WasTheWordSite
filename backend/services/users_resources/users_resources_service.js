@@ -31,4 +31,13 @@ export default class UsersResourcesService extends UsersResourcesServiceInterfac
             throw new Error(e.message);
         }
     }
+
+    updateUserResourcePrice(userId, resourceId, newPrice) {
+        try {
+            return this.mapper.updatePrice(userId, resourceId, newPrice);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

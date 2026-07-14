@@ -364,4 +364,19 @@ router.patch('/:id/heroes', authenticateToken, (req, res) => {
   }
 });
 
+// Update resource price
+router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) => {
+  try {
+      const userId = parseInt(req.params.id);
+      const resourceId = parseInt(req.params.resourceId);
+      const newPrice = parseInt(req.params.body.newPrice);
+  
+      UsersResourcesFacade.updateUserResourcePrice(userId, resourceId, newPrice);
+    }
+    catch (error) {
+      console.error('Update user resource price error:', error);
+      res.status(500).json({ error: 'Server error' });
+    }
+});
+
 export default router;

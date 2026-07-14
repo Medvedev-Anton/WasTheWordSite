@@ -40,4 +40,17 @@ export default class UsersResourcesMapper extends UsersResourcesMapperInterface 
 
         return result;
     }
+
+    updatePrice(userId, resourceId, newPrice) {
+        db.prepare(`
+            UPDATE
+                users_resources
+            SET
+                price = ?
+            WHERE
+                userId = ?
+                AND
+                resourceId = ?        
+        `).run(newPrice, userId, resourceId);
+    }
 }
