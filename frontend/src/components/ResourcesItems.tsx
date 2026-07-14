@@ -9,6 +9,8 @@ interface ResourcesItemsProps {
     type: 'org' | 'user',
     isAdmin?: boolean,
     ownerId: number;
+    userId: number;
+    onUserBuyResource?: (newBalance: number) => void;
 }
 
 export default function ResourcesItems(
@@ -17,7 +19,9 @@ export default function ResourcesItems(
         simpleItems,
         type,
         isAdmin,
-        ownerId
+        ownerId,
+        userId,
+        onUserBuyResource
     }: ResourcesItemsProps
 ) {
     const [emptyCeils, setEmptyCeils] = useState<number[]>([]);
@@ -44,6 +48,26 @@ export default function ResourcesItems(
 
         setEmptyCeils(emptyCeilsArr);
     }, [resources]);
+
+    useEffect(() => {
+        const emptyCeilsArr = [];
+
+        let countNotEmptyCeils = 0;
+
+        if (mutableResources !== undefined) {
+            countNotEmptyCeils += mutableResources.length;
+        }
+
+        if (simpleItems !== undefined) {
+            countNotEmptyCeils += simpleItems.length;
+        }
+
+        for (let i = 0; i < (10 - countNotEmptyCeils); i++) {
+            emptyCeilsArr.push(i);
+        }
+
+        setEmptyCeils(emptyCeilsArr);
+    }, [mutableResources, mutableSimpleItems]);
 
     useEffect(() => {
         if (simpleItems !== undefined) {
@@ -83,6 +107,25 @@ export default function ResourcesItems(
         }
     }
 
+    // Отправка запроса на покупку ресурса пользователем у организации
+    const fetchBuyUserFromOrgResource = async (resourceId: number) => {
+        try {
+            const result = await axios.post(`/api/resources/${resourceId}/buy-user-from-org`, {
+                sellerId: ownerId,
+                buyerId: userId
+            });
+            
+            const sellerBalance = result.data.sellerBalance;
+            const sellerResources = result.data.sellerResources;
+
+            setMutableResources(sellerResources);
+            onUserBuyResource?.(sellerBalance);
+        }
+        catch (e) {
+            alert('Не удалось приобрести ресурс. Возможно у вас не хватает средств');
+        }
+    }
+
     return (
         <div className="resources-items-content">
             {mutableResources?.map(resource => (
@@ -107,9 +150,18 @@ export default function ResourcesItems(
                         />
                     )}
                     {!isAdmin && type === 'org' && (
-                        <span className="resources-items__ceil-price-span">
-                            {resource.price !== undefined ? (resource.price / 100).toFixed(2) : 0} $ / ед.
-                        </span>
+                        <>
+                            <span className="resources-items__ceil-price-span">
+                                {resource.price !== undefined ? (resource.price / 100).toFixed(2) : 0} $ / ед.
+                            </span>
+
+                            <button
+                                onClick={() => fetchBuyUserFromOrgResource(resource.id)}
+                                className="resources-items__ceil-buy-user-btn"
+                            >
+                                Купить
+                            </button>
+                        </>
                     )}
                 </div>
             ))}

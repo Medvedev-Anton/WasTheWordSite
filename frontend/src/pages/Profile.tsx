@@ -512,6 +512,7 @@ export default function Profile() {
               simpleItems={user.simpleItems}
               type='user'
               ownerId={user.id}
+              userId={user.id}
             />
           </div>
         </div>

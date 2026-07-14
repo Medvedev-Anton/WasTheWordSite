@@ -330,6 +330,7 @@ export default function UserProfile() {
                         simpleItems={user.simpleItems}
                         type='user'
                         ownerId={user.id}
+                        userId={user.id}
                     />
                     </div>
                 </div>

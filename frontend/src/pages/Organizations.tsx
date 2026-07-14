@@ -1103,6 +1103,11 @@ function OrganizationDetail({
     }
   }
 
+  // Обработка изменения баланс после покупки пользователем ресурса
+  const onUserBuyResource = (newBalance: number) => {
+    setOrgBalance(newBalance);
+  }
+
   return (
     <div className="organization-detail">
       <button onClick={onBack} className="back-btn">← Назад</button>
@@ -1470,13 +1475,15 @@ function OrganizationDetail({
       </div>
 
       <div className="org-resources-wrapper">
-        {(orgResources.length !== 0 || orgSimpleItems.length !== 0) && (
+        {(orgResources.length !== 0 || orgSimpleItems.length !== 0) && user !== null && (
           <ResourcesItems 
             resources={orgResources}
             simpleItems={orgSimpleItems}
             type='org'
             isAdmin={isAdmin}
             ownerId={organization.id}
+            userId={user.id}
+            onUserBuyResource={onUserBuyResource}
           />
         )}        
 
