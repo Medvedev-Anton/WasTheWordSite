@@ -1223,9 +1223,13 @@ router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) =
   try {
     const orgId = parseInt(req.params.id);
     const resourceId = parseInt(req.params.resourceId);
-    const newPrice = parseInt(req.params.body.newPrice);
+    const newPrice = parseInt(req.body.newPrice);
 
     OrgsResourcesFacade.updateOrgResourcePrice(orgId, resourceId, newPrice);
+
+    res.status(200).json({
+      message: 'success'
+    });
   }
   catch (error) {
     console.error('Update org resource price error:', error);
