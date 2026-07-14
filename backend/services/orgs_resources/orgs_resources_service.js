@@ -77,7 +77,12 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
 
     decrementOrgResource(orgId, resourceId, decrementValue) {
         try {
-            return this.mapper.decrementOrgResource(orgId, resourceId, decrementValue);
+            this.mapper.decrementOrgResource(orgId, resourceId, decrementValue);
+            const resource = this.getByOrgAndResource(orgId, resourceId);
+
+            if (resource.count == 0) {
+                this.delete(resource.id);
+            }
         }
         catch (e) {
             throw new Error(e.message);
