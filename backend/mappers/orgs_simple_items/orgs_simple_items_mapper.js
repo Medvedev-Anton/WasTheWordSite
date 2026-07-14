@@ -40,7 +40,8 @@ export default class OrgsSimpleItemsMapper extends OrgsSimpleItemsMapperInterfac
         const result = db.prepare(`
             SELECT
                 i.*,
-                o.count as count
+                o.count as count,
+                o.price as price
             FROM
                 orgs_simple_items o
             JOIN
