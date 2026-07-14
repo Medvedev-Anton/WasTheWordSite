@@ -1139,6 +1139,16 @@ export async function initDatabase() {
     )  
   `);
 
+  const orgsResourcesTableInfo = db.prepare("PRAGMA table_info(orgs_resources)").all();
+  const hasPrice = orgsResourcesTableInfo.some(col => col.name === 'price');
+  if (!hasPrice) {
+    try {
+      db.exec(`ALTER TABLE orgs_resources ADD COLUMN price INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding countExtracted to orgs_resources:', e.message);
+    }
+  }
+
   // Create users resources table
   db.exec(`
     CREATE TABLE IF NOT EXISTS users_resources(
