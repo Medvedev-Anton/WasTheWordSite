@@ -28,6 +28,10 @@ export default function ResourceBuyOrgFromOrg(
     }, [selectedOrgId]);
 
     useEffect(() => {
+        setSelectedOrgResource(selectedAllOrgResources[0]);
+    }, [selectedAllOrgResources]);
+
+    useEffect(() => {
         if (selectedOrgResource !== undefined) {
             setSelectedResourcePrice(selectedOrgResource.price || 0);
         }
@@ -64,7 +68,6 @@ export default function ResourceBuyOrgFromOrg(
             const resources = result.data.resources;
 
             setSelectedAllOrgResources(resources);
-            setSelectedOrgResource(resources[0]);
         }
         catch (e) {
             alert('Не удалось получить ресурсы организации');
@@ -85,7 +88,11 @@ export default function ResourceBuyOrgFromOrg(
                 buyerId: orgId
             });
 
-            onBuy(result.data.buyerBalance);
+            const buyerBalance = result.data.buyerBalance;
+            const sellerResources = result.data.sellerResources;
+
+            onBuy(buyerBalance);
+            setSelectedAllOrgResources(sellerResources);
         }
         catch (e) {
             alert('Не удалось совершить покупку. Возможно у вас не хватает средств');
