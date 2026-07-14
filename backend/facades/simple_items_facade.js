@@ -240,5 +240,58 @@ export default class SimpleItemsFacade {
         catch (e) {
             throw new Error('Ошибка при обработке транзакции создания простого предмета: ' + e.message);
         }
-    }   
+    }
+    
+    /**
+     * Покупка простого предмета организацией у организации
+     * @param {number} sellerId 
+     * @param {number} buyerId 
+     * @param {number} simpleItemId 
+     * @param {number} simpleItemCount 
+     */
+    static buyOrgFromOrg(sellerId, buyerId, simpleItemId, simpleItemCount) {
+        const transaction = db.transaction(() => {
+            try {
+                const simpleItem = OrgsSimpleItemsFacade.getByOrgAndSimpleItem(sellerId, simpleItemId);
+
+                if (simpleItem === null) {
+                    throw new Error(`У организации-продавца ${sellerId} нет предмета ${simpleItemId}`);
+                }
+
+                const sellerSimpleItemCount = parseInt(simpleItem.count);
+
+                if (sellerSimpleItemCount < simpleItemCount) {
+                    throw new Error(`У организации-продавца ${sellerId} нет предмета ${simpleItemId} в нужном количестве ${simpleItemCount}`);
+                }
+
+                const sellerSimpleItemPrice = parseInt(simpleItem.price);
+                const totalPrice = simpleItemCount * sellerSimpleItemPrice;
+
+                const balanceManager = BalanceFacade.entity('orgs');
+
+                const buyerBalance = balanceManager.getBalance(buyerId);
+
+                if (buyerBalance < totalPrice) {
+                    throw new Error(`У покупателя ${buyerId} не хватает средств для покупки предмета ${simpleItemId} у продавца ${sellerId}`);
+                }
+
+                OrgsSimpleItemsFacade.decrement(simpleItem.id, simpleItemCount);
+                OrgsSimpleItemsFacade.createOrIncrement(buyerId, simpleItemId, simpleItemCount);
+                balanceManager.decrement(buyerId, totalPrice);
+
+                const sellerOrgType = OrgsFacade.getOrgType(sellerId);
+                ProfitFacade.entity('orgs').orgType(sellerOrgType).processWithTax(sellerId, totalPrice);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error(`Ошибка при обработке транзакции покупки предмета организации ${buyerId} у организации ${sellerId} предмета: ` + e.message);
+        }
+    }
 }
