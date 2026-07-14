@@ -77,4 +77,19 @@ export default class UsersResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Создать или инкрементировать количество
+     * @param {number} userId
+     * @param {number} resourceId
+     * @param {number} incrementValue
+     */
+    static createOrIncrement(userId, resourceId, incrementValue = 1) {
+        try {
+            return this.getService().createOrIncrement(userId, resourceId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

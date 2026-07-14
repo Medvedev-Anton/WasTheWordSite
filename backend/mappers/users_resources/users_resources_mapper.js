@@ -68,4 +68,17 @@ export default class UsersResourcesMapper extends UsersResourcesMapperInterface 
 
         return result || null;
     }
+
+    incrementUserResource(userId, resourceId, incrementValue) {
+        db.prepare(`
+            UPDATE
+                users_resources
+            SET
+                count = count + ?
+            WHERE
+                userId = ?
+                AND
+                resourceId = ?        
+        `).get(incrementValue, userId, resourceId);
+    }
 }

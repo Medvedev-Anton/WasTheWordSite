@@ -49,4 +49,14 @@ export default class UsersResourcesMapperInterface {
     findByUserAndResource(userId, resourceId) {
         throw new Error('findByUserAndResource должен быть переопределен в наследнике');
     }
+
+    /**
+     * Инкремент количества
+     * @param {number} userId
+     * @param {number} resourceId
+     * @param {number} incrementValue
+     */
+    incrementUserResource(userId, resourceId, incrementValue) {
+        throw new Error('incrementUserResource должен быть переопределен в наследнике');
+    }
 }

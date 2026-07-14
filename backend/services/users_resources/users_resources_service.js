@@ -41,14 +41,25 @@ export default class UsersResourcesService extends UsersResourcesServiceInterfac
         }
     }
 
-    /**
-     * Получить по пользователю и ресурсу
-     * @param {number} userId
-     * @param {number} resourceId
-     */
     getByUserAndResource(userId, resourceId) {
         try {
             return this.mapper.findByUserAndResource(userId, resourceId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    createOrIncrement(userId, resourceId, incrementValue = 1) {
+        try {
+            const resource = this.getByUserAndResource(userId, resourceId);
+
+            if (resource === null) {
+                this.create(userId, resource, incrementValue);
+            }
+            else {
+                this.mapper.incrementUserResource(userId, resourceId, incrementValue);
+            }
         }
         catch (e) {
             throw new Error(e.message);

@@ -56,4 +56,14 @@ export default class UsersResourcesServiceInterface {
     getByUserAndResource(userId, resourceId) {
         throw new Error('getByUserAndResource должен быть переопределен в наследнике');
     }
+
+    /**
+     * Создать или инкрементировать количество
+     * @param {number} userId
+     * @param {number} resourceId
+     * @param {number} incrementValue
+     */
+    createOrIncrement(userId, resourceId, incrementValue = 1) {
+        throw new Error('createOrIncrement должен быть переопределен в наследнике');
+    }
 }
