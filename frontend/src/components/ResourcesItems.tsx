@@ -57,7 +57,7 @@ export default function ResourcesItems(
             if (resource.id === resourceId) {
                 return {
                     ...resource,
-                    price: newValue
+                    price: newValue * 100
                 }
             }
 
@@ -75,7 +75,7 @@ export default function ResourcesItems(
         
         try {
             axios.patch(route, {
-                newPrice: newPrice
+                newPrice: newPrice * 100
             });
         }
         catch (e) {
@@ -100,14 +100,15 @@ export default function ResourcesItems(
                         <input 
                             type="number" 
                             className="resources-items__ceil-price-input dollar-bg"
-                            value={resource.price}
-                            onChange={(e) => handleChangeResourcePrice(resource.id, parseInt(e.target.value))}
-                            onBlur={(e) => fetchUpdateResourcePrice(resource.id, parseInt(e.target.value))}
+                            value={resource.price !== undefined ? (resource.price / 100).toFixed(2) : 0}
+                            onChange={(e) => handleChangeResourcePrice(resource.id, parseFloat(e.target.value))}
+                            onBlur={(e) => fetchUpdateResourcePrice(resource.id, parseFloat(e.target.value))}
+                            step="any"
                         />
                     )}
                     {!isAdmin && (
                         <span className="resources-items__ceil-price-span">
-                            {resource.price} $ / ед.
+                            {resource.price !== undefined ? (resource.price / 100).toFixed(2) : 0} $ / ед.
                         </span>
                     )}
                 </div>
