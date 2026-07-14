@@ -106,7 +106,7 @@ export default function ResourcesItems(
                             step="any"
                         />
                     )}
-                    {!isAdmin && (
+                    {!isAdmin && type === 'org' && (
                         <span className="resources-items__ceil-price-span">
                             {resource.price !== undefined ? (resource.price / 100).toFixed(2) : 0} $ / ед.
                         </span>
