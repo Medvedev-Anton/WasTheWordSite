@@ -1228,7 +1228,7 @@ router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) =
     OrgsResourcesFacade.updateOrgResourcePrice(orgId, resourceId, newPrice);
   }
   catch (error) {
-    console.error('Update user resource price error:', error);
+    console.error('Update org resource price error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
