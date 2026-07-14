@@ -79,6 +79,6 @@ export default class UsersResourcesMapper extends UsersResourcesMapperInterface 
                 userId = ?
                 AND
                 resourceId = ?        
-        `).get(incrementValue, userId, resourceId);
+        `).run(incrementValue, userId, resourceId);
     }
 }
