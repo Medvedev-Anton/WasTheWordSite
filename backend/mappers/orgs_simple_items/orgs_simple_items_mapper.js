@@ -122,7 +122,7 @@ export default class OrgsSimpleItemsMapper extends OrgsSimpleItemsMapperInterfac
             UPDATE
                 orgs_simple_items
             SET
-                newPrice = ?
+                price = ?
             WHERE
                 orgId = ?
                 AND
