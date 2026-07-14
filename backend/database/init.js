@@ -1140,12 +1140,12 @@ export async function initDatabase() {
   `);
 
   const orgsResourcesTableInfo = db.prepare("PRAGMA table_info(orgs_resources)").all();
-  const hasPrice = orgsResourcesTableInfo.some(col => col.name === 'price');
-  if (!hasPrice) {
+  const hasOrgsResourcesPrice = orgsResourcesTableInfo.some(col => col.name === 'price');
+  if (!hasOrgsResourcesPrice) {
     try {
       db.exec(`ALTER TABLE orgs_resources ADD COLUMN price INTEGER DEFAULT 0`);
     } catch (e) {
-      console.error('Error adding countExtracted to orgs_resources:', e.message);
+      console.error('Error adding price to orgs_resources:', e.message);
     }
   }
 
@@ -1160,6 +1160,16 @@ export async function initDatabase() {
       FOREIGN KEY (resourceId) REFERENCES resources(id) ON DELETE CASCADE
     )  
   `);
+
+  const usersResourcesTableInfo = db.prepare("PRAGMA table_info(users_resources)").all();
+  const hasUsersResourcesPrice = usersResourcesTableInfo.some(col => col.name === 'price');
+  if (!hasUsersResourcesPrice) {
+    try {
+      db.exec(`ALTER TABLE users_resources ADD COLUMN price INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding price to users_resources:', e.message);
+    }
+  }
 
   // Create farms resources table
   db.exec(`
