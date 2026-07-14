@@ -1218,6 +1218,22 @@ router.get('/:id/admin', authenticateToken, (req, res) => {
   }
 });
 
+// Get all org resources
+router.get('/:id/resources', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
+
+    res.status(200).json({
+      resources: resources
+    });
+  }
+  catch (error) {
+    console.error('Get all org resources error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Update resource price
 router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) => {
   try {
