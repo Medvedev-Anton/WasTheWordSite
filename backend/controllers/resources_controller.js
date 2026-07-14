@@ -363,7 +363,7 @@ export default class ResourcesController extends MainController {
             }
 
             const sellerId = parseInt(this.request.body.sellerId);
-            const resourceId = parseInt(this.request.body.id);
+            const resourceId = parseInt(this.request.params.id);
 
             ResourceFacade.buyOrgFromOrg(sellerId, buyerId, resourceId, 1);
 
