@@ -343,7 +343,7 @@ export default class ResourcesController extends MainController {
         const validate = this.has([
             'sellerId',
             'buyerId',
-            'resourceId',
+            'id',
         ]);
 
         if (validate === false) {
@@ -363,7 +363,7 @@ export default class ResourcesController extends MainController {
             }
 
             const sellerId = parseInt(this.request.body.sellerId);
-            const resourceId = parseInt(this.request.body.resourceId);
+            const resourceId = parseInt(this.request.body.id);
 
             ResourceFacade.buyOrgFromOrg(sellerId, buyerId, resourceId, 1);
 
