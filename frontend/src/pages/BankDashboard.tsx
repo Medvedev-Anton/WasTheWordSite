@@ -9,6 +9,7 @@ import TransferFromOrgToSuborg from '../components/TransferFromOrgToSuborg';
 import GoBackFromOrgDashboard from '../components/GoBackFromOrgDashboard';
 import OrgBuyEnergy from '../components/OrgBuyEnergy';
 import EnergyTranfserToFromSuborgs from '../components/EnergyTranfserToFromSuborgs';
+import ResourceBuyOrgFromOrg from '../components/ResourceBuyOrgFromOrg';
 
 interface Borrower {
     borrowerId: number,
@@ -211,6 +212,15 @@ export default function BankDashboard() {
         fetchUpdateUsersDuring(value);
     }
 
+    // Обработка успешной покупки ресурса
+    const onSuccessByResource = (newBalance: number) => {
+        if (org?.balance !== undefined) {
+            setOrg(prev => 
+                prev ? {...prev, balance: newBalance} : undefined
+            );
+        }
+    }
+
     return (
         <div className="dashboard-wrapper" id="bank-dashboard">
             <h1>Управление банком</h1>
@@ -241,6 +251,15 @@ export default function BankDashboard() {
                     />
                 </div>
             )}  
+
+            {org?.id !== undefined && org?.id !== null && (
+                <div className="resource-buy-org-from-org-wrapper">
+                    <ResourceBuyOrgFromOrg 
+                        orgId={org.id}
+                        onBuy={onSuccessByResource}
+                    />
+                </div>
+            )}
             
             <TransferFromOrgToSuborg orgId={id} />
 

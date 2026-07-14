@@ -8,6 +8,7 @@ import GoBackFromOrgDashboard from '../components/GoBackFromOrgDashboard';
 import OrgBuyEnergy from '../components/OrgBuyEnergy';
 import { Organization } from '../types';
 import EnergyTranfserToFromSuborgs from '../components/EnergyTranfserToFromSuborgs';
+import ResourceBuyOrgFromOrg from '../components/ResourceBuyOrgFromOrg';
 
 export default function TypicalSuborgDashboard() {
     const { id } = useParams();
@@ -22,6 +23,15 @@ export default function TypicalSuborgDashboard() {
     const fetchOrgData = async () => {
         const result = await axios.get(`/api/organizations/${id}/`);
         setOrg(result.data);
+    }
+
+    // Обработка успешной покупки ресурса
+    const onSuccessByResource = (newBalance: number) => {
+        if (org?.balance !== undefined) {
+            setOrg(prev => 
+                prev ? {...prev, balance: newBalance} : undefined
+            );
+        }
     }
 
     return (
@@ -60,6 +70,15 @@ export default function TypicalSuborgDashboard() {
             )}  
 
             <TransferFromOrgToSuborg orgId={id} />
+
+            {org?.id !== undefined && org?.id !== null && (
+                <div className="resource-buy-org-from-org-wrapper">
+                    <ResourceBuyOrgFromOrg 
+                        orgId={org.id}
+                        onBuy={onSuccessByResource}
+                    />
+                </div>
+            )}
         </div>
     );
 }
