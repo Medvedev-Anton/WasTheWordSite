@@ -382,4 +382,42 @@ export default class ResourcesController extends MainController {
             });
         }
     }
+
+    /**
+     * Покупка ресурса пользователем у организации
+     */
+    buyUserFromOrg() {
+        const validate = this.has([
+            'sellerId',
+            'buyerId',
+            'id',
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const userId = parseInt(this.request.user.userId);
+            const buyerId = parseInt(this.request.body.buyerId);
+            const sellerId = parseInt(this.request.body.sellerId);
+            const resourceId = parseInt(this.request.params.id);
+
+            ResourceFacade.buyUserFromOrg(sellerId, buyerId, resourceId, 1);
+
+            const buyerBalance = BalanceFacade.entity('users').getBalance(buyerId);
+            const sellerResources = OrgsResourcesFacade.getAllByOrgId(sellerId);
+
+            this.send(200, {
+                buyerBalance: buyerBalance,
+                sellerResources: sellerResources
+            });
+        }
+        catch (e) {
+            console.error('Buy org from org resource error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
 }
