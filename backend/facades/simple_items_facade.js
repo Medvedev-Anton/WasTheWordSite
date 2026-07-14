@@ -7,6 +7,7 @@ import OrgsResourcesFacade from "./orgs_resources_facade.js";
 import EnergyFacade from "./energy_facade.js";
 import OrgsSimpleItemsFacade from "./orgs_simple_items_facade.js";
 import WorkshopsSimpleItemsFacade from "./workshops_simple_items_facade.js";
+import { ProfitFacade } from "./profit_facade.js";
 
 export default class SimpleItemsFacade {
     static getService() {
