@@ -299,7 +299,7 @@ export default class ResourceFacade {
             transaction();
         }
         catch (e) {
-            throw new Error(`Ошибка при обработке транзакции покупки ресурса организации ${buyerId} у организации ${sellerId} ресурса: ` + e.message);
+            throw new Error(`Ошибка при обработке транзакции покупки ресурса пользователя ${buyerId} у организации ${sellerId} ресурса: ` + e.message);
         }
     }
 }
