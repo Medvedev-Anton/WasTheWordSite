@@ -90,4 +90,14 @@ export default class OrgsSimpleItemsServiceInterface {
     getOrgSimpleItemCount(orgId, simpleItemId) {
         throw new Error('getOrgSimpleItemCount должен быть переопределен в наследнике');
     }
+
+    /**
+     * Обновление цены предмета организации
+     * @param {number} orgId
+     * @param {number} simpleItemId
+     * @param {number} newPrice
+     */
+    updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice) {
+        throw new Error('updateOrgSimpleItemPrice должен быть переопределен в наследнике');
+    }
 }

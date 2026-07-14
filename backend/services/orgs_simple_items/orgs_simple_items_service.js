@@ -92,4 +92,13 @@ export default class OrgsSimpleItemsService extends OrgsSimpleItemsServiceInterf
             throw new Error(e.message);
         }
     }
+
+    updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice) {
+        try {
+            return this.mapper.updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

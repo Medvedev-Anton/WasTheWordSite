@@ -74,4 +74,14 @@ export default class OrgsSimpleItemsMapperInterface {
     findCountByOrgAndSimpleItem(orgId, simpleItemId) {
         throw new Error('findCountByOrgAndSimpleItem должен быть переопределен в наследнике');
     }
+
+    /**
+     * Обновление цены предмета организации
+     * @param {number} orgId
+     * @param {number} simpleItemId
+     * @param {number} newPrice
+     */
+    updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice) {
+        throw new Error('updatePriceByOrgAndSimpleItem должен быть переопределен в наследнике');
+    }
 }

@@ -115,4 +115,17 @@ export default class OrgsSimpleItemsMapper extends OrgsSimpleItemsMapperInterfac
 
         return count;
     }
+
+    updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice) {
+        db.prepare(`
+            UPDATE
+                orgs_simple_items
+            SET
+                newPrice = ?
+            WHERE
+                orgId = ?
+                AND
+                simpleItemId = ?
+        `).run(newPrice, orgId, simpleItemId);
+    }
 }
