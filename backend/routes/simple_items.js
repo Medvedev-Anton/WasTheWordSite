@@ -102,4 +102,10 @@ router.post('/:id/create/workshop', authenticateToken, (req, res) => {
     controller.workshopCreateSimpleItem();
 });
 
+// Покупка простого предмета организацией у организации
+router.post('/:id/buy-org-from-org', authenticateToken, (req, res) => {
+    const controller = new SimpleItemsController(req, res);
+    controller.buyOrgFromOrg();
+});
+
 export default router;
