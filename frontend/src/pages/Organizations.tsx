@@ -1474,6 +1474,9 @@ function OrganizationDetail({
           <ResourcesItems 
             resources={orgResources}
             simpleItems={orgSimpleItems}
+            type='org'
+            isAdmin={isAdmin}
+            ownerId={organization.id}
           />
         )}        
 

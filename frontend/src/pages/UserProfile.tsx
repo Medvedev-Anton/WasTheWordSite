@@ -328,6 +328,8 @@ export default function UserProfile() {
                     <ResourcesItems 
                         resources={user.resources}
                         simpleItems={user.simpleItems}
+                        type='user'
+                        ownerId={user.id}
                     />
                     </div>
                 </div>
