@@ -407,10 +407,12 @@ export default class ResourcesController extends MainController {
 
             const buyerBalance = BalanceFacade.entity('users').getBalance(buyerId);
             const sellerResources = OrgsResourcesFacade.getAllByOrgId(sellerId);
+            const sellerBalance = BalanceFacade.entity('orgs').getBalance(sellerId);
 
             this.send(200, {
                 buyerBalance: buyerBalance,
-                sellerResources: sellerResources
+                sellerResources: sellerResources,
+                sellerBalance: sellerBalance
             });
         }
         catch (e) {
