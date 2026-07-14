@@ -90,4 +90,10 @@ router.post('/:id/extract/farm', authenticateToken, (req, res) => {
     controller.orgExtract();
 });
 
+// Покупка ресурса организацией у организации
+router.post('/:id/buy-org-from-org', authenticateToken, (req, res) => {
+    const controller = new ResourcesController(req, res);
+    controller.buyOrgFromOrg();
+});
+
 export default router;
