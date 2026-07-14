@@ -1253,5 +1253,24 @@ router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) =
   }
 });
 
+// Update simple item price
+router.patch('/:id/simple-items/:simpleItemId/price', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const simpleItemId = parseInt(req.params.simpleItemId);
+    const newPrice = parseInt(req.body.newPrice);
+
+    OrgsSimpleItemsFacade.updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice);
+
+    req.status(200).json({
+      message: 'success'
+    });
+  }
+  catch (error) {
+    console.error('Update org simple item price error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 
