@@ -55,7 +55,7 @@ export default class UsersResourcesService extends UsersResourcesServiceInterfac
             const resource = this.getByUserAndResource(userId, resourceId);
 
             if (resource === null) {
-                this.create(userId, resource, incrementValue);
+                this.create(userId, resourceId, incrementValue);
             }
             else {
                 this.mapper.incrementUserResource(userId, resourceId, incrementValue);
