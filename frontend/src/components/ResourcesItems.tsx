@@ -126,6 +126,38 @@ export default function ResourcesItems(
         }
     }
 
+    // Обработка изменения цены простого предмета
+    const handleChangeSimpleItemPrice = (simpleItemId: number, newValue: number) => {
+        setMutableSimpleItems(prev => prev.map(item => {
+            if (item.id === simpleItemId) {
+                return {
+                    ...item,
+                    price: newValue * 100
+                }
+            }
+
+            return item;
+        }));
+    }
+
+    // Отправка запроса на изменение цены ресурса
+    const fetchUpdateSimpleItemPrice = (simpleItemId: number, newPrice: number) => {
+        let route = '';
+
+        if (type === 'org') {
+            route = `/api/organizations/${ownerId}/simple-items/${simpleItemId}/price`;
+        }
+        
+        try {
+            axios.patch(route, {
+                newPrice: newPrice * 100
+            });
+        }
+        catch (e) {
+            alert('Не удалось обновить цену');
+        }
+    }
+
     return (
         <div className="resources-items-content">
             {mutableResources?.map(resource => (
@@ -177,6 +209,16 @@ export default function ResourcesItems(
                     <div className="resources-items__ceil-count">
                         {item.count || 0} шт.
                     </div>
+                    {isAdmin && (
+                        <input 
+                            type="number" 
+                            className="resources-items__ceil-price-input dollar-bg"
+                            value={item.price !== undefined ? (item.price / 100).toFixed(2) : 0}
+                            onChange={(e) => handleChangeSimpleItemPrice(item.id, parseFloat(e.target.value))}
+                            onBlur={(e) => fetchUpdateSimpleItemPrice(item.id, parseFloat(e.target.value))}
+                            step="any"
+                        />
+                    )}
                 </div>
             ))}
 
