@@ -63,4 +63,18 @@ export default class UsersResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получить по пользователю и ресурсу
+     * @param {number} userId
+     * @param {number} resourceId
+     */
+    static getByUserAndResource(userId, resourceId) {
+        try {
+            return this.getService().getByUserAndResource(userId, resourceId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

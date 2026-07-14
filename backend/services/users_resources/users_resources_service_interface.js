@@ -47,4 +47,13 @@ export default class UsersResourcesServiceInterface {
     updateUserResourcePrice(userId, resourceId, newPrice) {
         throw new Error('updateUserResourcePrice должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить по пользователю и ресурсу
+     * @param {number} userId
+     * @param {number} resourceId
+     */
+    getByUserAndResource(userId, resourceId) {
+        throw new Error('getByUserAndResource должен быть переопределен в наследнике');
+    }
 }

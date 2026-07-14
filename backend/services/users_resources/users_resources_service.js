@@ -40,4 +40,18 @@ export default class UsersResourcesService extends UsersResourcesServiceInterfac
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получить по пользователю и ресурсу
+     * @param {number} userId
+     * @param {number} resourceId
+     */
+    getByUserAndResource(userId, resourceId) {
+        try {
+            return this.mapper.findByUserAndResource(userId, resourceId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

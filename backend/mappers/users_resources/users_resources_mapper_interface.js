@@ -40,4 +40,13 @@ export default class UsersResourcesMapperInterface {
     updatePrice(userId, resourceId, newPrice) {
         throw new Error('updatePrice должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить по пользователю и ресурсу
+     * @param {number} userId
+     * @param {number} resourceId
+     */
+    findByUserAndResource(userId, resourceId) {
+        throw new Error('findByUserAndResource должен быть переопределен в наследнике');
+    }
 }

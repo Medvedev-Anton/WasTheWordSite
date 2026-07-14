@@ -53,4 +53,19 @@ export default class UsersResourcesMapper extends UsersResourcesMapperInterface 
                 resourceId = ?        
         `).run(newPrice, userId, resourceId);
     }
+
+    findByUserAndResource(userId, resourceId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                users_resources
+            WHERE
+                userId = ?
+                AND
+                resourceId = ?    
+        `).get(userId, resourceId);
+
+        return result || null;
+    }
 }
