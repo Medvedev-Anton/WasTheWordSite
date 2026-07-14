@@ -96,4 +96,10 @@ router.post('/:id/buy-org-from-org', authenticateToken, (req, res) => {
     controller.buyOrgFromOrg();
 });
 
+// Покупка ресурса пользователем у организации
+router.post('/:id/buy-user-from-org', authenticateToken, (req, res) => {
+    const controller = new ResourcesController(req, res);
+    controller.buyUserFromOrg();
+});
+
 export default router;
