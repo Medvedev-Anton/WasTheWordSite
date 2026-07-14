@@ -202,6 +202,7 @@ export interface SimpleItem {
   count?: number;
   countCreated?: number;
   resource?: Resource;
+  price?: number;
 }
 
 export interface CompoundItem {
