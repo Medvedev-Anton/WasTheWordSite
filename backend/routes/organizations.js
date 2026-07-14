@@ -1272,5 +1272,21 @@ router.patch('/:id/simple-items/:simpleItemId/price', authenticateToken, (req, r
   }
 });
 
+// Get all org simple items
+router.get('/:id/simple-items', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
+
+    res.status(200).json({
+      simpleItems: simpleItems
+    });
+  }
+  catch (error) {
+    console.error('Get all org simpleItems error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 
