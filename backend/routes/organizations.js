@@ -1218,5 +1218,20 @@ router.get('/:id/admin', authenticateToken, (req, res) => {
   }
 });
 
+// Update resource price
+router.post('/:id/resources/:resourceId/price', authenticateToken, (req, res) => {
+  try {
+    const orgId = parseInt(req.params.id);
+    const resourceId = parseInt(req.params.resourceId);
+    const newPrice = parseInt(req.params.body.newPrice);
+
+    OrgsResourcesFacade.updateOrgResourcePrice(orgId, resourceId, newPrice);
+  }
+  catch (error) {
+    console.error('Get org admin id error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 export default router;
 

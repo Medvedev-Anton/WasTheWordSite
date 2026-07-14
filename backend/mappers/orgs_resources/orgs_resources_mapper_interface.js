@@ -66,4 +66,14 @@ export default class OrgsResourcesMapperInterface {
     decrementOrgResource(orgId, resourceId, decrementValue) {
         throw new Error('increment должен быть переопределен в наследнике');
     }
+
+    /**
+     * Обновить цену ресурса
+     * @param {number} orgId
+     * @param {number} resourceId
+     * @param {number} newPrice
+     */
+    updatePrice(orgId, resourceId, newPrice) {
+        throw new Error('updatePrice должен быть переопределен в наследнике');
+    }
 }

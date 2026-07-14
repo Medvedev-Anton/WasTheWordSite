@@ -83,4 +83,13 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
             throw new Error(e.message);
         }
     }
+
+    updateOrgResourcePrice(orgId, resourceId, newPrice) {
+        try {
+            return this.mapper.updatePrice(orgId, resourceId, newPrice);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

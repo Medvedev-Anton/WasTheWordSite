@@ -92,4 +92,17 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
                 resourceId = ?
         `).run(decrementValue, orgId, resourceId);
     }
+
+    updatePrice(orgId, resourceId, newPrice) {
+        db.prepare(`
+            UPDATE
+                orgs_resources
+            SET
+                price = ?
+            WHERE
+                orgId = ?
+                AND
+                resourceId = ?        
+        `).run(newPrice, orgId, resourceId);
+    }
 }

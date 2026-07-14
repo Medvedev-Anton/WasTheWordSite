@@ -104,4 +104,19 @@ export default class OrgsResourcesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Обновить цену ресурса
+     * @param {number} orgId
+     * @param {number} resourceId
+     * @param {number} newPrice
+     */
+    static updateOrgResourcePrice(orgId, resourceId, newPrice) {
+        try {
+            return this.getService().updateOrgResourcePrice(orgId, resourceId, newPrice);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

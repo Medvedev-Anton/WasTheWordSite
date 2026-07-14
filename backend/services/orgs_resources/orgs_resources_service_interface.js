@@ -82,4 +82,14 @@ export default class OrgsResourcesServiceInterface {
     decrementOrgResource(orgId, resourceId, decrementValue) {
         throw new Error('increment должен быть переопределен в наследнике');
     }
+
+    /**
+     * Обновить цену ресурса
+     * @param {number} orgId
+     * @param {number} resourceId
+     * @param {number} newPrice
+     */
+    updateOrgResourcePrice(orgId, resourceId, newPrice) {
+        throw new Error('updateOrgResourcePrice должен быть переопределен в наследнике');
+    }
 }
