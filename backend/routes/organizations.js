@@ -1262,7 +1262,7 @@ router.patch('/:id/simple-items/:simpleItemId/price', authenticateToken, (req, r
 
     OrgsSimpleItemsFacade.updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice);
 
-    req.status(200).json({
+    res.status(200).json({
       message: 'success'
     });
   }
