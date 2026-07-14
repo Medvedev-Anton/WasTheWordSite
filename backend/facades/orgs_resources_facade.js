@@ -66,10 +66,11 @@ export default class OrgsResourcesFacade {
      * Создать или увеличить на единицу
      * @param {number} orgId
      * @param {number} resourceId
+     * @param {number} incrementValue
      */
-    static createOrIncrement(orgId, resourceId) {
+    static createOrIncrement(orgId, resourceId, incrementValue = 1) {
         try {
-            return this.getService().createOrIncrement(orgId, resourceId);
+            return this.getService().createOrIncrement(orgId, resourceId, incrementValue);
         }
         catch (e) {
             throw new Error(e.message);

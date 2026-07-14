@@ -59,15 +59,15 @@ export default class OrgsResourcesService extends OrgsResourcesServiceInterface 
         }
     }
 
-    createOrIncrement(orgId, resourceId) {
+    createOrIncrement(orgId, resourceId, incrementValue = 1) {
         try {
             const resource = this.getByOrgAndResource(orgId, resourceId);
 
             if (resource === null) {
-                this.create(orgId, resourceId, 1);
+                this.create(orgId, resourceId, incrementValue);
             }
             else {
-                this.increment(resource.id, 1);
+                this.increment(resource.id, incrementValue);
             }
         }
         catch (e) {

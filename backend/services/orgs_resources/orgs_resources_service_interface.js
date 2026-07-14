@@ -68,8 +68,9 @@ export default class OrgsResourcesServiceInterface {
      * Создать или увеличить на единицу
      * @param {number} orgId
      * @param {number} resourceId
+     * @param {number} incrementValue
      */
-    createOrIncrement(orgId, resourceId) {
+    createOrIncrement(orgId, resourceId, incrementValue = 1) {
         throw new Error('createOrIncrement должен быть переопределен в наследнике');
     }
 
