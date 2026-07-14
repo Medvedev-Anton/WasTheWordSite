@@ -95,7 +95,7 @@ export default class OrgsSimpleItemsFacade {
      * @param {number} id
      * @param {number} decrementValue
      */
-    decrement(id, decrementValue) {
+    static decrement(id, decrementValue) {
         try {
             return this.getService().decrement(id, decrementValue);
         }
@@ -126,6 +126,21 @@ export default class OrgsSimpleItemsFacade {
     static getOrgSimpleItemCount(orgId, simpleItemId) {
         try {
             return this.getService().getOrgSimpleItemCount(orgId, simpleItemId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Обновление цены предмета организации
+     * @param {number} orgId
+     * @param {number} simpleItemId
+     * @param {number} newPrice
+     */
+    static updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice) {
+        try {
+            return this.getService().updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice);
         }
         catch (e) {
             throw new Error(e.message);
