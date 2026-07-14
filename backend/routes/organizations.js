@@ -1219,7 +1219,7 @@ router.get('/:id/admin', authenticateToken, (req, res) => {
 });
 
 // Update resource price
-router.post('/:id/resources/:resourceId/price', authenticateToken, (req, res) => {
+router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
     const resourceId = parseInt(req.params.resourceId);
