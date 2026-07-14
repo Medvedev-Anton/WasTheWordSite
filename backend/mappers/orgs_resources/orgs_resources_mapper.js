@@ -40,7 +40,8 @@ export default class OrgsResourcesMapper extends OrgsResourcesMapperInterface {
         const result = db.prepare(`
             SELECT
                 r.*,
-                o.count as count
+                o.count as count,
+                o.price as price
             FROM
                orgs_resources o
             JOIN
