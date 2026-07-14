@@ -1229,6 +1229,16 @@ export async function initDatabase() {
     )  
   `);
 
+  const orgsSimpleItemsTableInfo = db.prepare("PRAGMA table_info(orgs_simple_items)").all();
+  const hasOrgsSimpleItemsPrice = orgsSimpleItemsTableInfo.some(col => col.name === 'price');
+  if (!hasOrgsSimpleItemsPrice) {
+    try {
+      db.exec(`ALTER TABLE orgs_simple_items ADD COLUMN price INTEGER DEFAULT 0`);
+    } catch (e) {
+      console.error('Error adding price to orgs_simple_items:', e.message);
+    }
+  }
+
   // Create users simple items table
   db.exec(`
     CREATE TABLE IF NOT EXISTS users_simple_items(
