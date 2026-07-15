@@ -431,11 +431,11 @@ export default class SimpleItemsController extends MainController {
             SimpleItemsFacade.buyOrgFromOrg(sellerId, buyerId, resourceId, 1);
 
             const buyerBalance = BalanceFacade.entity('orgs').getBalance(buyerId);
-            const sellerResources = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
+            const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
 
             this.send(200, {
                 buyerBalance: buyerBalance,
-                sellerResources: sellerResources
+                sellerSimpleItems: sellerSimpleItems
             });
         }
         catch (e) {
