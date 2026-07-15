@@ -9,7 +9,7 @@ export default class UsersSimpleItemsMapper extends UsersSimpleItemsMapperInterf
     create(userId, simpleItemId, count) {
         db.prepare(`
             INSERT INTO
-                users_simple_items
+                users_simple_items(userId, simpleItemId, count)
             VALUES (?, ?, ?)    
         `).run(userId, simpleItemId, count);
     }
