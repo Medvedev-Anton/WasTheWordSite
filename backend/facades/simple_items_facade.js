@@ -8,6 +8,7 @@ import EnergyFacade from "./energy_facade.js";
 import OrgsSimpleItemsFacade from "./orgs_simple_items_facade.js";
 import WorkshopsSimpleItemsFacade from "./workshops_simple_items_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
+import UsersSimpleItemsFacade from "./users_simple_items_facade.js";
 
 export default class SimpleItemsFacade {
     static getService() {
@@ -293,6 +294,59 @@ export default class SimpleItemsFacade {
         }
         catch (e) {
             throw new Error(`Ошибка при обработке транзакции покупки предмета организации ${buyerId} у организации ${sellerId} предмета: ` + e.message);
+        }
+    }
+
+    /**
+     * Покупка простого предмета пользователем у организации
+     * @param {number} sellerId 
+     * @param {number} buyerId 
+     * @param {number} resourceId 
+     * @param {number} resourceCount 
+     */
+    static buyUserFromOrg(sellerId, buyerId, simpleItemId, simpleItemCount) {
+        const transaction = db.transaction(() => {
+            try {
+                const simpleItem = OrgsSimpleItemsFacade.getByOrgAndSimpleItem(sellerId, simpleItemId);
+
+                if (simpleItem === null) {
+                    throw new Error(`У организации-продавца ${sellerId} нет ресурса ${simpleItemId}`);
+                }
+
+                const sellerSimpleItemsCount = parseInt(simpleItem.count);
+
+                if (sellerSimpleItemsCount < simpleItemCount) {
+                    throw new Error(`У организации-продавца ${sellerId} нет ресурса ${simpleItemId} в нужном количестве ${simpleItemCount}`);
+                }
+
+                const sellerSimpleItemsPrice = parseInt(simpleItem.price);
+                const totalPrice = simpleItemCount * sellerSimpleItemsPrice;
+
+                const userBalanceManager = BalanceFacade.entity('users');
+
+                const buyerBalance = userBalanceManager.getBalance(buyerId);
+
+                if (buyerBalance < totalPrice) {
+                    throw new Error(`У покупателя ${buyerId} не хватает средств для покупки ресурса ${simpleItemId} у продавца ${sellerId}`);
+                }
+
+                OrgsSimpleItemsFacade.decrement(simpleItem.id, simpleItemCount);
+                UsersSimpleItemsFacade.createOrIncrement(buyerId, simpleItemId, simpleItemCount);
+                userBalanceManager.decrement(buyerId, totalPrice);
+
+                const sellerOrgType = OrgsFacade.getOrgType(sellerId);
+                ProfitFacade.entity('orgs').orgType(sellerOrgType).processWithTax(sellerId, totalPrice);
+            }
+            catch (e) {
+                throw new Error(e.message);
+            }
+        });
+
+        try {
+            transaction();
+        }
+        catch (e) {
+            throw new Error(`Ошибка при обработке транзакции покупки простого предмета пользователя ${buyerId} у организации ${sellerId}: ` + e.message);
         }
     }
 }
