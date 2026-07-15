@@ -61,7 +61,12 @@ export default class OrgsSimpleItemsService extends OrgsSimpleItemsServiceInterf
 
     decrement(id, decrementValue) {
         try {
-            return this.mapper.decrement(id, decrementValue);
+            this.mapper.decrement(id, decrementValue);
+            const resource = this.getById(id);
+            
+            if (resource.count == 0) {
+                this.delete(id);
+            }
         }
         catch (e) {
             throw new Error(e.message);
