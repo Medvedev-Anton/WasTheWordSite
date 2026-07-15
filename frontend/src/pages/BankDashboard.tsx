@@ -10,6 +10,7 @@ import GoBackFromOrgDashboard from '../components/GoBackFromOrgDashboard';
 import OrgBuyEnergy from '../components/OrgBuyEnergy';
 import EnergyTranfserToFromSuborgs from '../components/EnergyTranfserToFromSuborgs';
 import ResourceBuyOrgFromOrg from '../components/ResourceBuyOrgFromOrg';
+import SimpleItemBuyOrgFromOrg from '../components/SimpleItemBuyOrgFromOrg';
 
 interface Borrower {
     borrowerId: number,
@@ -213,10 +214,10 @@ export default function BankDashboard() {
     }
 
     // Обработка успешной покупки ресурса
-    const onSuccessByResource = (newBalance: number) => {
+    const onSuccessBuy = (newBalance: number) => {
         if (org?.balance !== undefined) {
             setOrg(prev => 
-                prev ? {...prev, balance: newBalance} : undefined
+                prev ? {...prev, balance: newBalance} : null
             );
         }
     }
@@ -256,7 +257,16 @@ export default function BankDashboard() {
                 <div className="resource-buy-org-from-org-wrapper">
                     <ResourceBuyOrgFromOrg 
                         orgId={org.id}
-                        onBuy={onSuccessByResource}
+                        onBuy={onSuccessBuy}
+                    />
+                </div>
+            )}
+
+            {org?.id !== undefined && org?.id !== null && (
+                <div className="resource-buy-org-from-org-wrapper">
+                    <SimpleItemBuyOrgFromOrg 
+                        orgId={org.id}
+                        onBuy={onSuccessBuy}
                     />
                 </div>
             )}
