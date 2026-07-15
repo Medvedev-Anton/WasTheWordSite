@@ -40,6 +40,7 @@ export default function ResourcesItems(
 
         if (simpleItems !== undefined) {
             countNotEmptyCeils += simpleItems.length;
+            setMutableResources(simpleItems);
         }
 
         for (let i = 0; i < (10 - countNotEmptyCeils); i++) {
@@ -58,8 +59,8 @@ export default function ResourcesItems(
             countNotEmptyCeils += mutableResources.length;
         }
 
-        if (simpleItems !== undefined) {
-            countNotEmptyCeils += simpleItems.length;
+        if (mutableSimpleItems !== undefined) {
+            countNotEmptyCeils += mutableSimpleItems.length;
         }
 
         for (let i = 0; i < (10 - countNotEmptyCeils); i++) {
@@ -158,6 +159,25 @@ export default function ResourcesItems(
         }
     }
 
+    // Отправка запроса на покупку ресурса пользователем у организации
+    const fetchBuyUserFromOrgSimpleItem = async (simpleItemId: number) => {
+        try {
+            const result = await axios.post(`/api/simple-items/${simpleItemId}/buy-user-from-org`, {
+                sellerId: ownerId,
+                buyerId: userId
+            });
+            
+            const sellerBalance = result.data.sellerBalance;
+            const sellerSimpleItems = result.data.sellerSimpleItems;
+
+            setMutableSimpleItems(sellerSimpleItems);
+            onUserBuyResource?.(sellerBalance);
+        }
+        catch (e) {
+            alert('Не удалось приобрести предмет. Возможно у вас не хватает средств');
+        }
+    }
+
     return (
         <div className="resources-items-content">
             {mutableResources?.map(resource => (
@@ -218,6 +238,20 @@ export default function ResourcesItems(
                             onBlur={(e) => fetchUpdateSimpleItemPrice(item.id, parseFloat(e.target.value))}
                             step="any"
                         />
+                    )}
+                    {!isAdmin && type === 'org' && (
+                        <>
+                            <span className="resources-items__ceil-price-span">
+                                {item.price !== undefined ? (item.price / 100).toFixed(2) : 0} $ / ед.
+                            </span>
+
+                            <button
+                                onClick={() => fetchBuyUserFromOrgSimpleItem(item.id)}
+                                className="resources-items__ceil-buy-user-btn"
+                            >
+                                Купить
+                            </button>
+                        </>
                     )}
                 </div>
             ))}
