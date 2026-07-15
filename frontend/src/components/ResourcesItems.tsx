@@ -204,7 +204,7 @@ export default function ResourcesItems(
                     {!isAdmin && type === 'org' && (
                         <>
                             <span className="resources-items__ceil-price-span">
-                                {resource.price !== undefined ? (resource.price / 100).toFixed(2) : 0} $ / ед.
+                                {resource.price !== undefined ? (resource.price / 100).toFixed(2) : 0} BFB / 1 ед.
                             </span>
 
                             <button
@@ -242,7 +242,7 @@ export default function ResourcesItems(
                     {!isAdmin && type === 'org' && (
                         <>
                             <span className="resources-items__ceil-price-span">
-                                {item.price !== undefined ? (item.price / 100).toFixed(2) : 0} $ / ед.
+                                {item.price !== undefined ? (item.price / 100).toFixed(2) : 0} BFB / 1 ед.
                             </span>
 
                             <button
