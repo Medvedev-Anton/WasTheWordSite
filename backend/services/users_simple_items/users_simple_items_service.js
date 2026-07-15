@@ -31,4 +31,38 @@ export default class UsersSimpleItemsService extends UsersSimpleItemsServiceInte
             throw new Error(e.message);
         }
     }
+
+    getByUserAndSimpleItem(userId, simpleItemId) {
+        try {
+            return this.mapper.findByUserAndSimpleItem(userId, simpleItemId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    createOrIncrement(userId, simpleItemId, incrementValue = 1) {
+        try {
+            const simpleItem = this.getByUserAndSimpleItem(userId, simpleItemId);
+
+            if (simpleItem === null) {
+                this.create(userId, simpleItem.id, incrementValue);
+            }
+            else {
+                this.increment(userId, simpleItemId, incrementValue);
+            }
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    increment(userId, simpleItemId, incrementValue) {
+        try {
+            return this.mapper.increment(userId, simpleItemId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

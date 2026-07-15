@@ -48,4 +48,33 @@ export default class UsersSimpleItemsFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получение по пользователю и предмету
+     * @param {number} userId
+     * @param {number} simpleItemId
+     */
+    static getByUserAndSimpleItem(userId, simpleItemId) {
+        try {
+            return this.getService().getByUserAndSimpleItem(userId, simpleItemId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    /**
+     * Создание или инкрементирование
+     * @param {number} userId
+     * @param {number} simpleItemId
+     * @param {number} incrementValue
+     */
+    static createOrIncrement(userId, simpleItemId, incrementValue = 1) {
+        try {
+            return this.getService().createOrIncrement(userId, simpleItemId, incrementValue);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

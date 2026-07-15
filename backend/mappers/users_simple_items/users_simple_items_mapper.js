@@ -40,4 +40,32 @@ export default class UsersSimpleItemsMapper extends UsersSimpleItemsMapperInterf
 
         return result;
     }
+
+    findByUserAndSimpleItem(userId, simpleItemId) {
+        const result = db.prepare(`
+            SELECT
+                *
+            FROM
+                users_simple_items
+            WHERE
+                userId = ?
+                AND
+                simpleItemId = ?        
+        `).get(userId, simpleItemId);
+
+        return result || null;
+    }
+
+    increment(userId, simpleItemId, incrementValue) {
+        db.prepare(`
+            UPDATE
+               users_simple_items
+            SET
+                count = count + ?
+            WHERE
+                userId = ?
+                AND
+                simpleItemId = ?     
+        `).run(incrementValue, userId, simpleItemId);
+    }
 }

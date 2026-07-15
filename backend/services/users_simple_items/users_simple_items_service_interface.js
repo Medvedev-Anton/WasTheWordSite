@@ -37,4 +37,33 @@ export default class UsersSimpleItemsServiceInterface {
     getAllByUserId(userId) {
         throw new Error('getAllByUserId должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получение по пользователю и предмету
+     * @param {number} userId
+     * @param {number} simpleItemId
+     */
+    getByUserAndSimpleItem(userId, simpleItemId) {
+        throw new Error('getByUserAndSimpleItem должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Создание или инкрементирование
+     * @param {number} userId
+     * @param {number} simpleItemId
+     * @param {number} incrementValue
+     */
+    createOrIncrement(userId, simpleItemId, incrementValue = 1) {
+        throw new Error('createOrIncrement должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Инкремент количества
+     * @param {number} userId
+     * @param {number} simpleItemId
+     * @param {number} incrementValue
+     */
+    increment(userId, simpleItemId, incrementValue) {
+        throw new Error('increment должен быть переопределен в наследнике');
+    }
 }

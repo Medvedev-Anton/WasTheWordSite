@@ -30,4 +30,23 @@ export default class UsersSimpleItemsMapperInterface {
     findAllByUserId(userId) {
         throw new Error('findAllByUserId должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получение по пользователю и предмету
+     * @param {number} userId
+     * @param {number} simpleItemId
+     */
+    findByUserAndSimpleItem(userId, simpleItemId) {
+        throw new Error('findByUserAndSimpleItem должен быть переопределен в наследнике');
+    }
+
+    /**
+     * Инкремент количества
+     * @param {number} userId
+     * @param {number} simpleItemId
+     * @param {number} incrementValue
+     */
+    increment(userId, simpleItemId, incrementValue) {
+        throw new Error('increment должен быть переопределен в наследнике');
+    }
 }
