@@ -439,7 +439,47 @@ export default class SimpleItemsController extends MainController {
             });
         }
         catch (e) {
-            console.error('Buy org from org resource error:', e.message);
+            console.error('Buy org from org simple item error:', e.message);
+            this.send(500, {
+                error: 'Server error'
+            });
+        }
+    }
+
+    /**
+     * Покупка простого предмета пользователем у организации
+     */
+    buyUserFromOrg() {
+        const validate = this.has([
+            'sellerId',
+            'buyerId',
+            'id',
+        ]);
+
+        if (validate === false) {
+            return;
+        }
+
+        try {
+            const userId = parseInt(this.request.user.userId);
+            const buyerId = parseInt(this.request.body.buyerId);
+            const sellerId = parseInt(this.request.body.sellerId);
+            const simpleItem = parseInt(this.request.params.id);
+
+            SimpleItemsFacade.buyUserFromOrg(sellerId, buyerId, simpleItem, 1);
+
+            const buyerBalance = BalanceFacade.entity('users').getBalance(buyerId);
+            const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
+            const sellerBalance = BalanceFacade.entity('orgs').getBalance(sellerId);
+
+            this.send(200, {
+                buyerBalance: buyerBalance,
+                sellerSimpleItems: sellerSimpleItems,
+                sellerBalance: sellerBalance
+            });
+        }
+        catch (e) {
+            console.error('Buy user from org simple item error:', e.message);
             this.send(500, {
                 error: 'Server error'
             });
