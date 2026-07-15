@@ -108,4 +108,10 @@ router.post('/:id/buy-org-from-org', authenticateToken, (req, res) => {
     controller.buyOrgFromOrg();
 });
 
+// Покупка простого предмета пользователем у организации
+router.post('/:id/buy-user-from-org', authenticateToken, (req, res) => {
+    const controller = new SimpleItemsController(req, res);
+    controller.buyUserFromOrg();
+});
+
 export default router;
