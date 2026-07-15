@@ -46,7 +46,7 @@ export default class UsersSimpleItemsService extends UsersSimpleItemsServiceInte
             const simpleItem = this.getByUserAndSimpleItem(userId, simpleItemId);
 
             if (simpleItem === null) {
-                this.create(userId, simpleItem.id, incrementValue);
+                this.create(userId, simpleItemId, incrementValue);
             }
             else {
                 this.increment(userId, simpleItemId, incrementValue);
