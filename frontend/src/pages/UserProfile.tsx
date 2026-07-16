@@ -321,7 +321,7 @@ export default function UserProfile() {
                 </div>
             </div>
 
-            {user.resources.length !== 0 && (
+            {(user.resources.length  || user.simpleItems.length !== 0) && (
                 <div className="cyber-card reposts-card">
                     <h3>Ресурсы</h3>
                     <div className="users-resources-wrapper">
