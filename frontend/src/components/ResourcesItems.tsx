@@ -40,7 +40,7 @@ export default function ResourcesItems(
 
         if (simpleItems !== undefined) {
             countNotEmptyCeils += simpleItems.length;
-            setMutableResources(simpleItems);
+            setMutableSimpleItems(simpleItems);
         }
 
         for (let i = 0; i < (10 - countNotEmptyCeils); i++) {
