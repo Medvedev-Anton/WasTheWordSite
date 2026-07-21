@@ -23,6 +23,7 @@ import OrgsResourcesFacade from '../facades/orgs_resources_facade.js';
 import FarmsResourcesFacade from '../facades/farms_resources_facade.js';
 import OrgsSimpleItemsFacade from '../facades/orgs_simple_items_facade.js';
 import WorkshopsSimpleItemsFacade from '../facades/workshops_simple_items_facade.js';
+import OrgsStoragesFacade from '../facades/orgs_storages_facade.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -373,7 +374,8 @@ router.get('/:id', authenticateToken, (req, res, next) => {
       ? db.prepare('SELECT id FROM chat_participants WHERE chatId = ? AND userId = ?').get(groupChat.id, req.user.userId)
       : null;
 
-    const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
+    // const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
+    const resources = OrgsStoragesFacade.findAllResourcesByOrgId(orgId);
     const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
 
     res.json({ 
@@ -1222,7 +1224,8 @@ router.get('/:id/admin', authenticateToken, (req, res) => {
 router.get('/:id/resources', authenticateToken, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
-    const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
+    // const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
+    const resources = OrgsStoragesFacade.findAllResourcesByOrgId(orgId);
 
     res.status(200).json({
       resources: resources
@@ -1241,7 +1244,8 @@ router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) =
     const resourceId = parseInt(req.params.resourceId);
     const newPrice = parseInt(req.body.newPrice);
 
-    OrgsResourcesFacade.updateOrgResourcePrice(orgId, resourceId, newPrice);
+    // OrgsResourcesFacade.updateOrgResourcePrice(orgId, resourceId, newPrice);
+    OrgsStoragesFacade.updatePriceByOrgAndResource(orgId, resourceId, newPrice);
 
     res.status(200).json({
       message: 'success'

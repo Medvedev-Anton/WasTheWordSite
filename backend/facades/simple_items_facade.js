@@ -9,6 +9,7 @@ import OrgsSimpleItemsFacade from "./orgs_simple_items_facade.js";
 import WorkshopsSimpleItemsFacade from "./workshops_simple_items_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
 import UsersSimpleItemsFacade from "./users_simple_items_facade.js";
+import OrgsStoragesFacade from "./orgs_storages_facade.js";
 
 export default class SimpleItemsFacade {
     static getService() {
@@ -205,7 +206,8 @@ export default class SimpleItemsFacade {
                 const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
                 let orgResourceCount = 0;
 
-                const orgResource = OrgsResourcesFacade.getByOrgAndResource(orgId, needResourceId);
+                // const orgResource = OrgsResourcesFacade.getByOrgAndResource(orgId, needResourceId);
+                const orgResource = OrgsStoragesFacade.findContentByOrgAndResource(orgId, needResourceId);
                 
                 if (orgResource !== null) {
                     orgResourceCount = orgResource.count;
@@ -225,7 +227,8 @@ export default class SimpleItemsFacade {
 
                 BalanceFacade.entity('orgs').decrement(orgId, countNeedMoney);
                 EnergyFacade.entity('orgs').decrement(orgId, countNeedEnergy);
-                OrgsResourcesFacade.decrementOrgResource(orgId, needResourceId, countNeedResource);
+                // OrgsResourcesFacade.decrementOrgResource(orgId, needResourceId, countNeedResource);
+                OrgsStoragesFacade.decrementOrgResource(orgId, needResourceId, countNeedResource);
 
                 const parentId = OrgsFacade.getParentId(orgId);
                 OrgsSimpleItemsFacade.createOrIncrement(parentId, simpleItemId);
