@@ -1273,6 +1273,43 @@ export async function initDatabase() {
     )  
   `);
 
+  // Create orgs storages table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_storages(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ownerOrgId INTEGER NOT NULL,
+      FOREIGN KEY (ownerOrgId) REFERENCES organizations(id) ON DELETE CASCADE
+    );
+  `);
+
+  // Create orgs storages contents table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_storages_contents(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      storageId INTEGER NOT NULL,
+      resourceId INTEGER DEFAULT NULL,
+      simpleItemId INTEGER DEFAULT NULL,
+      compoundItemId INTEGER DEFAULT NULL,
+      count INTEGER DEFAULT 0,
+      price INTEGER DEFAULT 0,
+      FOREIGN KEY (storageId) REFERENCES orgs_storages(id) ON DELETE CASCADE,
+      FOREIGN KEY (resourceId) REFERENCES resources(id) ON DELETE CASCADE,
+      FOREIGN KEY (simpleItemId) REFERENCES simple_items(id) ON DELETE CASCADE,
+      FOREIGN KEY (compoundItemId) REFERENCES compound_items(id) ON DELETE CASCADE
+    );
+  `);
+
+  // Create orgs storages members table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS orgs_storages(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      storageId INTEGER NOT NULL,
+      memberOrgId INTEGER NOT NULL,
+      FOREIGN KEY (storageId) REFERENCES orgs_storages(id) ON DELETE CASCADE,
+      FOREIGN KEY (memberOrgId) REFERENCES organizations(id) ON DELETE CASCADE
+    );
+  `);
+
   console.log('Database initialized successfully');
 }
 
