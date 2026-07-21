@@ -376,7 +376,8 @@ router.get('/:id', authenticateToken, (req, res, next) => {
 
     // const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
     const resources = OrgsStoragesFacade.findAllResourcesByOrgId(orgId);
-    const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
+    // const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
+    const simpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(orgId);
 
     res.json({ 
       ...organization, 
@@ -1264,7 +1265,8 @@ router.patch('/:id/simple-items/:simpleItemId/price', authenticateToken, (req, r
     const simpleItemId = parseInt(req.params.simpleItemId);
     const newPrice = parseInt(req.body.newPrice);
 
-    OrgsSimpleItemsFacade.updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice);
+    // OrgsSimpleItemsFacade.updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice);
+    OrgsStoragesFacade.updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice);
 
     res.status(200).json({
       message: 'success'
@@ -1280,7 +1282,8 @@ router.patch('/:id/simple-items/:simpleItemId/price', authenticateToken, (req, r
 router.get('/:id/simple-items', authenticateToken, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
-    const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
+    // const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
+    const simpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(orgId);
 
     res.status(200).json({
       simpleItems: simpleItems

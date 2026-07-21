@@ -433,7 +433,8 @@ export default class SimpleItemsController extends MainController {
             SimpleItemsFacade.buyOrgFromOrg(sellerId, buyerId, resourceId, 1);
 
             const buyerBalance = BalanceFacade.entity('orgs').getBalance(buyerId);
-            const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
+            // const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
+            const sellerSimpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(sellerId);
 
             this.send(200, {
                 buyerBalance: buyerBalance,
@@ -471,7 +472,8 @@ export default class SimpleItemsController extends MainController {
             SimpleItemsFacade.buyUserFromOrg(sellerId, buyerId, simpleItem, 1);
 
             const buyerBalance = BalanceFacade.entity('users').getBalance(buyerId);
-            const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
+            // const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
+            const sellerSimpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(sellerId);
             const sellerBalance = BalanceFacade.entity('orgs').getBalance(sellerId);
 
             this.send(200, {

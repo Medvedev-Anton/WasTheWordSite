@@ -231,7 +231,8 @@ export default class SimpleItemsFacade {
                 OrgsStoragesFacade.decrementOrgResource(orgId, needResourceId, countNeedResource);
 
                 const parentId = OrgsFacade.getParentId(orgId);
-                OrgsSimpleItemsFacade.createOrIncrement(parentId, simpleItemId);
+                // OrgsSimpleItemsFacade.createOrIncrement(parentId, simpleItemId);
+                OrgsStoragesFacade.createOrIncrementOrgSimpleItem(parentId, simpleItemId);
                 WorkshopsSimpleItemsFacade.incrementCountCreated(orgId, 1);
             }
             catch (e) {
@@ -257,7 +258,8 @@ export default class SimpleItemsFacade {
     static buyOrgFromOrg(sellerId, buyerId, simpleItemId, simpleItemCount) {
         const transaction = db.transaction(() => {
             try {
-                const simpleItem = OrgsSimpleItemsFacade.getByOrgAndSimpleItem(sellerId, simpleItemId);
+                // const simpleItem = OrgsSimpleItemsFacade.getByOrgAndSimpleItem(sellerId, simpleItemId);
+                const simpleItem = OrgsStoragesFacade.findContentByOrgAndSimpleItem(sellerId, simpleItemId);
 
                 if (simpleItem === null) {
                     throw new Error(`У организации-продавца ${sellerId} нет предмета ${simpleItemId}`);
@@ -280,8 +282,10 @@ export default class SimpleItemsFacade {
                     throw new Error(`У покупателя ${buyerId} не хватает средств для покупки предмета ${simpleItemId} у продавца ${sellerId}`);
                 }
 
-                OrgsSimpleItemsFacade.decrement(simpleItem.id, simpleItemCount);
-                OrgsSimpleItemsFacade.createOrIncrement(buyerId, simpleItemId, simpleItemCount);
+                // OrgsSimpleItemsFacade.decrement(simpleItem.id, simpleItemCount);
+                OrgsStoragesFacade.decrementOrgSimpleItem(sellerId, simpleItemId, simpleItemCount);
+                // OrgsSimpleItemsFacade.createOrIncrement(buyerId, simpleItemId, simpleItemCount);
+                OrgsStoragesFacade.createOrIncrementOrgSimpleItem(sellerId, simpleItemId, simpleItemCount);
                 balanceManager.decrement(buyerId, totalPrice);
 
                 const sellerOrgType = OrgsFacade.getOrgType(sellerId);
@@ -310,7 +314,8 @@ export default class SimpleItemsFacade {
     static buyUserFromOrg(sellerId, buyerId, simpleItemId, simpleItemCount) {
         const transaction = db.transaction(() => {
             try {
-                const simpleItem = OrgsSimpleItemsFacade.getByOrgAndSimpleItem(sellerId, simpleItemId);
+                // const simpleItem = OrgsSimpleItemsFacade.getByOrgAndSimpleItem(sellerId, simpleItemId);
+                const simpleItem = OrgsStoragesFacade.findContentByOrgAndSimpleItem(sellerId, simpleItemId);
 
                 if (simpleItem === null) {
                     throw new Error(`У организации-продавца ${sellerId} нет ресурса ${simpleItemId}`);
@@ -333,7 +338,8 @@ export default class SimpleItemsFacade {
                     throw new Error(`У покупателя ${buyerId} не хватает средств для покупки ресурса ${simpleItemId} у продавца ${sellerId}`);
                 }
 
-                OrgsSimpleItemsFacade.decrement(simpleItem.id, simpleItemCount);
+                // OrgsSimpleItemsFacade.decrement(simpleItem.id, simpleItemCount);
+                OrgsStoragesFacade.decrementOrgSimpleItem(sellerId, simpleItemId, simpleItemCount);
                 UsersSimpleItemsFacade.createOrIncrement(buyerId, simpleItemId, simpleItemCount);
                 userBalanceManager.decrement(buyerId, totalPrice);
 
