@@ -123,7 +123,7 @@ export default class OrgsStoragesFacade {
      * @param {number} orgId
      * @param {number} resourceId
      */
-    findContentByOrgAndResource(orgId, resourceId) {
+    static findContentByOrgAndResource(orgId, resourceId) {
         try {
             return this.getService().findContentByOrgAndResource(orgId, resourceId);
         }
