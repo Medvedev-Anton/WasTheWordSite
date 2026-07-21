@@ -1301,7 +1301,7 @@ export async function initDatabase() {
 
   // Create orgs storages members table
   db.exec(`
-    CREATE TABLE IF NOT EXISTS orgs_storages(
+    CREATE TABLE IF NOT EXISTS orgs_storages_members(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       storageId INTEGER NOT NULL,
       memberOrgId INTEGER NOT NULL,
