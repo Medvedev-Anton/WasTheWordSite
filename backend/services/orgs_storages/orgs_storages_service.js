@@ -210,7 +210,7 @@ export default class OrgsStoragesService extends OrgsStoragesServiceInterface {
         }
     }
 
-    createOrIncrementOrgSimpleItem(orgId, simpleItemId, incrementValue) {
+    createOrIncrementOrgSimpleItem(orgId, simpleItemId, incrementValue = 1) {
         try {
             const simpleItem = this.findContentByOrgAndSimpleItem(orgId, simpleItemId);
 
@@ -226,7 +226,7 @@ export default class OrgsStoragesService extends OrgsStoragesServiceInterface {
         }
     }
 
-    createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue) {
+    createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue = 1) {
         try {
             const compoundItem = this.findContentByOrgAndCompoundItem(orgId, compoundItemId);
 

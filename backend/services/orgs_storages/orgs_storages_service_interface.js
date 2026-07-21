@@ -224,7 +224,7 @@ export default class OrgsStoragesServiceInterface {
      * @param {number} simpleItemId
      * @param {number} incrementValue
      */
-    createOrIncrementOrgSimpleItem(orgId, simpleItemId, incrementValue) {
+    createOrIncrementOrgSimpleItem(orgId, simpleItemId, incrementValue = 1) {
         throw new Error('createOrIncrementOrgSimpleItem должен быть переопределен в наследнике');
     }
 
@@ -234,7 +234,7 @@ export default class OrgsStoragesServiceInterface {
      * @param {number} compoundItemId
      * @param {number} incrementValue
      */
-    createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue) {
+    createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue = 1) {
         throw new Error('createOrIncrementOrgCompoundItem должен быть переопределен в наследнике');
     }
 }
