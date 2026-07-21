@@ -145,6 +145,8 @@ export default class OrgsStoragesMapper extends OrgsStoragesMapperInterface {
                 AND
                 o.simpleItemId = ?
         `).get(orgId, simpleItemId);
+
+        return result || null;
     }
 
     findContentByOrgAndCompoundItem(orgId, compoundItemId) {
@@ -162,6 +164,8 @@ export default class OrgsStoragesMapper extends OrgsStoragesMapperInterface {
                 AND
                 o.compoundItemId = ?
         `).get(orgId, compoundItemId);
+
+        return result || null;
     }
 
     incrementOrgResource(orgId, resourceId, incrementValue) {
