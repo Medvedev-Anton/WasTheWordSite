@@ -137,7 +137,7 @@ export default class OrgsStoragesFacade {
      * @param {number} orgId
      * @param {number} simpleItemId
      */
-    findContentByOrgAndSimpleItem(orgId, simpleItemId) {
+    static findContentByOrgAndSimpleItem(orgId, simpleItemId) {
         try {
             return this.getService().findContentByOrgAndSimpleItem(orgId, simpleItemId);
         }
@@ -151,7 +151,7 @@ export default class OrgsStoragesFacade {
      * @param {number} orgId
      * @param {number} compoundItemId
      */
-    findContentByOrgAndCompoundItem(orgId, compoundItemId) {
+    static findContentByOrgAndCompoundItem(orgId, compoundItemId) {
         try {
             return this.getService().findContentByOrgAndCompoundItem(orgId, compoundItemId);
         }
@@ -166,7 +166,7 @@ export default class OrgsStoragesFacade {
      * @param {number} resourceId
      * @param {number} incrementValue
      */
-    incrementOrgResource(orgId, resourceId, incrementValue) {
+    static incrementOrgResource(orgId, resourceId, incrementValue) {
         try {
             return this.getService().incrementOrgResource(orgId, resourceId, incrementValue);
         }
@@ -181,7 +181,7 @@ export default class OrgsStoragesFacade {
      * @param {number} simpleItemId
      * @param {number} incrementValue
      */
-    incrementOrgSimpleItem(orgId, simpleItemId, incrementValue) {
+    static incrementOrgSimpleItem(orgId, simpleItemId, incrementValue) {
         try {
             return this.getService().incrementOrgSimpleItem(orgId, simpleItemId, incrementValue);
         }
@@ -196,7 +196,7 @@ export default class OrgsStoragesFacade {
      * @param {number} compoundItemId
      * @param {number} incrementValue
      */
-    incrementOrgCompoundItem(orgId, compoundItemId, incrementValue) {
+    static incrementOrgCompoundItem(orgId, compoundItemId, incrementValue) {
         try {
             return this.getService().incrementOrgCompoundItem(orgId, compoundItemId, incrementValue);
         }
@@ -211,7 +211,7 @@ export default class OrgsStoragesFacade {
      * @param {number} resourceId
      * @param {number} decrementValue
      */
-    decrementOrgResource(orgId, resourceId, decrementValue) {
+    static decrementOrgResource(orgId, resourceId, decrementValue) {
         try {
             return this.getService().decrementOrgResource(orgId, resourceId, decrementValue);
         }
@@ -226,7 +226,7 @@ export default class OrgsStoragesFacade {
      * @param {number} simpleItemId
      * @param {number} decrementValue
      */
-    decrementOrgSimpleItem(orgId, simpleItemId, decrementValue) {
+    static decrementOrgSimpleItem(orgId, simpleItemId, decrementValue) {
         try {
             return this.getService().decrementOrgSimpleItem(orgId, simpleItemId, decrementValue);
         }
@@ -241,7 +241,7 @@ export default class OrgsStoragesFacade {
      * @param {number} compoundItemId
      * @param {number} decrementValue
      */
-    decrementOrgCompoundItem(orgId, compoundItemId, decrementValue) {
+    static decrementOrgCompoundItem(orgId, compoundItemId, decrementValue) {
         try {
             return this.getService().decrementOrgCompoundItem(orgId, compoundItemId, decrementValue);
         }
@@ -256,7 +256,7 @@ export default class OrgsStoragesFacade {
      * @param {number} resourceId
      * @param {number} newPrice
      */
-    updatePriceByOrgAndResource(orgId, resourceId, newPrice) {
+    static updatePriceByOrgAndResource(orgId, resourceId, newPrice) {
         try {
             return this.getService().updatePriceByOrgAndResource(orgId, resourceId, newPrice);
         }
@@ -271,7 +271,7 @@ export default class OrgsStoragesFacade {
      * @param {number} simpleItemId
      * @param {number} newPrice
      */
-    updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice) {
+    static updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice) {
         try {
             return this.getService().updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice);
         }
@@ -286,7 +286,7 @@ export default class OrgsStoragesFacade {
      * @param {number} compoundItemId
      * @param {number} newPrice
      */
-    updatePriceByOrgAndCompoundItem(orgId, compoundItemId, newPrice) {
+    static updatePriceByOrgAndCompoundItem(orgId, compoundItemId, newPrice) {
         try {
             return this.getService().updatePriceByOrgAndCompoundItem(orgId, compoundItemId, newPrice);
         }
@@ -300,7 +300,7 @@ export default class OrgsStoragesFacade {
      * @param {number} storageId
      * @param {number} memberOrgId
      */
-    createNewStorageMember(storageId, memberOrgId) {
+    static createNewStorageMember(storageId, memberOrgId) {
         try {
             return this.getService().createNewStorageMember(storageId, memberOrgId);
         }
@@ -315,7 +315,7 @@ export default class OrgsStoragesFacade {
      * @param {number} resourceId
      * @param {number} incrementValue
      */
-    createOrIncrementOrgResource(orgId, resourceId, incrementValue = 1) {
+    static createOrIncrementOrgResource(orgId, resourceId, incrementValue = 1) {
         try {
             return this.getService().createOrIncrementOrgResource(orgId, resourceId, incrementValue);
         }
@@ -330,7 +330,7 @@ export default class OrgsStoragesFacade {
      * @param {number} simpleItemId
      * @param {number} incrementValue
      */
-    createOrIncrementOrgSimpleItem(orgId, simpleItemId, incrementValue = 1) {
+    static createOrIncrementOrgSimpleItem(orgId, simpleItemId, incrementValue = 1) {
         try {
             return this.getService().createOrIncrementOrgSimpleItem(orgId, simpleItemId, incrementValue);
         }
@@ -345,7 +345,7 @@ export default class OrgsStoragesFacade {
      * @param {number} compoundItemId
      * @param {number} incrementValue
      */
-    createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue = 1) {
+    static createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue = 1) {
         try {
             return this.getService().createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue);
         }
