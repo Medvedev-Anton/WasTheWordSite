@@ -1096,7 +1096,7 @@ function OrganizationDetail({
 
       setOrgBalance(result.data.orgBalance);
       setOrgEnergy(result.data.orgEnergy);
-      setOrgResources(result.data.orgResources);
+      setOrgSimpleItems(result.data.orgSimpleItems);
     }
     catch (e) {
       alert('Не удалось создать предмет. Возможно у организации не хватает средств');

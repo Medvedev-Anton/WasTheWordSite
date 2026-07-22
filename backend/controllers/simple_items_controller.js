@@ -357,12 +357,12 @@ export default class SimpleItemsController extends MainController {
             const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
             const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
             // const orgResources = OrgsResourcesFacade.getAllByOrgId(orgId);
-            const orgResources = OrgsStoragesFacade.findAllResourcesByOrgId(orgId);
+            const orgSimpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(orgId);
 
             this.send(200, {
                 orgBalance: orgBalance,
                 orgEnergy: orgEnergy,
-                orgResources: orgResources
+                orgSimpleItems: orgSimpleItems
             });
         }
         catch (e) {
