@@ -81,6 +81,8 @@ export default class OrgsStoragesMapper extends OrgsStoragesMapperInterface {
                 m.memberOrgId = ?
                 AND
                 o.resourceId IS NOT NULL
+                AND
+                o.count > 0
         `).all(orgId);
 
         return result;
@@ -106,6 +108,8 @@ export default class OrgsStoragesMapper extends OrgsStoragesMapperInterface {
                 m.memberOrgId = ?
                 AND
                 o.simpleItemId IS NOT NULL
+                AND
+                o.count > 0
         `).all(orgId);
 
         return result;
