@@ -8,10 +8,10 @@
     padding: 10px;
     border: 1px solid rgba(211, 211, 211, 0.22);
     border-radius: 12px;
+    grid-auto-rows: 1fr;
 }
 
 .resources-items__ceil {
-    height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -101,12 +101,6 @@
     }
 }
 
-@media (max-width: 968px) {
-    .resources-items__ceil {
-        height: 150px;
-    }
-}
-
 @media (max-width: 500px) {
     .resources-items-content {
         grid-template-columns: repeat(3, 1fr);
@@ -127,7 +121,7 @@
     }
 }
 
-@media (max-width: 340px) {
+@media (max-width: 400px) {
     .resources-items-content {
         grid-template-columns: repeat(2, 1fr);
     }
