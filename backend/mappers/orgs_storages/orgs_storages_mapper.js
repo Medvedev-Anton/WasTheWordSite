@@ -358,4 +358,11 @@ export default class OrgsStoragesMapper extends OrgsStoragesMapperInterface {
             VALUES (?, ?)
         `).run(storageId, memberOrgId);
     }
+
+    createNewStorage(ownerOrgId) {
+        db.prepare(`
+            INSERT INTO orgs_storages (ownerOrgId)
+            VALUES (?)
+        `).run(ownerOrgId);
+    }
 }

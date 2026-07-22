@@ -237,4 +237,12 @@ export default class OrgsStoragesServiceInterface {
     createOrIncrementOrgCompoundItem(orgId, compoundItemId, incrementValue = 1) {
         throw new Error('createOrIncrementOrgCompoundItem должен быть переопределен в наследнике');
     }
+
+    /**
+     * Создание нового хранилища
+     * @param {number} ownerOrgId
+     */
+    createNewStorage(ownerOrgId) {
+        throw new Error('createNewStorage должен быть переопределен в наследнике');
+    }
 }

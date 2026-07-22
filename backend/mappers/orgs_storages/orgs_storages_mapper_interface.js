@@ -200,4 +200,12 @@ export default class OrgsStoragesMapperInterface {
     createNewStorageMember(storageId, memberOrgId) {
         throw new Error('createNewStorageMember должен быть переопределен в наследнике');
     }
+
+    /**
+     * Создание нового хранилища
+     * @param {number} ownerOrgId
+     */
+    createNewStorage(ownerOrgId) {
+        throw new Error('createNewStorage должен быть переопределен в наследнике');
+    }
 }

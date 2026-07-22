@@ -353,4 +353,17 @@ export default class OrgsStoragesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Создание нового хранилища
+     * @param {number} ownerOrgId
+     */
+    static createNewStorage(ownerOrgId) {
+        try {
+            return this.getService().createNewStorage(ownerOrgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

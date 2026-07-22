@@ -241,4 +241,13 @@ export default class OrgsStoragesService extends OrgsStoragesServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    createNewStorage(ownerOrgId) {
+        try {
+            return this.mapper.createNewStorage(ownerOrgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
