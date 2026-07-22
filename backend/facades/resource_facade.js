@@ -3,7 +3,6 @@ import ResourcesService from "../services/resources/resources_service.js";
 import { db } from "../database/init.js";
 import { BalanceFacade } from "./balance_facade.js";
 import { OrgsFacade } from "./orgs_facade.js";
-import OrgsResourcesFacade from "./orgs_resources_facade.js";
 import FarmsResourcesFacade from "./farms_resources_facade.js";
 import { ProfitFacade } from "./profit_facade.js";
 import UsersResourcesFacade from "./users_resources_facade.js";
@@ -182,7 +181,6 @@ export default class ResourceFacade {
                     throw new Error('Ферма с ID ' + orgId + ' не имеет родителя');
                 }
 
-                // OrgsResourcesFacade.createOrIncrement(orgParentId, resourceId);
                 OrgsStoragesFacade.createOrIncrementOrgResource(orgParentId, resourceId);
                 FarmsResourcesFacade.incrementCountExtracted(orgId, 1);
             }
@@ -209,7 +207,6 @@ export default class ResourceFacade {
     static buyOrgFromOrg(sellerId, buyerId, resourceId, resourceCount) {
         const transaction = db.transaction(() => {
             try {
-                // const resource = OrgsResourcesFacade.getByOrgAndResource(sellerId, resourceId);
                 const resource = OrgsStoragesFacade.findContentByOrgAndResource(sellerId, resourceId);
 
                 if (resource === null) {
@@ -233,9 +230,7 @@ export default class ResourceFacade {
                     throw new Error(`У покупателя ${buyerId} не хватает средств для покупки ресурса ${resourceId} у продавца ${sellerId}`);
                 }
 
-                // OrgsResourcesFacade.decrementOrgResource(sellerId, resourceId, resourceCount);
                 OrgsStoragesFacade.decrementOrgResource(sellerId, resourceId, resourceCount);
-                // OrgsResourcesFacade.createOrIncrement(buyerId, resourceId, resourceCount);
                 OrgsStoragesFacade.createOrIncrementOrgResource(buyerId, resourceId, resourceCount);
                 balanceManager.decrement(buyerId, totalPrice);
 
@@ -265,7 +260,6 @@ export default class ResourceFacade {
     static buyUserFromOrg(sellerId, buyerId, resourceId, resourceCount) {
         const transaction = db.transaction(() => {
             try {
-                // const resource = OrgsResourcesFacade.getByOrgAndResource(sellerId, resourceId);
                 const resource = OrgsStoragesFacade.findContentByOrgAndResource(sellerId, resourceId);
 
                 if (resource === null) {
@@ -289,7 +283,6 @@ export default class ResourceFacade {
                     throw new Error(`У покупателя ${buyerId} не хватает средств для покупки ресурса ${resourceId} у продавца ${sellerId}`);
                 }
 
-                // OrgsResourcesFacade.decrementOrgResource(sellerId, resourceId, resourceCount);
                 OrgsStoragesFacade.decrementOrgResource(sellerId, resourceId, resourceCount);
                 UsersResourcesFacade.createOrIncrement(buyerId, resourceId, resourceCount);
                 userBalanceManager.decrement(buyerId, totalPrice);

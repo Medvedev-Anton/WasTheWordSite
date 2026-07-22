@@ -19,7 +19,6 @@ import PostsViewsFacade from '../facades/posts_views.js';
 import ChatsController from '../controllers/chats_controller.js';
 import { PostsFacade } from '../facades/posts_facade.js';
 import ChatsFacade from '../facades/chats_facade.js';
-import OrgsResourcesFacade from '../facades/orgs_resources_facade.js';
 import FarmsResourcesFacade from '../facades/farms_resources_facade.js';
 import WorkshopsSimpleItemsFacade from '../facades/workshops_simple_items_facade.js';
 import OrgsStoragesFacade from '../facades/orgs_storages_facade.js';
@@ -1244,7 +1243,6 @@ router.get('/:id/admin', authenticateToken, (req, res) => {
 router.get('/:id/resources', authenticateToken, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
-    // const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
     const resources = OrgsStoragesFacade.findAllResourcesByOrgId(orgId);
 
     res.status(200).json({
@@ -1264,7 +1262,6 @@ router.patch('/:id/resources/:resourceId/price', authenticateToken, (req, res) =
     const resourceId = parseInt(req.params.resourceId);
     const newPrice = parseInt(req.body.newPrice);
 
-    // OrgsResourcesFacade.updateOrgResourcePrice(orgId, resourceId, newPrice);
     OrgsStoragesFacade.updatePriceByOrgAndResource(orgId, resourceId, newPrice);
 
     res.status(200).json({

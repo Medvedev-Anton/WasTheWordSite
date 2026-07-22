@@ -1,6 +1,5 @@
 import { BalanceFacade } from "../facades/balance_facade.js";
 import { OrgsFacade } from "../facades/orgs_facade.js";
-import OrgsResourcesFacade from "../facades/orgs_resources_facade.js";
 import OrgsStoragesFacade from "../facades/orgs_storages_facade.js";
 import ResourceFacade from "../facades/resource_facade.js";
 import { MainController } from "./main_controller.js";
@@ -292,7 +291,6 @@ export default class ResourcesController extends MainController {
 
             const orgBalance = BalanceFacade.entity('orgs').getBalance(orgId);
             const orgEnergy = OrgsFacade.getOrgEnergy(orgId);
-            // const orgResources = OrgsResourcesFacade.getAllByOrgId(orgId);
             const orgResources = OrgsStoragesFacade.findAllResourcesByOrgId(orgId);
 
             this.send(200, {
@@ -370,7 +368,6 @@ export default class ResourcesController extends MainController {
             ResourceFacade.buyOrgFromOrg(sellerId, buyerId, resourceId, 1);
 
             const buyerBalance = BalanceFacade.entity('orgs').getBalance(buyerId);
-            // const sellerResources = OrgsResourcesFacade.getAllByOrgId(sellerId);
             const sellerResources = OrgsStoragesFacade.findAllResourcesByOrgId(sellerId);
 
             this.send(200, {
@@ -409,7 +406,6 @@ export default class ResourcesController extends MainController {
             ResourceFacade.buyUserFromOrg(sellerId, buyerId, resourceId, 1);
 
             const buyerBalance = BalanceFacade.entity('users').getBalance(buyerId);
-            // const sellerResources = OrgsResourcesFacade.getAllByOrgId(sellerId);
             const sellerResources = OrgsStoragesFacade.findAllResourcesByOrgId(sellerId);
             const sellerBalance = BalanceFacade.entity('orgs').getBalance(sellerId);
 
