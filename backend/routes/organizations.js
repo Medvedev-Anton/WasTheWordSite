@@ -435,6 +435,7 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
 
     let resolvedType = 'Организация';
     let resolvedParentId = null;
+    let grandparent = null;
 
     if (parentId) {
       resolvedParentId = parseInt(parentId);
@@ -446,7 +447,7 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       if (parent.adminId !== adminId && !parentMember) {
         return res.status(403).json({ error: 'Only members can create sub-organizations' });
       }
-      const grandparent = parent.parentId ? db.prepare('SELECT orgType FROM organizations WHERE id = ?').get(parent.parentId) : null;
+      grandparent = parent.parentId ? db.prepare('SELECT id, orgType FROM organizations WHERE id = ?').get(parent.parentId) : null;
       const childType = getSubOrgType(parent.orgType, grandparent?.orgType);
       if (!childType) {
         return res.status(400).json({ error: `Cannot create sub-organizations inside "${parent.orgType}"` });
@@ -487,6 +488,27 @@ router.post('/', authenticateToken, orgMediaUpload, (req, res) => {
       JOIN users u ON o.adminId = u.id
       WHERE o.id = ?
     `).get(result.lastInsertRowid);
+
+    if (!parentId) {
+      const newStorageId = OrgsStoragesFacade.createNewStorage(result.lastInsertRowid);
+      OrgsStoragesFacade.createNewStorageMember(newStorageId, result.lastInsertRowid);
+    }
+    else {
+      if (grandparent) {
+        const storageId = OrgsStoragesFacade.findStorageByOwner(grandparent?.id);
+
+        if (storageId !== null) {
+          OrgsStoragesFacade.createNewStorageMember(storageId, result.lastInsertRowid);
+        }
+      }
+      else {
+        const storageId = OrgsStoragesFacade.findStorageByOwner(parentId);
+
+        if (storageId !== null) {
+          OrgsStoragesFacade.createNewStorageMember(storageId, result.lastInsertRowid);
+        }
+      }
+    }
 
     const date = new Date();
     date.setDate(date.getDate() + 1)
