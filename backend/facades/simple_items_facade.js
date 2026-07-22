@@ -285,7 +285,7 @@ export default class SimpleItemsFacade {
                 // OrgsSimpleItemsFacade.decrement(simpleItem.id, simpleItemCount);
                 OrgsStoragesFacade.decrementOrgSimpleItem(sellerId, simpleItemId, simpleItemCount);
                 // OrgsSimpleItemsFacade.createOrIncrement(buyerId, simpleItemId, simpleItemCount);
-                OrgsStoragesFacade.createOrIncrementOrgSimpleItem(sellerId, simpleItemId, simpleItemCount);
+                OrgsStoragesFacade.createOrIncrementOrgSimpleItem(buyerId, simpleItemId, simpleItemCount);
                 balanceManager.decrement(buyerId, totalPrice);
 
                 const sellerOrgType = OrgsFacade.getOrgType(sellerId);
