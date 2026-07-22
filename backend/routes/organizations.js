@@ -21,7 +21,6 @@ import { PostsFacade } from '../facades/posts_facade.js';
 import ChatsFacade from '../facades/chats_facade.js';
 import OrgsResourcesFacade from '../facades/orgs_resources_facade.js';
 import FarmsResourcesFacade from '../facades/farms_resources_facade.js';
-import OrgsSimpleItemsFacade from '../facades/orgs_simple_items_facade.js';
 import WorkshopsSimpleItemsFacade from '../facades/workshops_simple_items_facade.js';
 import OrgsStoragesFacade from '../facades/orgs_storages_facade.js';
 
@@ -374,9 +373,7 @@ router.get('/:id', authenticateToken, (req, res, next) => {
       ? db.prepare('SELECT id FROM chat_participants WHERE chatId = ? AND userId = ?').get(groupChat.id, req.user.userId)
       : null;
 
-    // const resources = OrgsResourcesFacade.getAllByOrgId(orgId);
     const resources = OrgsStoragesFacade.findAllResourcesByOrgId(orgId);
-    // const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
     const simpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(orgId);
 
     res.json({ 
@@ -1287,7 +1284,6 @@ router.patch('/:id/simple-items/:simpleItemId/price', authenticateToken, (req, r
     const simpleItemId = parseInt(req.params.simpleItemId);
     const newPrice = parseInt(req.body.newPrice);
 
-    // OrgsSimpleItemsFacade.updateOrgSimpleItemPrice(orgId, simpleItemId, newPrice);
     OrgsStoragesFacade.updatePriceByOrgAndSimpleItem(orgId, simpleItemId, newPrice);
 
     res.status(200).json({
@@ -1304,7 +1300,6 @@ router.patch('/:id/simple-items/:simpleItemId/price', authenticateToken, (req, r
 router.get('/:id/simple-items', authenticateToken, (req, res) => {
   try {
     const orgId = parseInt(req.params.id);
-    // const simpleItems = OrgsSimpleItemsFacade.getAllByOrgId(orgId);
     const simpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(orgId);
 
     res.status(200).json({

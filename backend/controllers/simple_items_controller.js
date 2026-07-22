@@ -1,7 +1,6 @@
 import { BalanceFacade } from "../facades/balance_facade.js";
 import { OrgsFacade } from "../facades/orgs_facade.js";
 import OrgsResourcesFacade from "../facades/orgs_resources_facade.js";
-import OrgsSimpleItemsFacade from "../facades/orgs_simple_items_facade.js";
 import OrgsStoragesFacade from "../facades/orgs_storages_facade.js";
 import SimpleItemsFacade from "../facades/simple_items_facade.js";
 import { MainController } from "./main_controller.js";
@@ -433,7 +432,6 @@ export default class SimpleItemsController extends MainController {
             SimpleItemsFacade.buyOrgFromOrg(sellerId, buyerId, resourceId, 1);
 
             const buyerBalance = BalanceFacade.entity('orgs').getBalance(buyerId);
-            // const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
             const sellerSimpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(sellerId);
 
             this.send(200, {
@@ -472,7 +470,6 @@ export default class SimpleItemsController extends MainController {
             SimpleItemsFacade.buyUserFromOrg(sellerId, buyerId, simpleItem, 1);
 
             const buyerBalance = BalanceFacade.entity('users').getBalance(buyerId);
-            // const sellerSimpleItems = OrgsSimpleItemsFacade.getAllByOrgId(sellerId);
             const sellerSimpleItems = OrgsStoragesFacade.findAllSimpleItemsByOrgId(sellerId);
             const sellerBalance = BalanceFacade.entity('orgs').getBalance(sellerId);
 
