@@ -1310,6 +1310,12 @@ export async function initDatabase() {
     );
   `);
 
+  // Delete ord orgs resources and simple items tables
+  db.exec(`
+    DROP TABLE IF EXISTS orgs_resources;
+    DROP TABLE IF EXISTS orgs_simple_items;  
+  `);
+
   console.log('Database initialized successfully');
 }
 
