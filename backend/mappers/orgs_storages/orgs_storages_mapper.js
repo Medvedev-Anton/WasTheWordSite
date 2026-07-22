@@ -360,9 +360,11 @@ export default class OrgsStoragesMapper extends OrgsStoragesMapperInterface {
     }
 
     createNewStorage(ownerOrgId) {
-        db.prepare(`
+        const result =  db.prepare(`
             INSERT INTO orgs_storages (ownerOrgId)
             VALUES (?)
         `).run(ownerOrgId);
+
+        return result.lastInsertRowid;
     }
 }
