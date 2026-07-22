@@ -366,4 +366,17 @@ export default class OrgsStoragesFacade {
             throw new Error(e.message);
         }
     }
+
+    /**
+     * Получить хранилище по ID владельца
+     * @param {number} ownerOrgId
+     */
+    static findStorageByOwner(ownerOrgId) {
+        try {
+            return this.getService().findStorageByOwner(ownerOrgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }

@@ -367,4 +367,27 @@ export default class OrgsStoragesMapper extends OrgsStoragesMapperInterface {
 
         return result.lastInsertRowid;
     }
+
+    findStorageByOwner(ownerOrgId) {
+        const result = db.prepare(`
+            SELECT
+                id
+            FROM
+                orgs_storages
+            WHERE
+                ownerOrgId = ?
+        `).get(ownerOrgId);
+
+        if (result === undefined || result === null) {
+            return null;
+        }
+
+        const id = parseInt(result.id);
+
+        if (isNaN(id)) {
+            return null;
+        }
+
+        return id;
+    }
 }

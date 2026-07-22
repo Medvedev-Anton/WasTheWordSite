@@ -245,4 +245,12 @@ export default class OrgsStoragesServiceInterface {
     createNewStorage(ownerOrgId) {
         throw new Error('createNewStorage должен быть переопределен в наследнике');
     }
+
+    /**
+     * Получить хранилище по ID владельца
+     * @param {number} ownerOrgId
+     */
+    findStorageByOwner(ownerOrgId) {
+        throw new Error('findStorageByOwner должен быть переопределен в наследнике');
+    }
 }

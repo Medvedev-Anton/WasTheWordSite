@@ -250,4 +250,13 @@ export default class OrgsStoragesService extends OrgsStoragesServiceInterface {
             throw new Error(e.message);
         }
     }
+
+    findStorageByOwner(ownerOrgId) {
+        try {
+            return this.mapper.findStorageByOwner(ownerOrgId);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    }
 }
