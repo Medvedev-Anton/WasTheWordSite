@@ -1482,6 +1482,7 @@ function OrganizationDetail({
             type='org'
             isAdmin={isAdmin}
             ownerId={organization.id}
+            orgParentId={organization.parentId}
             userId={user.id}
             onUserBuyResource={onUserBuyResource}
           />

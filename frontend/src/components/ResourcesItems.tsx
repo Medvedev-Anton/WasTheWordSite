@@ -10,6 +10,7 @@ interface ResourcesItemsProps {
     isAdmin?: boolean,
     ownerId: number;
     userId: number;
+    orgParentId?: number | null;
     onUserBuyResource?: (newBalance: number) => void;
 }
 
@@ -21,6 +22,7 @@ export default function ResourcesItems(
         isAdmin,
         ownerId,
         userId,
+        orgParentId,
         onUserBuyResource
     }: ResourcesItemsProps
 ) {
@@ -191,7 +193,7 @@ export default function ResourcesItems(
                     <div className="resources-items__ceil-count">
                         {resource.count || 0} шт.
                     </div>
-                    {isAdmin && (
+                    {isAdmin && orgParentId === null && (
                         <input 
                             type="number" 
                             className="resources-items__ceil-price-input dollar-bg"
@@ -229,7 +231,7 @@ export default function ResourcesItems(
                     <div className="resources-items__ceil-count">
                         {item.count || 0} шт.
                     </div>
-                    {isAdmin && (
+                    {isAdmin && orgParentId === null && (
                         <input 
                             type="number" 
                             className="resources-items__ceil-price-input dollar-bg"
